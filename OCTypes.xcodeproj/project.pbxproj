@@ -71,7 +71,6 @@
 		D4AF8C3A1EF6186100F7E18E /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		D4BB4FF2212B593C00E9889B /* libSITypes.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libSITypes.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4BB5204212CF15900E9889B /* libJansson.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libJansson.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		D4D0A7D821318C4000B8F2A4 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		D4FF8D692130DA59001F3B41 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -99,7 +98,6 @@
 			children = (
 				D4487DB61EF0B06900B31DAE /* src */,
 				D4AF8C391EF6186100F7E18E /* tests */,
-				D4D0A7D721318C4000B8F2A4 /* Build with Make */,
 				D4487DB01EF0B04D00B31DAE /* Products */,
 				D4BB4FF1212B593C00E9889B /* Frameworks */,
 			);
@@ -158,14 +156,6 @@
 				D4BB4FF2212B593C00E9889B /* libSITypes.a */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		D4D0A7D721318C4000B8F2A4 /* Build with Make */ = {
-			isa = PBXGroup;
-			children = (
-				D4D0A7D821318C4000B8F2A4 /* main.c */,
-			);
-			path = "Build with Make";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

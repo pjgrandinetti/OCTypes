@@ -3,7 +3,6 @@
 //  OCTypes
 //
 //  Created by philip on 6/7/17.
-//  Copyright © 2017 PhySy Ltd. All rights reserved.
 //
 
 #include "OCLibrary.h"

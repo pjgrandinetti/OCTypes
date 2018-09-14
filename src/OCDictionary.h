@@ -3,7 +3,6 @@
 //  OCTypes
 //
 //  Created by philip on 4/21/17.
-//  Copyright © 2017 Philip Grandinetti. All rights reserved.
 //
 
 #ifndef OCDictionary_h
@@ -30,8 +29,6 @@ void OCDictionaryReplaceValue(OCMutableDictionaryRef theDictionary, OCStringRef 
 void OCDictionaryRemoveValue(OCMutableDictionaryRef theDictionary, OCStringRef key);
 uint64_t OCDictionaryGetCountOfValue(OCMutableDictionaryRef theDictionary, const void * value);
 void OCDictionaryGetKeysAndValues(OCDictionaryRef theDictionary, const void **keys, const void **values);
-
-typedef const struct __OCArray * OCArrayRef;
 
 OCArrayRef OCDictionaryCreateArrayWithAllKeys(OCDictionaryRef theDictionary);
 OCArrayRef OCDictionaryCreateArrayWithAllValues(OCDictionaryRef theDictionary);

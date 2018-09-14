@@ -3,7 +3,6 @@
 //  OCTypes
 //
 //  Created by philip on 5/17/17.
-//  Copyright © 2017 Philip Grandinetti. All rights reserved.
 //
 
 #ifndef OCLibrary_h
@@ -54,11 +53,11 @@ typedef unsigned long OCOptionFlags;
 
 enum {
     kOCCompareCaseInsensitive = 1,
-    kOCCompareBackwards = 4,		/* Starting from the end of the string */
-    kOCCompareAnchored = 8,		/* Only at the specified starting point */
-    kOCCompareNonliteral = 16,		/* If specified, loose equivalence is performed (o-umlaut == o, umlaut) */
-    kOCCompareLocalized = 32,		/* User's default locale is used for the comparisons */
-    kOCCompareNumerically = 64,		/* Numeric comparison is used; that is, Foo2.txt < Foo7.txt < Foo25.txt */
+    kOCCompareBackwards = 4,    /* Starting from the end of the string */
+    kOCCompareAnchored = 8,     /* Only at the specified starting point */
+    kOCCompareNonliteral = 16,  /* If specified, loose equivalence is performed (o-umlaut == o, umlaut) */
+    kOCCompareLocalized = 32,   /* User's default locale is used for the comparisons */
+    kOCCompareNumerically = 64, /* Numeric comparison is used; that is, Foo2.txt < Foo7.txt < Foo25.txt */
     kOCCompareDiacriticInsensitive = 128, /* If specified, ignores diacritics (o-umlaut == o) */
     kOCCompareWidthInsensitive = 256, /* If specified, ignores width differences ('a' == UFF41) */
     kOCCompareForcedOrdering = 512 /* If specified, comparisons are forced to return either kCFCompareLessThan or kCFCompareGreaterThan if the strings are equivalent but not strictly equal, for stability when sorting (e.g. "aaa" > "AAA" with kCFCompareCaseInsensitive specified) */

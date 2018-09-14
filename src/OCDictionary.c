@@ -3,7 +3,6 @@
 //  OCTypes
 //
 //  Created by philip on 4/21/17.
-//  Copyright © 2017 Philip Grandinetti. All rights reserved.
 //
 
 #include "OCLibrary.h"

@@ -2,7 +2,6 @@
 //  OCType.h
 //
 //  Created by Philip on 11/18/12.
-//  Copyright © 2017 Philip Grandinetti. All rights reserved.
 //
 
 #ifndef OCType_h

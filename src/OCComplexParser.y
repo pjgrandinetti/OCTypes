@@ -1,7 +1,6 @@
 %{
     /*!
      @header OCComplexFromCString
-     @copyright PhySy Ltd 2008-2018
      @discussion
      Parses complex double from calculator string input
      

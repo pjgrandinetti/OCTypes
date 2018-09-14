@@ -3,7 +3,6 @@
 //  OCTypes
 //
 //  Created by philip on 5/10/17.
-//  Copyright © 2017 Philip Grandinetti. All rights reserved.
 //
 
 #ifndef OCString_h

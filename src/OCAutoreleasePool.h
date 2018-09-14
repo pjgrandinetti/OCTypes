@@ -1,8 +1,7 @@
 //
 //  OCAutoreleasePool.h
 //
-//  Created by PhySy on 12/27/09.
-//  Copyright (c) 2008-2014 PhySy, Ltd All rights reserved.
+//  Created by Philip on 12/27/09.
 //
 
 /*!
