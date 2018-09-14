@@ -16,31 +16,31 @@ OCComplexParser.tab.c + OCComplexParser.tab.h : OCComplexParser.y
 	mv y.tab.h OCComplexParser.tab.h
 
 OCType.o : OCType.h OCLibrary.h
-	cc -c -O3 OCType.c
+	clang -c -O3 OCType.c
 
 OCAutoreleasePool.o : OCAutoreleasePool.h OCLibrary.h
-	cc -c -O3 OCAutoreleasePool.c
+	clang -c -O3 OCAutoreleasePool.c
 
 OCString.o : OCString.h OCLibrary.h
-	cc -c -O3 OCString.c
+	clang -c -O3 OCString.c
 
 OCNumber.o : OCNumber.h OCLibrary.h
-	cc -c -O3 OCNumber.c
+	clang -c -O3 OCNumber.c
 
 OCData.o : OCData.h OCLibrary.h
-	cc -c -O3 OCData.c
+	clang -c -O3 OCData.c
 
 OCArray.o : OCArray.h OCLibrary.h
-	cc -c -O3 OCArray.c
+	clang -c -O3 OCArray.c
 
 OCBoolean.o : OCBoolean.h OCLibrary.h
-	cc -c -O3 OCBoolean.c
+	clang -c -O3 OCBoolean.c
 
 OCDictionary.o : OCDictionary.h OCLibrary.h
-	cc -c -O3 OCDictionary.c
+	clang -c -O3 OCDictionary.c
 
 OCMath.o : OCMath.h OCLibrary.h
-	cc -c -O3 OCMath.c
+	clang -c -O3 OCMath.c
 
 clean :
 	rm $(objects) libOCTypes.a OCComplexScanner.c OCComplexParser.tab.c
