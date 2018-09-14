@@ -4,7 +4,7 @@
 //  Created by Philip on 12/27/09.
 //
 
-#import "OCLibrary.h"
+#include "OCLibrary.h"
 
 #ifndef FREE
 #define FREE(X) {free(X); X=NULL;}
