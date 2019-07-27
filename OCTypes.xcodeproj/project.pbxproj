@@ -10,24 +10,25 @@
 		D403C82B1EF21A59004B3CF4 /* OCComplexScanner.l in Sources */ = {isa = PBXBuildFile; fileRef = D403C82A1EF21A59004B3CF4 /* OCComplexScanner.l */; };
 		D403C82D1EF21A6E004B3CF4 /* OCComplexParser.y in Sources */ = {isa = PBXBuildFile; fileRef = D403C82C1EF21A6E004B3CF4 /* OCComplexParser.y */; };
 		D426856A1F04A610004921A2 /* OCData.c in Sources */ = {isa = PBXBuildFile; fileRef = D42685681F04A610004921A2 /* OCData.c */; };
-		D426856B1F04A610004921A2 /* OCData.h in Headers */ = {isa = PBXBuildFile; fileRef = D42685691F04A610004921A2 /* OCData.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D42F0A42214B5E520030BB8F /* OCMath.h in Headers */ = {isa = PBXBuildFile; fileRef = D42F0A37214B5E520030BB8F /* OCMath.h */; };
+		D42F0A43214B5E520030BB8F /* OCBoolean.h in Headers */ = {isa = PBXBuildFile; fileRef = D42F0A38214B5E520030BB8F /* OCBoolean.h */; };
+		D42F0A44214B5E520030BB8F /* OCType.h in Headers */ = {isa = PBXBuildFile; fileRef = D42F0A39214B5E520030BB8F /* OCType.h */; };
+		D42F0A45214B5E520030BB8F /* OCData.h in Headers */ = {isa = PBXBuildFile; fileRef = D42F0A3A214B5E520030BB8F /* OCData.h */; };
+		D42F0A46214B5E520030BB8F /* OCAutoreleasePool.h in Headers */ = {isa = PBXBuildFile; fileRef = D42F0A3B214B5E520030BB8F /* OCAutoreleasePool.h */; };
+		D42F0A47214B5E520030BB8F /* OCDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = D42F0A3C214B5E520030BB8F /* OCDictionary.h */; };
+		D42F0A48214B5E520030BB8F /* OCString.h in Headers */ = {isa = PBXBuildFile; fileRef = D42F0A3D214B5E520030BB8F /* OCString.h */; };
+		D42F0A49214B5E520030BB8F /* OCNumber.h in Headers */ = {isa = PBXBuildFile; fileRef = D42F0A3E214B5E520030BB8F /* OCNumber.h */; };
+		D42F0A4A214B5E520030BB8F /* OCComplexParser.h in Headers */ = {isa = PBXBuildFile; fileRef = D42F0A3F214B5E520030BB8F /* OCComplexParser.h */; };
+		D42F0A4B214B5E520030BB8F /* OCArray.h in Headers */ = {isa = PBXBuildFile; fileRef = D42F0A40214B5E520030BB8F /* OCArray.h */; };
+		D42F0A4C214B5E520030BB8F /* OCLibrary.h in Headers */ = {isa = PBXBuildFile; fileRef = D42F0A41214B5E520030BB8F /* OCLibrary.h */; };
 		D4487DC81EF0B06900B31DAE /* OCArray.c in Sources */ = {isa = PBXBuildFile; fileRef = D4487DB71EF0B06900B31DAE /* OCArray.c */; };
-		D4487DC91EF0B06900B31DAE /* OCArray.h in Headers */ = {isa = PBXBuildFile; fileRef = D4487DB81EF0B06900B31DAE /* OCArray.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4487DCA1EF0B06900B31DAE /* OCAutoreleasePool.c in Sources */ = {isa = PBXBuildFile; fileRef = D4487DB91EF0B06900B31DAE /* OCAutoreleasePool.c */; };
-		D4487DCB1EF0B06900B31DAE /* OCAutoreleasePool.h in Headers */ = {isa = PBXBuildFile; fileRef = D4487DBA1EF0B06900B31DAE /* OCAutoreleasePool.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4487DCC1EF0B06900B31DAE /* OCBoolean.c in Sources */ = {isa = PBXBuildFile; fileRef = D4487DBB1EF0B06900B31DAE /* OCBoolean.c */; };
-		D4487DCD1EF0B06900B31DAE /* OCBoolean.h in Headers */ = {isa = PBXBuildFile; fileRef = D4487DBC1EF0B06900B31DAE /* OCBoolean.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4487DCE1EF0B06900B31DAE /* OCDictionary.c in Sources */ = {isa = PBXBuildFile; fileRef = D4487DBD1EF0B06900B31DAE /* OCDictionary.c */; };
-		D4487DCF1EF0B06900B31DAE /* OCDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = D4487DBE1EF0B06900B31DAE /* OCDictionary.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D4487DD01EF0B06900B31DAE /* OCLibrary.h in Headers */ = {isa = PBXBuildFile; fileRef = D4487DBF1EF0B06900B31DAE /* OCLibrary.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4487DD11EF0B06900B31DAE /* OCMath.c in Sources */ = {isa = PBXBuildFile; fileRef = D4487DC01EF0B06900B31DAE /* OCMath.c */; };
-		D4487DD21EF0B06900B31DAE /* OCMath.h in Headers */ = {isa = PBXBuildFile; fileRef = D4487DC11EF0B06900B31DAE /* OCMath.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4487DD31EF0B06900B31DAE /* OCNumber.c in Sources */ = {isa = PBXBuildFile; fileRef = D4487DC21EF0B06900B31DAE /* OCNumber.c */; };
-		D4487DD41EF0B06900B31DAE /* OCNumber.h in Headers */ = {isa = PBXBuildFile; fileRef = D4487DC31EF0B06900B31DAE /* OCNumber.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4487DD51EF0B06900B31DAE /* OCString.c in Sources */ = {isa = PBXBuildFile; fileRef = D4487DC41EF0B06900B31DAE /* OCString.c */; };
-		D4487DD61EF0B06900B31DAE /* OCString.h in Headers */ = {isa = PBXBuildFile; fileRef = D4487DC51EF0B06900B31DAE /* OCString.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4487DD71EF0B06900B31DAE /* OCType.c in Sources */ = {isa = PBXBuildFile; fileRef = D4487DC61EF0B06900B31DAE /* OCType.c */; };
-		D4487DD81EF0B06900B31DAE /* OCType.h in Headers */ = {isa = PBXBuildFile; fileRef = D4487DC71EF0B06900B31DAE /* OCType.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4AF8C3B1EF6186100F7E18E /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = D4AF8C3A1EF6186100F7E18E /* main.c */; };
 		D4AF8C401EF61B2800F7E18E /* libOCTypes.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D4487DAF1EF0B04D00B31DAE /* libOCTypes.a */; };
 /* End PBXBuildFile section */
@@ -48,30 +49,30 @@
 		D403C82A1EF21A59004B3CF4 /* OCComplexScanner.l */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.lex; path = OCComplexScanner.l; sourceTree = "<group>"; };
 		D403C82C1EF21A6E004B3CF4 /* OCComplexParser.y */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.yacc; path = OCComplexParser.y; sourceTree = "<group>"; };
 		D42685681F04A610004921A2 /* OCData.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = OCData.c; sourceTree = "<group>"; };
-		D42685691F04A610004921A2 /* OCData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCData.h; sourceTree = "<group>"; };
+		D42F0A37214B5E520030BB8F /* OCMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMath.h; sourceTree = "<group>"; };
+		D42F0A38214B5E520030BB8F /* OCBoolean.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCBoolean.h; sourceTree = "<group>"; };
+		D42F0A39214B5E520030BB8F /* OCType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCType.h; sourceTree = "<group>"; };
+		D42F0A3A214B5E520030BB8F /* OCData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCData.h; sourceTree = "<group>"; };
+		D42F0A3B214B5E520030BB8F /* OCAutoreleasePool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCAutoreleasePool.h; sourceTree = "<group>"; };
+		D42F0A3C214B5E520030BB8F /* OCDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCDictionary.h; sourceTree = "<group>"; };
+		D42F0A3D214B5E520030BB8F /* OCString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCString.h; sourceTree = "<group>"; };
+		D42F0A3E214B5E520030BB8F /* OCNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCNumber.h; sourceTree = "<group>"; };
+		D42F0A3F214B5E520030BB8F /* OCComplexParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCComplexParser.h; sourceTree = "<group>"; };
+		D42F0A40214B5E520030BB8F /* OCArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCArray.h; sourceTree = "<group>"; };
+		D42F0A41214B5E520030BB8F /* OCLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCLibrary.h; sourceTree = "<group>"; };
 		D4487DAF1EF0B04D00B31DAE /* libOCTypes.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libOCTypes.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4487DB71EF0B06900B31DAE /* OCArray.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; lineEnding = 0; path = OCArray.c; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.c; };
-		D4487DB81EF0B06900B31DAE /* OCArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = OCArray.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		D4487DB91EF0B06900B31DAE /* OCAutoreleasePool.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = OCAutoreleasePool.c; sourceTree = "<group>"; };
-		D4487DBA1EF0B06900B31DAE /* OCAutoreleasePool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCAutoreleasePool.h; sourceTree = "<group>"; };
 		D4487DBB1EF0B06900B31DAE /* OCBoolean.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = OCBoolean.c; sourceTree = "<group>"; };
-		D4487DBC1EF0B06900B31DAE /* OCBoolean.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCBoolean.h; sourceTree = "<group>"; };
 		D4487DBD1EF0B06900B31DAE /* OCDictionary.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = OCDictionary.c; sourceTree = "<group>"; };
-		D4487DBE1EF0B06900B31DAE /* OCDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCDictionary.h; sourceTree = "<group>"; };
-		D4487DBF1EF0B06900B31DAE /* OCLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCLibrary.h; sourceTree = "<group>"; };
 		D4487DC01EF0B06900B31DAE /* OCMath.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = OCMath.c; sourceTree = "<group>"; };
-		D4487DC11EF0B06900B31DAE /* OCMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMath.h; sourceTree = "<group>"; };
 		D4487DC21EF0B06900B31DAE /* OCNumber.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = OCNumber.c; sourceTree = "<group>"; };
-		D4487DC31EF0B06900B31DAE /* OCNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCNumber.h; sourceTree = "<group>"; };
 		D4487DC41EF0B06900B31DAE /* OCString.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = OCString.c; sourceTree = "<group>"; };
-		D4487DC51EF0B06900B31DAE /* OCString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCString.h; sourceTree = "<group>"; };
 		D4487DC61EF0B06900B31DAE /* OCType.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = OCType.c; sourceTree = "<group>"; };
-		D4487DC71EF0B06900B31DAE /* OCType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCType.h; sourceTree = "<group>"; };
 		D4AF8C381EF6186100F7E18E /* tests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = tests; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4AF8C3A1EF6186100F7E18E /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		D4BB4FF2212B593C00E9889B /* libSITypes.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libSITypes.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4BB5204212CF15900E9889B /* libJansson.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libJansson.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		D4FF8D692130DA59001F3B41 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,26 +116,26 @@
 		D4487DB61EF0B06900B31DAE /* src */ = {
 			isa = PBXGroup;
 			children = (
-				D4FF8D692130DA59001F3B41 /* Makefile */,
-				D4487DBF1EF0B06900B31DAE /* OCLibrary.h */,
+				D42F0A40214B5E520030BB8F /* OCArray.h */,
+				D42F0A3B214B5E520030BB8F /* OCAutoreleasePool.h */,
+				D42F0A38214B5E520030BB8F /* OCBoolean.h */,
+				D42F0A3F214B5E520030BB8F /* OCComplexParser.h */,
+				D42F0A3A214B5E520030BB8F /* OCData.h */,
+				D42F0A3C214B5E520030BB8F /* OCDictionary.h */,
+				D42F0A41214B5E520030BB8F /* OCLibrary.h */,
+				D42F0A37214B5E520030BB8F /* OCMath.h */,
+				D42F0A3E214B5E520030BB8F /* OCNumber.h */,
+				D42F0A3D214B5E520030BB8F /* OCString.h */,
+				D42F0A39214B5E520030BB8F /* OCType.h */,
 				D4487DC61EF0B06900B31DAE /* OCType.c */,
-				D4487DC71EF0B06900B31DAE /* OCType.h */,
 				D4487DB91EF0B06900B31DAE /* OCAutoreleasePool.c */,
-				D4487DBA1EF0B06900B31DAE /* OCAutoreleasePool.h */,
 				D4487DC41EF0B06900B31DAE /* OCString.c */,
-				D4487DC51EF0B06900B31DAE /* OCString.h */,
 				D4487DC21EF0B06900B31DAE /* OCNumber.c */,
-				D4487DC31EF0B06900B31DAE /* OCNumber.h */,
 				D42685681F04A610004921A2 /* OCData.c */,
-				D42685691F04A610004921A2 /* OCData.h */,
 				D4487DB71EF0B06900B31DAE /* OCArray.c */,
-				D4487DB81EF0B06900B31DAE /* OCArray.h */,
 				D4487DBB1EF0B06900B31DAE /* OCBoolean.c */,
-				D4487DBC1EF0B06900B31DAE /* OCBoolean.h */,
 				D4487DBD1EF0B06900B31DAE /* OCDictionary.c */,
-				D4487DBE1EF0B06900B31DAE /* OCDictionary.h */,
 				D4487DC01EF0B06900B31DAE /* OCMath.c */,
-				D4487DC11EF0B06900B31DAE /* OCMath.h */,
 				D403C82A1EF21A59004B3CF4 /* OCComplexScanner.l */,
 				D403C82C1EF21A6E004B3CF4 /* OCComplexParser.y */,
 			);
@@ -165,16 +166,17 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D4487DD41EF0B06900B31DAE /* OCNumber.h in Headers */,
-				D4487DD61EF0B06900B31DAE /* OCString.h in Headers */,
-				D4487DD01EF0B06900B31DAE /* OCLibrary.h in Headers */,
-				D4487DD81EF0B06900B31DAE /* OCType.h in Headers */,
-				D4487DCF1EF0B06900B31DAE /* OCDictionary.h in Headers */,
-				D4487DCD1EF0B06900B31DAE /* OCBoolean.h in Headers */,
-				D4487DC91EF0B06900B31DAE /* OCArray.h in Headers */,
-				D4487DD21EF0B06900B31DAE /* OCMath.h in Headers */,
-				D426856B1F04A610004921A2 /* OCData.h in Headers */,
-				D4487DCB1EF0B06900B31DAE /* OCAutoreleasePool.h in Headers */,
+				D42F0A46214B5E520030BB8F /* OCAutoreleasePool.h in Headers */,
+				D42F0A4A214B5E520030BB8F /* OCComplexParser.h in Headers */,
+				D42F0A4C214B5E520030BB8F /* OCLibrary.h in Headers */,
+				D42F0A48214B5E520030BB8F /* OCString.h in Headers */,
+				D42F0A44214B5E520030BB8F /* OCType.h in Headers */,
+				D42F0A49214B5E520030BB8F /* OCNumber.h in Headers */,
+				D42F0A42214B5E520030BB8F /* OCMath.h in Headers */,
+				D42F0A45214B5E520030BB8F /* OCData.h in Headers */,
+				D42F0A47214B5E520030BB8F /* OCDictionary.h in Headers */,
+				D42F0A4B214B5E520030BB8F /* OCArray.h in Headers */,
+				D42F0A43214B5E520030BB8F /* OCBoolean.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -221,7 +223,7 @@
 		D4487DA71EF0B04D00B31DAE /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0930;
+				LastUpgradeCheck = 1030;
 				ORGANIZATIONNAME = "PhySy Ltd";
 				TargetAttributes = {
 					D4487DAE1EF0B04D00B31DAE = {
@@ -237,10 +239,11 @@
 			};
 			buildConfigurationList = D4487DAA1EF0B04D00B31DAE /* Build configuration list for PBXProject "OCTypes" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = D4487DA61EF0B04D00B31DAE;
 			productRefGroup = D4487DB01EF0B04D00B31DAE /* Products */;
@@ -287,6 +290,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -344,6 +348,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
