@@ -1,3 +1,7 @@
+#if defined(__linux__)
+#define _GNU_SOURCE // For qsort_r
+#endif
+
 //
 //  OCArray.c
 //  OCTypes
@@ -6,10 +10,6 @@
 //
 
 #include "OCLibrary.h"
-
-#if defined(__linux__)
-#define _GNU_SOURCE // For qsort_r
-#endif
 
 static OCTypeID kOCArrayID = _kOCNotATypeID;
 
