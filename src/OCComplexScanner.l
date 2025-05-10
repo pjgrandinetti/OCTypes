@@ -1,6 +1,7 @@
 %option noyywrap nodefault
 %option prefix = "ocpc"
-%option nounistd /* Prevent flex from including unistd.h automatically */
+/* Prevent flex from including unistd.h automatically */
+%option nounistd
 %{
     typedef const struct __complexNode * ComplexNodeRef;
     typedef const struct __complexNumberValue * ComplexNumberRef;
