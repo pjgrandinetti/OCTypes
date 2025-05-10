@@ -14,9 +14,15 @@ static void __OCRangeReleaseCallBack(const void *value) {
     }
 }
 
+// NOP retain callback for OCRange objects, as they are simple malloc'd structs
+// and OCArrayAppendValue might attempt to call a retain callback.
+static const void *__OCRangeNopRetainCallBack(const void *value) {
+    return value; // OCRanges are not further reference counted themselves by this callback
+}
+
 static const OCArrayCallBacks kOCRangeArrayCallBacks = {
     0, // version
-    NULL, // retain
+    __OCRangeNopRetainCallBack, // retain
     __OCRangeReleaseCallBack, // release
     NULL, // copyDescription
     NULL  // equal
@@ -38,12 +44,30 @@ static bool __OCStringEqual(const void * theType1, const void * theType2)
 {
     OCStringRef theString1 = (OCStringRef) theType1;
     OCStringRef theString2 = (OCStringRef) theType2;
-    if(theString1->_base.typeID != theString2->_base.typeID) return false;
+
+    // 1. If they are the same instance, they are equal.
+    if (theString1 == theString2) return true;
+
+    // 2. If either is NULL (and they are not the same instance, checked above), they are not equal.
+    if (NULL == theString1 || NULL == theString2) return false;
+
+    // 3. Now it's safe to access members. Check typeID.
+    if (theString1->_base.typeID != theString2->_base.typeID) return false;
+
+    // 4. Compare lengths. If lengths differ, strings cannot be equal.
+    if (theString1->length != theString2->length) return false;
     
-    if(NULL == theString1 || NULL == theString2) return false;
-    if(theString1 == theString2) return true;
-    if(strlen(theString1->string) != strlen(theString2->string)) return false;
-    if(strcmp(theString1->string, theString2->string)!=0) return false;
+    // 5. If lengths are 0 (and typeIDs and lengths are equal), they are equal (both are empty strings).
+    //    Internal 'string' pointers could be NULL or point to "\0" for length 0,
+    //    which is valid for OCStrings.
+    if (theString1->length == 0) return true;
+
+    // 6. Lengths are equal and greater than 0. Internal 'string' pointers should be valid.
+    //    If string pointers could be NULL here despite length > 0 (which would be an inconsistency),
+    //    an additional check like `if (!theString1->string || !theString2->string) return false;` (or specific handling)
+    //    would be needed. Assuming valid OCString construction, string pointers are non-NULL if length > 0.
+    if (strcmp(theString1->string, theString2->string) != 0) return false;
+    
     return true;
 }
 
@@ -85,11 +109,17 @@ OCStringRef OCStringCreateWithCString(const char *cString)
 {
     if(NULL==cString) return NULL;
     struct __OCString *theString = OCStringAllocate();
-    if(NULL == theString) return NULL;
+    if(NULL == theString) return NULL; // Check if OCStringAllocate failed
+
     theString->length = strlen(cString);
-    theString->capacity = strlen(cString);
-    theString->string = malloc(theString->length+1);
-    strcpy(theString->string, cString);
+    theString->capacity = theString->length; // Use the already computed length for capacity
+
+    theString->string = malloc(theString->length + 1); // Allocate buffer for string content + null terminator
+    if (NULL == theString->string) { // Check if malloc for the character buffer failed
+        OCRelease(theString); // Release the OCString structure itself
+        return NULL;          // Return NULL to indicate failure
+    }
+    strcpy(theString->string, cString); // Copy the C string into the buffer
     return theString;
 }
 
@@ -119,14 +149,39 @@ OCMutableStringRef OCStringCreateMutableCopy(OCStringRef theString)
     return (OCMutableStringRef) OCStringCreateWithCString(theString->string);
 }
 
-OCStringRef OCStringCreateWithSubstring(OCStringRef str, OCRange range)
-{
-    char newString[range.length+1];
-    for(int64_t index=range.location;index<range.location+range.length;index++) {
-        newString[index-range.location] = str->string[index];
+OCStringRef OCStringCreateWithSubstring(OCStringRef str, OCRange range) {
+    if (NULL == str) {
+        return NULL;
     }
-    newString[range.length] = 0;
-    return OCStringCreateWithCString(newString);
+    // Check for invalid range: location out of bounds, or location + length overflows or goes out of bounds.
+    // Ensure range.location is within bounds, and range.length doesn't cause location + length to exceed str->length.
+    if (range.location > str->length || (range.length > 0 && range.location + range.length > str->length) || range.length > str->length /* handles large lengths */ ) {
+        // Corrected and more robust boundary check
+        if (range.location == str->length && range.length == 0) {
+            // This is a valid case: creating an empty string from the end of another string.
+        } else {
+            return NULL;
+        }
+    }
+
+
+    char *newStringChars = malloc(range.length + 1); // +1 for null terminator
+    if (NULL == newStringChars) {
+        return NULL; // Allocation failure
+    }
+
+    if (range.length > 0) {
+        memcpy(newStringChars, str->string + range.location, range.length);
+    }
+    newStringChars[range.length] = '\0'; // Ensure null termination
+
+    OCStringRef newString = OCStringCreateWithCString(newStringChars);
+    // OCStringCreateWithCString might return NULL if newStringChars is empty AND it's implemented to return NULL for empty C strings,
+    // or if its internal malloc fails.
+    
+    free(newStringChars); // Free the temporary buffer regardless of newString's status.
+
+    return newString; // This could be NULL.
 }
 
 const char *OCStringGetCString(OCStringRef theString)
