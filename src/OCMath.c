@@ -141,7 +141,7 @@ double complex complex_tangent(double complex angle)
     double complex cosine = complex_cosine(angle);
     double complex sine = complex_sine(angle);
     if(cosine == 0.0) {
-        if(signbit(sine)) return -INFINITY;
+        if(signbit(creal(sine))) return -INFINITY;
         else return INFINITY;
     }
     return sine/cosine;
@@ -153,13 +153,13 @@ double complex raise_to_integer_power(double complex x, long power)
     if(power>0) {
         double complex result = x;
         for(long i=1;i<power;i++) result *= x;
-        if(isnan(result)) return nan(NULL);
+        if(isnan(creal(result))) return nan(NULL);
         return result;
     }
     else if(x!=0.0){
         double complex result = 1./x;
         for(long i=1;i<-power;i++) result *= 1./x;
-        if(isnan(result)) return nan(NULL);
+        if(isnan(creal(result))) return nan(NULL);
         return result;
     }
     return nan(NULL);
