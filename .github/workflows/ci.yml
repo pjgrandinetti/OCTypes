@@ -31,7 +31,7 @@ jobs:
         if: runner.os != 'Windows'
         run: |
           make clean
-          make test
+          make test-asan
 
       - name: Build on Windows
         if: runner.os == 'Windows'
