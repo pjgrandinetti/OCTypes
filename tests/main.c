@@ -6,21 +6,34 @@
 //  Copyright © 2017 PhySy Ltd. All rights reserved.
 //
 
-#define PRINTERROR printf("failure: line %d, %s\n",__LINE__,__FUNCTION__)
+#define PRINTERROR do { \
+    fprintf(stderr, "failure: line %d, %s\n", __LINE__, __FUNCTION__); \
+    return false; \
+} while (0)
 
-#include "OCLibrary.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include "../src/OCLibrary.h"
 
- bool stringTest0(void);
- bool stringTest1(void);
- bool stringTest2(void);
- bool arrayTest0(void);
+bool stringTest0(void);
+bool stringTest1(void);
+bool stringTest2(void);
+bool arrayTest0(void);
 
 int main(int argc, const char * argv[])
 {
-    stringTest0();
-    stringTest1();
-    stringTest2();
-    arrayTest0();
+    int failures = 0;
+    if (!stringTest0()) failures++;
+    if (!stringTest1()) failures++;
+    if (!stringTest2()) failures++;
+    if (!arrayTest0()) failures++;
+    if (failures > 0) {
+        fprintf(stderr, "%d test(s) failed\n", failures);
+        return EXIT_FAILURE;
+    }
+    fprintf(stderr, "All tests passed\n");
+    return EXIT_SUCCESS;
 }
 
 bool arrayTest0(void)

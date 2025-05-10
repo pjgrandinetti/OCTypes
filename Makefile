@@ -21,7 +21,7 @@ STATIC_SRC = $(filter-out $(YACC_SRC) $(LEX_SRC), $(wildcard $(SRC_DIR)/*.c))
 ALL_C = $(GEN_C) $(notdir $(STATIC_SRC))
 OBJ = $(ALL_C:.c=.o)
 
-.PHONY: all clean
+.PHONY: all clean test
 
 all: libOCTypes.a
 
@@ -57,6 +57,11 @@ OCString.o: CFLAGS += -Wno-unused-but-set-variable
 # Build static library
 libOCTypes.a: $(OBJ)
 	$(AR) rcs $@ $^
+
+.PHONY: test
+test: libOCTypes.a
+	$(CC) $(CFLAGS) -Isrc tests/main.c -L. -lOCTypes -lm -o runTests
+	./runTests
 
 clean:
 	rm -f $(OBJ) libOCTypes.a $(GEN_C) $(GEN_H)

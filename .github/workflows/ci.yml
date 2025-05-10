@@ -20,10 +20,12 @@ jobs:
       - name: Install make and WinFlexBison on Windows
         if: runner.os == 'Windows'
         shell: powershell
-        run: |
-          choco install make winflexbison3 -y
-          # Load refreshenv script directly
-          . "$Env:ChocolateyInstall\helpers\refreshenv.ps1"
+        run: choco install make winflexbison3 -y
+
+      - name: Refresh environment variables
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: refreshenv
 
       - name: Build on non-Windows
         if: runner.os != 'Windows'
