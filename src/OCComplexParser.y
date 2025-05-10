@@ -5,6 +5,7 @@
      Parses complex double from calculator string input
      
      */
+    #include <complex.h> /* For double complex type */
     typedef const struct __complexNode * ComplexNodeRef;
     typedef const struct __complexNumberValue * ComplexNumberRef;
     typedef const struct __complexNodeFunction * ComplexNumberFunctionRef;
@@ -28,7 +29,7 @@
     #include "OCLibrary.h"
     
     static double complex result;
-    double complex d; // Fixed missing semicolon
+    double complex d;
     int ocpclex(void);
     
     struct __complexNode {
@@ -62,7 +63,7 @@
 
 %union {
     ComplexNodeRef a;
-    double complex d;
+    double complex d /* Semicolon removed for bison %union member */;
     int fn;
 }
 
