@@ -7,6 +7,10 @@
 
 #include "OCLibrary.h"
 
+#if defined(__linux__)
+#define _GNU_SOURCE // For qsort_r
+#endif
+
 static OCTypeID kOCArrayID = _kOCNotATypeID;
 
 const OCArrayCallBacks kOCTypeArrayCallBacks = {0, OCRetain, OCRelease, OCCopyDescription, OCTypeEqual};
