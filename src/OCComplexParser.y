@@ -57,13 +57,13 @@
     void ComplexNodeFree(ComplexNodeRef node);
     void ocpcerror(char *s, ...);
     
-    %}
+%}
 
-%name-prefix="ocpc"
+%define api.prefix {ocpc}
 
 %union {
     ComplexNodeRef a;
-    double complex d /* Semicolon removed for bison %union member */;
+    double complex d;
     int fn;
 }
 
