@@ -5,7 +5,6 @@
      Parses complex double from calculator string input
      
      */
-    #include <complex.h> /* For double complex type */
     typedef const struct __complexNode * ComplexNodeRef;
     typedef const struct __complexNumberValue * ComplexNumberRef;
     typedef const struct __complexNodeFunction * ComplexNumberFunctionRef;
@@ -29,7 +28,6 @@
     #include "OCLibrary.h"
     
     static double complex result;
-    double complex d;
     int ocpclex(void);
     
     struct __complexNode {
@@ -57,9 +55,9 @@
     void ComplexNodeFree(ComplexNodeRef node);
     void ocpcerror(char *s, ...);
     
-%}
+    %}
 
-%define api.prefix {ocpc}
+%name-prefix="ocpc"
 
 %union {
     ComplexNodeRef a;

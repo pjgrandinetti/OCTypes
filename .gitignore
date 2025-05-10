@@ -10,6 +10,7 @@
 # Ignore executables and output binaries
 *.out
 *.exe
+runTests
 
 # Ignore build directories
 /build/
