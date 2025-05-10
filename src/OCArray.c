@@ -2,6 +2,16 @@
 #define _GNU_SOURCE // For qsort_r
 #endif
 
+#include <stdint.h> // For uint64_t and other standard integer types
+#include <stdlib.h> // For malloc, free, realloc, qsort, qsort_s (if available)
+#include <string.h> // For memcpy
+
+// Handle Nullability qualifiers for non-Clang compilers (like GCC)
+#if !defined(__clang__)
+#define _Nullable
+#define _Nonnull
+#endif
+
 //
 //  OCArray.c
 //  OCTypes
@@ -22,8 +32,8 @@ struct __OCArray {
 
     // OCArray Type attributes  - order of declaration is essential
     const OCArrayCallBacks *callBacks;
-    uint64_t count;
-    uint64_t capacity;
+    uint64_t count; // Changed from u_int64_t
+    uint64_t capacity; // Changed from u_int64_t
     void **data;
 };
 
@@ -38,7 +48,7 @@ static bool __OCArrayEqual(const void *theType1, const void *theType2)
     if(theArray1->count != theArray2->count) return false;
     if(theArray1->callBacks != theArray2->callBacks) return false;
 
-    for(u_int64_t index = 0;index< theArray1->count; index++) {
+    for(uint64_t index = 0;index< theArray1->count; index++) { // Changed from u_int64_t
         OCTypeRef val1 = theArray1->data[index];
         OCTypeRef val2 = theArray2->data[index];
         if(!OCTypeEqual(val1, val2)) return false;
@@ -322,6 +332,16 @@ static int gnu_qsortCompare_wrapper(const void *val1_ptr, const void *val2_ptr, 
     const void *obj2 = *((const void **) val2_ptr);
     return myContext->comparator(obj1, obj2, myContext->context);
 }
+#elif defined(_WIN32) || defined(__CYGWIN__)
+// Windows specific qsort_s (MSVC) or potentially MinGW if it defines _WIN32 and supports qsort_s
+// Windows qsort_s comparator: int (*compar)(void *context, const void *a, const void *b)
+static int win_qsort_s_compare_wrapper(void *thunk, const void *val1_ptr, const void *val2_ptr)
+{
+    struct qsortContext *myContext = (struct qsortContext *) thunk;
+    const void *obj1 = *((const void **) val1_ptr);
+    const void *obj2 = *((const void **) val2_ptr);
+    return myContext->comparator(obj1, obj2, myContext->context);
+}
 #else
 // For other platforms, OCArraySortValues will issue a compile-time error.
 #endif
@@ -348,6 +368,12 @@ void OCArraySortValues(OCMutableArrayRef theArray, OCRange range, OCComparatorFu
     qsort_r(base_ptr, nmemb, element_size, &myContext, bsd_qsortCompare_wrapper);
 #elif defined(__linux__)
     qsort_r(base_ptr, nmemb, element_size, gnu_qsortCompare_wrapper, &myContext);
+#elif defined(_WIN32) || defined(__CYGWIN__)
+    #if defined(__STDC_LIB_EXT1__) || _MSC_VER >= 1400 // Check for C11 Annex K or MSVC version
+        qsort_s(base_ptr, nmemb, element_size, win_qsort_s_compare_wrapper, &myContext);
+    #else
+        #error "qsort_r/qsort_s implementation not specified for this Windows toolchain. Please add a case for your OS or provide a fallback sort."
+    #endif
 #else
     #error "qsort_r implementation not specified for this platform. Please add a case for your OS or provide a fallback sort."
 #endif
@@ -356,12 +382,12 @@ void OCArraySortValues(OCMutableArrayRef theArray, OCRange range, OCComparatorFu
 #define INVOKE_CALLBACK3(P, A, B, C) (P)(A, B, C)
 
 static OCComparisonResult __OCArrayCompareValues(const void *v1, const void *v2, struct _acompareContext *context) {
-    void *_Nullable **val1 = (void *_Nullable **)v1;
+    void * _Nullable *val1 = (void * _Nullable *)v1; // Keep _Nullable for source compatibility, macro will remove it for GCC
     const void **val2 = (const void **)v2;
     return (OCComparisonResult)(INVOKE_CALLBACK3(context->func, *val1, *val2, context->context));
 }
 
-int64_t OCBSearch(void *_Nullable element,
+int64_t OCBSearch(void * _Nullable element, // Keep _Nullable
                   int64_t elementSize,
                   const void *list,
                   int64_t count,
