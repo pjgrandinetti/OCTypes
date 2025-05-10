@@ -28,6 +28,7 @@
     #include "OCLibrary.h"
     
     static double complex result;
+    double complex d; // Fixed missing semicolon
     int ocpclex(void);
     
     struct __complexNode {
