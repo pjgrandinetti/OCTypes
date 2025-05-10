@@ -1,0 +1,50 @@
+# Ignore object files
+*.o
+
+# Ignore archives and shared libraries
+*.a
+*.so
+*.dylib
+
+# Ignore executables and output binaries
+*.out
+*.exe
+
+# Ignore build directories
+/build/
+/build-*/
+bin/
+lib/
+
+# CMake files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile.cmake
+CTestTestfile.cmake
+
+# Flex/Bison generated files
+OCComplexScanner.c
+OCComplexParser.tab.c
+OCComplexParser.tab.h
+
+# Xcode project files and workspace settings
+*.xcworkspace
+*.xcodeproj
+xcuserdata/
+*.xcuserstate
+*.xcscheme
+
+# macOS Finder metadata
+.DS_Store
+
+# IDE directories
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Misc
+*.swp
+*~

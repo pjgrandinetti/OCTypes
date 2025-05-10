@@ -41,21 +41,21 @@ static bool __OCArrayEqual(const void *theType1, const void *theType2)
     }
     
     if(theArray1->callBacks == &kOCTypeArrayCallBacks) {
-        for(long index=0;index<theArray1->count;index++) {
+        for(uint64_t index=0; index<theArray1->count; index++) {
             OCTypeRef val1 = theArray1->data[index];
             OCTypeRef val2 = theArray2->data[index];
             if(!OCTypeEqual(val1, val2)) return false;
         }
     }
     else if(theArray1->callBacks && theArray1->callBacks->equal!=NULL) {
-        for(long index=0;index<theArray1->count;index++) {
+        for(uint64_t index=0; index<theArray1->count; index++) {
             OCTypeRef val1 = theArray1->data[index];
             OCTypeRef val2 = theArray2->data[index];
             if(!theArray1->callBacks->equal(val1, val2)) return false;
         }
     }
     else {
-        for(long index=0;index<theArray1->count;index++) {
+        for(uint64_t index=0; index<theArray1->count; index++) {
             OCTypeRef val1 = theArray1->data[index];
             OCTypeRef val2 = theArray2->data[index];
             if(val1 != val2) return false;
@@ -68,12 +68,12 @@ static bool __OCArrayEqual(const void *theType1, const void *theType2)
 static void _OCArrayReleaseValues(OCArrayRef theArray)
 {
     if(theArray->callBacks == &kOCTypeArrayCallBacks) {
-        for(size_t index = 0;index< theArray->count; index++) {
+        for(uint64_t index = 0; index< theArray->count; index++) {
             OCRelease( theArray->data[index]);
         }
     }
     else if(theArray->callBacks && theArray->callBacks->release!=NULL) {
-        for(long index=0;index<theArray->count;index++) {
+        for(uint64_t index=0; index<theArray->count; index++) {
             theArray->callBacks->release( theArray->data[index]);
         }
     }
@@ -82,12 +82,12 @@ static void _OCArrayReleaseValues(OCArrayRef theArray)
 static void _OCArrayRetainValues(OCArrayRef theArray)
 {
     if(theArray->callBacks == &kOCTypeArrayCallBacks) {
-        for(size_t index = 0;index< theArray->count; index++) {
+        for(uint64_t index = 0; index< theArray->count; index++) {
             OCRetain(theArray->data[index]);
         }
     }
     else if(theArray->callBacks && theArray->callBacks->release!=NULL) {
-        for(long index=0;index<theArray->count;index++) {
+        for(uint64_t index=0; index<theArray->count; index++) {
             theArray->callBacks->retain( theArray->data[index]);
         }
     }
@@ -176,7 +176,7 @@ void OCArrayRemoveValueAtIndex(OCMutableArrayRef theArray,uint64_t index)
     if(index<theArray->count) {
         OCRelease(theArray->data[index]);
         theArray->count--;
-        for(uint64_t i=index;i<theArray->count;i++) {
+        for(uint64_t i=index; i<theArray->count; i++) {
             theArray->data[i] = theArray->data[i+1];
         }
     }
@@ -277,17 +277,17 @@ bool OCArrayContainsValue(OCArrayRef theArray, const void * value)
     if(NULL==value) return false;
 
     if(theArray->callBacks == &kOCTypeArrayCallBacks) {
-        for(long index=0;index<theArray->count;index++) {
+        for(uint64_t index=0; index<theArray->count; index++) {
             if(OCTypeEqual(theArray->data[index], value)) return true;
         }
     }
     else if(theArray->callBacks) {
-        for(long index=0;index<theArray->count;index++) {
+        for(uint64_t index=0; index<theArray->count; index++) {
             if(theArray->callBacks->equal(theArray->data[index], value)) return true;
         }
     }
     else {
-        for(long index=0;index<theArray->count;index++) {
+        for(uint64_t index=0; index<theArray->count; index++) {
             if(theArray->data[index] == value) return true;
         }
     }
@@ -309,6 +309,7 @@ OCComparisonResult qsortCompare(void *context, const void *val1, const void *val
 
 void OCArraySortValues(OCMutableArrayRef theArray, OCRange range, OCComparatorFunction comparator, void *context)
 {
+    (void)range; // suppress unused-parameter warning
     struct qsortContext myContext = {comparator,context};
     qsort_r(theArray->data, (size_t) theArray->count, (size_t) sizeof(const void *), &myContext, qsortCompare);
 }

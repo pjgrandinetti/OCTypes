@@ -28,7 +28,7 @@
     #include "OCLibrary.h"
     
     static double complex result;
-    int pspclex(void);
+    int ocpclex(void);
     
     struct __complexNode {
         int nodeType;

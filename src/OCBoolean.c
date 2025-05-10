@@ -34,11 +34,11 @@ OCTypeID OCBooleanGetTypeID(void)
 }
 
 static struct __OCBoolean __kOCBooleanTrue = {
-    _kOCNotATypeID,0,__OCBooleanFinalize,__OCBooleanEqual
+    ._base = { _kOCNotATypeID, 0, __OCBooleanFinalize, __OCBooleanEqual, NULL }
 };
 
 static struct __OCBoolean __kOCBooleanFalse = {
-    _kOCNotATypeID,0,__OCBooleanFinalize,__OCBooleanEqual
+    ._base = { _kOCNotATypeID, 0, __OCBooleanFinalize, __OCBooleanEqual, NULL }
 };
 
 const OCBooleanRef kOCBooleanTrue = &__kOCBooleanTrue;
