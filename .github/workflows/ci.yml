@@ -2,9 +2,9 @@ name: C/C++ Library CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   build:
@@ -17,7 +17,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Ensure 'make' is available on Windows
       - name: Install make on Windows
         if: runner.os == 'Windows'
         run: choco install make -y
