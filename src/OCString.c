@@ -7,6 +7,21 @@
 
 #include "OCLibrary.h"
 
+// Callbacks for OCArray containing OCRange structs
+static void __OCRangeReleaseCallBack(const void *value) {
+    if (value) {
+        free((void *)value);
+    }
+}
+
+static const OCArrayCallBacks kOCRangeArrayCallBacks = {
+    0, // version
+    NULL, // retain
+    __OCRangeReleaseCallBack, // release
+    NULL, // copyDescription
+    NULL  // equal
+};
+
 static OCTypeID kOCStringID = _kOCNotATypeID;
 
 // OCString Opaque Type
@@ -640,7 +655,7 @@ OCArrayRef OCStringCreateArrayWithFindResults(OCStringRef string,
                                               OCOptionFlags compareOptions)
 {
     if (NULL == string || NULL == stringToFind) return NULL;
-    OCMutableArrayRef result = OCArrayCreateMutable(0, &kOCTypeArrayCallBacks);
+    OCMutableArrayRef result = OCArrayCreateMutable(0, &kOCRangeArrayCallBacks);
     OCRange foundRange;
     bool backwards = ((compareOptions & kOCCompareBackwards) != 0);
     OCRange searchRange = rangeToSearch;
