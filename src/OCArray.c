@@ -6,6 +6,11 @@
 //
 
 #include "OCLibrary.h"
+// On GNU/Linux, qsort_r has a nonstandard prototype; declare it to avoid implicit declaration.
+#if defined(__linux__)
+extern void qsort_r(void *base, size_t nmemb, size_t size, void *arg,
+    int (*compar)(void *, const void *, const void *));
+#endif
 
 static OCTypeID kOCArrayID = _kOCNotATypeID;
 
