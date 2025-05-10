@@ -71,6 +71,7 @@ bool arrayTest0(void)
     if(!OCStringEqual(bit, STR("e"))) PRINTERROR;
 
     fprintf(stderr,"%s end...without problems\n",__func__);
+    OCRelease(array);
     return true;
 }
 
@@ -205,6 +206,9 @@ bool stringTest1(void)
     bit = (OCStringRef) OCArrayGetValueAtIndex(bits, 3);
     if(!OCStringEqual(bit, STR("TOWN"))) PRINTERROR;
 
+    OCRelease(bits); // Release the array created by OCStringCreateArrayBySeparatingStrings
+    OCRelease(copy); // Release the mutable string
+    OCRelease(theString); // Release the original string
 
     fprintf(stderr,"%s end...without problems\n",__func__);
     return true;
