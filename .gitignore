@@ -5,6 +5,7 @@
 *.a
 *.so
 *.dylib
+*.lib
 
 # Ignore executables and output binaries
 *.out
@@ -36,7 +37,7 @@ xcuserdata/
 *.xcscheme
 
 # macOS Finder metadata
-.DS_Store
+*.DS_Store
 
 # IDE directories
 .vscode/
@@ -48,7 +49,3 @@ xcuserdata/
 # Misc
 *.swp
 *~
-.DS_Store
-.DS_Store
-.DS_Store
-.DS_Store

@@ -30,23 +30,25 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-/*!
- @enum OCComparisonResult
- @constant kOCCompareLessThan Returned by a comparison function if the first value is less than the second value..
- @constant kOCCompareEqualTo Returned by a comparison function if the first value is equal to the second value.
- @constant kOCCompareGreaterThan Returned by a comparison function if the first value is greater than the second value.
- @constant kOCCompareUnequalDimensionalities Returned by a comparison function if the two values have different dimensionalities.
+/**
+ * OCComparisonResult values returned by comparison callbacks.
  */
 typedef enum OCComparisonResult {
-    kOCCompareLessThan = -1,
-    kOCCompareEqualTo = 0,
-    kOCCompareGreaterThan = 1,
-    kOCCompareUnequalDimensionalities = 2,
-    kOCCompareNoSingleValue = 3,
-    kOCCompareError = 99
+    kOCCompareLessThan = -1,   /**< First value is less than the second. */
+    kOCCompareEqualTo = 0,     /**< Values are equal. */
+    kOCCompareGreaterThan = 1, /**< First value is greater than the second. */
+    kOCCompareUnequalDimensionalities = 2, /**< Values have different dimensionalities. */
+    kOCCompareNoSingleValue = 3,           /**< Comparison has no single value. */
+    kOCCompareError = 99                  /**< An error occurred during comparison. */
 } OCComparisonResult;
 
-/* A standard comparison function */
+/**
+ * Callback function type for comparing two values.
+ * @param val1 Pointer to the first value.
+ * @param val2 Pointer to the second value.
+ * @param context User-defined context pointer.
+ * @return An OCComparisonResult indicating ordering.
+ */
 typedef OCComparisonResult (* OCComparatorFunction)(const void *val1, const void *val2, void *context);
 
 typedef unsigned long OCOptionFlags;
@@ -73,13 +75,21 @@ enum {
 #define OC_INLINE static __inline__
 #endif
 
-/* Range type */
+/**
+ * Range structure representing a contiguous set of elements.
+ */
 typedef struct {
-    uint64_t location;
-    uint64_t length;
+    uint64_t location; /**< Starting index of the range. */
+    uint64_t length;   /**< Number of elements in the range. */
 } OCRange;
 
 #if defined(OC_INLINE)
+/**
+ * Creates a range with a given location and length.
+ * @param loc Starting index of the range.
+ * @param len Number of elements in the range.
+ * @return A new OCRange with specified parameters.
+ */
 OC_INLINE OCRange OCRangeMake(uint64_t loc, uint64_t len) {
     OCRange range;
     range.location = loc;

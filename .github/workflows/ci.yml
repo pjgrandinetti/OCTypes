@@ -17,16 +17,26 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install make on Windows
+      - name: Install make and WinFlexBison on Windows
         if: runner.os == 'Windows'
+        shell: powershell
         run: |
           choco install make winflexbison3 -y
-          refreshenv
+          # Load refreshenv script directly
+          . "$Env:ChocolateyInstall\helpers\refreshenv.ps1"
 
-      - name: Build with Makefile
+      - name: Build on non-Windows
+        if: runner.os != 'Windows'
         run: |
           make clean
           make
+
+      - name: Build on Windows
+        if: runner.os == 'Windows'
+        run: |
+          make clean
+          # Use .exe extensions for executables on Windows
+          make LEX=win_flex.exe YACC="win_bison.exe -y"
 
       - name: Verify library
         run: |

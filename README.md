@@ -1,6 +1,6 @@
-# OCTypes
+# libOCTypes
 
-[![CI](https://github.com/<your-org-or-username>/OCTypes/workflows/C/C++%20Library%20CI/badge.svg)](https://github.com/<your-org-or-username>/OCTypes/actions)
+![CI Status](https://github.com/YourUsername/OCTypes/actions/workflows/ci.yml/badge.svg)
 
 A lightweight library for doing object oriented programming in C.
 
