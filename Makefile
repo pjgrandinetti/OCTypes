@@ -63,5 +63,17 @@ test: libOCTypes.a
 	$(CC) $(CFLAGS) -Isrc tests/main.c -L. -lOCTypes -lm -o runTests
 	./runTests
 
+.PHONY: test-debug
+test-debug: libOCTypes.a
+	$(CC) $(CFLAGS) -g -O0 -Isrc tests/main.c -L. -lOCTypes -lm -o runTests.debug
+	@echo "Launching under LLDB..."
+	@lldb -- ./runTests.debug
+
+.PHONY: test-asan
+test-asan: libOCTypes.a
+	$(CC) $(CFLAGS) -g -O1 -fsanitize=address -fno-omit-frame-pointer -Isrc tests/main.c -L. -lOCTypes -lm -o runTests.asan
+	@echo "Running AddressSanitizer build..."
+	@./runTests.asan
+
 clean:
 	rm -f $(OBJ) libOCTypes.a $(GEN_C) $(GEN_H)

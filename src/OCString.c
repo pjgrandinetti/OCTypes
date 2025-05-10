@@ -339,7 +339,7 @@ void OCStringReplace(OCMutableStringRef str, OCRange range, OCStringRef replacem
         copy->string[replacement->length+index] = str->string[index+range.length];
     }
     copy->string[newLength] = 0;
-    memmove(str->string, copy->string, str->capacity+1);
+    memmove(str->string, copy->string, newLength + 1);
     str->length = newLength;
     OCRelease(copy);
 }
@@ -557,39 +557,10 @@ bool OCStringFindWithOptions(OCStringRef string, OCStringRef stringToFind, OCRan
 
 static void __OCStringReplaceMultiple(OCMutableStringRef str, OCRange *ranges, int64_t numRanges, OCStringRef replacement)
 {
-    uint64_t newLength=str->length;
-    for(int64_t iRange = 0; iRange<numRanges; iRange++) {
-        newLength += replacement->length-ranges[iRange].length;
-        
+    // Perform replacements starting from the last range to preserve offsets
+    for (int64_t i = numRanges - 1; i >= 0; --i) {
+        OCStringReplace(str, ranges[i], replacement);
     }
-    
-    if(newLength>str->capacity) {
-        str->string = realloc(str->string,newLength+1);
-        str->capacity = newLength;
-    }
-    OCRange newRanges[numRanges];
-    for(int64_t iRange = 0; iRange<numRanges; iRange++) {
-        newRanges[iRange] = ranges[iRange];
-    }
-    OCMutableStringRef copy = OCStringCreateMutableCopy(str);
-    for(int64_t iRange = 0; iRange<numRanges; iRange++) {
-        OCStringDelete(copy, newRanges[iRange]);
-        int64_t copyIndex = newRanges[iRange].location;
-        for(uint64_t index = 0;index<replacement->length; index++) {
-            copy->string[copyIndex++] = replacement->string[index];
-        }
-        for(uint64_t index = ranges[iRange].location+ranges[iRange].length;index<str->length;index++) {
-            copy->string[copyIndex++] = str->string[index];
-        }
-        for(uint64_t jRange=iRange+1;jRange<numRanges; jRange++) {
-            newRanges[jRange].location -= newRanges[iRange].length;
-            newRanges[jRange].location += replacement->length;
-        }
-    }
-    copy->string[newLength] = 0;
-    memmove(str->string, copy->string, str->capacity+1);
-    str->length = newLength;
-    OCRelease(copy);
 }
 
 int64_t OCStringFindAndReplace(OCMutableStringRef string,
@@ -663,80 +634,32 @@ OCRange OCStringFind(OCStringRef string, OCStringRef stringToFind, OCOptionFlags
     }
 }
 
-// Functions to deal with special arrays of OCRange, OCDataRef, created by OCStringCreateArrayWithFindResults()
-
-static const void *__rangeRetain(const void *ptr) {
-    OCRetain(*(OCDataRef *)((uint8_t *)ptr + sizeof(OCRange)));
-    return ptr;
-}
-
-static void __rangeRelease(const void *ptr) {
-    OCRelease(*(OCDataRef *)((uint8_t *)ptr + sizeof(OCRange)));
-}
-
-static OCStringRef __rangeCopyDescription(const void *ptr) {
-    OCRange range = *(OCRange *)ptr;
-    return OCStringCreateWithFormat(STR("{%d, %d}"), range.location, range.length);
-}
-
-static bool	__rangeEqual(const void *ptr1, const void *ptr2) {
-    OCRange range1 = *(OCRange *)ptr1;
-    OCRange range2 = *(OCRange *)ptr2;
-    return (range1.location == range2.location) && (range1.length == range2.length);
-}
-
 OCArrayRef OCStringCreateArrayWithFindResults(OCStringRef string,
                                               OCStringRef stringToFind,
                                               OCRange rangeToSearch,
                                               OCOptionFlags compareOptions)
 {
+    if (NULL == string || NULL == stringToFind) return NULL;
+    OCMutableArrayRef result = OCArrayCreateMutable(0, &kOCTypeArrayCallBacks);
     OCRange foundRange;
     bool backwards = ((compareOptions & kOCCompareBackwards) != 0);
-    int64_t endIndex = rangeToSearch.location + rangeToSearch.length;
-    OCMutableDataRef rangeStorage = NULL;	// Basically an array of OCRange, OCDataRef (packed)
-    uint8_t *rangeStorageBytes = NULL;
-    int64_t foundCount = 0;
-    int64_t capacity = 0;		// Number of OCRange, OCDataRef element slots in rangeStorage
-    
-    while ((rangeToSearch.length > 0) && OCStringFindWithOptions(string, stringToFind, rangeToSearch, compareOptions, &foundRange)) {
-        // Determine the next range
+    OCRange searchRange = rangeToSearch;
+    uint64_t endIndex = searchRange.location + searchRange.length;
+    while (searchRange.length > 0 &&
+           OCStringFindWithOptions(string, stringToFind, searchRange, compareOptions, &foundRange)) {
+        // record a copy of the found range
+        OCRange *r = malloc(sizeof(OCRange));
+        *r = foundRange;
+        OCArrayAppendValue(result, r);
+        // advance searchRange
         if (backwards) {
-            rangeToSearch.length = foundRange.location - rangeToSearch.location;
+            searchRange.length = foundRange.location - searchRange.location;
         } else {
-            rangeToSearch.location = foundRange.location + foundRange.length;
-            rangeToSearch.length = endIndex - rangeToSearch.location;
+            searchRange.location = foundRange.location + foundRange.length;
+            searchRange.length = endIndex - searchRange.location;
         }
-        
-        // If necessary, grow the data and squirrel away the found range
-        if (foundCount >= capacity) {
-            if (rangeStorage == NULL) rangeStorage = OCDataCreateMutable(0);
-            capacity = (capacity + 4) * 2;
-            OCDataSetLength(rangeStorage, capacity * (sizeof(OCRange) + sizeof(OCDataRef)));
-            rangeStorageBytes = (uint8_t *)OCDataGetMutableBytePtr(rangeStorage) + foundCount * (sizeof(OCRange) + sizeof(OCDataRef));
-        }
-        memmove(rangeStorageBytes, &foundRange, sizeof(OCRange));	// The range
-        memmove(rangeStorageBytes + sizeof(OCRange), &rangeStorage, sizeof(OCDataRef));	// The data
-        rangeStorageBytes += (sizeof(OCRange) + sizeof(OCDataRef));
-        foundCount++;
     }
-    
-    if (foundCount > 0) {
-        OCMutableArrayRef array;
-        const OCArrayCallBacks callbacks = {0, __rangeRetain, __rangeRelease, __rangeCopyDescription, __rangeEqual};
-        
-        OCDataSetLength(rangeStorage, foundCount * (sizeof(OCRange) + sizeof(OCDataRef)));	// Tighten storage up
-        rangeStorageBytes = (uint8_t *)OCDataGetMutableBytePtr(rangeStorage);
-        
-        array = OCArrayCreateMutable(foundCount * sizeof(OCRange *), &callbacks);
-        for (int64_t cnt = 0; cnt < foundCount; cnt++) {
-            // Each element points to the appropriate CFRange in the CFData
-            OCArrayAppendValue(array, rangeStorageBytes + cnt * (sizeof(OCRange) + sizeof(OCDataRef)));
-        }
-        OCRelease(rangeStorage);		// We want the data to go away when all CFRanges inside it are released...
-        return array;
-    } else {
-        return NULL;
-    }
+    return result;
 }
 
 OCArrayRef OCStringCreateArrayBySeparatingStrings(OCStringRef string, OCStringRef separatorString)
@@ -744,17 +667,18 @@ OCArrayRef OCStringCreateArrayBySeparatingStrings(OCStringRef string, OCStringRe
     OCArrayRef separatorRanges;
     int64_t length = OCStringGetLength(string);
     if (!(separatorRanges = OCStringCreateArrayWithFindResults(string, separatorString, OCRangeMake(0, length), 0))) {
-        return OCArrayCreate((const void **)&string, 1, & kOCTypeArrayCallBacks);
+        const void *vals[1] = { string };
+        return OCArrayCreate(vals, 1, &kOCTypeArrayCallBacks);
     } else {
         int64_t idx;
         int64_t count = OCArrayGetCount(separatorRanges);
         int64_t startIndex = 0;
         int64_t numChars;
-        OCMutableArrayRef array = OCArrayCreateMutable(count + 2, & kOCTypeArrayCallBacks);
+        OCMutableArrayRef array = OCArrayCreateMutable(count + 2, &kOCTypeArrayCallBacks);
         const OCRange *currentRange;
         OCStringRef substring;
-        
-        for (idx = 0;idx < count;idx++) {
+
+        for (idx = 0; idx < count; idx++) {
             currentRange = (const OCRange *)OCArrayGetValueAtIndex(separatorRanges, idx);
             numChars = currentRange->location - startIndex;
             substring = OCStringCreateWithSubstring(string, OCRangeMake(startIndex, numChars));
@@ -765,9 +689,9 @@ OCArrayRef OCStringCreateArrayBySeparatingStrings(OCStringRef string, OCStringRe
         substring = OCStringCreateWithSubstring(string, OCRangeMake(startIndex, length - startIndex));
         OCArrayAppendValue(array, substring);
         OCRelease(substring);
-        
+
         OCRelease(separatorRanges);
-        
+
         return array;
     }
 }

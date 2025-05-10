@@ -25,7 +25,11 @@
     #include <stdlib.h>
     #include <complex.h>
     #include <stdbool.h>
+    #ifdef _WIN32
+    #include <io.h>
+    #else
     #include <unistd.h>
+    #endif
     
     #include "math.h"
     #include "OCComplexParser.tab.h"

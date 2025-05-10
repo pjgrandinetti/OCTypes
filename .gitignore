@@ -49,3 +49,6 @@ xcuserdata/
 # Misc
 *.swp
 *~
+
+# Ignore debug symbol bundles
+*.dSYM
