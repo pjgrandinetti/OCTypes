@@ -656,56 +656,146 @@ OCArrayRef OCStringCreateArrayWithFindResults(OCStringRef string,
 {
     if (NULL == string || NULL == stringToFind) return NULL;
     OCMutableArrayRef result = OCArrayCreateMutable(0, &kOCRangeArrayCallBacks);
+    if (NULL == result) { // Check if array creation failed
+        return NULL;
+    }
+
     OCRange foundRange;
     bool backwards = ((compareOptions & kOCCompareBackwards) != 0);
-    OCRange searchRange = rangeToSearch;
-    uint64_t endIndex = searchRange.location + searchRange.length;
-    while (searchRange.length > 0 &&
-           OCStringFindWithOptions(string, stringToFind, searchRange, compareOptions, &foundRange)) {
-        // record a copy of the found range
+    OCRange currentSearchRange = rangeToSearch; 
+    uint64_t originalEndLocation = rangeToSearch.location + rangeToSearch.length;
+
+    bool itemAdded = false; 
+
+    // Ensure initial search range is valid within the string
+    if (currentSearchRange.location >= OCStringGetLength(string)) {
+        OCRelease(result);
+        return NULL; 
+    }
+    if (currentSearchRange.location + currentSearchRange.length > OCStringGetLength(string)) {
+        currentSearchRange.length = OCStringGetLength(string) - currentSearchRange.location;
+    }
+    // Ensure originalEndLocation is also capped at string length for forward searches
+    if (originalEndLocation > OCStringGetLength(string)) {
+        originalEndLocation = OCStringGetLength(string);
+    }
+
+
+    while (currentSearchRange.length > 0 &&
+           OCStringFindWithOptions(string, stringToFind, currentSearchRange, compareOptions, &foundRange)) {
+        
         OCRange *r = malloc(sizeof(OCRange));
+        if (NULL == r) { // Malloc failed for an OCRange
+            OCRelease(result); 
+            return NULL;       // Indicate critical failure
+        }
         *r = foundRange;
-        OCArrayAppendValue(result, r);
-        // advance searchRange
+        OCArrayAppendValue(result, r); 
+        itemAdded = true;
+
         if (backwards) {
-            searchRange.length = foundRange.location - searchRange.location;
-        } else {
-            searchRange.location = foundRange.location + foundRange.length;
-            searchRange.length = endIndex - searchRange.location;
+            if (foundRange.location > currentSearchRange.location) { // Check to prevent underflow with unsigned types
+                currentSearchRange.length = foundRange.location - currentSearchRange.location;
+            } else {
+                currentSearchRange.length = 0; // Cannot go further back or invalid state, stop.
+            }
+        } else { // Forward search
+            uint64_t nextLocation = foundRange.location + foundRange.length;
+            if (nextLocation < originalEndLocation && nextLocation < OCStringGetLength(string)) {
+                currentSearchRange.length = originalEndLocation - nextLocation;
+                currentSearchRange.location = nextLocation;
+            } else {
+                currentSearchRange.length = 0; // Reached or passed the end, stop.
+            }
         }
     }
+
+    if (!itemAdded) { // No separators found or loop terminated early
+        OCRelease(result); 
+        return NULL;       
+    }
+
     return result;
 }
 
 OCArrayRef OCStringCreateArrayBySeparatingStrings(OCStringRef string, OCStringRef separatorString)
 {
-    OCArrayRef separatorRanges;
+    OCArrayRef separatorRanges = NULL; // Initialize to NULL
     int64_t length = OCStringGetLength(string);
-    if (!(separatorRanges = OCStringCreateArrayWithFindResults(string, separatorString, OCRangeMake(0, length), 0))) {
+
+    if (length == 0 && OCStringGetLength(separatorString) > 0) { // Special case: empty string to split
+        // If string is empty, result is an array with one empty string, unless separator is also empty.
+        // If separator is also empty, behavior might be ambiguous (often an array of empty strings, or one).
+        // Current logic with OCStringCreateArrayWithFindResults on empty string might return NULL.
+        // Let's ensure it returns an array with one empty string.
+        const void *vals[1] = { STR("") }; // Create an empty OCString
+        OCArrayRef emptyArray = OCArrayCreate(vals, 1, &kOCTypeArrayCallBacks);
+        OCRelease((OCStringRef)vals[0]); // Release the temp empty string
+        return emptyArray;
+    }
+    
+    separatorRanges = OCStringCreateArrayWithFindResults(string, separatorString, OCRangeMake(0, length), 0);
+
+    if (!separatorRanges) { 
+        // This means OCStringCreateArrayWithFindResults returned NULL.
+        // Could be "no separators found" OR an allocation error.
+        // In either case, return an array with the original string.
         const void *vals[1] = { string };
-        return OCArrayCreate(vals, 1, &kOCTypeArrayCallBacks);
+        OCArrayRef singleItemArray = OCArrayCreate(vals, 1, &kOCTypeArrayCallBacks);
+        if (NULL == singleItemArray && string != NULL && OCStringGetLength(string) == 0) {
+            // If OCArrayCreate failed and original string was empty, try again with a new empty string
+             const void *emptyVals[1] = { STR("") };
+             singleItemArray = OCArrayCreate(emptyVals, 1, &kOCTypeArrayCallBacks);
+             OCRelease((OCStringRef)emptyVals[0]);
+        }
+        return singleItemArray;
     } else {
         int64_t idx;
         int64_t count = OCArrayGetCount(separatorRanges);
         int64_t startIndex = 0;
         int64_t numChars;
-        OCMutableArrayRef array = OCArrayCreateMutable(count + 2, &kOCTypeArrayCallBacks);
+        OCMutableArrayRef array = OCArrayCreateMutable(count + 1, &kOCTypeArrayCallBacks); // count + 1 for segments
+        
+        if (NULL == array) { // Check if OCArrayCreateMutable failed
+            OCRelease(separatorRanges); 
+            return NULL; 
+        }
+
         const OCRange *currentRange;
         OCStringRef substring;
 
         for (idx = 0; idx < count; idx++) {
             currentRange = (const OCRange *)OCArrayGetValueAtIndex(separatorRanges, idx);
+            // Due to fixes in OCStringCreateArrayWithFindResults, currentRange should not be NULL.
+            // However, a defensive check could be added if OCArrayGetValueAtIndex itself could fail.
+            if (NULL == currentRange) { // Highly unlikely if OCStringCreateArrayWithFindResults is fixed
+                 OCRelease(array);
+                 OCRelease(separatorRanges);
+                 return NULL; // Should not happen
+            }
+
             numChars = currentRange->location - startIndex;
             substring = OCStringCreateWithSubstring(string, OCRangeMake(startIndex, numChars));
+            if (NULL == substring) { 
+                OCRelease(array);
+                OCRelease(separatorRanges);
+                return NULL;
+            }
             OCArrayAppendValue(array, substring);
-            OCRelease(substring);
+            OCRelease(substring); 
             startIndex = currentRange->location + currentRange->length;
         }
+        // Last part of the string (after the last separator)
         substring = OCStringCreateWithSubstring(string, OCRangeMake(startIndex, length - startIndex));
+        if (NULL == substring) { 
+            OCRelease(array);
+            OCRelease(separatorRanges);
+            return NULL;
+        }
         OCArrayAppendValue(array, substring);
         OCRelease(substring);
 
-        OCRelease(separatorRanges);
+        OCRelease(separatorRanges); 
 
         return array;
     }
