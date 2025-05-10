@@ -6,11 +6,6 @@
 //
 
 #include "OCLibrary.h"
-// On GNU/Linux, qsort_r has a nonstandard prototype; declare it to avoid implicit declaration.
-#if defined(__linux__)
-extern void qsort_r(void *base, size_t nmemb, size_t size, void *arg,
-    int (*compar)(void *, const void *, const void *));
-#endif
 
 static OCTypeID kOCArrayID = _kOCNotATypeID;
 
@@ -304,19 +299,54 @@ struct qsortContext {
     void * context;
 };
 
-// Careful: Apple C library had different definition for qsort_r than linux.
-// In Apple version context is the first argument instead of the last.
-OCComparisonResult qsortCompare(void *context, const void *val1, const void *val2)
+// Platform-specific comparator wrappers for qsort_r
+#if defined(__APPLE__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
+// BSD/macOS style comparator wrapper: int (*compar)(void *thunk, const void *a, const void *b)
+static int bsd_qsortCompare_wrapper(void *thunk, const void *val1_ptr, const void *val2_ptr)
 {
-    struct qsortContext *myContext = (struct qsortContext *) context;
-    return myContext->comparator(*((const void **) val1),*((const void **) val2),myContext->context);
+    struct qsortContext *myContext = (struct qsortContext *) thunk;
+    const void *obj1 = *((const void **) val1_ptr);
+    const void *obj2 = *((const void **) val2_ptr);
+    return myContext->comparator(obj1, obj2, myContext->context);
 }
+#elif defined(__linux__)
+// GNU/Linux style comparator wrapper: int (*compar)(const void *a, const void *b, void *thunk)
+static int gnu_qsortCompare_wrapper(const void *val1_ptr, const void *val2_ptr, void *thunk)
+{
+    struct qsortContext *myContext = (struct qsortContext *) thunk;
+    const void *obj1 = *((const void **) val1_ptr);
+    const void *obj2 = *((const void **) val2_ptr);
+    return myContext->comparator(obj1, obj2, myContext->context);
+}
+#else
+// For other platforms, OCArraySortValues will issue a compile-time error.
+#endif
 
 void OCArraySortValues(OCMutableArrayRef theArray, OCRange range, OCComparatorFunction comparator, void *context)
 {
-    (void)range; // suppress unused-parameter warning
-    struct qsortContext myContext = {comparator,context};
-    qsort_r(theArray->data, (size_t) theArray->count, (size_t) sizeof(const void *), &myContext, qsortCompare);
+    if (theArray == NULL || theArray->count == 0 || comparator == NULL || range.length == 0) {
+        return; 
+    }
+    // Ensure range is valid
+    if (range.location >= theArray->count || (range.location + range.length) > theArray->count) {
+        // Consider logging an error or asserting for invalid range in a debug build
+        return;
+    }
+
+    struct qsortContext myContext = {comparator, context};
+    
+    // Correctly calculate the base pointer for the sub-array and number of elements
+    void **base_ptr = theArray->data + range.location;
+    size_t nmemb = range.length;
+    size_t element_size = sizeof(const void *);
+
+#if defined(__APPLE__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
+    qsort_r(base_ptr, nmemb, element_size, &myContext, bsd_qsortCompare_wrapper);
+#elif defined(__linux__)
+    qsort_r(base_ptr, nmemb, element_size, gnu_qsortCompare_wrapper, &myContext);
+#else
+    #error "qsort_r implementation not specified for this platform. Please add a case for your OS or provide a fallback sort."
+#endif
 }
 
 #define INVOKE_CALLBACK3(P, A, B, C) (P)(A, B, C)
