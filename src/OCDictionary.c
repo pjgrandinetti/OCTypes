@@ -63,14 +63,11 @@ void __OCDictionaryFinalize(const void * theType)
 {
     if(NULL == theType) return;
     OCDictionaryRef theDictionary = (OCDictionaryRef) theType;
-    __OCDictionaryReleaseValues(theDictionary);
-    for(uint64_t index=0; index<theDictionary->count;index++) {
-        OCRelease(theDictionary->values[index]);
-        OCRelease(theDictionary->keys[index]);
-    }
-    free((void **) theDictionary->keys);
-    free((void **) theDictionary->values);
-    free((void *)theDictionary);
+    __OCDictionaryReleaseValues(theDictionary); // This correctly releases all keys and values
+
+    free(theDictionary->keys);     // Corrected free call
+    free(theDictionary->values);   // Corrected free call
+    free(theDictionary);           // Corrected free call (casting to (void*) is implicit)
 }
 
 OCTypeID OCDictionaryGetTypeID(void)
@@ -230,10 +227,17 @@ void OCDictionaryReplaceValue(OCMutableDictionaryRef theDictionary, OCStringRef 
 void OCDictionaryRemoveValue(OCMutableDictionaryRef theDictionary, OCStringRef key)
 {
     int64_t indexOfKey = OCDictionaryIndexOfKey( theDictionary,  key);
-    if(indexOfKey < 0) return;
+    if(indexOfKey < 0) return; // Key not found
+
+    // Release the key and value being removed
     OCRelease(theDictionary->keys[indexOfKey]);
     OCRelease(theDictionary->values[indexOfKey]);
-    for(uint64_t index = indexOfKey;index<theDictionary->count;index++) {
+
+    // Shift subsequent elements down.
+    // The loop should go up to count - 1 because we are accessing index and index + 1.
+    // After removing one element, there are 'count - 1' elements to consider for shifting if indexOfKey is 0.
+    // The number of elements to move is (theDictionary->count - 1) - indexOfKey.
+    for(uint64_t index = indexOfKey; index < theDictionary->count - 1; index++) {
         theDictionary->keys[index] = theDictionary->keys[index+1];
         theDictionary->values[index] = theDictionary->values[index+1];
     }
