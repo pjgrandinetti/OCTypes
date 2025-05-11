@@ -1,3 +1,17 @@
+# docs/conf.py
+
+import warnings
+from sphinx.errors import SphinxWarning
+
+# -----------------------------------------------------------------------------
+# Suppress the “Duplicate C declaration” warning entirely:
+# -----------------------------------------------------------------------------
+warnings.filterwarnings(
+    'ignore',
+    r'Duplicate C declaration.*',
+    category=SphinxWarning
+)
+
 # -- Project information -----------------------------------------------------
 
 project = 'OCTypes'
@@ -5,6 +19,7 @@ copyright = '2025, Philip Grandinetti'
 author = 'Philip Grandinetti'
 release = '0.1.0'
 
+# Use the C domain by default
 primary_domain = 'c'
 
 # -- General configuration ---------------------------------------------------
@@ -23,23 +38,18 @@ intersphinx_mapping = {
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
-# Tell Sphinx itself not to stop on duplicate C declarations
+# Also suppress duplicate‐declaration warnings at the Sphinx level
 suppress_warnings = [
-    'duplicate_declaration',
+    'duplicate_declaration',     # generic
+    'c:duplicate_declaration',   # C‐domain
 ]
 
-# -- Breathe Configuration ---------------------------------------------------
+# -- Breathe configuration ---------------------------------------------------
 
 breathe_projects = {
     "OCTypes": "doxygen/xml"
 }
 breathe_default_project = "OCTypes"
-
-# And tell Breathe/Doxygen XML to ignore duplicate‐declaration.c warnings
-breathe_suppress_warnings = [
-    "duplicate_declaration.c",
-]
-
 breathe_verbose = False
 breathe_default_members = ('members', 'undoc-members')
 breathe_default_domain = 'c'
@@ -48,7 +58,7 @@ breathe_domain_by_extension = {
     'c': 'c',
 }
 
-# -- Options for HTML output -------------------------------------------------
+# -- HTML output --------------------------------------------------------------
 
 html_theme = 'sphinx_rtd_theme'
-# html_static_path = ['_static']  # uncomment if you add your own static files
+# html_static_path = ['_static']
