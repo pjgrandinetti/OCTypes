@@ -1,98 +1,156 @@
-# Doxyfile 1.9.1
+# Doxyfile for OCTypes (used by Sphinx/Breathe)
+# https://www.doxygen.nl/manual/config.html
 
 #---------------------------------------------------------------------------
 # Project related configuration options
 #---------------------------------------------------------------------------
 
+# The PROJECT_NAME tag is a single word (or a sequence of words surrounded 
+# by quotes) that should identify the project.
 PROJECT_NAME           = "OCTypes"
-PROJECT_NUMBER         = "0.1.0"
-OUTPUT_DIRECTORY       = docs/doxygen
-CREATE_SUBDIRS         = NO
-OUTPUT_LANGUAGE        = English
-BRIEF_MEMBER_DESC      = YES
-REPEAT_BRIEF           = YES
-ALWAYS_DETAILED_SEC    = NO
-FULL_PATH_NAMES        = NO
-STRIP_FROM_PATH        =
-STRIP_FROM_INC_PATH    =
-SHORT_NAMES            = NO
-JAVADOC_AUTOBRIEF      = YES
-QT_AUTOBRIEF           = NO
-MULTILINE_CPP_IS_BRIEF = NO
-INHERIT_DOCS           = YES
-SEPARATE_MEMBER_PAGES  = NO
-TAB_SIZE               = 4
-OPTIMIZE_OUTPUT_FOR_C  = YES
+
+# The PROJECT_BRIEF tag can be used to specify a short one-line description
+# of your project that appears at the top of each page and should give viewer
+# a quick idea about the purpose of the project.
+PROJECT_BRIEF          = "A lightweight library for object-oriented programming in C"
 
 #---------------------------------------------------------------------------
 # Build related configuration options
 #---------------------------------------------------------------------------
 
-EXTRACT_ALL            = YES
-EXTRACT_PRIVATE        = YES
-EXTRACT_STATIC         = YES
-EXTRACT_LOCAL_CLASSES  = YES
-EXTRACT_ANON_NSPACES   = YES
-HIDE_UNDOC_MEMBERS     = NO
-HIDE_UNDOC_CLASSES     = NO
+# The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) path 
+# into which the generated documentation will be written. If non-existent, it
+# will be created.
+OUTPUT_DIRECTORY       = doxygen
 
-#---------------------------------------------------------------------------
-# Configuration options related to source browsing
-#---------------------------------------------------------------------------
-
-SOURCE_BROWSER         = NO
-INLINE_SOURCES         = NO
-STRIP_CODE_COMMENTS    = YES
+# The CREATE_SUBDIRS tag can be used to have doxygen generate 
+# subdirectories in the output directory that match the namespace, 
+# class, or file structure of the project.
+CREATE_SUBDIRS         = NO
 
 #---------------------------------------------------------------------------
 # Configuration options related to the input files
 #---------------------------------------------------------------------------
 
+# The INPUT tag can be used to specify the files and/or directories that contain
+# documented source files. You may enter file names like "myfile.cpp" or
+# directories like "/usr/src/myproject". Separate the files or directories
+# with spaces.
 INPUT                  = src
-FILE_PATTERNS          = *.h *.c
+
+# If the value of the RECURSIVE tag is set to YES, doxygen will recurse into
+# subdirectories searching for input files to process.
 RECURSIVE              = YES
-EXCLUDE                =
-EXCLUDE_SYMLINKS       = NO
+
+# The FILE_PATTERNS tag can be used to specify patterns to consider in 
+# the directories specified by INPUT. 
+FILE_PATTERNS          = *.c *.h *.y *.l
+
+# If the FULL_PATH_NAMES tag is set to NO, the shortest path that makes the
+# file name unique will be used in the file list and in the header of the
+# documentation fragments.
+FULL_PATH_NAMES        = NO
+
+# The STRIP_FROM_PATH tag can be used to strip a user-specified part of the
+# path. Stripping is only done if one of the specified strings matches the
+# left-hand part of the path.
+STRIP_FROM_PATH        = src
 
 #---------------------------------------------------------------------------
-# Configuration options related to the output
+# Configuration options related to source browsing
 #---------------------------------------------------------------------------
 
-GENERATE_HTML          = YES
-HTML_OUTPUT            = html
-HTML_DYNAMIC_SECTIONS  = YES
+# If the SOURCE_BROWSER tag is set to YES then a list of source files will
+# be generated. Documented entities will be cross-referenced with these sources.
+SOURCE_BROWSER         = YES
+
+# If the INLINE_SOURCES tag is set to YES, doxygen will include the body of 
+# functions and classes directly in the documentation.
+INLINE_SOURCES         = NO
+
+#---------------------------------------------------------------------------
+# Configuration options related to the alphabetical class index
+#---------------------------------------------------------------------------
+
+# If the ALPHABETICAL_INDEX tag is set to YES, an alphabetical index of all
+# compounds will be generated.
+ALPHABETICAL_INDEX     = YES
+
+#---------------------------------------------------------------------------
+# Configuration options related to the HTML output
+#---------------------------------------------------------------------------
+
+# If the GENERATE_HTML tag is set to YES (the default) Doxygen will 
+# generate HTML output.
+GENERATE_HTML          = NO
+
+#---------------------------------------------------------------------------
+# Configuration options related to the LaTeX output
+#---------------------------------------------------------------------------
+
 GENERATE_LATEX         = NO
+
+#---------------------------------------------------------------------------
+# Configuration options related to the XML output
+#---------------------------------------------------------------------------
+
+# If the GENERATE_XML tag is set to YES, doxygen will generate an XML database
+# that can be used as input for other tools (e.g. Sphinx via Breathe).
 GENERATE_XML           = YES
+
+# The XML_OUTPUT tag is used to specify the directory where the XML files
+# will be written. 
 XML_OUTPUT             = xml
+
+# If the XML_PROGRAMLISTING tag is set to YES, doxygen will include program
+# listings (source code) in the XML output.
 XML_PROGRAMLISTING     = YES
+
+#---------------------------------------------------------------------------
+# Configuration options related to the preprocessor   
+#---------------------------------------------------------------------------
+
+# If the ENABLE_PREPROCESSING tag is set to YES doxygen will evaluate all 
+# C-preprocessor directives found in the sources and include files.
+ENABLE_PREPROCESSING   = YES
+
+# If the MACRO_EXPANSION tag is set to YES doxygen will expand all macro names
+# in the source code. If set to NO (the default) only conditional
+# compilation will be performed.
+MACRO_EXPANSION        = YES
+
+# If the EXPAND_ONLY_PREDEF and SKIP_FUNCTION_MACROS tags are both set to YES,
+# then only macros whose names are defined in the PREDEFINED and EXPAND_AS_DEFINED
+# tags will be expanded.
+EXPAND_ONLY_PREDEF     = YES
+SKIP_FUNCTION_MACROS   = NO
+
+# You can use the PREDEFINED tag to specify one or more macro names that 
+# are defined before the preprocessor is started (similar to the -D option 
+# of gcc). The argument of the tag is a list of macros of the form: name=value
+PREDEFINED             = complex=_Complex \
+                         OC_INLINE="" \
+                         uint64_t="unsigned long"
 
 #---------------------------------------------------------------------------
 # Configuration options related to warnings and progress messages
 #---------------------------------------------------------------------------
 
-WARNINGS               = YES
+# If the WARN_IF_UNDOCUMENTED tag is set to YES, doxygen will generate a 
+# warning for undocumented members.
 WARN_IF_UNDOCUMENTED   = YES
+
+# If the WARN_NO_PARAMDOC tag is set to YES, doxygen will generate a warning
+# when a documented function parameter is not documented.
 WARN_NO_PARAMDOC       = YES
 
-#---------------------------------------------------------------------------
-# Configuration options related to the preprocessor
-#---------------------------------------------------------------------------
-
-ENABLE_PREPROCESSING   = YES
-MACRO_EXPANSION        = YES
-EXPAND_ONLY_PREDEF     = NO
-PREDEFINED             =
-SKIP_FUNCTION_MACROS   = NO
+# The WARN_AS_ERROR tag can be used to turn warnings into errors.
+WARN_AS_ERROR          = NO
 
 #---------------------------------------------------------------------------
-# Configuration options related to external tools
+# Configuration options related to the dot tool
 #---------------------------------------------------------------------------
 
+# If the HAVE_DOT tag is set to YES, doxygen will assume the dot tool is
+# available from the path.
 HAVE_DOT               = NO
-
-#---------------------------------------------------------------------------
-# Miscellaneous options
-#---------------------------------------------------------------------------
-
-QUIET                  = NO
-INTERNAL_DOCS          = NO

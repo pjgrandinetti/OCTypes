@@ -91,13 +91,13 @@
 <h1>OCAutoreleasePool<a class="headerlink" href="#ocautoreleasepool" title="Link to this heading"></a></h1>
 <dl>
 <dt class="sig sig-object cpp">
-<span class="target" id="group___o_c_autorelease_pool"></span><em><span class="pre">group</span></em> <span class="sig-name descname"><span class="pre">OCAutoreleasePool</span></span></dt>
+<span class="target" id="db/d24/group___o_c_autorelease_pool"></span><em><span class="pre">group</span></em> <span class="sig-name descname"><span class="pre">OCAutoreleasePool</span></span></dt>
 <dd><p>Implements an autorelease pool for OCTypes. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-typedefs">Typedefs</p>
 <dl class="c type">
 <dt class="sig sig-object c" id="c.OCAutoreleasePoolRef">
-<span class="target" id="group___o_c_autorelease_pool_1ga56ec2ec00e14fe2d7fc810fcbfd75615"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">_OCAutoreleasePool</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">OCAutoreleasePoolRef</span></span></span><a class="headerlink" href="#c.OCAutoreleasePoolRef" title="Link to this definition"></a><br /></dt>
+<span class="target" id="db/d24/group___o_c_autorelease_pool_1ga56ec2ec00e14fe2d7fc810fcbfd75615"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">_OCAutoreleasePool</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">OCAutoreleasePoolRef</span></span></span><a class="headerlink" href="#c.OCAutoreleasePoolRef" title="Link to this definition"></a><br /></dt>
 <dd><p>A reference to an opaque autorelease pool. </p>
 </dd></dl>
 
@@ -106,7 +106,7 @@
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.OCAutoreleasePoolCreate">
-<span class="target" id="group___o_c_autorelease_pool_1ga5cfc8e5cd0e12238e896c8ab4e21e731"></span><a class="reference internal" href="#c.OCAutoreleasePoolRef" title="OCAutoreleasePoolRef"><span class="n"><span class="pre">OCAutoreleasePoolRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCAutoreleasePoolCreate</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCAutoreleasePoolCreate" title="Link to this definition"></a><br /></dt>
+<span class="target" id="db/d24/group___o_c_autorelease_pool_1ga5cfc8e5cd0e12238e896c8ab4e21e731"></span><a class="reference internal" href="#c.OCAutoreleasePoolRef" title="OCAutoreleasePoolRef"><span class="n"><span class="pre">OCAutoreleasePoolRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCAutoreleasePoolCreate</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCAutoreleasePoolCreate" title="Link to this definition"></a><br /></dt>
 <dd><p>Creates a new autorelease pool. </p>
 <p>The caller must release it when done. </p>
 <dl class="field-list simple">
@@ -118,7 +118,7 @@
 
 <dl class="c function">
 <dt class="sig sig-object c" id="c.OCAutoreleasePoolRelease">
-<span class="target" id="group___o_c_autorelease_pool_1ga3dbf0752793d4f3390e1787fa8b424f1"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCAutoreleasePoolRelease</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.OCAutoreleasePoolRef" title="OCAutoreleasePoolRef"><span class="n"><span class="pre">OCAutoreleasePoolRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">pool</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCAutoreleasePoolRelease" title="Link to this definition"></a><br /></dt>
+<span class="target" id="db/d24/group___o_c_autorelease_pool_1ga3dbf0752793d4f3390e1787fa8b424f1"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCAutoreleasePoolRelease</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.OCAutoreleasePoolRef" title="OCAutoreleasePoolRef"><span class="n"><span class="pre">OCAutoreleasePoolRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">pool</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCAutoreleasePoolRelease" title="Link to this definition"></a><br /></dt>
 <dd><p>Releases an autorelease pool and all objects it contains. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -134,7 +134,7 @@
 
 <dl class="c function">
 <dt class="sig sig-object c" id="c.OCAutorelease">
-<span class="target" id="group___o_c_autorelease_pool_1ga7606cbde5db540d59e0daa4d73ac0c6f"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">OCAutorelease</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ptr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCAutorelease" title="Link to this definition"></a><br /></dt>
+<span class="target" id="db/d24/group___o_c_autorelease_pool_1ga7606cbde5db540d59e0daa4d73ac0c6f"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">OCAutorelease</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ptr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCAutorelease" title="Link to this definition"></a><br /></dt>
 <dd><p>Adds an object to the current (topmost) autorelease pool. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -150,7 +150,7 @@
 
 <dl class="c function">
 <dt class="sig sig-object c" id="c.OCAutoreleasePoolDrain">
-<span class="target" id="group___o_c_autorelease_pool_1gaf9330fb686ee111745e0d8731e26f3c2"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCAutoreleasePoolDrain</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.OCAutoreleasePoolRef" title="OCAutoreleasePoolRef"><span class="n"><span class="pre">OCAutoreleasePoolRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">pool</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCAutoreleasePoolDrain" title="Link to this definition"></a><br /></dt>
+<span class="target" id="db/d24/group___o_c_autorelease_pool_1gaf9330fb686ee111745e0d8731e26f3c2"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCAutoreleasePoolDrain</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.OCAutoreleasePoolRef" title="OCAutoreleasePoolRef"><span class="n"><span class="pre">OCAutoreleasePoolRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">pool</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCAutoreleasePoolDrain" title="Link to this definition"></a><br /></dt>
 <dd><p>Drains an autorelease pool, releasing all objects it contains without deallocating the pool itself. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -177,7 +177,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2025, Philip Grandinetti.</p>
+    <p>&#169; Copyright .</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

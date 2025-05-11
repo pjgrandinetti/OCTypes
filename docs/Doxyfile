@@ -1,52 +1,116 @@
-# Doxyfile for OCTypes (used by Sphinx/Breathe)
+# Doxyfile 1.13.2
 
-# Project
-PROJECT_NAME           = "OCTypes"
-PROJECT_BRIEF          = "A lightweight library for object-oriented programming in C"
-OUTPUT_DIRECTORY       = doxygen
-INPUT                  = ../src
-RECURSIVE              = YES
-FULL_PATH_NAMES        = NO
-STRIP_FROM_PATH        = ../src
+#--------------------------------------------------------------------------- 
+# Project related configuration options 
+#--------------------------------------------------------------------------- 
+PROJECT_NAME            = "OCTypes"
+PROJECT_NUMBER          = "0.1.0"
+OUTPUT_DIRECTORY        = doxygen
+CREATE_SUBDIRS          = YES
+ALLOW_UNICODE_NAMES     = NO
+OUTPUT_LANGUAGE         = English
+BRIEF_MEMBER_DESC       = YES
+REPEAT_BRIEF            = YES
+ALWAYS_DETAILED_SEC     = NO
+FULL_PATH_NAMES         = NO
+STRIP_FROM_PATH         =
+STRIP_FROM_INC_PATH     =
+SHORT_NAMES             = NO
+JAVADOC_AUTOBRIEF       = YES
+QT_AUTOBRIEF            = NO
+MULTILINE_CPP_IS_BRIEF  = NO
+INHERIT_DOCS            = YES
+SEPARATE_MEMBER_PAGES   = NO
+TAB_SIZE                = 4
+OPTIMIZE_OUTPUT_FOR_C   = YES
 
-# Input files
-FILE_PATTERNS          = *.h *.c
-EXCLUDE_PATTERNS       =
+#--------------------------------------------------------------------------- 
+# Build related configuration options 
+#--------------------------------------------------------------------------- 
+EXTRACT_ALL             = YES
+EXTRACT_PRIVATE         = YES
+EXTRACT_STATIC          = YES
+EXTRACT_LOCAL_CLASSES   = YES
+EXTRACT_ANON_NSPACES    = YES
+HIDE_UNDOC_MEMBERS      = NO
+HIDE_UNDOC_CLASSES      = NO
 
-# Extraction
-EXTRACT_ALL            = YES
-EXTRACT_PRIVATE        = NO   # Do not extract private members
-EXTRACT_STATIC         = YES
-EXTRACT_LOCAL_CLASSES  = NO
-INTERNAL_DOCS          = NO   # Do not include @internal sections
+#--------------------------------------------------------------------------- 
+# Configuration options related to source browsing 
+#--------------------------------------------------------------------------- 
+SOURCE_BROWSER          = YES
+INLINE_SOURCES          = NO
+STRIP_CODE_COMMENTS     = YES
 
-# Documentation style
-JAVADOC_AUTOBRIEF      = YES
-QT_AUTOBRIEF           = NO
-OPTIMIZE_OUTPUT_FOR_C  = YES
-MARKDOWN_SUPPORT       = YES
-AUTOLINK_SUPPORT       = YES
-MULTILINE_CPP_IS_BRIEF = YES
-STRIP_CODE_COMMENTS    = NO  # Breathe needs comments
+#---------------------------------------------------------------------------
+# Configuration options related to the alphabetical class index
+#---------------------------------------------------------------------------
 
-# Preprocessor
-ENABLE_PREPROCESSING   = YES
-MACRO_EXPANSION        = YES
-EXPAND_ONLY_PREDEF     = NO
-SKIP_FUNCTION_MACROS   = NO
+ALPHABETICAL_INDEX     = YES
 
-# Output formats (only XML for Breathe)
-GENERATE_HTML          = NO
-GENERATE_LATEX         = NO
-GENERATE_XML           = YES
-XML_OUTPUT             = xml  # Relative to OUTPUT_DIRECTORY
-XML_PROGRAMLISTING     = YES  # Important for Breathe
+#--------------------------------------------------------------------------- 
+# Configuration options related to the input files 
+#--------------------------------------------------------------------------- 
+INPUT                   = ../src
+FILE_PATTERNS           = *.h *.c
+RECURSIVE               = YES
+EXCLUDE                 =
+EXCLUDE_SYMLINKS        = NO
 
-# Warnings
-WARNINGS               = YES
-WARN_IF_UNDOCUMENTED   = YES # Good for finding missing docs
-WARN_NO_PARAMDOC       = YES # Good for finding missing param docs
-WARN_AS_ERROR          = NO
+#--------------------------------------------------------------------------- 
+# Configuration options related to the output 
+#--------------------------------------------------------------------------- 
+GENERATE_HTML           = YES
+HTML_OUTPUT             = html
+HTML_FILE_EXTENSION     = .html
+HTML_COLORSTYLE_HUE     = 220
+HTML_COLORSTYLE_SAT     = 100
+HTML_COLORSTYLE_GAMMA   = 80
+HTML_DYNAMIC_SECTIONS   = NO
+GENERATE_LATEX          = NO
+GENERATE_XML            = YES
+GENERATE_MAN            = NO
+GENERATE_RTF            = NO
+XML_OUTPUT              = xml
+XML_PROGRAMLISTING      = YES
 
-# Dot (Graphviz)
-HAVE_DOT               = NO # Set to YES if you want graphs and have Graphviz
+#---------------------------------------------------------------------------
+# Configuration options related to the AutoGen Definitions output
+#---------------------------------------------------------------------------
+
+GENERATE_AUTOGEN_DEF   = NO
+
+#---------------------------------------------------------------------------
+# Configuration options related to the Perl module output
+#---------------------------------------------------------------------------
+
+GENERATE_PERLMOD       = NO
+
+#--------------------------------------------------------------------------- 
+# Configuration options related to warnings and progress messages 
+#--------------------------------------------------------------------------- 
+WARNINGS                = YES
+WARN_IF_UNDOCUMENTED    = YES
+WARN_NO_PARAMDOC        = YES
+
+#--------------------------------------------------------------------------- 
+# Configuration options related to the preprocessor 
+#--------------------------------------------------------------------------- 
+ENABLE_PREPROCESSING    = YES
+MACRO_EXPANSION         = YES
+EXPAND_ONLY_PREDEF      = NO
+PREDEFINED              =
+SKIP_FUNCTION_MACROS    = NO
+
+#--------------------------------------------------------------------------- 
+# Configuration options related to external tools 
+#--------------------------------------------------------------------------- 
+HAVE_DOT                = YES
+DOT_NUM_THREADS        = 0
+
+#--------------------------------------------------------------------------- 
+# Miscellaneous options 
+#--------------------------------------------------------------------------- 
+QUIET                   = NO
+INTERNAL_DOCS           = NO
+

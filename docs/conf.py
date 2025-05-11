@@ -42,6 +42,13 @@ breathe_projects = {
 # use this project for all the breathe directives
 breathe_default_project = 'OCTypes'
 
+# -- Warning suppression -----------------------------------------------------
+
+# Suppress specific warnings that are common and often benign in C projects
+suppress_warnings = [
+    'duplicate_declaration.c',  # For typedefs appearing in multiple modules
+]
+
 # -- Options for HTML output -------------------------------------------------
 
 html_theme = 'sphinx_rtd_theme'
@@ -52,3 +59,10 @@ html_static_path = []
 # If you need to suppress specific Sphinx warnings, you can do it here:
 # warnings.filterwarnings('ignore', category=SomeWarningClass)
 
+# ——— Breathe/C domain fixes ———
+# Ensure that C files and headers use the C domain in Sphinx/breathe
+breathe_domain_by_extension = {
+    "c": "c",
+    "h": "c",
+}
+primary_domain = 'c'
