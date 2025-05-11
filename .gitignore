@@ -53,3 +53,6 @@ xcuserdata/
 
 # Ignore debug symbol bundles
 *.dSYM
+*.asan
+*.debug
+runTests
