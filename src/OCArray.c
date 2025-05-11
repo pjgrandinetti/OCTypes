@@ -95,28 +95,22 @@ static bool __OCArrayEqual(const void *theType1, const void *theType2)
 
 static void _OCArrayReleaseValues(OCArrayRef theArray)
 {
-    if(theArray->callBacks == &kOCTypeArrayCallBacks) {
-        for(uint64_t index = 0; index< theArray->count; index++) {
-            OCRelease( theArray->data[index]);
-        }
-    }
-    else if(theArray->callBacks && theArray->callBacks->release!=NULL) {
-        for(uint64_t index=0; index<theArray->count; index++) {
-            theArray->callBacks->release( theArray->data[index]);
+    if (theArray && theArray->callBacks && theArray->callBacks->release) {
+        for(uint64_t index = 0; index < theArray->count; index++) {
+            if (theArray->data[index]) { // Add a NULL check for safety before dereferencing
+                theArray->callBacks->release(theArray->data[index]);
+            }
         }
     }
 }
 
 static void _OCArrayRetainValues(OCArrayRef theArray)
 {
-    if(theArray->callBacks == &kOCTypeArrayCallBacks) {
-        for(uint64_t index = 0; index< theArray->count; index++) {
-            OCRetain(theArray->data[index]);
-        }
-    }
-    else if(theArray->callBacks && theArray->callBacks->release!=NULL) {
-        for(uint64_t index=0; index<theArray->count; index++) {
-            theArray->callBacks->retain( theArray->data[index]);
+    if (theArray && theArray->callBacks && theArray->callBacks->retain) {
+        for(uint64_t index = 0; index < theArray->count; index++) {
+            if (theArray->data[index]) { // Add a NULL check for safety
+                theArray->callBacks->retain(theArray->data[index]);
+            }
         }
     }
 }
@@ -150,22 +144,37 @@ static struct __OCArray *OCArrayAllocate()
     theArray->_base.retainCount = 1;
     theArray->_base.finalize = __OCArrayFinalize;
     theArray->_base.equal = __OCArrayEqual;
-    theArray->_base.copyFormattingDesc = NULL;
-    theArray->callBacks = &__kOCNullArrayCallBacks;
+    theArray->_base.copyFormattingDesc = NULL; // Or provide a suitable function
+    theArray->callBacks = &__kOCNullArrayCallBacks; // Default, can be overridden
+    theArray->count = 0;
+    theArray->capacity = 0;
+    theArray->data = NULL; // Initialize data pointer
 
     return theArray;
 }
 
 OCArrayRef OCArrayCreate(const void **values, uint64_t numValues, const OCArrayCallBacks *callBacks)
 {
-    if(NULL==values) return NULL;
+    // Allow creation of an empty array even if values is NULL, as long as numValues is 0.
+    if (numValues > 0 && NULL == values) return NULL;
+
     struct __OCArray *newArray = OCArrayAllocate();
     if(NULL == newArray) return NULL;
-    newArray->data = (void **) malloc(numValues * sizeof(void *));
-    memcpy((void *) newArray->data, (const void *) values, numValues * sizeof(void *));
+
+    if (numValues > 0) {
+        newArray->data = (void **) malloc(numValues * sizeof(void *));
+        if (NULL == newArray->data) {
+            free(newArray); // Clean up allocated array shell
+            return NULL;
+        }
+        memcpy((void *) newArray->data, (const void *) values, numValues * sizeof(void *));
+    } else {
+        newArray->data = NULL; // Explicitly NULL for 0 elements, though OCArrayAllocate might do this.
+    }
+    
     newArray->count = numValues;
-    newArray->capacity = numValues;
-    newArray->callBacks = callBacks;
+    newArray->capacity = numValues; // For immutable arrays, capacity equals count.
+    newArray->callBacks = callBacks ? callBacks : &__kOCNullArrayCallBacks; // Ensure callbacks is not NULL
     _OCArrayRetainValues(newArray);
 
     return newArray;
@@ -173,23 +182,49 @@ OCArrayRef OCArrayCreate(const void **values, uint64_t numValues, const OCArrayC
 
 OCArrayRef OCArrayCreateCopy(OCArrayRef theArray)
 {
-    return (OCArrayRef) OCArrayCreate((const void **) theArray->data,theArray->count, theArray->callBacks);
+    if (NULL == theArray) return NULL; // Handle NULL input
+    // For immutable copies, capacity can be same as count
+    return (OCArrayRef) OCArrayCreate((const void **) theArray->data, theArray->count, theArray->callBacks);
 }
 
 OCMutableArrayRef OCArrayCreateMutable(uint64_t capacity, const OCArrayCallBacks *callBacks)
 {
     struct __OCArray *newArray = OCArrayAllocate();
     if(NULL == newArray) return NULL;
-    newArray->data = (void **) malloc(capacity * sizeof(void *));
+
+    if (capacity > 0) {
+        newArray->data = (void **) malloc(capacity * sizeof(void *));
+        if (NULL == newArray->data) {
+            free(newArray);
+            return NULL;
+        }
+    } else {
+        newArray->data = NULL; // Can start with NULL data if capacity is 0
+    }
+    
     newArray->count = 0;
     newArray->capacity = capacity;
-    newArray->callBacks = callBacks;
+    newArray->callBacks = callBacks ? callBacks : &__kOCNullArrayCallBacks;
+
     return newArray;
 }
 
 OCMutableArrayRef OCArrayCreateMutableCopy(OCArrayRef theArray)
 {
-    return (OCMutableArrayRef) OCArrayCreate((const void **) theArray->data,theArray->count,theArray->callBacks);
+    if (NULL == theArray) return NULL;
+
+    // Create a mutable copy with initial capacity at least the count of the original array.
+    OCMutableArrayRef newMutableArray = OCArrayCreateMutable(theArray->count > 0 ? theArray->count : 1, 
+                                                            theArray->callBacks);
+    if (NULL == newMutableArray) return NULL;
+
+    if (theArray->count > 0) {
+        memcpy(newMutableArray->data, theArray->data, theArray->count * sizeof(void *));
+        newMutableArray->count = theArray->count;
+        _OCArrayRetainValues(newMutableArray); // Retain values copied into the new mutable array
+    }
+    
+    return newMutableArray;
 }
 
 const void * OCArrayGetValueAtIndex(OCArrayRef theArray, uint64_t index)
@@ -201,53 +236,67 @@ const void * OCArrayGetValueAtIndex(OCArrayRef theArray, uint64_t index)
 
 void OCArrayRemoveValueAtIndex(OCMutableArrayRef theArray,uint64_t index)
 {
-    if(index<theArray->count) {
+    if(NULL == theArray || index >= theArray->count) return; // Added NULL check for theArray
+
+    if(theArray->callBacks && theArray->callBacks->release) { // Check if release callback exists
+        theArray->callBacks->release(theArray->data[index]);
+    } else if (theArray->callBacks == &kOCTypeArrayCallBacks) { // Specific check for kOCTypeArrayCallBacks
         OCRelease(theArray->data[index]);
-        theArray->count--;
-        for(uint64_t i=index; i<theArray->count; i++) {
-            theArray->data[i] = theArray->data[i+1];
-        }
+    }
+
+    theArray->count--; // Decrement count first
+    for(uint64_t i = index; i < theArray->count; i++) { // Loop up to new count
+        theArray->data[i] = theArray->data[i+1];
     }
 }
 
 long OCArrayGetFirstIndexOfValue(OCArrayRef theArray, const void * value)
 {
-    if(NULL==theArray) return -1;
-    if(NULL==value) return -1;
-    for(long index=0;index<theArray->count;index++) {
-        if(theArray->data[index] == value) return index;
+    if(NULL==theArray || NULL == value) return kOCNotFound; // Use kOCNotFound
+
+    OCArrayEqualCallBack equalCB = NULL;
+    if (theArray->callBacks) {
+        equalCB = theArray->callBacks->equal;
     }
-    return -1;
+    if (theArray->callBacks == &kOCTypeArrayCallBacks) { // Ensure OCTypeEqual is used for kOCTypeArrayCallBacks
+        equalCB = OCTypeEqual;
+    }
+
+    for(uint64_t index=0; index < theArray->count; index++) { // Changed to uint64_t for index
+        if (equalCB) {
+            if(equalCB(theArray->data[index], value)) return (long)index;
+        } else { // Fallback to direct pointer comparison if no equal callback
+            if(theArray->data[index] == value) return (long)index;
+        }
+    }
+    return kOCNotFound; // Use kOCNotFound
 }
 
 void OCArrayAppendValue(OCMutableArrayRef theArray, const void * value)
 {
-    if(NULL==theArray) return;
-    if(NULL==value) return;
-    OCTypeRef type = (OCTypeRef) value;
-    if(theArray->capacity==0 || theArray->count==theArray->capacity) {
-        if(NULL==theArray->data) theArray->data = (void **) malloc(sizeof(void *));
-        else theArray->data = (void **) realloc(theArray->data, (theArray->count+1) * sizeof(void *));
-        theArray->data[theArray->count] = type;
-        if(theArray->callBacks == &kOCTypeArrayCallBacks) {
-            OCRetain(type);
+    if(NULL==theArray || NULL==value) return; // Added NULL check for value
+    
+    OCTypeRef type = (OCTypeRef) value; // Assuming value is an OCTypeRef for retain/release
+
+    if(theArray->count == theArray->capacity) {
+        uint64_t newCapacity = (theArray->capacity == 0) ? 1 : theArray->capacity * 2; // Grow by doubling, or start at 1
+        void **newData = (void **) realloc(theArray->data, newCapacity * sizeof(void *));
+        if (NULL == newData) {
+            return;
         }
-        else if(theArray->callBacks && theArray->callBacks->release!=NULL) {
-            theArray->callBacks->retain(type);
-        }
-        theArray->count++;
-        if(theArray->capacity!=0) theArray->capacity++;
+        theArray->data = newData;
+        theArray->capacity = newCapacity;
     }
-    else {
-        theArray->data[theArray->count] = type;
-        if(theArray->callBacks == &kOCTypeArrayCallBacks) {
-            OCRetain(type);
-        }
-        else if(theArray->callBacks && theArray->callBacks->release!=NULL) {
-                theArray->callBacks->retain(type);
-        }
-        theArray->count++;
+
+    theArray->data[theArray->count] = type;
+    
+    if(theArray->callBacks && theArray->callBacks->retain) {
+        theArray->callBacks->retain(type);
+    } else if (theArray->callBacks == &kOCTypeArrayCallBacks) { // Specific check for kOCTypeArrayCallBacks
+         OCRetain(type);
     }
+
+    theArray->count++;
 }
 
 void OCArrayAppendArray(OCMutableArrayRef theArray, OCArrayRef otherArray, OCRange range)
@@ -265,31 +314,33 @@ void OCArrayAppendArray(OCMutableArrayRef theArray, OCArrayRef otherArray, OCRan
 
 void OCArrayInsertValueAtIndex(OCMutableArrayRef theArray, uint64_t index, const void * value)
 {
-    if(index>theArray->count) return;
+    if(NULL == theArray || NULL == value || index > theArray->count) return; // Added NULL checks, ensure index is valid
+    
     OCTypeRef type = (OCTypeRef) value;
 
-    if(index==theArray->count) {
-        OCArrayAppendValue(theArray, type);
-        return;
+    if(theArray->count == theArray->capacity) {
+        uint64_t newCapacity = (theArray->capacity == 0) ? 1 : theArray->capacity * 2;
+        void **newData = (void **) realloc(theArray->data, newCapacity * sizeof(void *));
+        if (NULL == newData) {
+            return;
+        }
+        theArray->data = newData;
+        theArray->capacity = newCapacity;
     }
-    if(theArray->capacity==0 || theArray->count==theArray->capacity) {
-        if(NULL==theArray->data) theArray->data = (void **) malloc(sizeof(void *));
-        else theArray->data = (void **) realloc(theArray->data, (theArray->count+1) * sizeof(void *));
-        
-        for(uint64_t i = theArray->count; i>index; i--) {
-            theArray->data[index] = theArray->data[index-1];
-        }
-        theArray->data[index] = type;
-        if(theArray->callBacks == &kOCTypeArrayCallBacks) {
-            OCRetain(type);
-        }
-        else if(theArray->callBacks && theArray->callBacks->release!=NULL) {
-            theArray->callBacks->retain(type);
-        }
 
-        theArray->count++;
-        if(theArray->capacity!=0) theArray->capacity++;
+    for(uint64_t i = theArray->count; i > index; i--) {
+        theArray->data[i] = theArray->data[i-1];
     }
+    
+    theArray->data[index] = type;
+
+    if(theArray->callBacks && theArray->callBacks->retain) {
+        theArray->callBacks->retain(type);
+    } else if (theArray->callBacks == &kOCTypeArrayCallBacks) {
+        OCRetain(type);
+    }
+    
+    theArray->count++;
 }
 
 struct _acompareContext {
@@ -373,12 +424,9 @@ void OCArraySortValues(OCMutableArrayRef theArray, OCRange range, OCComparatorFu
 
 #elif defined(__linux__) && defined(_GNU_SOURCE)
     // GNU/Linux qsort_r: compar(a, b, thunk)
-    // This assumes _GNU_SOURCE successfully exposed qsort_r.
-    // If not, this line will fail compilation.
     qsort_r(base_ptr, nmemb, element_size, thunk_last_qsort_compare_wrapper, &myContext);
 
 #elif (defined(__GNUC__) && (defined(_WIN32) || defined(__CYGWIN__))) // MinGW or Cygwin with GCC
-    // Fallback sort for MinGW/Cygwin: manual insertion sort using comparator with context.
     {
         void **arr = base_ptr;
         for (size_t i = 1; i < nmemb; i++) {
@@ -386,7 +434,6 @@ void OCArraySortValues(OCMutableArrayRef theArray, OCRange range, OCComparatorFu
             size_t j = i;
             while (j > 0) {
                 void *prev = arr[j - 1];
-                // comparator returns >0 if prev > tmp
                 if (myContext.comparator(prev, tmp, myContext.context) > 0) {
                     arr[j] = arr[j - 1];
                     j--;
@@ -398,23 +445,17 @@ void OCArraySortValues(OCMutableArrayRef theArray, OCRange range, OCComparatorFu
         }
     }
 
-#elif defined(_MSC_VER) && defined(_WIN32) // MSVC on Windows
-    // Attempt to use MSVC's qsort_s. __STDC_WANT_LIB_EXT1__ should be defined and active.
-    // Comparator for MSVC qsort_s: int func(void* context_param, const void* a, const void* b)
-    // Matches: thunk_first_qsort_compare_wrapper
+#elif defined(_MSC_VER) && defined(_WIN32)
     #if defined(__STDC_LIB_EXT1__) && __STDC_LIB_EXT1__ >= 201112L
-        // If qsort_s is not declared, this call will fail compilation.
         qsort_s(base_ptr, nmemb, element_size, thunk_first_qsort_compare_wrapper, &myContext);
     #else
         #error "MSVC: qsort_s not available (check __STDC_WANT_LIB_EXT1__ definition and compiler/library version)."
     #endif
 #else
-    // Generic fallback / error for other platforms
     #warning "Platform not explicitly supported for qsort_r or qsort_s. Contextual sort may fail."
     if (context != NULL) {
         #error "Contextual sort (qsort_r/qsort_s) not implemented for this platform and context is required."
     } else {
-        // Potentially use standard qsort if context is NULL and an adapter is made.
         #error "Fallback to standard qsort for NULL context not robustly implemented. Please provide a qsort_r/qsort_s equivalent for your platform or ensure the comparator can work with standard qsort."
     }
 #endif
@@ -422,13 +463,7 @@ void OCArraySortValues(OCMutableArrayRef theArray, OCRange range, OCComparatorFu
 
 #define INVOKE_CALLBACK3(P, A, B, C) (P)(A, B, C)
 
-static OCComparisonResult __OCArrayCompareValues(const void *v1, const void *v2, struct _acompareContext *context) {
-    void * _Nullable *val1 = (void * _Nullable *)v1; // Keep _Nullable for source compatibility, macro will remove it for GCC
-    const void **val2 = (const void **)v2;
-    return (OCComparisonResult)(INVOKE_CALLBACK3(context->func, *val1, *val2, context->context));
-}
-
-int64_t OCBSearch(void * _Nullable element, // Keep _Nullable
+int64_t OCBSearch(void * _Nullable element, 
                   int64_t elementSize,
                   const void *list,
                   int64_t count,
@@ -449,22 +484,34 @@ int64_t OCBSearch(void * _Nullable element, // Keep _Nullable
 
 int64_t OCArrayBSearchValues(OCArrayRef array, OCRange range, const void *value, OCComparatorFunction comparator, void *context)
 {
-    if(NULL==array) return 0;
-    if(NULL==comparator) return 0;
+    if(NULL==array || NULL==comparator || range.length == 0) return kOCNotFound; // Return kOCNotFound for invalid inputs or empty range
+    if (range.location >= array->count || (range.location + range.length) > array->count) { // Validate range
+        return kOCNotFound;
+    }
     
-    int64_t idx = 0;
-    if (range.length <= 0) return range.location;
+    const void **base = (const void **)(array->data + range.location);
+    size_t num = range.length;
     
-    struct _acompareContext ctx;
-    ctx.func = comparator;
-    ctx.context = context;
-    idx = OCBSearch(&value,
-                    sizeof(void *),
-                    array->data + range.location, range.length,
-                    (OCComparatorFunction)__OCArrayCompareValues,
-                    &ctx);
+    int64_t low = 0;
+    int64_t high = num - 1;
+    int64_t result_idx = kOCNotFound;
+
+    while(low <= high) {
+        int64_t mid = low + (high - low) / 2;
+        const void *mid_val = base[mid];
+        OCComparisonResult cmp = comparator(value, mid_val, context);
+
+        if (cmp == kOCCompareEqualTo) {
+            result_idx = range.location + mid; // Found, return original array index
+            break; 
+        } else if (cmp == kOCCompareLessThan) {
+            high = mid - 1;
+        } else { // kOCCompareGreaterThan
+            low = mid + 1;
+        }
+    }
     
-    return idx + range.location;
+    return result_idx;
 }
 
 

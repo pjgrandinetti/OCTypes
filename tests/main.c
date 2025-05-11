@@ -38,6 +38,10 @@ int main(int argc, const char * argv[]) {
     if (!stringTest1())          failures++;
     if (!stringTest2())          failures++;
     if (!arrayTest0())           failures++;
+    if (!arrayTest1_creation())  failures++;
+    if (!arrayTest2_access())    failures++;
+    if (!arrayTest3_modification()) failures++;
+    if (!arrayTest4_search_sort()) failures++;
     if (!mathTest0())            failures++;
     if (!autoreleasePoolTest0()) failures++;
     if (!dataTest0())            failures++;
