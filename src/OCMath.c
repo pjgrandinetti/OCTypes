@@ -6,12 +6,12 @@
 //  Updated 2025-05-11 to fix loose‐comparison thresholds and use correct defines.
 //
 
-#include "OCLibrary.h"
 #include <math.h>
 #include <complex.h>
 #include <assert.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include "OCLibrary.h"
 
 #define DOUBLE_LOOSE_EPS 1e-8
 #define FLOAT_LOOSE_EPS  1.2e-6f  /* a bit above 1e-6 to cover ULP rounding */

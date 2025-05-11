@@ -1,4 +1,0 @@
-/* Hide Doxygen group label in Breathe output */
-dt.sig-object.c em {
-  display: none !important;
-}

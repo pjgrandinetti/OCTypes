@@ -67,18 +67,15 @@ OCString.o: CFLAGS += -Wno-unused-but-set-variable
 libOCTypes.a: $(OBJ)
 	$(AR) rcs $@ $^
 
-.PHONY: test
 test: libOCTypes.a $(TEST_OBJ)
 	$(CC) $(CFLAGS) -Isrc -Itests $(TEST_OBJ) -L. -lOCTypes -lm -o runTests
 	./runTests
 
-.PHONY: test-debug
 test-debug: libOCTypes.a $(TEST_OBJ)
 	$(CC) $(CFLAGS) -g -O0 -Isrc -Itests $(TEST_OBJ) -L. -lOCTypes -lm -o runTests.debug
 	@echo "Launching under LLDB..."
 	@lldb -- ./runTests.debug
 
-.PHONY: test-asan
 test-asan: libOCTypes.a $(TEST_OBJ)
 	$(CC) $(CFLAGS) -g -O1 -fsanitize=address -fno-omit-frame-pointer -Isrc -Itests $(TEST_OBJ) -L. -lOCTypes -lm -o runTests.asan
 	@echo "Running AddressSanitizer build..."
@@ -88,13 +85,13 @@ clean:
 	rm -f $(OBJ) $(TEST_OBJ) libOCTypes.a $(GEN_C) $(GEN_H) runTests runTests.debug runTests.asan *.dSYM -rf
 
 # Documentation targets
-docs: docs/Doxyfile
-	@echo "Generating Doxygen XML output..."
-	cd docs && doxygen Doxyfile
-	@echo "Building Sphinx documentation..."
-	cd docs && sphinx-build -b html . _build
+docs:
+	@echo "Generating Doxygen XML output…"
+	@mkdir -p docs/doxygen/xml
+	@cd docs && doxygen Doxyfile
+	@echo "Building Sphinx documentation…"
+	@cd docs && sphinx-build -E -v -b html . _build
 
 clean-docs:
-	@echo "Cleaning documentation..."
-	rm -rf docs/doxygen
-	rm -rf docs/_build
+	@echo "Cleaning documentation…"
+	@rm -rf docs/doxygen docs/_build

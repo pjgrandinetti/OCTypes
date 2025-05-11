@@ -11,6 +11,42 @@
 #include <complex.h>      // Needed for complex number types
 #include "OCLibrary.h"
 
+/**
+ * @union __Number
+ * @brief A union to hold various numeric types.
+ *
+ * This union is part of the internal representation of OCNumber objects.
+ * It allows an OCNumber to store data for any of its supported numeric types
+ * in a memory-efficient way. The specific active member is determined by the
+ * OCNumber's OCNumberType.
+ */
+typedef union __Number {
+    /** @brief Signed 8-bit integer value. */
+    int8_t  int8Value;
+    /** @brief Signed 16-bit integer value. */
+    int16_t int16Value;
+    /** @brief Signed 32-bit integer value. */
+    int32_t int32Value;
+    /** @brief Signed 64-bit integer value. */
+    int64_t int64Value;
+    /** @brief Unsigned 8-bit integer value. */
+    uint8_t uint8Value;
+    /** @brief Unsigned 16-bit integer value. */
+    uint16_t uint16Value;
+    /** @brief Unsigned 32-bit integer value. */
+    uint32_t uint32Value;
+    /** @brief Unsigned 64-bit integer value. */
+    uint64_t uint64Value;
+    /** @brief 32-bit floating-point value. */
+    float   floatValue;
+    /** @brief 64-bit floating-point value (double). */
+    double  doubleValue;
+    /** @brief Complex float value (float _Complex). */
+    float complex floatComplexValue;
+    /** @brief Complex double value (double _Complex). */
+    double complex doubleComplexValue;
+} __Number;
+
 /** @defgroup OCNumber OCNumber
  *  @brief Numerical value representation using OCType-compatible objects.
  *  @{
@@ -47,8 +83,9 @@ typedef const struct __OCNumber * OCNumberRef;
 /**
  * @enum OCNumberType
  * @brief Enumerates the specific numeric data types that an OCNumber object can represent.
+ * @ingroup OCNumber
  */
-typedef enum OCNumberType {
+typedef enum { // Anonymous enum
     kOCNumberSInt8Type = SInt8Type,               /**< Signed 8-bit integer. */
     kOCNumberSInt16Type = SInt16Type,             /**< Signed 16-bit integer. */
     kOCNumberSInt32Type = SInt32Type,             /**< Signed 32-bit integer. */
@@ -67,8 +104,9 @@ typedef enum OCNumberType {
  * @enum numberType
  * @brief Legacy enum alias. Prefer using OCNumberType.
  * @deprecated Provided for backward compatibility.
+ * @ingroup OCNumber
  */
-typedef enum numberType {
+typedef enum { // Anonymous enum
     kPSNumberFloat32Type = Float32Type,
     kPSNumberFloat64Type = Float64Type,
     kPSNumberFloat32ComplexType = Float32ComplexType,

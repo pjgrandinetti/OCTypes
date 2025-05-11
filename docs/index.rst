@@ -1,16 +1,11 @@
 OCTypes Documentation
 =====================
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
-API Documentation
------------------
+Welcome to the OCTypes library documentation.
 
 .. toctree::
-   :maxdepth: 2
-   :caption: API Documentation:
+   :maxdepth: 1
+   :caption: API Reference
 
    api/OCType
    api/OCAutoreleasePool
@@ -23,7 +18,7 @@ API Documentation
    api/OCLibrary
    api/OCMath
 
-Indices and tables
+Indices and Tables
 ==================
 
 * :ref:`genindex`

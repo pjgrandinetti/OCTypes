@@ -42,23 +42,13 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">API Documentation:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">OCType</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#c.__OCBase"><code class="docutils literal notranslate"><span class="pre">__OCBase</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#c.__OCBase.typeID"><code class="docutils literal notranslate"><span class="pre">typeID</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#c.__OCBase.retainCount"><code class="docutils literal notranslate"><span class="pre">retainCount</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#c.__OCBase.finalize"><code class="docutils literal notranslate"><span class="pre">finalize</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#c.__OCBase.equal"><code class="docutils literal notranslate"><span class="pre">equal</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#c.__OCBase.copyFormattingDesc"><code class="docutils literal notranslate"><span class="pre">copyFormattingDesc</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#c.IF_NO_OBJECT_EXISTS_RETURN"><code class="docutils literal notranslate"><span class="pre">IF_NO_OBJECT_EXISTS_RETURN</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#c.OCTypeID"><code class="docutils literal notranslate"><span class="pre">OCTypeID</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#c.OCIndex"><code class="docutils literal notranslate"><span class="pre">OCIndex</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#c.OCTypeRef"><code class="docutils literal notranslate"><span class="pre">OCTypeRef</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#c.OCStringRef"><code class="docutils literal notranslate"><span class="pre">OCStringRef</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#c.OCBase"><code class="docutils literal notranslate"><span class="pre">OCBase</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#c.CommonConstants"><code class="docutils literal notranslate"><span class="pre">CommonConstants</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#c.CommonConstants.kOCNotFound"><code class="docutils literal notranslate"><span class="pre">kOCNotFound</span></code></a></li>
 </ul>
@@ -113,76 +103,26 @@
              
   <section id="octype">
 <h1>OCType<a class="headerlink" href="#octype" title="Link to this heading"></a></h1>
-<p>Defines the core types and functions for the OCTypes library. </p>
-<p>This file contains the fundamental type definitions, including <a class="reference internal" href="#group___o_c_type_1gae4fcca725e41e7af4659ba4902223981"><span class="std std-ref">OCTypeID</span></a>, <a class="reference internal" href="#group___o_c_type_1ga6ccf3c82bdf9278bdbac738cce5b1487"><span class="std std-ref">OCIndex</span></a>, and the base <a class="reference internal" href="#group___o_c_type_1ga6acd02149bce3e91fb2fe325ab7f65ed"><span class="std std-ref">OCTypeRef</span></a>, as well as functions for type registration, memory management (retain/release), and basic type introspection. </p>
-<dl class="c struct">
-<dt class="sig sig-object c" id="c.__OCBase">
-<span class="target" id="struct_____o_c_base"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">__OCBase</span></span></span><a class="headerlink" href="#c.__OCBase" title="Link to this definition"></a><br /></dt>
-<dd><div class="docutils container">
-<em>#include &lt;OCType.h&gt;</em></div>
-<p>Base structure shared by all OCType-compatible objects. </p>
-<div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
-<dl class="c var">
-<dt class="sig sig-object c" id="c.__OCBase.typeID">
-<span class="target" id="struct_____o_c_base_1a57413231fb08c0b703e49e3052ebeb33"></span><a class="reference internal" href="#c.OCTypeID" title="OCTypeID"><span class="n"><span class="pre">OCTypeID</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">typeID</span></span></span><a class="headerlink" href="#c.__OCBase.typeID" title="Link to this definition"></a><br /></dt>
-<dd><p>Type identifier. </p>
-</dd></dl>
-
-<dl class="c var">
-<dt class="sig sig-object c" id="c.__OCBase.retainCount">
-<span class="target" id="struct_____o_c_base_1a45d13a42e73d92077e1d3b7f04e08767"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">retainCount</span></span></span><a class="headerlink" href="#c.__OCBase.retainCount" title="Link to this definition"></a><br /></dt>
-<dd><p>Reference count. </p>
-</dd></dl>
-
-<dl class="c var">
-<dt class="sig sig-object c" id="c.__OCBase.finalize">
-<span class="target" id="struct_____o_c_base_1aa2182da1dc0de45f16e782f94bb43cb7"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">finalize</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.__OCBase.finalize" title="Link to this definition"></a><br /></dt>
-<dd><p>Finalizer function. </p>
-</dd></dl>
-
-<dl class="c var">
-<dt class="sig sig-object c" id="c.__OCBase.equal">
-<span class="target" id="struct_____o_c_base_1a3b4bd801666626087c490a016c8353d9"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">equal</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.__OCBase.equal" title="Link to this definition"></a><br /></dt>
-<dd><p>Equality comparator. </p>
-</dd></dl>
-
-<dl class="c var">
-<dt class="sig sig-object c" id="c.__OCBase.copyFormattingDesc">
-<span class="target" id="struct_____o_c_base_1a658977341e9751990f8d323f49d9fbaf"></span><a class="reference internal" href="#c.OCStringRef" title="OCStringRef"><span class="n"><span class="pre">OCStringRef</span></span></a><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">copyFormattingDesc</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.OCTypeRef" title="OCTypeRef"><span class="n"><span class="pre">OCTypeRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">cf</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.__OCBase.copyFormattingDesc" title="Link to this definition"></a><br /></dt>
-<dd><p>Description formatter. </p>
-</dd></dl>
-
-</div>
-</dd></dl>
-
 <dl>
 <dt class="sig sig-object cpp">
 <span class="target" id="group___o_c_type"></span><em><span class="pre">group</span></em> <span class="sig-name descname"><span class="pre">OCType</span></span></dt>
 <dd><p>Core type definitions and memory management functions. </p>
 <div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric" id="breathe-section-title-defines">Defines</p>
-<dl class="c macro">
-<dt class="sig sig-object c" id="c.IF_NO_OBJECT_EXISTS_RETURN">
-<span class="target" id="group___o_c_type_1ga89ba75a2ebc9795cbe6fe88902913202"></span><span class="sig-name descname"><span class="n"><span class="pre">IF_NO_OBJECT_EXISTS_RETURN</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">OBJECT</span></span>, <span class="n"><span class="pre">X</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.IF_NO_OBJECT_EXISTS_RETURN" title="Link to this definition"></a><br /></dt>
-<dd><p>Macro to check if an object is NULL and return a specified value if it is. </p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>OBJECT</strong> – The object to check. </p></li>
-<li><p><strong>X</strong> – The value to return if OBJECT is NULL. </p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-</div>
-<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-typedefs">Typedefs</p>
 <dl class="c type">
 <dt class="sig sig-object c" id="c.OCTypeID">
 <span class="target" id="group___o_c_type_1gae4fcca725e41e7af4659ba4902223981"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCTypeID</span></span></span><a class="headerlink" href="#c.OCTypeID" title="Link to this definition"></a><br /></dt>
-<dd><p>Defines an identifier for an OCType. </p>
+<dd><p>Macro to check if an object is NULL and return a specified value if it is. </p>
+<p>
+Defines an identifier for an OCType. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Param OBJECT<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The object to check. </p>
+</dd>
+<dt class="field-even">Param X<span class="colon">:</span></dt>
+<dd class="field-even"><p>The value to return if OBJECT is NULL.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="c type">
@@ -194,19 +134,14 @@
 <dl class="c type">
 <dt class="sig sig-object c" id="c.OCTypeRef">
 <span class="target" id="group___o_c_type_1ga6acd02149bce3e91fb2fe325ab7f65ed"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">__OCType</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">OCTypeRef</span></span></span><a class="headerlink" href="#c.OCTypeRef" title="Link to this definition"></a><br /></dt>
-<dd><p>A reference to an opaque OCType structure. This is the base type for all objects in the OCTypes system. </p>
+<dd><p>A reference to an opaque OCType structure. </p>
+<p>This is the base type for all objects in the OCTypes system. </p>
 </dd></dl>
 
 <dl class="c type">
 <dt class="sig sig-object c" id="c.OCStringRef">
-<span class="target" id="group___o_c_type_1ga34a97bf2ed10637e698c2cd3faa193d4"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">__OCString</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">OCStringRef</span></span></span><a class="headerlink" href="#c.OCStringRef" title="Link to this definition"></a><br /></dt>
+<span class="target" id="group___o_c_type_1ga34a97bf2ed10637e698c2cd3faa193d4"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">__OCString</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">OCStringRef</span></span></span><br /></dt>
 <dd><p>A reference to an immutable OCString instance. </p>
-</dd></dl>
-
-<dl class="c type">
-<dt class="sig sig-object c" id="c.OCBase">
-<span class="target" id="group___o_c_type_1ga66b90fed8dd532198f1a04d294dbaa69"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.__OCBase" title="__OCBase"><span class="n"><span class="pre">__OCBase</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCBase</span></span></span><a class="headerlink" href="#c.OCBase" title="Link to this definition"></a><br /></dt>
-<dd><p>Base structure shared by all OCType-compatible objects. </p>
 </dd></dl>
 
 </div>
@@ -305,7 +240,7 @@
 
 <dl class="c function">
 <dt class="sig sig-object c" id="c.OCTypeCopyFormattingDesc">
-<span class="target" id="group___o_c_type_1ga59cd1c60d2487296ea3032c4de8adc0e"></span><a class="reference internal" href="#c.OCStringRef" title="OCStringRef"><span class="n"><span class="pre">OCStringRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCTypeCopyFormattingDesc</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ptr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCTypeCopyFormattingDesc" title="Link to this definition"></a><br /></dt>
+<span class="target" id="group___o_c_type_1ga59cd1c60d2487296ea3032c4de8adc0e"></span><a class="reference internal" href="OCString.html#c.OCStringRef" title="OCStringRef"><span class="n"><span class="pre">OCStringRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCTypeCopyFormattingDesc</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ptr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCTypeCopyFormattingDesc" title="Link to this definition"></a><br /></dt>
 <dd><p>Generates a formatted string description of an OCType. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -321,7 +256,7 @@
 
 <dl class="c function">
 <dt class="sig sig-object c" id="c.OCCopyDescription">
-<span class="target" id="group___o_c_type_1ga1935a8db7fe65f4b4801431a6bc4138b"></span><a class="reference internal" href="#c.OCStringRef" title="OCStringRef"><span class="n"><span class="pre">OCStringRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCCopyDescription</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ptr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCCopyDescription" title="Link to this definition"></a><br /></dt>
+<span class="target" id="group___o_c_type_1ga1935a8db7fe65f4b4801431a6bc4138b"></span><a class="reference internal" href="OCString.html#c.OCStringRef" title="OCStringRef"><span class="n"><span class="pre">OCStringRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCCopyDescription</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ptr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCCopyDescription" title="Link to this definition"></a><br /></dt>
 <dd><p>Creates a descriptive string representation of an OCType instance. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -352,14 +287,6 @@
 </dd></dl>
 
 </div>
-<dl class="c struct">
-<dt class="sig sig-object c">
-<span class="target" id="struct_____o_c_base"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">__OCBase</span></span></span><br /></dt>
-<dd><div class="docutils container">
-<em>#include &lt;OCType.h&gt;</em></div>
-<p>Base structure shared by all OCType-compatible objects. </p>
-</dd></dl>
-
 </dd></dl>
 
 </section>

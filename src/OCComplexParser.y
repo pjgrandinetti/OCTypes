@@ -25,8 +25,10 @@
     } builtInMathFunctions;
     
     
+    #include <math.h>
+    #include <stdio.h>
     #include "OCLibrary.h"
-    
+
     static double complex result;
     int ocpclex(void);
     

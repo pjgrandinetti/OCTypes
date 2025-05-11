@@ -5,6 +5,8 @@
 //  Created by Philip on 11/18/12.
 //
 
+#include <stdlib.h>
+#include <string.h>
 #include "OCLibrary.h"
 
 static char **typeIDTable = NULL;

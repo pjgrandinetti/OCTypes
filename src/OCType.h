@@ -26,11 +26,14 @@
  *
  * @ingroup OCType
  */
+
+/** \cond INTERNAL */
 #define IF_NO_OBJECT_EXISTS_RETURN(OBJECT, X) \
     if (NULL == OBJECT) { \
         printf("*** WARNING - %s - object doesn't exist.\n", __func__); \
         return X; \
     }
+/** \endcond */
 
 /**
  * @brief Defines an identifier for an OCType.
@@ -145,6 +148,7 @@ OCStringRef OCCopyDescription(const void *ptr);
  */
 OCTypeID OCGetTypeID(const void *ptr);
 
+/** \cond INTERNAL */
 /**
  * @brief Base structure shared by all OCType-compatible objects.
  *
@@ -157,6 +161,7 @@ typedef struct __OCBase {
     bool (*equal)(const void *, const void *);  /**< Equality comparator. */
     OCStringRef (*copyFormattingDesc)(OCTypeRef cf);  /**< Description formatter. */
 } OCBase;
+/** \endcond */
 
 /** @} */ // end of OCType group
 

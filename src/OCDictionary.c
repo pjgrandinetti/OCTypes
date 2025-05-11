@@ -5,6 +5,8 @@
 //  Created by philip on 4/21/17.
 //
 
+#include <stdlib.h>   // for malloc, free, realloc
+#include <string.h>   // for memcpy
 #include "OCLibrary.h"
 
 static OCTypeID kOCDictionaryID = _kOCNotATypeID;

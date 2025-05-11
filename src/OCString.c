@@ -5,6 +5,11 @@
 //  Created by philip on 5/10/17.
 //
 
+#include <stdlib.h>
+#include <string.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <math.h>    // for nan(), fabs()
 #include "OCLibrary.h"
 
 // Callbacks for OCArray containing OCRange structs

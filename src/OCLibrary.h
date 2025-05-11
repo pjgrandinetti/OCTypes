@@ -2,38 +2,17 @@
  * @file OCLibrary.h
  * @brief Core definitions, macros, and types for the OCTypes library.
  *
- * This header centralizes common includes, constants, flags, and helper
- * macros used throughout the OCTypes framework.
+ * This header centralizes the core types and helper macros used throughout
+ * the OCTypes framework, and then includes all the public OCTypes APIs.
  */
 
 #ifndef OCLibrary_h
 #define OCLibrary_h
 
-#ifndef __private_extern__
-#define __private_extern__
-#endif
-
-#include <sys/types.h>
-#include <stdarg.h>
-#include <assert.h>
-#include <ctype.h>
-#include <errno.h>
-#include <float.h>
-#include <limits.h>
-#include <locale.h>
-#include <math.h>
-#include <complex.h>
-#include <setjmp.h>
-#include <signal.h>
-#include <stddef.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-
-#include <inttypes.h>
-#include <stdbool.h>
-#include <stdint.h>
+/* Minimal C types every module needs: */
+#include <stddef.h>   /* for size_t, NULL */
+#include <stdint.h>   /* for uint64_t, int32_t, etc. */
+#include <stdbool.h>  /* for bool */
 
 /**
  * @defgroup OCLibrary OCLibrary
@@ -42,26 +21,37 @@
  */
 
 /**
- * @brief Result values returned by OCComparatorFunction.
+ * @typedef OCOptionFlags
+ * @brief Base type for option flags, typically an unsigned long.
+ * @ingroup OCLibrary
  */
-typedef enum OCComparisonResult {
-    kOCCompareLessThan = -1,     /**< First value is less than the second. */
-    kOCCompareEqualTo = 0,       /**< Values are equal. */
-    kOCCompareGreaterThan = 1,   /**< First value is greater than the second. */
-    kOCCompareUnequalDimensionalities = 2, /**< Values have different dimensionalities. */
-    kOCCompareNoSingleValue = 3,           /**< No singular comparison result available. */
-    kOCCompareError = 99                  /**< An error occurred during comparison. */
+typedef unsigned long OCOptionFlags;
+
+/**
+ * @enum OCComparisonResult
+ * @brief Result values returned by OCComparatorFunction.
+ * @ingroup OCLibrary
+ */
+typedef enum { // Anonymous enum
+    kOCCompareLessThan              = -1,  /**< First value is less than the second. */
+    kOCCompareEqualTo               =  0,  /**< Values are equal. */
+    kOCCompareGreaterThan           =  1,  /**< First value is greater than the second. */
+    kOCCompareUnequalDimensionalities = 2, /**< Different dimensionalities. */
+    kOCCompareNoSingleValue         =  3,  /**< No singular comparison result available. */
+    kOCCompareError                 = 99   /**< An error occurred during comparison. */
 } OCComparisonResult;
 
 /**
  * @brief Function pointer type for comparing two values.
  *
- * @param val1 Pointer to the first value.
- * @param val2 Pointer to the second value.
+ * @param val1    Pointer to the first value.
+ * @param val2    Pointer to the second value.
  * @param context Optional user-defined context pointer.
  * @return Comparison result.
  */
-typedef OCComparisonResult (*OCComparatorFunction)(const void *val1, const void *val2, void *context);
+typedef OCComparisonResult (*OCComparatorFunction)(const void *val1,
+                                                   const void *val2,
+                                                   void *context);
 
 /**
  * @brief Option flags used for string comparisons.
@@ -69,34 +59,46 @@ typedef OCComparisonResult (*OCComparatorFunction)(const void *val1, const void 
 typedef unsigned long OCOptionFlags;
 
 /**
- * @brief Flags for string comparison operations.
+ * @enum OCStringComparisonFlagsEnum
+ * @brief Defines constant flags for string comparison operations.
  *
- * Use with OCStringCompareFlags to modify comparison behavior.
+ * These flags are used with the OCStringCompareFlags type (which is an OCOptionFlags)
+ * to modify comparison behavior.
+ * @ingroup OCLibrary
+ * @see OCStringCompareFlags
  */
-enum {
-    kOCCompareCaseInsensitive        = 1,   /**< Case-insensitive comparison. */
-    kOCCompareBackwards              = 4,   /**< Compare from the end of the string. */
-    kOCCompareAnchored               = 8,   /**< Anchor comparison to the beginning. */
-    kOCCompareNonliteral             = 16,  /**< Non-literal comparison (e.g., equivalence normalization). */
-    kOCCompareLocalized              = 32,  /**< Locale-aware comparison. */
-    kOCCompareNumerically            = 64,  /**< Numeric-aware comparison. */
-    kOCCompareDiacriticInsensitive   = 128, /**< Ignore diacritics. */
-    kOCCompareWidthInsensitive       = 256, /**< Ignore character width differences. */
-    kOCCompareForcedOrdering         = 512  /**< Enforce ordering even if equal. */
-};
+typedef enum {
+    kOCCompareCaseInsensitive        =   1,  /**< Case-insensitive comparison. */
+    kOCCompareBackwards              =   4,  /**< Compare from the end of the string. */
+    kOCCompareAnchored               =   8,  /**< Anchor comparison to the beginning. */
+    kOCCompareNonliteral             =  16,  /**< Non-literal comparison (e.g. normalization). */
+    kOCCompareLocalized              =  32,  /**< Locale-aware comparison. */
+    kOCCompareNumerically            =  64,  /**< Numeric-aware comparison. */
+    kOCCompareDiacriticInsensitive   = 128,  /**< Ignore diacritics. */
+    kOCCompareWidthInsensitive       = 256,  /**< Ignore character width differences. */
+    kOCCompareForcedOrdering         = 512   /**< Enforce ordering even if equal. */
+} OCStringComparisonFlagsEnum;
 
 /**
- * @brief Type alias for string comparison flags.
+ * @typedef OCStringCompareFlags
+ * @brief Type used to hold string comparison flags.
+ *
+ * This is an alias for OCOptionFlags (unsigned long).
+ * Use constants from OCStringComparisonFlagsEnum with this type.
+ * @ingroup OCLibrary
+ * @see OCStringComparisonFlagsEnum
  */
 typedef OCOptionFlags OCStringCompareFlags;
 
 /**
- * @brief Aliases and compatibility masks for diacritic-insensitive comparison.
+ * @enum OCDiacriticCompatibilityFlagsEnum
+ * @brief Defines compatibility flags for diacritic-insensitive comparison.
+ * @ingroup OCLibrary
  */
-enum {
-    kOCCompareDiacriticsInsensitive = 128, /**< Alias for diacritic insensitivity. */
-    kOCCompareDiacriticsInsensitiveCompatibilityMask = ((1 << 28) | kOCCompareDiacriticInsensitive)
-};
+typedef enum {
+    kOCCompareDiacriticsInsensitive                    = 128, /**< Alias for diacritic insensitive. */
+    kOCCompareDiacriticsInsensitiveCompatibilityMask   = ((1 << 28) | kOCCompareDiacriticInsensitive) /**< Compatibility mask. */
+} OCDiacriticCompatibilityFlagsEnum;
 
 /**
  * @brief A structure representing a contiguous byte or element range.
@@ -107,27 +109,26 @@ typedef struct {
 } OCRange;
 
 #if !defined(OC_INLINE)
-#define OC_INLINE static __inline__
+#define OC_INLINE static inline // Changed from __inline__ to inline
 #endif
 
 #if defined(OC_INLINE)
 /**
- * @brief Convenience function to create an OCRange struct.
+ * @brief Convenience function to create an OCRange.
  *
  * @param loc Start index.
  * @param len Number of elements.
- * @return OCRange with specified location and length.
+ * @return OCRange with the given location and length.
  */
 OC_INLINE OCRange OCRangeMake(uint64_t loc, uint64_t len) {
-    OCRange range;
-    range.location = loc;
-    range.length = len;
-    return range;
+    OCRange r = { loc, len };
+    return r;
 }
 #else
 #define OCRangeMake(LOC, LEN) __OCRangeMake(LOC, LEN)
 #endif
 
+/* Now pull in the rest of the public OCTypes APIs: */
 #include "OCMath.h"
 #include "OCAutoreleasePool.h"
 #include "OCType.h"

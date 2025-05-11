@@ -6,8 +6,9 @@
 //  Updated to fix format‐string warnings by wrapping literals in STR()
 //
 
-#include "OCLibrary.h"
+#include <stdlib.h>   // for malloc(), free()
 #include <complex.h>   // for creal/cimag on complex types
+#include "OCLibrary.h"
 
 static OCTypeID kOCNumberID = _kOCNotATypeID;
 
