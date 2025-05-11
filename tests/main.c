@@ -37,21 +37,21 @@ int main(int argc, const char * argv[]) {
     fprintf(stderr, "Starting OCTypes test suite...\n");
 
     // Call test functions from their respective modules
+    if (!autoreleasePoolTest0()) failures++;
     if (!typeTest0())            failures++;
     if (!stringTest0())          failures++;
     if (!stringTest1())          failures++;
     if (!stringTest2())          failures++;
+    if (!mathTest0())            failures++;
+    if (!dataTest0())            failures++;
+    if (!booleanTest0())         failures++;
+    if (!numberTest0())          failures++;  // ← New: Invoke OCNumber tests
+    if (!dictionaryTest0())      failures++;  // ← New: Invoke OCDictionary tests
     if (!arrayTest0())           failures++;
     if (!arrayTest1_creation())  failures++;
     if (!arrayTest2_access())    failures++;
     if (!arrayTest3_modification()) failures++;
     if (!arrayTest4_search_sort()) failures++;
-    if (!mathTest0())            failures++;
-    if (!autoreleasePoolTest0()) failures++;
-    if (!dataTest0())            failures++;
-    if (!booleanTest0())         failures++;
-    if (!numberTest0())          failures++;  // ← New: Invoke OCNumber tests
-    if (!dictionaryTest0())      failures++;  // ← New: Invoke OCDictionary tests
 
     if (failures) {
         fprintf(stderr, "\n%d test(s) failed.\n", failures);
