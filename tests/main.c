@@ -8,6 +8,7 @@
 
 // Common utilities, includes, and PRINTERROR macro
 #include "test_utils.h"
+#include "../src/OCAutoreleasePool.h"
 
 // Include headers for all test modules
 #include "test_string.h"
@@ -27,6 +28,9 @@ int main(int argc, const char * argv[]) {
     // Suppress unused parameter warnings
     (void)argc;
     (void)argv;
+
+    // Create an autorelease pool for tests
+    OCAutoreleasePoolRef pool = OCAutoreleasePoolCreate();
 
     int failures = 0;
     
@@ -51,10 +55,12 @@ int main(int argc, const char * argv[]) {
 
     if (failures) {
         fprintf(stderr, "\n%d test(s) failed.\n", failures);
+        OCAutoreleasePoolRelease(pool);
         return EXIT_FAILURE;
     }
     
     fprintf(stderr, "\nAll tests passed successfully!\n");
+    OCAutoreleasePoolRelease(pool);
     return EXIT_SUCCESS;
 }
 

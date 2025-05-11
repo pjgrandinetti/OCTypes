@@ -18,6 +18,12 @@
  * that follow a reference count pattern. This allows for delayed deallocation of
  * objects, simplifying memory management in certain programming patterns.
  *
+ * @par Create Rule:
+ * Functions whose names contain "Create" follow the convention:
+ * they return a +1 retained object. The caller owns these objects and
+ * must balance each Create call by invoking the appropriate Release
+ * function when the object is no longer needed.
+ *
  * @section usage_sec Usage
  * To use an autorelease pool:
  * 1. Create a pool:
@@ -112,4 +118,3 @@ bool OCAutoreleasePoolRelease(OCAutoreleasePoolRef pool);
  *          best practice to ensure `ptr` is non-NULL.
  */
 const void * OCAutorelease(const void * ptr);
-
