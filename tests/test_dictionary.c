@@ -59,7 +59,8 @@ bool dictionaryTest0(void) {
     ASSERT_EQUAL(OCDictionaryGetCount(copy), OCDictionaryGetCount((OCDictionaryRef)dict2), "Test 5.2: counts match");
     // mutate original
     OCNumberRef z = OCNumberCreateWithSInt32(300);
-    OCDictionaryAddValue(dict2, OCStringCreateWithCString("key3"), z);
+    OCStringRef key3 = OCStringCreateWithCString("key3"); // Store the key
+    OCDictionaryAddValue(dict2, key3, z);
     ASSERT_EQUAL(OCDictionaryGetCount((OCDictionaryRef)dict2), 3, "Test 5.3: original now 3");
     ASSERT_EQUAL(OCDictionaryGetCount(copy), 2, "Test 5.4: copy still 2");
     OCRelease(z);
@@ -68,6 +69,7 @@ bool dictionaryTest0(void) {
     // cleanup
     OCRelease(key1);
     OCRelease(key2);
+    OCRelease(key3); // Release the stored key3
     OCRelease(val1);
     OCRelease(val2);
     OCRelease(dict2);

@@ -65,9 +65,10 @@ void __OCDictionaryFinalize(const void * theType)
     OCDictionaryRef theDictionary = (OCDictionaryRef) theType;
     __OCDictionaryReleaseValues(theDictionary); // This correctly releases all keys and values
 
-    free(theDictionary->keys);     // Corrected free call
-    free(theDictionary->values);   // Corrected free call
-    free(theDictionary);           // Corrected free call (casting to (void*) is implicit)
+    // Free the arrays for keys and values, and the dictionary structure itself
+    free((void *)theDictionary->keys);
+    free((void *)theDictionary->values);
+    free((void *)theDictionary); // Cast to (void*) to avoid qualifier discard warning
 }
 
 OCTypeID OCDictionaryGetTypeID(void)
@@ -235,12 +236,12 @@ void OCDictionaryRemoveValue(OCMutableDictionaryRef theDictionary, OCStringRef k
 
     // Shift subsequent elements down.
     // The loop should go up to count - 1 because we are accessing index and index + 1.
-    // After removing one element, there are 'count - 1' elements to consider for shifting if indexOfKey is 0.
-    // The number of elements to move is (theDictionary->count - 1) - indexOfKey.
     for(uint64_t index = indexOfKey; index < theDictionary->count - 1; index++) {
         theDictionary->keys[index] = theDictionary->keys[index+1];
         theDictionary->values[index] = theDictionary->values[index+1];
     }
+    // After shifting, decrement the count.
+    // The elements beyond the new count are effectively garbage and won't be accessed.
     theDictionary->count--;
 }
 
