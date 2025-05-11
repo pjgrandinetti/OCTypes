@@ -25,7 +25,7 @@ templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 suppress_warnings = [
-    'duplicate_declaration.c',
+    'duplicate_declaration',  # Changed from 'duplicate_declaration.c'
 ]
 
 # -- Breathe Configuration ---------------------------------------------------
