@@ -9,6 +9,15 @@
 #ifndef OCLibrary_h
 #define OCLibrary_h
 
+// Define __private_extern__ for compatibility if not already defined
+#ifndef __private_extern__
+  #ifdef __APPLE__ // Or another macro specific to your Apple builds if __APPLE__ isn't right
+    #define __private_extern__ __attribute__((__visibility__("hidden")))
+  #else
+    #define __private_extern__ // Define as empty for other platforms like Windows
+  #endif
+#endif
+
 /* Minimal C types every module needs: */
 #include <stddef.h>   /* for size_t, NULL */
 #include <stdint.h>   /* for uint64_t, int32_t, etc. */
