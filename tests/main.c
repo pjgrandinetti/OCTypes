@@ -18,6 +18,7 @@
 #include "test_boolean.h"
 #include "test_type.h"
 #include "test_number.h"       // ← New: OCNumber tests
+#include "test_dictionary.h"  // ← New: OCDictionary tests
 
 // Note: The OCStringCompareAdapter is now in test_array.c
 // Note: The extern declaration for raise_to_integer_power is now in test_math.h
@@ -42,6 +43,7 @@ int main(int argc, const char * argv[]) {
     if (!dataTest0())            failures++;
     if (!booleanTest0())         failures++;
     if (!numberTest0())          failures++;  // ← New: Invoke OCNumber tests
+    if (!dictionaryTest0())      failures++;  // ← New: Invoke OCDictionary tests
 
     if (failures) {
         fprintf(stderr, "\n%d test(s) failed.\n", failures);

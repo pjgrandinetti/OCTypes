@@ -5,6 +5,12 @@
 #include "../src/OCType.h"
 #include "../src/OCString.h"
 
+// Declare the unwrapped‐value getter:
+extern void OCNumberGetValue(OCNumberRef number, OCNumberType type, void *outValue);
+
+// Map OCEqual → OCTypeEqual so your ASSERTs compile:
+#define OCEqual(a,b) OCTypeEqual((const void*)(a),(const void*)(b))
+
 bool numberTest0(void) {
     fprintf(stderr, "%s begin...\n", __func__);
 
@@ -234,6 +240,67 @@ bool numberTest0(void) {
         OCRelease(n);
     }
 
+    // --- Test OCNumberCreate generic constructor ---
+    fprintf(stderr, "Testing OCNumberCreate generic constructor...\n");
+    int32_t val_s32 = 123;
+    OCNumberRef n_s32 = OCNumberCreate(kOCNumberSInt32Type, &val_s32);
+    ASSERT_NOT_NULL(n_s32, "OCNumberCreate with SInt32 failed");
+    int32_t check_s32;
+    OCNumberGetValue(n_s32, kOCNumberSInt32Type, &check_s32);
+    ASSERT_EQUAL(check_s32, val_s32, "OCNumberCreate SInt32 value mismatch");
+    OCRelease(n_s32);
+
+    double val_f64 = 123.456;
+    OCNumberRef n_f64 = OCNumberCreate(kOCNumberFloat64Type, &val_f64);
+    ASSERT_NOT_NULL(n_f64, "OCNumberCreate with Float64 failed");
+    double check_f64;
+    OCNumberGetValue(n_f64, kOCNumberFloat64Type, &check_f64);
+    // Using a tolerance for float comparison
+    if (fabs(check_f64 - val_f64) > 1e-9) {
+        fprintf(stderr, "DEBUG: OCNumberCreate Float64 value mismatch. Got %f, expected %f\n", check_f64, val_f64);
+        PRINTERROR;
+    }
+    OCRelease(n_f64);
+
+    // --- Test OCEqual for Numbers ---
+    fprintf(stderr, "Testing OCEqual for Numbers...\n");
+    OCNumberRef num_int_10 = OCNumberCreateWithSInt32(10); // Changed from OCNumberCreateWithInt
+    OCNumberRef num_int_10_copy = OCNumberCreateWithSInt32(10); // Changed from OCNumberCreateWithInt
+    OCNumberRef num_int_20 = OCNumberCreateWithSInt32(20); // Changed from OCNumberCreateWithInt
+    OCNumberRef num_float_10 = OCNumberCreateWithFloat(10.0f);
+    OCNumberRef num_float_20 = OCNumberCreateWithFloat(20.0f);
+
+    ASSERT_TRUE(OCEqual(num_int_10, num_int_10_copy), "OCEqual: int(10) == int(10) failed");
+    ASSERT_FALSE(OCEqual(num_int_10, num_int_20), "OCEqual: int(10) == int(20) should be false");
+    
+    // Test equality between integer and float representations of the same value
+    // This depends on the implementation of OCEqual for OCNumber. 
+    // Assuming OCEqual for numbers might convert or compare them appropriately.
+    // If OCEqual strictly checks type first, this might fail and is a design consideration.
+    ASSERT_TRUE(OCEqual(num_int_10, num_float_10), "OCEqual: int(10) == float(10.0) failed"); 
+    ASSERT_FALSE(OCEqual(num_int_10, num_float_20), "OCEqual: int(10) == float(20.0) should be false");
+
+    OCRelease(num_int_10);
+    OCRelease(num_int_10_copy);
+    OCRelease(num_int_20);
+    OCRelease(num_float_10);
+    OCRelease(num_float_20);
+
+    // Test OCEqual with different number types but same value
+    OCNumberRef num_uint8_max = OCNumberCreateWithUInt8(UINT8_MAX);
+    OCNumberRef num_sint16_max_uint8 = OCNumberCreateWithSInt16(UINT8_MAX);
+    ASSERT_TRUE(OCEqual(num_uint8_max, num_sint16_max_uint8), "OCEqual: uint8_max == sint16_max_uint8 failed");
+    OCRelease(num_uint8_max);
+    OCRelease(num_sint16_max_uint8);
+
+    // Test OCEqual with different number types and different values
+    OCNumberRef num_sint32_neg = OCNumberCreateWithSInt32(-5);
+    OCNumberRef num_uint32_pos = OCNumberCreateWithUInt32(5);
+    ASSERT_FALSE(OCEqual(num_sint32_neg, num_uint32_pos), "OCEqual: sint32(-5) == uint32(5) should be false");
+    OCRelease(num_sint32_neg);
+    OCRelease(num_uint32_pos);
+
     fprintf(stderr, "%s end...without problems\n", __func__);
     return true;
 }
+
