@@ -10,6 +10,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <math.h>    // for nan(), fabs()
+#include <stdbool.h> // For bool type
 #include "OCLibrary.h"
 
 // Callbacks for OCArray containing OCRange structs
