@@ -1,5 +1,3 @@
-# docs/conf.py
-
 # -- Project information -----------------------------------------------------
 
 project = 'OCTypes'
@@ -19,7 +17,6 @@ extensions = [
     'breathe',
 ]
 
-# Only Python intersphinx for now
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
 }
@@ -27,9 +24,9 @@ intersphinx_mapping = {
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
-# Silence exactly that “Duplicate C declaration” warning (substring match)
+# Silence the “Duplicate C declaration” warning from the C domain
 suppress_warnings = [
-    'Duplicate C declaration',
+    'duplicate_declaration.c',
 ]
 
 
@@ -52,3 +49,4 @@ breathe_domain_by_extension = {
 
 html_theme = 'sphinx_rtd_theme'
 # html_static_path = ['_static']  # uncomment if you actually have a _static dir
+
