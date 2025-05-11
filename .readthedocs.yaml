@@ -32,7 +32,7 @@ build:
     - sphinx-build --version || echo "sphinx-build still not found after manual install"
     - which sphinx-build || echo "sphinx-build location not found"
     - echo "--- Running Doxygen ---"
-    - echo "Current directory before Doxygen: $(pwd)"
+    - 'echo "Current directory before Doxygen: $(pwd)"'
     - echo "Contents of src/ before Doxygen:"
     - ls -la src/
     - doxygen docs/Doxyfile > doxygen_run.log 2>&1
