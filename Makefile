@@ -21,6 +21,11 @@ STATIC_SRC = $(filter-out $(YACC_SRC) $(LEX_SRC), $(wildcard $(SRC_DIR)/*.c))
 ALL_C = $(GEN_C) $(notdir $(STATIC_SRC))
 OBJ = $(ALL_C:.c=.o)
 
+# Test sources and objects
+TEST_SRC_DIR = tests
+TEST_FILES = $(wildcard $(TEST_SRC_DIR)/test_*.c) $(TEST_SRC_DIR)/main.c
+TEST_OBJ = $(notdir $(TEST_FILES:.c=.o))
+
 .PHONY: all clean test
 
 all: libOCTypes.a
@@ -54,26 +59,30 @@ OCString.o: CFLAGS += -Wno-unused-but-set-variable
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
+# Compile C sources located in tests/ to objects
+%.o: tests/%.c
+	$(CC) $(CFLAGS) -Isrc -Itests -c -o $@ $<
+
 # Build static library
 libOCTypes.a: $(OBJ)
 	$(AR) rcs $@ $^
 
 .PHONY: test
-test: libOCTypes.a
-	$(CC) $(CFLAGS) -Isrc tests/main.c -L. -lOCTypes -lm -o runTests
+test: libOCTypes.a $(TEST_OBJ)
+	$(CC) $(CFLAGS) -Isrc -Itests $(TEST_OBJ) -L. -lOCTypes -lm -o runTests
 	./runTests
 
 .PHONY: test-debug
-test-debug: libOCTypes.a
-	$(CC) $(CFLAGS) -g -O0 -Isrc tests/main.c -L. -lOCTypes -lm -o runTests.debug
+test-debug: libOCTypes.a $(TEST_OBJ)
+	$(CC) $(CFLAGS) -g -O0 -Isrc -Itests $(TEST_OBJ) -L. -lOCTypes -lm -o runTests.debug
 	@echo "Launching under LLDB..."
 	@lldb -- ./runTests.debug
 
 .PHONY: test-asan
-test-asan: libOCTypes.a
-	$(CC) $(CFLAGS) -g -O1 -fsanitize=address -fno-omit-frame-pointer -Isrc tests/main.c -L. -lOCTypes -lm -o runTests.asan
+test-asan: libOCTypes.a $(TEST_OBJ)
+	$(CC) $(CFLAGS) -g -O1 -fsanitize=address -fno-omit-frame-pointer -Isrc -Itests $(TEST_OBJ) -L. -lOCTypes -lm -o runTests.asan
 	@echo "Running AddressSanitizer build..."
 	@./runTests.asan
 
 clean:
-	rm -f $(OBJ) libOCTypes.a $(GEN_C) $(GEN_H)
+	rm -f $(OBJ) $(TEST_OBJ) libOCTypes.a $(GEN_C) $(GEN_H) runTests runTests.debug runTests.asan *.dSYM -rf

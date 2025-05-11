@@ -278,43 +278,55 @@ int OCNumberTypeSize(OCNumberType type)
 
 OCStringRef OCNumberCreateStringValue(OCNumberRef theNumber)
 {
+    if (!theNumber) return NULL;
+
     OCNumberType type = theNumber->type;
     switch (type) {
         case kOCNumberUInt8Type: {
-            return OCStringCreateWithFormat(STR("%hi"),(int16_t) theNumber->value.uint8Value);
+            return OCStringCreateWithFormat(STR("%hhu"), (unsigned char)theNumber->value.uint8Value);
         }
         case kOCNumberSInt8Type: {
-            return OCStringCreateWithFormat(STR("%hi"),(int16_t) theNumber->value.int8Value);
+            return OCStringCreateWithFormat(STR("%hhi"), (signed char)theNumber->value.int8Value);
         }
         case kOCNumberUInt16Type: {
-            return OCStringCreateWithFormat(STR("%hi"),theNumber->value.uint16Value);
+            return OCStringCreateWithFormat(STR("%hu"), (unsigned short)theNumber->value.uint16Value);
         }
         case kOCNumberSInt16Type: {
-            return OCStringCreateWithFormat(STR("%hi"),theNumber->value.int16Value);
+            return OCStringCreateWithFormat(STR("%hi"), (short)theNumber->value.int16Value);
         }
         case kOCNumberUInt32Type: {
-            return OCStringCreateWithFormat(STR("%d"),theNumber->value.uint32Value);
+            return OCStringCreateWithFormat(STR("%u"), (unsigned int)theNumber->value.uint32Value);
         }
         case kOCNumberSInt32Type: {
-            return OCStringCreateWithFormat(STR("%d"),theNumber->value.int32Value);
+            return OCStringCreateWithFormat(STR("%d"), (int)theNumber->value.int32Value);
         }
         case kOCNumberUInt64Type: {
-            return OCStringCreateWithFormat(STR("%ld"),theNumber->value.uint64Value);
+            return OCStringCreateWithFormat(STR("%llu"), (unsigned long long)theNumber->value.uint64Value);
         }
         case kOCNumberSInt64Type: {
-            return OCStringCreateWithFormat(STR("%ld"),theNumber->value.int64Value);
+            return OCStringCreateWithFormat(STR("%lld"), (long long)theNumber->value.int64Value);
         }
         case kOCNumberFloat32Type: {
-            return OCStringCreateWithFormat(STR("%g"),theNumber->value.floatValue);
+            return OCStringCreateWithFormat(STR("%g"), theNumber->value.floatValue);
         }
         case kOCNumberFloat64Type: {
-            return OCStringCreateWithFormat(STR("%lg"),theNumber->value.doubleValue);
+            return OCStringCreateWithFormat(STR("%lg"), theNumber->value.doubleValue);
         }
         case kOCNumberFloat32ComplexType: {
-            return OCStringCreateWithFormat(STR("%g+I*%g"),crealf(theNumber->value.floatComplexValue),cimagf(theNumber->value.floatComplexValue));
+            float r_f = crealf(theNumber->value.floatComplexValue);
+            float i_f = cimagf(theNumber->value.floatComplexValue);
+            if (r_f == 0.0f && i_f == 0.0f) {
+                return OCStringCreateWithCString("0");
+            }
+            return OCStringCreateWithFormat(STR("%g+I*%g"), r_f, i_f);
         }
         case kOCNumberFloat64ComplexType: {
-            return OCStringCreateWithFormat(STR("%g+I*%g"),creal(theNumber->value.doubleComplexValue),cimag(theNumber->value.doubleComplexValue));
+            double r_d = creal(theNumber->value.doubleComplexValue);
+            double i_d = cimag(theNumber->value.doubleComplexValue);
+            if (r_d == 0.0 && i_d == 0.0) {
+                return OCStringCreateWithCString("0");
+            }
+            return OCStringCreateWithFormat(STR("%g+I*%g"), r_d, i_d);
         }
     }
     return NULL;
