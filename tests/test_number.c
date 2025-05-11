@@ -1,6 +1,7 @@
 #include "test_utils.h"
 #include <stdint.h>
 #include <complex.h>       // for float complex / double complex
+#include <string.h>
 #include "../src/OCNumber.h"
 #include "../src/OCType.h"
 #include "../src/OCString.h"
