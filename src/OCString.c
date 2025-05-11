@@ -5,7 +5,9 @@
 //  Created by philip on 5/10/17.
 //
 
+#include "OCString.h"
 #include "OCLibrary.h"
+#include <stdbool.h>
 
 // Callbacks for OCArray containing OCRange structs
 static void __OCRangeReleaseCallBack(const void *value) {
