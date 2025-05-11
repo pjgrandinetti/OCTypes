@@ -261,8 +261,6 @@ int64_t OCStringFindAndReplace(OCMutableStringRef string,
                                OCRange rangeToSearch,
                                OCOptionFlags compareOptions);
 
-typedef const struct __OCArray * OCArrayRef;
-
 /**
  * @brief Creates an array of ranges where a substring is found within an OCString.
  * @param string Source OCString.

@@ -113,12 +113,6 @@ void OCRelease(const void *ptr);
 const void *OCRetain(const void *ptr);
 
 /**
- * @brief A reference to an immutable OCString instance.
- * @ingroup OCType
- */
-typedef const struct __OCString *OCStringRef;
-
-/**
  * @brief Generates a formatted string description of an OCType.
  *
  * @param ptr Pointer to the OCType instance.

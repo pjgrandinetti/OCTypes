@@ -46,9 +46,6 @@ breathe_default_project = 'OCTypes'
 # Suppress specific warnings that are common and often benign in C projects.
 # Trying a combination of identifiers as RTD may differ from local.
 suppress_warnings = [
-    'duplicate_declaration.c',  # Works locally
-    'c.duplicate_declaration',    # Standard for Sphinx 3.1+ for C domain
-    'duplicate_declaration',      # More generic form
 ]
 
 # -- Options for HTML output -------------------------------------------------
