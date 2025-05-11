@@ -46,7 +46,7 @@ breathe_default_project = 'OCTypes'
 
 # Suppress specific warnings that are common and often benign in C projects
 suppress_warnings = [
-    'duplicate_declaration.c',  # For typedefs appearing in multiple modules
+    'duplicate_declaration',  # For typedefs appearing in multiple modules
 ]
 
 # -- Options for HTML output -------------------------------------------------
