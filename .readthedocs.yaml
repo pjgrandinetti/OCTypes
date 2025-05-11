@@ -13,7 +13,7 @@ build:
   commands:
     - echo "--- Environment Info ---"
     - pwd
-    - echo "Current PATH: $PATH"
+    - 'echo "Current PATH: $PATH"'
     - echo "Listing root directory:"
     - ls -la
     - echo "Listing docs directory:"
