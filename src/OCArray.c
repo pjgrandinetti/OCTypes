@@ -1,12 +1,22 @@
-#if defined(__linux__) || (defined(__GNUC__) && (defined(_WIN32) || defined(__CYGWIN__)))
-  #ifndef _GNU_SOURCE // Guard against multiple definitions
-    #define _GNU_SOURCE // For qsort_r (GNU version) and other extensions
+#if (defined(__GNUC__) && (defined(_WIN32) || defined(__CYGWIN__))) || \
+    (defined(_MSC_VER) && defined(_WIN32))
+  // For qsort_s (C11 Annex K)
+  #ifndef __STDC_WANT_LIB_EXT1__
+    #define __STDC_WANT_LIB_EXT1__ 1
   #endif
 #endif
 
-#include <stdint.h> // For uint64_t and other standard integer types
-#include <stdlib.h> // For malloc, free, realloc, qsort, qsort_r, qsort_s
-#include <string.h> // For memcpy
+#if defined(__linux__) || (defined(__GNUC__) && (defined(_WIN32) || defined(__CYGWIN__)))
+  // For GNU-specific extensions (like GNU qsort_r if available)
+  // For MinGW, qsort_s is prioritized due to compiler hints and previous qsort_r issues.
+  #ifndef _GNU_SOURCE
+    #define _GNU_SOURCE
+  #endif
+#endif
+
+#include <stdlib.h>  // For qsort, qsort_r, qsort_s, malloc, etc. Must be early for feature macros.
+#include <stdint.h>  // For uint64_t, etc.
+#include <string.h>  // For memcpy
 #include <stdbool.h> // For bool
 
 // Handle Nullability qualifiers for non-Clang compilers (like GCC)
@@ -349,7 +359,6 @@ void OCArraySortValues(OCMutableArrayRef theArray, OCRange range, OCComparatorFu
     }
     // Ensure range is valid
     if (range.location >= theArray->count || (range.location + range.length) > theArray->count) {
-        // Consider logging an error or asserting for invalid range in a debug build
         return;
     }
 
@@ -357,19 +366,53 @@ void OCArraySortValues(OCMutableArrayRef theArray, OCRange range, OCComparatorFu
     
     void **base_ptr = theArray->data + range.location;
     size_t nmemb = range.length;
-    size_t element_size = sizeof(void *); // Corrected to sizeof(void *)
+    size_t element_size = sizeof(void *);
 
 #if defined(__APPLE__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
+    // BSD qsort_r: compar(thunk, a, b)
     qsort_r(base_ptr, nmemb, element_size, &myContext, thunk_first_qsort_compare_wrapper);
 
-#elif defined(__linux__) || (defined(__GNUC__) && (defined(_WIN32) || defined(__CYGWIN__))) // GNU (Linux, MinGW, Cygwin GCC)
+#elif defined(__linux__) && defined(_GNU_SOURCE)
+    // GNU/Linux qsort_r: compar(a, b, thunk)
+    // This assumes _GNU_SOURCE successfully exposed qsort_r.
+    // If not, this line will fail compilation.
     qsort_r(base_ptr, nmemb, element_size, thunk_last_qsort_compare_wrapper, &myContext);
 
-#elif defined(_MSC_VER) && defined(_WIN32) // MSVC on Windows
-    qsort_s(base_ptr, nmemb, element_size, thunk_first_qsort_compare_wrapper, &myContext);
+#elif (defined(__GNUC__) && (defined(_WIN32) || defined(__CYGWIN__))) // MinGW or Cygwin with GCC
+    // Attempt to use C11 qsort_s. __STDC_WANT_LIB_EXT1__ should be defined and active from the top of the file.
+    // Comparator for C11 qsort_s: int (*compar)(const void *x, const void *y, void *context)
+    // Matches: thunk_last_qsort_compare_wrapper
+    #if defined(__STDC_LIB_EXT1__) && __STDC_LIB_EXT1__ >= 201112L
+        // If qsort_s is not declared despite __STDC_WANT_LIB_EXT1__, this call will fail compilation.
+        if (qsort_s(base_ptr, nmemb, element_size, thunk_last_qsort_compare_wrapper, &myContext) != 0) {
+            #warning "qsort_s call returned an error on MinGW/Cygwin GCC."
+            // Consider error handling here, e.g., setting a flag or logging.
+        }
+    #else
+        // If __STDC_LIB_EXT1__ is not defined to a suitable value, qsort_s is likely unavailable.
+        // GNU qsort_r was also problematic (original error).
+        #error "MinGW/Cygwin GCC: C11 qsort_s not available (check __STDC_WANT_LIB_EXT1__ definition and library support). Cannot sort with context."
+    #endif
 
+#elif defined(_MSC_VER) && defined(_WIN32) // MSVC on Windows
+    // Attempt to use MSVC's qsort_s. __STDC_WANT_LIB_EXT1__ should be defined and active.
+    // Comparator for MSVC qsort_s: int func(void* context_param, const void* a, const void* b)
+    // Matches: thunk_first_qsort_compare_wrapper
+    #if defined(__STDC_LIB_EXT1__) && __STDC_LIB_EXT1__ >= 201112L
+        // If qsort_s is not declared, this call will fail compilation.
+        qsort_s(base_ptr, nmemb, element_size, thunk_first_qsort_compare_wrapper, &myContext);
+    #else
+        #error "MSVC: qsort_s not available (check __STDC_WANT_LIB_EXT1__ definition and compiler/library version)."
+    #endif
 #else
-    #error "qsort_r or qsort_s is not available or configured for this platform/compiler. Sorting with context may not be supported or may be incorrect."
+    // Generic fallback / error for other platforms
+    #warning "Platform not explicitly supported for qsort_r or qsort_s. Contextual sort may fail."
+    if (context != NULL) {
+        #error "Contextual sort (qsort_r/qsort_s) not implemented for this platform and context is required."
+    } else {
+        // Potentially use standard qsort if context is NULL and an adapter is made.
+        #error "Fallback to standard qsort for NULL context not robustly implemented. Please provide a qsort_r/qsort_s equivalent for your platform or ensure the comparator can work with standard qsort."
+    }
 #endif
 }
 

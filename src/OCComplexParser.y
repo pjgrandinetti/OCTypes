@@ -115,7 +115,7 @@ double complex OCComplexFromCString(const char *string)
     ocpc_scan_string(string);
     ocpcparse();
     ocpclex_destroy();
-    if(syntax_error) return nan(NULL);
+    if(syntax_error) return nan("");
     return result;
 }
 
@@ -178,7 +178,7 @@ static double complex builtInMathFunction(ComplexNumberFunctionRef func)
         case BM_carg:
         return cargument(value);
         default:
-        return nan(NULL);
+        return nan("");
     }
 }
 
