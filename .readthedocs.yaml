@@ -32,16 +32,20 @@ build:
     - sphinx-build --version || echo "sphinx-build still not found after manual install"
     - which sphinx-build || echo "sphinx-build location not found"
     - echo "--- Running Doxygen ---"
-    - 'echo "Current directory before Doxygen: $(pwd)"'
-    - echo "Contents of src/ before Doxygen:"
+    - 'echo "Current directory before changing to docs/: $(pwd)"'
+    - echo "Contents of project root src/ (for reference):"
     - ls -la src/
-    - doxygen docs/Doxyfile > doxygen_run.log 2>&1
-    - echo "Doxygen command finished. Log content:"
+    - echo "Contents of project root docs/ (for reference):"
+    - ls -la docs/
+    # Run Doxygen from within the docs/ directory so paths in Doxyfile are relative to docs/
+    # Output Doxygen log to project root for easier access in RTD build artifacts.
+    - (cd docs && doxygen Doxyfile > ../doxygen_run.log 2>&1)
+    - echo "Doxygen command finished. Log content (from project root):"
     - cat doxygen_run.log
-    - 'echo "--- Listing Doxygen Output Directory (expected location for conf.py: docs/doxygen/xml) ---"'
+    - 'echo "--- Listing Doxygen Output Directory (expected: docs/doxygen/) ---"'
     - ls -lR docs/doxygen/ || echo "docs/doxygen/ not found or listing failed."
-    - echo "--- Listing Alternative Doxygen Output Directory (docs/xml) ---"
-    - ls -lR docs/xml/ || echo "docs/xml/ not found or listing failed."
+    - 'echo "--- Listing Doxygen XML Output Directory (expected: docs/doxygen/xml/) ---"'
+    - ls -lR docs/doxygen/xml/ || echo "docs/doxygen/xml/ not found or listing failed."
     - echo "--- Running Sphinx ---"
     # -W: Treat warnings as errors (suppress_warnings in conf.py should be respected)
     # -E: Always rebuild environment
