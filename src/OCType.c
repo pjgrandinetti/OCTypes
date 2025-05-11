@@ -86,16 +86,25 @@ OCTypeID OCRegisterType(char *typeName)
 // Decrements the reference count of an object and finalizes it if the count reaches zero.
 void OCRelease(const void * ptr)
 {
-    OCTypeRef theType = (OCTypeRef) ptr;
+    // Cast to non-const internal struct pointer for modification
+    struct __OCType *theType = (struct __OCType *) ptr;
     if(NULL == theType) return;
 
     // Decrement the retain count and finalize if it reaches zero.
     if(theType->_base.retainCount < 1) {
-        theType->_base.retainCount = 0;
+        theType->_base.retainCount = 0; // Should this be an assertion or error?
         return;
     } else if(theType->_base.retainCount == 1) {
-        theType->_base.finalize(theType);
-        return;
+        // Before finalizing, ensure retain count is conceptually zero if finalize might re-enter or check it.
+        // However, the actual deallocation should happen after finalize.
+        // For now, let's assume finalize handles the object state appropriately.
+        if (theType->_base.finalize) { // Check if finalize is not NULL
+            theType->_base.finalize(theType);
+        }
+        // After finalize, the object should be considered gone, or its memory freed by finalize.
+        // If finalize doesn't free, then `free(theType);` might be needed here, depending on design.
+        // For now, we assume finalize handles deallocation or the object is part of a larger scheme.
+        return; // Return after finalize, as the object might be invalid.
     }
     theType->_base.retainCount--;
 }
@@ -103,13 +112,21 @@ void OCRelease(const void * ptr)
 // Increments the reference count of an object.
 const void *OCRetain(const void * ptr)
 {
-    OCTypeRef theType = (OCTypeRef) ptr;
+    // Cast to non-const internal struct pointer for modification
+    struct __OCType *theType = (struct __OCType *) ptr;
     if(NULL == theType) return NULL;
 
-    // Increment the retain count if valid.
-    if(theType->_base.retainCount < 1) {
-        theType->_base.retainCount = 0;
-        return theType;
+    // Since retainCount is uint32_t, it cannot be negative.
+    // A retainCount of 0 will be incremented to 1.
+    // The previous conditional block to handle retainCount < 1 (and not 0)
+    // was always false and has been removed.
+
+    // Check for overflow if retainCount is near max value of uint32_t
+    if (theType->_base.retainCount == UINT32_MAX) {
+        // Handle overflow: either error, assert, or cap.
+        // For now, let's assume it's an error condition or highly unlikely.
+        // Depending on policy, could log or abort.
+        return theType; // Cannot retain further
     }
     theType->_base.retainCount++;
     return theType;

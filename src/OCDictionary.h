@@ -13,25 +13,13 @@
 #include <stdbool.h>
 
 #include "OCArray.h"
-#include "OCLibrary.h"
+#include "OCLibrary.h" // Ensures OCDictionaryRef and other types are available
 
 /**
  * @defgroup OCDictionary OCDictionary
  * @brief Dictionary types and operations.
  * @{
  */
-
-/**
- * @brief An opaque reference to an immutable dictionary object.
- * @ingroup OCDictionary
- */
-typedef const struct __OCDictionary *OCDictionaryRef;
-
-/**
- * @brief An opaque reference to a mutable dictionary object.
- * @ingroup OCDictionary
- */
-typedef struct __OCDictionary *OCMutableDictionaryRef;
 
 /**
  * @brief Returns the OCTypeID for OCDictionary objects.

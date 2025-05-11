@@ -9,25 +9,13 @@
 #ifndef OCData_h
 #define OCData_h
 
-#include "OCLibrary.h"
+#include "OCLibrary.h" // Ensures OCDataRef and other types are available
 
 /**
  * @defgroup OCData OCData
  * @brief Binary data buffer types and utilities.
  * @{
  */
-
-/**
- * @brief A reference to an immutable data object.
- * @ingroup OCData
- */
-typedef const struct __OCData *OCDataRef;
-
-/**
- * @brief A reference to a mutable data object.
- * @ingroup OCData
- */
-typedef struct __OCData *OCMutableDataRef;
 
 /**
  * @brief Returns the unique type identifier for OCData objects.

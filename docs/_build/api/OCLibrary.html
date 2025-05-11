@@ -57,6 +57,17 @@
 <li class="toctree-l2"><a class="reference internal" href="#c.OCOptionFlags"><code class="docutils literal notranslate"><span class="pre">OCOptionFlags</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#c.OCComparatorFunction"><code class="docutils literal notranslate"><span class="pre">OCComparatorFunction</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#c.OCStringCompareFlags"><code class="docutils literal notranslate"><span class="pre">OCStringCompareFlags</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCTypeRef"><code class="docutils literal notranslate"><span class="pre">OCTypeRef</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCStringRef"><code class="docutils literal notranslate"><span class="pre">OCStringRef</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCArrayRef"><code class="docutils literal notranslate"><span class="pre">OCArrayRef</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCDictionaryRef"><code class="docutils literal notranslate"><span class="pre">OCDictionaryRef</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCBooleanRef"><code class="docutils literal notranslate"><span class="pre">OCBooleanRef</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCDataRef"><code class="docutils literal notranslate"><span class="pre">OCDataRef</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCNumberRef"><code class="docutils literal notranslate"><span class="pre">OCNumberRef</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCMutableArrayRef"><code class="docutils literal notranslate"><span class="pre">OCMutableArrayRef</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCMutableDataRef"><code class="docutils literal notranslate"><span class="pre">OCMutableDataRef</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCMutableDictionaryRef"><code class="docutils literal notranslate"><span class="pre">OCMutableDictionaryRef</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCMutableStringRef"><code class="docutils literal notranslate"><span class="pre">OCMutableStringRef</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#c.OCComparisonResult"><code class="docutils literal notranslate"><span class="pre">OCComparisonResult</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#c.OCComparisonResult.kOCCompareLessThan"><code class="docutils literal notranslate"><span class="pre">kOCCompareLessThan</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#c.OCComparisonResult.kOCCompareEqualTo"><code class="docutils literal notranslate"><span class="pre">kOCCompareEqualTo</span></code></a></li>
@@ -169,6 +180,61 @@
 </div>
 </p>
 </dd></dl>
+
+<dl class="c type">
+<dt class="sig sig-object c" id="c.OCTypeRef">
+<span class="target" id="d6/d5e/group___o_c_library_1gafe57bf2cd551bfd5d3ced9b5d18e50a0"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">__OCType</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">OCTypeRef</span></span></span><a class="headerlink" href="#c.OCTypeRef" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c type">
+<dt class="sig sig-object c" id="c.OCStringRef">
+<span class="target" id="d6/d5e/group___o_c_library_1ga34a97bf2ed10637e698c2cd3faa193d4"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">__OCString</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">OCStringRef</span></span></span><a class="headerlink" href="#c.OCStringRef" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c type">
+<dt class="sig sig-object c" id="c.OCArrayRef">
+<span class="target" id="d6/d5e/group___o_c_library_1ga258ada3c18aefb7cd00f9fae05441cc9"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">__OCArray</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">OCArrayRef</span></span></span><a class="headerlink" href="#c.OCArrayRef" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c type">
+<dt class="sig sig-object c" id="c.OCDictionaryRef">
+<span class="target" id="d6/d5e/group___o_c_library_1gaa6826a3d2e9e148e7bbc4df333300257"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">__OCDictionary</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">OCDictionaryRef</span></span></span><a class="headerlink" href="#c.OCDictionaryRef" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c type">
+<dt class="sig sig-object c" id="c.OCBooleanRef">
+<span class="target" id="d6/d5e/group___o_c_library_1ga333efd08bfea7a6d27702fac3afab9be"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">__OCBoolean</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">OCBooleanRef</span></span></span><a class="headerlink" href="#c.OCBooleanRef" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c type">
+<dt class="sig sig-object c" id="c.OCDataRef">
+<span class="target" id="d6/d5e/group___o_c_library_1ga2791cc4c74800d85862dcfb7c002c57c"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">__OCData</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">OCDataRef</span></span></span><a class="headerlink" href="#c.OCDataRef" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c type">
+<dt class="sig sig-object c" id="c.OCNumberRef">
+<span class="target" id="d6/d5e/group___o_c_library_1ga339231e281d1948a4c2122108c0a3d77"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">__OCNumber</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">OCNumberRef</span></span></span><a class="headerlink" href="#c.OCNumberRef" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c type">
+<dt class="sig sig-object c" id="c.OCMutableArrayRef">
+<span class="target" id="d6/d5e/group___o_c_library_1ga24c04bc73e1c423b53a48ea599e81dec"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">__OCArray</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">OCMutableArrayRef</span></span></span><a class="headerlink" href="#c.OCMutableArrayRef" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c type">
+<dt class="sig sig-object c" id="c.OCMutableDataRef">
+<span class="target" id="d6/d5e/group___o_c_library_1gaa4e0a88e16159a6586cf3cc2715bf7a4"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">__OCData</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">OCMutableDataRef</span></span></span><a class="headerlink" href="#c.OCMutableDataRef" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c type">
+<dt class="sig sig-object c" id="c.OCMutableDictionaryRef">
+<span class="target" id="d6/d5e/group___o_c_library_1ga19045ab0d11ee2e868fdef402778e539"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">__OCDictionary</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">OCMutableDictionaryRef</span></span></span><a class="headerlink" href="#c.OCMutableDictionaryRef" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c type">
+<dt class="sig sig-object c" id="c.OCMutableStringRef">
+<span class="target" id="d6/d5e/group___o_c_library_1ga43f3fb9d6dc8cc05f3daaccdad5cfed7"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">__OCString</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">OCMutableStringRef</span></span></span><a class="headerlink" href="#c.OCMutableStringRef" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
 
 </div>
 <div class="breathe-sectiondef docutils container">

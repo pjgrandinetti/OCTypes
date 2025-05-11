@@ -10,24 +10,12 @@
 
 // System & OCTypes headers
 #include <complex.h>
-#include "OCLibrary.h"
+#include "OCLibrary.h" // Ensures OCStringRef and other types are available
 
 /** @defgroup OCString OCString
  *  @brief Immutable and mutable OCString operations.
  *  @{
  */
-
-/**
- * @brief Opaque reference to an immutable OCString.
- * @ingroup OCString
- */
-typedef const struct __OCString * OCStringRef;
-
-/**
- * @brief Opaque reference to a mutable OCString.
- * @ingroup OCString
- */
-typedef struct __OCString * OCMutableStringRef;
 
 /**
  * @brief Macro to create a constant OCStringRef from a C string literal.

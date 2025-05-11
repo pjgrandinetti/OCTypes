@@ -18,18 +18,6 @@
  */
 
 /**
- * @brief A reference to an immutable array object.
- * @ingroup OCArray
- */
-typedef const struct __OCArray *OCArrayRef;
-
-/**
- * @brief A reference to a mutable array object.
- * @ingroup OCArray
- */
-typedef struct __OCArray *OCMutableArrayRef;
-
-/**
  * @brief Callback to retain a value in the array.
  *
  * @param value The value to be retained.

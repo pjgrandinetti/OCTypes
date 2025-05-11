@@ -59,7 +59,6 @@
 <li class="toctree-l2"><a class="reference internal" href="#c.UInt64Type"><code class="docutils literal notranslate"><span class="pre">UInt64Type</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#c.Float32ComplexType"><code class="docutils literal notranslate"><span class="pre">Float32ComplexType</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#c.Float64ComplexType"><code class="docutils literal notranslate"><span class="pre">Float64ComplexType</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#c.OCNumberRef"><code class="docutils literal notranslate"><span class="pre">OCNumberRef</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#c.OCNumberType"><code class="docutils literal notranslate"><span class="pre">OCNumberType</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#c.OCNumberType.kOCNumberSInt8Type"><code class="docutils literal notranslate"><span class="pre">kOCNumberSInt8Type</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#c.OCNumberType.kOCNumberSInt16Type"><code class="docutils literal notranslate"><span class="pre">kOCNumberSInt16Type</span></code></a></li>
@@ -206,16 +205,6 @@
 
 </div>
 <div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric" id="breathe-section-title-typedefs">Typedefs</p>
-<dl class="c type">
-<dt class="sig sig-object c" id="c.OCNumberRef">
-<span class="target" id="de/dfb/group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">__OCNumber</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">OCNumberRef</span></span></span><a class="headerlink" href="#c.OCNumberRef" title="Link to this definition"></a><br /></dt>
-<dd><p>A reference to an immutable OCNumber object. </p>
-<p><a class="reference internal" href="#de/dfb/group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77"><span class="std std-ref">OCNumberRef</span></a> is used to represent various numerical values within the OCTypes framework. These objects encapsulate primitive number types and provide a common interface for them. </p>
-</dd></dl>
-
-</div>
-<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-enums">Enums</p>
 <dl class="c enum">
 <dt class="sig sig-object c" id="c.OCNumberType">
@@ -341,7 +330,7 @@
 
 <dl class="c function">
 <dt class="sig sig-object c" id="c.OCNumberCreate">
-<span class="target" id="de/dfb/group___o_c_number_1ga42cdbbbf61873db7c81125ab6385810c"></span><a class="reference internal" href="#c.OCNumberRef" title="OCNumberRef"><span class="n"><span class="pre">OCNumberRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCNumberCreate</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.OCNumberType" title="OCNumberType"><span class="n"><span class="pre">OCNumberType</span></span></a><span class="w"> </span><span class="n"><span class="pre">type</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCNumberCreate" title="Link to this definition"></a><br /></dt>
+<span class="target" id="de/dfb/group___o_c_number_1ga42cdbbbf61873db7c81125ab6385810c"></span><a class="reference internal" href="OCLibrary.html#c.OCNumberRef" title="OCNumberRef"><span class="n"><span class="pre">OCNumberRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCNumberCreate</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.OCNumberType" title="OCNumberType"><span class="n"><span class="pre">OCNumberType</span></span></a><span class="w"> </span><span class="n"><span class="pre">type</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCNumberCreate" title="Link to this definition"></a><br /></dt>
 <dd><p>Creates an OCNumber object from a raw value and specified <a class="reference internal" href="#de/dfb/group___o_c_number_1ga48705b7a724a22d77df7a1714a59320c"><span class="std std-ref">OCNumberType</span></a>. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -351,69 +340,69 @@
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>An <a class="reference internal" href="#de/dfb/group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77"><span class="std std-ref">OCNumberRef</span></a> or NULL on error. </p>
+<dd class="field-even"><p>An <a class="reference internal" href="OCLibrary.html#d6/d5e/group___o_c_library_1ga339231e281d1948a4c2122108c0a3d77"><span class="std std-ref">OCNumberRef</span></a> or NULL on error. </p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="c function">
 <dt class="sig sig-object c" id="c.OCNumberCreateWithUInt8">
-<span class="target" id="de/dfb/group___o_c_number_1ga86230140fc4fdd90e5c96ed9cef84a17"></span><a class="reference internal" href="#c.OCNumberRef" title="OCNumberRef"><span class="n"><span class="pre">OCNumberRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCNumberCreateWithUInt8</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCNumberCreateWithUInt8" title="Link to this definition"></a><br /></dt>
+<span class="target" id="de/dfb/group___o_c_number_1ga86230140fc4fdd90e5c96ed9cef84a17"></span><a class="reference internal" href="OCLibrary.html#c.OCNumberRef" title="OCNumberRef"><span class="n"><span class="pre">OCNumberRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCNumberCreateWithUInt8</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCNumberCreateWithUInt8" title="Link to this definition"></a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c function">
 <dt class="sig sig-object c" id="c.OCNumberCreateWithUInt16">
-<span class="target" id="de/dfb/group___o_c_number_1gabedfc6f91be2ce0595a4de1a421fba39"></span><a class="reference internal" href="#c.OCNumberRef" title="OCNumberRef"><span class="n"><span class="pre">OCNumberRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCNumberCreateWithUInt16</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCNumberCreateWithUInt16" title="Link to this definition"></a><br /></dt>
+<span class="target" id="de/dfb/group___o_c_number_1gabedfc6f91be2ce0595a4de1a421fba39"></span><a class="reference internal" href="OCLibrary.html#c.OCNumberRef" title="OCNumberRef"><span class="n"><span class="pre">OCNumberRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCNumberCreateWithUInt16</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCNumberCreateWithUInt16" title="Link to this definition"></a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c function">
 <dt class="sig sig-object c" id="c.OCNumberCreateWithUInt32">
-<span class="target" id="de/dfb/group___o_c_number_1ga1958f4a0241c77dcdc21a700330c4202"></span><a class="reference internal" href="#c.OCNumberRef" title="OCNumberRef"><span class="n"><span class="pre">OCNumberRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCNumberCreateWithUInt32</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCNumberCreateWithUInt32" title="Link to this definition"></a><br /></dt>
+<span class="target" id="de/dfb/group___o_c_number_1ga1958f4a0241c77dcdc21a700330c4202"></span><a class="reference internal" href="OCLibrary.html#c.OCNumberRef" title="OCNumberRef"><span class="n"><span class="pre">OCNumberRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCNumberCreateWithUInt32</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCNumberCreateWithUInt32" title="Link to this definition"></a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c function">
 <dt class="sig sig-object c" id="c.OCNumberCreateWithUInt64">
-<span class="target" id="de/dfb/group___o_c_number_1gaaa7771b7733765276bf912fefa15ef0f"></span><a class="reference internal" href="#c.OCNumberRef" title="OCNumberRef"><span class="n"><span class="pre">OCNumberRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCNumberCreateWithUInt64</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCNumberCreateWithUInt64" title="Link to this definition"></a><br /></dt>
+<span class="target" id="de/dfb/group___o_c_number_1gaaa7771b7733765276bf912fefa15ef0f"></span><a class="reference internal" href="OCLibrary.html#c.OCNumberRef" title="OCNumberRef"><span class="n"><span class="pre">OCNumberRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCNumberCreateWithUInt64</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCNumberCreateWithUInt64" title="Link to this definition"></a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c function">
 <dt class="sig sig-object c" id="c.OCNumberCreateWithSInt8">
-<span class="target" id="de/dfb/group___o_c_number_1gae0422b19ce598fae0330ea1f2b66b36d"></span><a class="reference internal" href="#c.OCNumberRef" title="OCNumberRef"><span class="n"><span class="pre">OCNumberRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCNumberCreateWithSInt8</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">int8_t</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCNumberCreateWithSInt8" title="Link to this definition"></a><br /></dt>
+<span class="target" id="de/dfb/group___o_c_number_1gae0422b19ce598fae0330ea1f2b66b36d"></span><a class="reference internal" href="OCLibrary.html#c.OCNumberRef" title="OCNumberRef"><span class="n"><span class="pre">OCNumberRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCNumberCreateWithSInt8</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">int8_t</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCNumberCreateWithSInt8" title="Link to this definition"></a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c function">
 <dt class="sig sig-object c" id="c.OCNumberCreateWithSInt16">
-<span class="target" id="de/dfb/group___o_c_number_1gaad45ebc219f2a93dad63222fb8fab71c"></span><a class="reference internal" href="#c.OCNumberRef" title="OCNumberRef"><span class="n"><span class="pre">OCNumberRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCNumberCreateWithSInt16</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">int16_t</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCNumberCreateWithSInt16" title="Link to this definition"></a><br /></dt>
+<span class="target" id="de/dfb/group___o_c_number_1gaad45ebc219f2a93dad63222fb8fab71c"></span><a class="reference internal" href="OCLibrary.html#c.OCNumberRef" title="OCNumberRef"><span class="n"><span class="pre">OCNumberRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCNumberCreateWithSInt16</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">int16_t</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCNumberCreateWithSInt16" title="Link to this definition"></a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c function">
 <dt class="sig sig-object c" id="c.OCNumberCreateWithSInt32">
-<span class="target" id="de/dfb/group___o_c_number_1gaef3fa8e2779babd28b191ef13957da0d"></span><a class="reference internal" href="#c.OCNumberRef" title="OCNumberRef"><span class="n"><span class="pre">OCNumberRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCNumberCreateWithSInt32</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCNumberCreateWithSInt32" title="Link to this definition"></a><br /></dt>
+<span class="target" id="de/dfb/group___o_c_number_1gaef3fa8e2779babd28b191ef13957da0d"></span><a class="reference internal" href="OCLibrary.html#c.OCNumberRef" title="OCNumberRef"><span class="n"><span class="pre">OCNumberRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCNumberCreateWithSInt32</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCNumberCreateWithSInt32" title="Link to this definition"></a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c function">
 <dt class="sig sig-object c" id="c.OCNumberCreateWithSInt64">
-<span class="target" id="de/dfb/group___o_c_number_1ga5c5499df1b1dc7ca07844f64bf98f7d8"></span><a class="reference internal" href="#c.OCNumberRef" title="OCNumberRef"><span class="n"><span class="pre">OCNumberRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCNumberCreateWithSInt64</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">int64_t</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCNumberCreateWithSInt64" title="Link to this definition"></a><br /></dt>
+<span class="target" id="de/dfb/group___o_c_number_1ga5c5499df1b1dc7ca07844f64bf98f7d8"></span><a class="reference internal" href="OCLibrary.html#c.OCNumberRef" title="OCNumberRef"><span class="n"><span class="pre">OCNumberRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCNumberCreateWithSInt64</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">int64_t</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCNumberCreateWithSInt64" title="Link to this definition"></a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c function">
 <dt class="sig sig-object c" id="c.OCNumberCreateWithFloat">
-<span class="target" id="de/dfb/group___o_c_number_1gab2cce8d5144653218ecf8c431dbceebe"></span><a class="reference internal" href="#c.OCNumberRef" title="OCNumberRef"><span class="n"><span class="pre">OCNumberRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCNumberCreateWithFloat</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCNumberCreateWithFloat" title="Link to this definition"></a><br /></dt>
+<span class="target" id="de/dfb/group___o_c_number_1gab2cce8d5144653218ecf8c431dbceebe"></span><a class="reference internal" href="OCLibrary.html#c.OCNumberRef" title="OCNumberRef"><span class="n"><span class="pre">OCNumberRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCNumberCreateWithFloat</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCNumberCreateWithFloat" title="Link to this definition"></a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c function">
 <dt class="sig sig-object c" id="c.OCNumberCreateWithDouble">
-<span class="target" id="de/dfb/group___o_c_number_1ga857395a3ce57df83883cfb405f5b3b1b"></span><a class="reference internal" href="#c.OCNumberRef" title="OCNumberRef"><span class="n"><span class="pre">OCNumberRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCNumberCreateWithDouble</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCNumberCreateWithDouble" title="Link to this definition"></a><br /></dt>
+<span class="target" id="de/dfb/group___o_c_number_1ga857395a3ce57df83883cfb405f5b3b1b"></span><a class="reference internal" href="OCLibrary.html#c.OCNumberRef" title="OCNumberRef"><span class="n"><span class="pre">OCNumberRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCNumberCreateWithDouble</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCNumberCreateWithDouble" title="Link to this definition"></a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c function">
 <dt class="sig sig-object c" id="c.OCNumberCreateWithFloatComplex">
-<span class="target" id="de/dfb/group___o_c_number_1ga904b2891e246256f2d21c401e22a682b"></span><a class="reference internal" href="#c.OCNumberRef" title="OCNumberRef"><span class="n"><span class="pre">OCNumberRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCNumberCreateWithFloatComplex</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="kt"><span class="pre">complex</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCNumberCreateWithFloatComplex" title="Link to this definition"></a><br /></dt>
+<span class="target" id="de/dfb/group___o_c_number_1ga904b2891e246256f2d21c401e22a682b"></span><a class="reference internal" href="OCLibrary.html#c.OCNumberRef" title="OCNumberRef"><span class="n"><span class="pre">OCNumberRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCNumberCreateWithFloatComplex</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="kt"><span class="pre">complex</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCNumberCreateWithFloatComplex" title="Link to this definition"></a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c function">
 <dt class="sig sig-object c" id="c.OCNumberCreateWithDoubleComplex">
-<span class="target" id="de/dfb/group___o_c_number_1ga4488ced2638b85bcbc94abfb6103348d"></span><a class="reference internal" href="#c.OCNumberRef" title="OCNumberRef"><span class="n"><span class="pre">OCNumberRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCNumberCreateWithDoubleComplex</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="kt"><span class="pre">complex</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCNumberCreateWithDoubleComplex" title="Link to this definition"></a><br /></dt>
+<span class="target" id="de/dfb/group___o_c_number_1ga4488ced2638b85bcbc94abfb6103348d"></span><a class="reference internal" href="OCLibrary.html#c.OCNumberRef" title="OCNumberRef"><span class="n"><span class="pre">OCNumberRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCNumberCreateWithDoubleComplex</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="kt"><span class="pre">complex</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCNumberCreateWithDoubleComplex" title="Link to this definition"></a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c function">
@@ -424,28 +413,28 @@
 
 <dl class="c function">
 <dt class="sig sig-object c" id="c.OCNumberCreateStringValue">
-<span class="target" id="de/dfb/group___o_c_number_1ga71a346602f6947259cf718ec08863420"></span><a class="reference internal" href="OCString.html#c.OCStringRef" title="OCStringRef"><span class="n"><span class="pre">OCStringRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCNumberCreateStringValue</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.OCNumberRef" title="OCNumberRef"><span class="n"><span class="pre">OCNumberRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">theNumber</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCNumberCreateStringValue" title="Link to this definition"></a><br /></dt>
+<span class="target" id="de/dfb/group___o_c_number_1ga71a346602f6947259cf718ec08863420"></span><a class="reference internal" href="OCLibrary.html#c.OCStringRef" title="OCStringRef"><span class="n"><span class="pre">OCStringRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCNumberCreateStringValue</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="OCLibrary.html#c.OCNumberRef" title="OCNumberRef"><span class="n"><span class="pre">OCNumberRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">theNumber</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCNumberCreateStringValue" title="Link to this definition"></a><br /></dt>
 <dd><p>Creates a formatted string representing the OCNumber’s value. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>theNumber</strong> – An <a class="reference internal" href="#de/dfb/group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77"><span class="std std-ref">OCNumberRef</span></a>. </p></li>
+<li><p><strong>theNumber</strong> – An <a class="reference internal" href="OCLibrary.html#d6/d5e/group___o_c_library_1ga339231e281d1948a4c2122108c0a3d77"><span class="std std-ref">OCNumberRef</span></a>. </p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>An <a class="reference internal" href="OCString.html#df/d98/group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4"><span class="std std-ref">OCStringRef</span></a> with the formatted string. Caller must release. </p>
+<dd class="field-even"><p>An <a class="reference internal" href="OCLibrary.html#d6/d5e/group___o_c_library_1ga34a97bf2ed10637e698c2cd3faa193d4"><span class="std std-ref">OCStringRef</span></a> with the formatted string. Caller must release. </p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="c function">
 <dt class="sig sig-object c" id="c.OCNumberGetValue">
-<span class="target" id="de/dfb/group___o_c_number_1ga9c0feb4db6dd8b31efd5e7ecc02ab60a"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCNumberGetValue</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.OCNumberRef" title="OCNumberRef"><span class="n"><span class="pre">OCNumberRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">number</span></span>, <a class="reference internal" href="#c.OCNumberType" title="OCNumberType"><span class="n"><span class="pre">OCNumberType</span></span></a><span class="w"> </span><span class="n"><span class="pre">type</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">outValue</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCNumberGetValue" title="Link to this definition"></a><br /></dt>
+<span class="target" id="de/dfb/group___o_c_number_1ga9c0feb4db6dd8b31efd5e7ecc02ab60a"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCNumberGetValue</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="OCLibrary.html#c.OCNumberRef" title="OCNumberRef"><span class="n"><span class="pre">OCNumberRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">number</span></span>, <a class="reference internal" href="#c.OCNumberType" title="OCNumberType"><span class="n"><span class="pre">OCNumberType</span></span></a><span class="w"> </span><span class="n"><span class="pre">type</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">outValue</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCNumberGetValue" title="Link to this definition"></a><br /></dt>
 <dd><p>Retrieves the raw value from an OCNumber. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>number</strong> – The <a class="reference internal" href="#de/dfb/group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77"><span class="std std-ref">OCNumberRef</span></a> to query. </p></li>
+<li><p><strong>number</strong> – The <a class="reference internal" href="OCLibrary.html#d6/d5e/group___o_c_library_1ga339231e281d1948a4c2122108c0a3d77"><span class="std std-ref">OCNumberRef</span></a> to query. </p></li>
 <li><p><strong>type</strong> – Expected <a class="reference internal" href="#de/dfb/group___o_c_number_1ga48705b7a724a22d77df7a1714a59320c"><span class="std std-ref">OCNumberType</span></a>. </p></li>
 <li><p><strong>outValue</strong> – Destination buffer (must match type). </p></li>
 </ul>

@@ -23,6 +23,23 @@
 #include <stdint.h>   /* for uint64_t, int32_t, etc. */
 #include <stdbool.h>  /* for bool */
 
+// Forward declarations for all opaque struct types
+struct __OCType;
+struct __OCString;
+struct __OCArray;
+struct __OCDictionary;
+struct __OCBoolean;
+struct __OCData;
+struct __OCNumber;
+// OCAutoreleasePoolRef is already a typedef to a pointer to a non-const struct,
+// so it doesn't follow the same "Ref" pattern for const structs.
+// No forward declaration needed here for __OCAutoreleasePool if OCAutoreleasePoolRef
+// is defined as 'typedef struct _OCAutoreleasePool *OCAutoreleasePoolRef;'
+// However, if it were 'typedef const struct __OCAutoreleasePool *OCAutoreleasePoolRef;',
+// then 'struct __OCAutoreleasePool;' would be needed.
+// Based on OCAutoreleasePool.h, it's 'typedef struct _OCAutoreleasePool *OCAutoreleasePoolRef;'
+// so we don't add a forward declaration for __OCAutoreleasePool here.
+
 /**
  * @defgroup OCLibrary OCLibrary
  * @brief Core types and definitions shared across the OCTypes system.
@@ -98,6 +115,23 @@ typedef enum {
  * @see OCStringComparisonFlagsEnum
  */
 typedef OCOptionFlags OCStringCompareFlags;
+
+// Centralized Ref typedefs
+typedef const struct __OCType *OCTypeRef;
+typedef const struct __OCString *OCStringRef;
+typedef const struct __OCArray *OCArrayRef;
+typedef const struct __OCDictionary *OCDictionaryRef;
+typedef const struct __OCBoolean *OCBooleanRef;
+typedef const struct __OCData *OCDataRef;
+typedef const struct __OCNumber *OCNumberRef;
+// OCAutoreleasePoolRef is typically 'typedef struct _OCAutoreleasePool *OCAutoreleasePoolRef;'
+// and not a 'const struct'. So, it's usually defined directly in OCAutoreleasePool.h.
+
+// Mutable Ref typedefs
+typedef struct __OCArray *OCMutableArrayRef;
+typedef struct __OCData *OCMutableDataRef;
+typedef struct __OCDictionary *OCMutableDictionaryRef;
+typedef struct __OCString *OCMutableStringRef;
 
 /**
  * @enum OCDiacriticCompatibilityFlagsEnum

@@ -9,7 +9,7 @@
 #define OCNumber_h
 
 #include <complex.h>      // Needed for complex number types
-#include "OCLibrary.h"
+#include "OCLibrary.h"    // Ensures OCNumberRef and other types are available
 
 /**
  * @union __Number
@@ -51,15 +51,6 @@ typedef union __Number {
  *  @brief Numerical value representation using OCType-compatible objects.
  *  @{
  */
-
-/**
- * @typedef OCNumberRef
- * @brief A reference to an immutable OCNumber object.
- *
- * OCNumberRef is used to represent various numerical values within the OCTypes framework.
- * These objects encapsulate primitive number types and provide a common interface for them.
- */
-typedef const struct __OCNumber * OCNumberRef;
 
 /**
  * @name Legacy Numeric Type Codes

@@ -10,24 +10,13 @@
 #ifndef OCBoolean_h
 #define OCBoolean_h
 
-#include "OCLibrary.h"
+#include "OCLibrary.h" // Ensures OCBooleanRef and other types are available
 
 /**
  * @defgroup OCBoolean OCBoolean
  * @brief Immutable Boolean type abstraction in OCTypes.
  * @{
  */
-
-/**
- * @brief An opaque reference to an immutable OCBoolean object.
- *
- * OCBooleanRef is used to represent Boolean values (`true` or `false`)
- * within the OCTypes framework. These objects are singletons and should
- * not be retained or released.
- *
- * @ingroup OCBoolean
- */
-typedef const struct __OCBoolean *OCBooleanRef;
 
 /**
  * @brief Returns the unique type identifier for the OCBoolean class.

@@ -57,13 +57,6 @@ enum CommonConstants {
 };
 
 /**
- * @brief A reference to an opaque OCType structure.
- * This is the base type for all objects in the OCTypes system.
- * @ingroup OCType
- */
-typedef struct __OCType *OCTypeRef;
-
-/**
  * @brief Defines special type ID values.
  * @ingroup OCType
  */
