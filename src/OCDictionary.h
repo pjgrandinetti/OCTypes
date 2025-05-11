@@ -2,12 +2,16 @@
 //  OCDictionary.h
 //  OCTypes
 //
-//  Created by philip on 4/21/17.
+//  Created by philip on 5/10/17.
 //
 
-#ifndef OCDictionary_h
-#define OCDictionary_h
+#ifndef OCDICTIONARY_H
+#define OCDICTIONARY_H
 
+#include <stdint.h>
+#include <stdbool.h>
+
+#include "OCArray.h"      // ← ensure OCArrayRef is defined
 #include "OCLibrary.h"
 
 typedef const struct __OCDictionary * OCDictionaryRef;
