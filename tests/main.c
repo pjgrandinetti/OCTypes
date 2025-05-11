@@ -17,9 +17,11 @@
 #include <math.h>      // For M_PI, DBL_EPSILON, FLT_EPSILON, etc.
 #include <stdint.h>
 #include "../src/OCLibrary.h"
+#include "../src/OCType.h"             // For OCTypeEqual, OCGetTypeID, etc.
 #include "../src/OCMath.h"             // Prototypes for cargument, ccbrt, etc.
 #include "../src/OCAutoreleasePool.h"  // For autorelease‐pool tests
 #include "../src/OCData.h"             // For OCData tests
+#include "../src/OCBoolean.h"          // For OCBoolean tests
 
 // If raise_to_integer_power isn't in OCMath.h, declare it:
 extern double complex raise_to_integer_power(double complex x, long power);
@@ -39,6 +41,7 @@ bool mathTest0(void);
 bool autoreleasePoolTest0(void);
 bool dataTest0(void);
 bool typeTest0(void);
+bool booleanTest0(void);
 
 int main(int argc, const char * argv[]) {
     int failures = 0;
@@ -50,6 +53,7 @@ int main(int argc, const char * argv[]) {
     if (!mathTest0())            failures++;
     if (!autoreleasePoolTest0()) failures++;
     if (!dataTest0())            failures++;
+    if (!booleanTest0())         failures++;
     if (failures) {
         fprintf(stderr, "%d test(s) failed\n", failures);
         return EXIT_FAILURE;
@@ -126,7 +130,6 @@ bool stringTest2(void) {
     OCRelease(fmt1);
     OCRelease(arg1);
     OCRelease(fmt2);
-
     fprintf(stderr, "%s end...without problems\n", __func__);
     return true;
 }
@@ -141,13 +144,14 @@ bool arrayTest0(void) {
         temp[i] = OCStringCreateWithCString(in[i]);
         OCArrayAppendValue(arr, temp[i]);
     }
-    // verify
+    // verify insertion order
     for(int i=0;i<5;i++){
         OCStringRef got = (OCStringRef)OCArrayGetValueAtIndex(arr,i);
         OCStringRef chk = OCStringCreateWithCString(in[i]);
         if (!OCStringEqual(got,chk)) { OCRelease(chk); PRINTERROR; }
         OCRelease(chk);
     }
+    // sort and verify
     OCArraySortValues(arr, OCRangeMake(0,5), OCStringCompareAdapter, NULL);
     for(int i=0;i<5;i++){
         OCStringRef got = (OCStringRef)OCArrayGetValueAtIndex(arr,i);
@@ -178,12 +182,10 @@ bool mathTest0(void) {
 bool autoreleasePoolTest0(void) {
     fprintf(stderr, "%s begin...\n", __func__);
     bool ok;
-    // simple create/release
     OCAutoreleasePoolRef p1 = OCAutoreleasePoolCreate(); if(!p1) PRINTERROR;
     ok = OCAutoreleasePoolRelease(p1); if(!ok) PRINTERROR;
-    // autorelease one object
-    OCAutoreleasePoolRef p2 = OCAutoreleasePoolCreate(); 
-    OCStringRef s2 = OCStringCreateWithCString("t"); 
+    OCAutoreleasePoolRef p2 = OCAutoreleasePoolCreate();
+    OCStringRef s2 = OCStringCreateWithCString("t");
     if (OCAutorelease(s2)!=s2) PRINTERROR;
     ok = OCAutoreleasePoolRelease(p2); if(!ok) PRINTERROR;
     fprintf(stderr, "%s end...without problems\n", __func__);
@@ -192,28 +194,24 @@ bool autoreleasePoolTest0(void) {
 
 bool dataTest0(void) {
     fprintf(stderr, "%s begin...\n", __func__);
-    // Test1
+    // Test1: create & inspect
     uint8_t b1[] = {1,2,3,4,5};
     OCDataRef d1 = OCDataCreate(b1,sizeof b1);
     if(!d1) PRINTERROR;
     if(OCDataGetLength(d1)!=sizeof b1) PRINTERROR;
     const uint8_t *p1 = OCDataGetBytePtr(d1);
     for(size_t i=0;i<sizeof b1;i++) if(p1[i]!=b1[i]) PRINTERROR;
-
-    // Test2: no-copy on heap
+    // Test2: no-copy buffer
     size_t L2 = 3;
-    uint8_t *b2 = malloc(L2);
-    if(!b2) { OCRelease(d1); PRINTERROR; }
+    uint8_t *b2 = malloc(L2); if(!b2){ OCRelease(d1); PRINTERROR; }
     b2[0]=0x0A; b2[1]=0x0B; b2[2]=0x0C;
     OCDataRef d2 = OCDataCreateWithBytesNoCopy(b2,L2);
     if(!d2){ free(b2); OCRelease(d1); PRINTERROR; }
     if(OCDataGetLength(d2)!=L2){ OCRelease(d2); OCRelease(d1); PRINTERROR; }
     const uint8_t *p2 = OCDataGetBytePtr(d2);
     for(size_t i=0;i<L2;i++) if(p2[i]!=b2[i]){ OCRelease(d2); OCRelease(d1); PRINTERROR; }
-    // release d2 → must free(b2)
-    OCRelease(d2);
-
-    // Test3: copy
+    OCRelease(d2); // this should free(b2) for us
+    // Test3: deep copy
     OCDataRef d3 = OCDataCreateCopy(d1);
     if(!d3) PRINTERROR;
     if(OCDataGetLength(d3)!=OCDataGetLength(d1)) PRINTERROR;
@@ -221,8 +219,40 @@ bool dataTest0(void) {
     if(p3==p1) PRINTERROR;
     for(size_t i=0;i<OCDataGetLength(d3);i++) if(p3[i]!=p1[i]) PRINTERROR;
     OCRelease(d3);
-
     OCRelease(d1);
+    fprintf(stderr, "%s end...without problems\n", __func__);
+    return true;
+}
+
+bool booleanTest0(void) {
+    fprintf(stderr, "%s begin...\n", __func__);
+    // singletons
+    if (kOCBooleanTrue == NULL) PRINTERROR;
+    if (kOCBooleanFalse == NULL) PRINTERROR;
+    if (kOCBooleanTrue == kOCBooleanFalse) PRINTERROR;
+    // value
+    if (OCBooleanGetValue(kOCBooleanTrue) != true) PRINTERROR;
+    if (OCBooleanGetValue(kOCBooleanFalse) != false) PRINTERROR;
+    // type IDs
+    OCTypeID trueID = OCGetTypeID(kOCBooleanTrue);
+    OCTypeID falseID = OCGetTypeID(kOCBooleanFalse);
+    OCTypeID directID = OCBooleanGetTypeID();
+    if (trueID == _kOCNotATypeID) PRINTERROR;
+    if (falseID == _kOCNotATypeID) PRINTERROR;
+    if (directID == _kOCNotATypeID) PRINTERROR;
+    if (trueID != falseID) PRINTERROR;
+    if (trueID != directID) PRINTERROR;
+    // equality
+    if (!OCTypeEqual(kOCBooleanTrue,  kOCBooleanTrue))  PRINTERROR;
+    if (!OCTypeEqual(kOCBooleanFalse, kOCBooleanFalse)) PRINTERROR;
+    if ( OCTypeEqual(kOCBooleanTrue,  kOCBooleanFalse)) PRINTERROR;
+    // retain/release no-ops
+    OCRetain(kOCBooleanTrue);
+    OCRetain(kOCBooleanFalse);
+    OCRelease(kOCBooleanTrue);
+    OCRelease(kOCBooleanFalse);
+    if (OCBooleanGetValue(kOCBooleanTrue) != true)  PRINTERROR;
+    if (OCBooleanGetValue(kOCBooleanFalse) != false) PRINTERROR;
     fprintf(stderr, "%s end...without problems\n", __func__);
     return true;
 }
@@ -230,7 +260,7 @@ bool dataTest0(void) {
 bool typeTest0(void) {
     fprintf(stderr, "%s begin...\n", __func__);
     OCTypeID tid = OCRegisterType("MyType");
-    if(tid==_kOCNotATypeID) PRINTERROR;
+    if (tid == _kOCNotATypeID) PRINTERROR;
     fprintf(stderr, "%s end...without problems\n", __func__);
     return true;
 }
