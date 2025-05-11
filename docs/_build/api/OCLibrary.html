@@ -59,6 +59,31 @@
 <li class="toctree-l3"><a class="reference internal" href="#c.OCRange.length"><code class="docutils literal notranslate"><span class="pre">length</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OC_INLINE"><code class="docutils literal notranslate"><span class="pre">OC_INLINE</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCComparatorFunction"><code class="docutils literal notranslate"><span class="pre">OCComparatorFunction</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCOptionFlags"><code class="docutils literal notranslate"><span class="pre">OCOptionFlags</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCStringCompareFlags"><code class="docutils literal notranslate"><span class="pre">OCStringCompareFlags</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCComparisonResult"><code class="docutils literal notranslate"><span class="pre">OCComparisonResult</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#c.OCComparisonResult.kOCCompareLessThan"><code class="docutils literal notranslate"><span class="pre">kOCCompareLessThan</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#c.OCComparisonResult.kOCCompareEqualTo"><code class="docutils literal notranslate"><span class="pre">kOCCompareEqualTo</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#c.OCComparisonResult.kOCCompareGreaterThan"><code class="docutils literal notranslate"><span class="pre">kOCCompareGreaterThan</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#c.OCComparisonResult.kOCCompareUnequalDimensionalities"><code class="docutils literal notranslate"><span class="pre">kOCCompareUnequalDimensionalities</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#c.OCComparisonResult.kOCCompareNoSingleValue"><code class="docutils literal notranslate"><span class="pre">kOCCompareNoSingleValue</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#c.OCComparisonResult.kOCCompareError"><code class="docutils literal notranslate"><span class="pre">kOCCompareError</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#c.PhonyNameDueToError.kOCCompareCaseInsensitive"><code class="docutils literal notranslate"><span class="pre">kOCCompareCaseInsensitive</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.PhonyNameDueToError.kOCCompareBackwards"><code class="docutils literal notranslate"><span class="pre">kOCCompareBackwards</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.PhonyNameDueToError.kOCCompareAnchored"><code class="docutils literal notranslate"><span class="pre">kOCCompareAnchored</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.PhonyNameDueToError.kOCCompareNonliteral"><code class="docutils literal notranslate"><span class="pre">kOCCompareNonliteral</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.PhonyNameDueToError.kOCCompareLocalized"><code class="docutils literal notranslate"><span class="pre">kOCCompareLocalized</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.PhonyNameDueToError.kOCCompareNumerically"><code class="docutils literal notranslate"><span class="pre">kOCCompareNumerically</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.PhonyNameDueToError.kOCCompareDiacriticInsensitive"><code class="docutils literal notranslate"><span class="pre">kOCCompareDiacriticInsensitive</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.PhonyNameDueToError.kOCCompareWidthInsensitive"><code class="docutils literal notranslate"><span class="pre">kOCCompareWidthInsensitive</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.PhonyNameDueToError.kOCCompareForcedOrdering"><code class="docutils literal notranslate"><span class="pre">kOCCompareForcedOrdering</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.PhonyNameDueToError.kOCCompareDiacriticsInsensitive"><code class="docutils literal notranslate"><span class="pre">kOCCompareDiacriticsInsensitive</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.PhonyNameDueToError.kOCCompareDiacriticsInsensitiveCompatibilityMask"><code class="docutils literal notranslate"><span class="pre">kOCCompareDiacriticsInsensitiveCompatibilityMask</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCLibraryTeardown"><code class="docutils literal notranslate"><span class="pre">OCLibraryTeardown()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="OCMath.html">OCMath</a></li>
@@ -90,6 +115,8 @@
              
   <section id="oclibrary">
 <h1>OCLibrary<a class="headerlink" href="#oclibrary" title="Link to this heading"></a></h1>
+<p>Core definitions, macros, and types for the OCTypes library. </p>
+<p>This header centralizes common includes, constants, flags, and helper macros used throughout the OCTypes framework. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-defines">Defines</p>
 <dl class="c macro">
@@ -103,21 +130,237 @@
 <span class="target" id="struct_o_c_range"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCRange</span></span></span><a class="headerlink" href="#c.OCRange" title="Link to this definition"></a><br /></dt>
 <dd><div class="docutils container">
 <em>#include &lt;OCLibrary.h&gt;</em></div>
-<p>Range structure representing a contiguous set of elements.</p>
-<p>:ivar location: Starting index of the range. :ivar length: Number of elements in the range. </p>
+<p>A structure representing a contiguous byte or element range. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
 <dl class="c var">
 <dt class="sig sig-object c" id="c.OCRange.location">
 <span class="target" id="struct_o_c_range_1a87a770d78d123ad882ce0d68803d5be5"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">location</span></span></span><a class="headerlink" href="#c.OCRange.location" title="Link to this definition"></a><br /></dt>
-<dd></dd></dl>
+<dd><p>Start index of the range. </p>
+</dd></dl>
 
 <dl class="c var">
 <dt class="sig sig-object c" id="c.OCRange.length">
 <span class="target" id="struct_o_c_range_1a0dbaf7f02ff7918232ed7892c9d4eafd"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">length</span></span></span><a class="headerlink" href="#c.OCRange.length" title="Link to this definition"></a><br /></dt>
+<dd><p>Number of elements in the range. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl>
+<dt class="sig sig-object cpp">
+<span class="target" id="group___o_c_library"></span><em><span class="pre">group</span></em> <span class="sig-name descname"><span class="pre">OCLibrary</span></span></dt>
+<dd><p>Core types and definitions shared across the OCTypes system. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-defines">Defines</p>
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.OC_INLINE">
+<span class="target" id="group___o_c_library_1ga6dff3711fe4e5834725c878f3bf8be28"></span><span class="sig-name descname"><span class="n"><span class="pre">OC_INLINE</span></span></span><a class="headerlink" href="#c.OC_INLINE" title="Link to this definition"></a><br /></dt>
 <dd></dd></dl>
 
 </div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-typedefs">Typedefs</p>
+<dl class="c type">
+<dt class="sig sig-object c">
+<span class="target" id="group___o_c_library_1gad3c1fe9c3645b51d58ebe220a3c34945"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><a class="reference internal" href="#c.OCComparisonResult" title="OCComparisonResult"><span class="n"><span class="pre">OCComparisonResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCComparisonResult</span></span></span><br /></dt>
+<dd><p>Result values returned by <a class="reference internal" href="#group___o_c_library_1ga84ac0c9947faa8de6dbb81352513c1f7"><span class="std std-ref">OCComparatorFunction</span></a>. </p>
+</dd></dl>
+
+<dl class="c type">
+<dt class="sig sig-object c" id="c.OCComparatorFunction">
+<span class="target" id="group___o_c_library_1ga84ac0c9947faa8de6dbb81352513c1f7"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><a class="reference internal" href="#c.OCComparisonResult" title="OCComparisonResult"><span class="n"><span class="pre">OCComparisonResult</span></span></a><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">OCComparatorFunction</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">val1</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">val2</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.OCComparatorFunction" title="Link to this definition"></a><br /></dt>
+<dd><p>Function pointer type for comparing two values. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Param val1<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Pointer to the first value. </p>
+</dd>
+<dt class="field-even">Param val2<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pointer to the second value. </p>
+</dd>
+<dt class="field-odd">Param context<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional user-defined context pointer. </p>
+</dd>
+<dt class="field-even">Return<span class="colon">:</span></dt>
+<dd class="field-even"><p>Comparison result. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c type">
+<dt class="sig sig-object c" id="c.OCOptionFlags">
+<span class="target" id="group___o_c_library_1ga927ba9e9deb9b3363a3dbb6f7b3368bf"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCOptionFlags</span></span></span><a class="headerlink" href="#c.OCOptionFlags" title="Link to this definition"></a><br /></dt>
+<dd><p>Option flags used for string comparisons. </p>
+</dd></dl>
+
+<dl class="c type">
+<dt class="sig sig-object c" id="c.OCStringCompareFlags">
+<span class="target" id="group___o_c_library_1ga8cf127efce721c11c176225d4e73d0fe"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><a class="reference internal" href="#c.OCOptionFlags" title="OCOptionFlags"><span class="n"><span class="pre">OCOptionFlags</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCStringCompareFlags</span></span></span><a class="headerlink" href="#c.OCStringCompareFlags" title="Link to this definition"></a><br /></dt>
+<dd><p>Type alias for string comparison flags. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-enums">Enums</p>
+<dl class="c enum">
+<dt class="sig sig-object c" id="c.OCComparisonResult">
+<span class="target" id="group___o_c_library_1ga395ff068e826f2b8cdaab226094399c8"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCComparisonResult</span></span></span><a class="headerlink" href="#c.OCComparisonResult" title="Link to this definition"></a><br /></dt>
+<dd><p>Result values returned by <a class="reference internal" href="#group___o_c_library_1ga84ac0c9947faa8de6dbb81352513c1f7"><span class="std std-ref">OCComparatorFunction</span></a>. </p>
+<p><em>Values:</em></p>
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.OCComparisonResult.kOCCompareLessThan">
+<span class="target" id="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8a925b5b072d953695f3828c0a8d15aec1"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">kOCCompareLessThan</span></span></span><a class="headerlink" href="#c.OCComparisonResult.kOCCompareLessThan" title="Link to this definition"></a><br /></dt>
+<dd><p>First value is less than the second. </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.OCComparisonResult.kOCCompareEqualTo">
+<span class="target" id="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8a1814420156dc0303801cb9129b10dc55"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">kOCCompareEqualTo</span></span></span><a class="headerlink" href="#c.OCComparisonResult.kOCCompareEqualTo" title="Link to this definition"></a><br /></dt>
+<dd><p>Values are equal. </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.OCComparisonResult.kOCCompareGreaterThan">
+<span class="target" id="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8a24fbed20d0eee7cfa1896986afdb8f50"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">kOCCompareGreaterThan</span></span></span><a class="headerlink" href="#c.OCComparisonResult.kOCCompareGreaterThan" title="Link to this definition"></a><br /></dt>
+<dd><p>First value is greater than the second. </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.OCComparisonResult.kOCCompareUnequalDimensionalities">
+<span class="target" id="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8a6a20be58886934dd284523ec8c730817"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">kOCCompareUnequalDimensionalities</span></span></span><a class="headerlink" href="#c.OCComparisonResult.kOCCompareUnequalDimensionalities" title="Link to this definition"></a><br /></dt>
+<dd><p>Values have different dimensionalities. </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.OCComparisonResult.kOCCompareNoSingleValue">
+<span class="target" id="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8ad8bd015df3d3fc1ebcdb98d79cf88e65"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">kOCCompareNoSingleValue</span></span></span><a class="headerlink" href="#c.OCComparisonResult.kOCCompareNoSingleValue" title="Link to this definition"></a><br /></dt>
+<dd><p>No singular comparison result available. </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.OCComparisonResult.kOCCompareError">
+<span class="target" id="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8a060162bcc3cc25c32d55febab78a2567"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">kOCCompareError</span></span></span><a class="headerlink" href="#c.OCComparisonResult.kOCCompareError" title="Link to this definition"></a><br /></dt>
+<dd><p>An error occurred during comparison. </p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="c enum">
+<dt class="sig sig-object c">
+<span class="target" id="group___o_c_library_1gaa9c1ca2bde570d2cd9c2f97025211e50"></span><span class="sig-name descname"></span></dt>
+<dd><p>Flags for string comparison operations. </p>
+<p>Use with <a class="reference internal" href="#group___o_c_library_1ga8cf127efce721c11c176225d4e73d0fe"><span class="std std-ref">OCStringCompareFlags</span></a> to modify comparison behavior. </p>
+<p><em>Values:</em></p>
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.PhonyNameDueToError.kOCCompareCaseInsensitive">
+<span class="target" id="group___o_c_library_1ggaa9c1ca2bde570d2cd9c2f97025211e50a23905f8ecbab119b20d3f4412b2b520a"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">kOCCompareCaseInsensitive</span></span></span><br /></dt>
+<dd><p>Case-insensitive comparison. </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.PhonyNameDueToError.kOCCompareBackwards">
+<span class="target" id="group___o_c_library_1ggaa9c1ca2bde570d2cd9c2f97025211e50a358f36498760fb4e0ad3b725db60b6a2"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">kOCCompareBackwards</span></span></span><br /></dt>
+<dd><p>Compare from the end of the string. </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.PhonyNameDueToError.kOCCompareAnchored">
+<span class="target" id="group___o_c_library_1ggaa9c1ca2bde570d2cd9c2f97025211e50a6450506627df0a0e2f2440706bef074b"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">kOCCompareAnchored</span></span></span><br /></dt>
+<dd><p>Anchor comparison to the beginning. </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.PhonyNameDueToError.kOCCompareNonliteral">
+<span class="target" id="group___o_c_library_1ggaa9c1ca2bde570d2cd9c2f97025211e50a76a1f628cedc68840262d0fe2b8d1783"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">kOCCompareNonliteral</span></span></span><br /></dt>
+<dd><p>Non-literal comparison (e.g., equivalence normalization). </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.PhonyNameDueToError.kOCCompareLocalized">
+<span class="target" id="group___o_c_library_1ggaa9c1ca2bde570d2cd9c2f97025211e50a22a92cfc56dbefcb689f436d6c36a288"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">kOCCompareLocalized</span></span></span><br /></dt>
+<dd><p>Locale-aware comparison. </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.PhonyNameDueToError.kOCCompareNumerically">
+<span class="target" id="group___o_c_library_1ggaa9c1ca2bde570d2cd9c2f97025211e50abec5d30d60366d270e2c61cb06e05879"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">kOCCompareNumerically</span></span></span><br /></dt>
+<dd><p>Numeric-aware comparison. </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.PhonyNameDueToError.kOCCompareDiacriticInsensitive">
+<span class="target" id="group___o_c_library_1ggaa9c1ca2bde570d2cd9c2f97025211e50a2bf121d2bc3aef98d8c9b683b79aa12e"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">kOCCompareDiacriticInsensitive</span></span></span><br /></dt>
+<dd><p>Ignore diacritics. </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.PhonyNameDueToError.kOCCompareWidthInsensitive">
+<span class="target" id="group___o_c_library_1ggaa9c1ca2bde570d2cd9c2f97025211e50a04d52548782f8fdc716f614ddde535d6"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">kOCCompareWidthInsensitive</span></span></span><br /></dt>
+<dd><p>Ignore character width differences. </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.PhonyNameDueToError.kOCCompareForcedOrdering">
+<span class="target" id="group___o_c_library_1ggaa9c1ca2bde570d2cd9c2f97025211e50a03ec9021871285d6f98e91917ff11c40"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">kOCCompareForcedOrdering</span></span></span><br /></dt>
+<dd><p>Enforce ordering even if equal. </p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="c enum">
+<dt class="sig sig-object c">
+<span class="target" id="group___o_c_library_1gacdb19e546299ab89437ccdeb1f284129"></span><span class="sig-name descname"></span></dt>
+<dd><p>Aliases and compatibility masks for diacritic-insensitive comparison. </p>
+<p><em>Values:</em></p>
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.PhonyNameDueToError.kOCCompareDiacriticsInsensitive">
+<span class="target" id="group___o_c_library_1ggacdb19e546299ab89437ccdeb1f284129ac31ad48d6d50a07bb4e06453a984c3d5"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">kOCCompareDiacriticsInsensitive</span></span></span><br /></dt>
+<dd><p>Alias for diacritic insensitivity. </p>
+</dd></dl>
+
+<dl class="c enumerator">
+<dt class="sig sig-object c" id="c.PhonyNameDueToError.kOCCompareDiacriticsInsensitiveCompatibilityMask">
+<span class="target" id="group___o_c_library_1ggacdb19e546299ab89437ccdeb1f284129a7a4cf0f10da127c0eb04e3ec2fad287e"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">kOCCompareDiacriticsInsensitiveCompatibilityMask</span></span></span><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="c function">
+<dt class="sig sig-object c">
+<span class="target" id="group___o_c_library_1gab66bcfd2364ec912b9562c8126470d63"></span><span class="sig-name descname"><span class="pre">OC_INLINE</span> <span class="pre">OCRange</span> <span class="pre">OCRangeMake</span> <span class="pre">(uint64_t</span> <span class="pre">loc,</span> <span class="pre">uint64_t</span> <span class="pre">len)</span></span></dt>
+<dd><p>Convenience function to create an OCRange struct. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>loc</strong> – Start index. </p></li>
+<li><p><strong>len</strong> – Number of elements. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>OCRange with specified location and length. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.OCLibraryTeardown">
+<span class="target" id="group___o_c_library_1gab349757cfd4f6c32c1eee05dcddb0a9d"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCLibraryTeardown</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCLibraryTeardown" title="Link to this definition"></a><br /></dt>
+<dd><p>Tears down the OCTypes library and releases any global resources. </p>
+</dd></dl>
+
+</div>
+<dl class="c struct">
+<dt class="sig sig-object c">
+<span class="target" id="struct_o_c_range"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCRange</span></span></span><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;OCLibrary.h&gt;</em></div>
+<p>A structure representing a contiguous byte or element range. </p>
+</dd></dl>
+
 </dd></dl>
 
 </section>

@@ -120,38 +120,37 @@
 <span class="target" id="struct_____o_c_base"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">__OCBase</span></span></span><a class="headerlink" href="#c.__OCBase" title="Link to this definition"></a><br /></dt>
 <dd><div class="docutils container">
 <em>#include &lt;OCType.h&gt;</em></div>
-<p>The fundamental base structure for all OCTypes. </p>
-<p>This structure is embedded as the first member in all OCType-compatible objects. It holds common information like the type identifier, retain count, and function pointers for essential operations. </p>
+<p>Base structure shared by all OCType-compatible objects. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
 <dl class="c var">
 <dt class="sig sig-object c" id="c.__OCBase.typeID">
 <span class="target" id="struct_____o_c_base_1a57413231fb08c0b703e49e3052ebeb33"></span><a class="reference internal" href="#c.OCTypeID" title="OCTypeID"><span class="n"><span class="pre">OCTypeID</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">typeID</span></span></span><a class="headerlink" href="#c.__OCBase.typeID" title="Link to this definition"></a><br /></dt>
-<dd><p>The type identifier for this object. </p>
+<dd><p>Type identifier. </p>
 </dd></dl>
 
 <dl class="c var">
 <dt class="sig sig-object c" id="c.__OCBase.retainCount">
 <span class="target" id="struct_____o_c_base_1a45d13a42e73d92077e1d3b7f04e08767"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">retainCount</span></span></span><a class="headerlink" href="#c.__OCBase.retainCount" title="Link to this definition"></a><br /></dt>
-<dd><p>The retain count for this object. </p>
+<dd><p>Reference count. </p>
 </dd></dl>
 
 <dl class="c var">
 <dt class="sig sig-object c" id="c.__OCBase.finalize">
 <span class="target" id="struct_____o_c_base_1aa2182da1dc0de45f16e782f94bb43cb7"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">finalize</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.__OCBase.finalize" title="Link to this definition"></a><br /></dt>
-<dd><p>Function pointer for finalizing (deallocating) the object. </p>
+<dd><p>Finalizer function. </p>
 </dd></dl>
 
 <dl class="c var">
 <dt class="sig sig-object c" id="c.__OCBase.equal">
 <span class="target" id="struct_____o_c_base_1a3b4bd801666626087c490a016c8353d9"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">equal</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.__OCBase.equal" title="Link to this definition"></a><br /></dt>
-<dd><p>Function pointer for comparing objects for equality. </p>
+<dd><p>Equality comparator. </p>
 </dd></dl>
 
 <dl class="c var">
 <dt class="sig sig-object c" id="c.__OCBase.copyFormattingDesc">
 <span class="target" id="struct_____o_c_base_1a658977341e9751990f8d323f49d9fbaf"></span><a class="reference internal" href="#c.OCStringRef" title="OCStringRef"><span class="n"><span class="pre">OCStringRef</span></span></a><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">copyFormattingDesc</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#c.OCTypeRef" title="OCTypeRef"><span class="n"><span class="pre">OCTypeRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">cf</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.__OCBase.copyFormattingDesc" title="Link to this definition"></a><br /></dt>
-<dd><p>Function pointer for creating a formatted string description. </p>
+<dd><p>Description formatter. </p>
 </dd></dl>
 
 </div>
@@ -207,8 +206,7 @@
 <dl class="c type">
 <dt class="sig sig-object c" id="c.OCBase">
 <span class="target" id="group___o_c_type_1ga66b90fed8dd532198f1a04d294dbaa69"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.__OCBase" title="__OCBase"><span class="n"><span class="pre">__OCBase</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCBase</span></span></span><a class="headerlink" href="#c.OCBase" title="Link to this definition"></a><br /></dt>
-<dd><p>The fundamental base structure for all OCTypes. </p>
-<p>This structure is embedded as the first member in all OCType-compatible objects. It holds common information like the type identifier, retain count, and function pointers for essential operations. </p>
+<dd><p>Base structure shared by all OCType-compatible objects. </p>
 </dd></dl>
 
 </div>
@@ -222,7 +220,7 @@
 <dl class="c enumerator">
 <dt class="sig sig-object c" id="c.CommonConstants.kOCNotFound">
 <span class="target" id="group___o_c_type_1gga4b3e3e9af8c54292907f45141e6dd174abac9508514b568411f4ececcff5260ec"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">kOCNotFound</span></span></span><a class="headerlink" href="#c.CommonConstants.kOCNotFound" title="Link to this definition"></a><br /></dt>
-<dd><p>Represents a value not found, typically used as a return value from search functions. </p>
+<dd><p>Value returned when an item is not found. </p>
 </dd></dl>
 
 </dd></dl>
@@ -250,12 +248,12 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>theType1</strong> – A pointer to the first OCType instance. </p></li>
-<li><p><strong>theType2</strong> – A pointer to the second OCType instance. </p></li>
+<li><p><strong>theType1</strong> – Pointer to the first OCType. </p></li>
+<li><p><strong>theType2</strong> – Pointer to the second OCType. </p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>True if the types are considered equal, false otherwise. </p>
+<dd class="field-even"><p>true if equal, false otherwise. </p>
 </dd>
 </dl>
 </dd></dl>
@@ -267,11 +265,11 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>typeName</strong> – A string representing the name of the type to register. </p></li>
+<li><p><strong>typeName</strong> – A null-terminated C string representing the type name. </p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The <a class="reference internal" href="#group___o_c_type_1gae4fcca725e41e7af4659ba4902223981"><span class="std std-ref">OCTypeID</span></a> assigned to the newly registered type. Returns _kOCNotATypeID if registration fails. </p>
+<dd class="field-even"><p>The <a class="reference internal" href="#group___o_c_type_1gae4fcca725e41e7af4659ba4902223981"><span class="std std-ref">OCTypeID</span></a> assigned, or _kOCNotATypeID on failure. </p>
 </dd>
 </dl>
 </dd></dl>
@@ -279,11 +277,11 @@
 <dl class="c function">
 <dt class="sig sig-object c" id="c.OCRelease">
 <span class="target" id="group___o_c_type_1ga2b6e5ce9f5cbfbb459569f2188c445b8"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCRelease</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ptr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCRelease" title="Link to this definition"></a><br /></dt>
-<dd><p>Releases an OCType instance, decrementing its retain count. </p>
+<dd><p>Releases an OCType instance by decrementing its retain count. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ptr</strong> – A pointer to the OCType instance to release. </p></li>
+<li><p><strong>ptr</strong> – Pointer to the OCType to release. </p></li>
 </ul>
 </dd>
 </dl>
@@ -292,15 +290,15 @@
 <dl class="c function">
 <dt class="sig sig-object c" id="c.OCRetain">
 <span class="target" id="group___o_c_type_1ga3a27a5361c9635b95b63a833ea378b91"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">OCRetain</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ptr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCRetain" title="Link to this definition"></a><br /></dt>
-<dd><p>Retains an OCType instance, incrementing its retain count. </p>
+<dd><p>Retains an OCType instance by incrementing its retain count. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ptr</strong> – A pointer to the OCType instance to retain. </p></li>
+<li><p><strong>ptr</strong> – Pointer to the OCType to retain. </p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A pointer to the retained OCType instance (the same as ptr), or NULL if ptr is NULL. </p>
+<dd class="field-even"><p>The same pointer, or NULL if input was NULL. </p>
 </dd>
 </dl>
 </dd></dl>
@@ -308,15 +306,15 @@
 <dl class="c function">
 <dt class="sig sig-object c" id="c.OCTypeCopyFormattingDesc">
 <span class="target" id="group___o_c_type_1ga59cd1c60d2487296ea3032c4de8adc0e"></span><a class="reference internal" href="#c.OCStringRef" title="OCStringRef"><span class="n"><span class="pre">OCStringRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCTypeCopyFormattingDesc</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ptr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCTypeCopyFormattingDesc" title="Link to this definition"></a><br /></dt>
-<dd><p>Creates a string representation of an OCType instance suitable for formatting. </p>
+<dd><p>Generates a formatted string description of an OCType. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ptr</strong> – A pointer to the OCType instance. </p></li>
+<li><p><strong>ptr</strong> – Pointer to the OCType instance. </p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>An <a class="reference internal" href="#group___o_c_type_1ga34a97bf2ed10637e698c2cd3faa193d4"><span class="std std-ref">OCStringRef</span></a> containing the formatted description. Returns NULL if ptr is NULL. </p>
+<dd class="field-even"><p>A new <a class="reference internal" href="#group___o_c_type_1ga34a97bf2ed10637e698c2cd3faa193d4"><span class="std std-ref">OCStringRef</span></a> describing the object, or NULL. </p>
 </dd>
 </dl>
 </dd></dl>
@@ -328,11 +326,11 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ptr</strong> – A pointer to the OCType instance. </p></li>
+<li><p><strong>ptr</strong> – Pointer to the OCType instance. </p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>An <a class="reference internal" href="#group___o_c_type_1ga34a97bf2ed10637e698c2cd3faa193d4"><span class="std std-ref">OCStringRef</span></a> containing the description. Returns NULL if ptr is NULL. </p>
+<dd class="field-even"><p>A descriptive <a class="reference internal" href="#group___o_c_type_1ga34a97bf2ed10637e698c2cd3faa193d4"><span class="std std-ref">OCStringRef</span></a>, or NULL. </p>
 </dd>
 </dl>
 </dd></dl>
@@ -340,15 +338,15 @@
 <dl class="c function">
 <dt class="sig sig-object c" id="c.OCGetTypeID">
 <span class="target" id="group___o_c_type_1ga96a3a96939e2701c7df9bc30eaa1a2df"></span><a class="reference internal" href="#c.OCTypeID" title="OCTypeID"><span class="n"><span class="pre">OCTypeID</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCGetTypeID</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ptr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCGetTypeID" title="Link to this definition"></a><br /></dt>
-<dd><p>Gets the <a class="reference internal" href="#group___o_c_type_1gae4fcca725e41e7af4659ba4902223981"><span class="std std-ref">OCTypeID</span></a> of an OCType instance. </p>
+<dd><p>Gets the <a class="reference internal" href="#group___o_c_type_1gae4fcca725e41e7af4659ba4902223981"><span class="std std-ref">OCTypeID</span></a> associated with an OCType instance. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ptr</strong> – A pointer to the OCType instance. </p></li>
+<li><p><strong>ptr</strong> – Pointer to the OCType instance. </p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The <a class="reference internal" href="#group___o_c_type_1gae4fcca725e41e7af4659ba4902223981"><span class="std std-ref">OCTypeID</span></a> of the instance, or _kOCNotATypeID if ptr is NULL. </p>
+<dd class="field-even"><p>A valid <a class="reference internal" href="#group___o_c_type_1gae4fcca725e41e7af4659ba4902223981"><span class="std std-ref">OCTypeID</span></a>, or _kOCNotATypeID. </p>
 </dd>
 </dl>
 </dd></dl>
@@ -359,8 +357,7 @@
 <span class="target" id="struct_____o_c_base"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">__OCBase</span></span></span><br /></dt>
 <dd><div class="docutils container">
 <em>#include &lt;OCType.h&gt;</em></div>
-<p>The fundamental base structure for all OCTypes. </p>
-<p>This structure is embedded as the first member in all OCType-compatible objects. It holds common information like the type identifier, retain count, and function pointers for essential operations. </p>
+<p>Base structure shared by all OCType-compatible objects. </p>
 </dd></dl>
 
 </dd></dl>

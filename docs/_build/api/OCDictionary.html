@@ -50,7 +50,27 @@
 <li class="toctree-l1"><a class="reference internal" href="OCBoolean.html">OCBoolean</a></li>
 <li class="toctree-l1"><a class="reference internal" href="OCString.html">OCString</a></li>
 <li class="toctree-l1"><a class="reference internal" href="OCArray.html">OCArray</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">OCDictionary</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">OCDictionary</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCDictionaryRef"><code class="docutils literal notranslate"><span class="pre">OCDictionaryRef</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCMutableDictionaryRef"><code class="docutils literal notranslate"><span class="pre">OCMutableDictionaryRef</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCDictionaryGetTypeID"><code class="docutils literal notranslate"><span class="pre">OCDictionaryGetTypeID()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCDictionaryCreateMutable"><code class="docutils literal notranslate"><span class="pre">OCDictionaryCreateMutable()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCDictionaryCreateCopy"><code class="docutils literal notranslate"><span class="pre">OCDictionaryCreateCopy()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCDictionaryCreateMutableCopy"><code class="docutils literal notranslate"><span class="pre">OCDictionaryCreateMutableCopy()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCDictionaryGetCount"><code class="docutils literal notranslate"><span class="pre">OCDictionaryGetCount()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCDictionaryGetValue"><code class="docutils literal notranslate"><span class="pre">OCDictionaryGetValue()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCDictionaryContainsKey"><code class="docutils literal notranslate"><span class="pre">OCDictionaryContainsKey()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCDictionaryContainsValue"><code class="docutils literal notranslate"><span class="pre">OCDictionaryContainsValue()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCDictionaryAddValue"><code class="docutils literal notranslate"><span class="pre">OCDictionaryAddValue()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCDictionarySetValue"><code class="docutils literal notranslate"><span class="pre">OCDictionarySetValue()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCDictionaryReplaceValue"><code class="docutils literal notranslate"><span class="pre">OCDictionaryReplaceValue()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCDictionaryRemoveValue"><code class="docutils literal notranslate"><span class="pre">OCDictionaryRemoveValue()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCDictionaryGetCountOfValue"><code class="docutils literal notranslate"><span class="pre">OCDictionaryGetCountOfValue()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCDictionaryGetKeysAndValues"><code class="docutils literal notranslate"><span class="pre">OCDictionaryGetKeysAndValues()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCDictionaryCreateArrayWithAllKeys"><code class="docutils literal notranslate"><span class="pre">OCDictionaryCreateArrayWithAllKeys()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCDictionaryCreateArrayWithAllValues"><code class="docutils literal notranslate"><span class="pre">OCDictionaryCreateArrayWithAllValues()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="OCData.html">OCData</a></li>
 <li class="toctree-l1"><a class="reference internal" href="OCLibrary.html">OCLibrary</a></li>
 <li class="toctree-l1"><a class="reference internal" href="OCMath.html">OCMath</a></li>
@@ -82,6 +102,281 @@
              
   <section id="ocdictionary">
 <h1>OCDictionary<a class="headerlink" href="#ocdictionary" title="Link to this heading"></a></h1>
+<p>Key-value collection types for the OCTypes framework. </p>
+<p>This header defines the <a class="reference internal" href="#group___o_c_dictionary_1gaa6826a3d2e9e148e7bbc4df333300257"><span class="std std-ref">OCDictionaryRef</span></a> and <a class="reference internal" href="#group___o_c_dictionary_1ga19045ab0d11ee2e868fdef402778e539"><span class="std std-ref">OCMutableDictionaryRef</span></a> types and associated APIs for managing collections of uniquely keyed values. </p>
+<dl>
+<dt class="sig sig-object cpp">
+<span class="target" id="group___o_c_dictionary"></span><em><span class="pre">group</span></em> <span class="sig-name descname"><span class="pre">OCDictionary</span></span></dt>
+<dd><p>Dictionary types and operations. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-typedefs">Typedefs</p>
+<dl class="c type">
+<dt class="sig sig-object c" id="c.OCDictionaryRef">
+<span class="target" id="group___o_c_dictionary_1gaa6826a3d2e9e148e7bbc4df333300257"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">__OCDictionary</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">OCDictionaryRef</span></span></span><a class="headerlink" href="#c.OCDictionaryRef" title="Link to this definition"></a><br /></dt>
+<dd><p>An opaque reference to an immutable dictionary object. </p>
+</dd></dl>
+
+<dl class="c type">
+<dt class="sig sig-object c" id="c.OCMutableDictionaryRef">
+<span class="target" id="group___o_c_dictionary_1ga19045ab0d11ee2e868fdef402778e539"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">__OCDictionary</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">OCMutableDictionaryRef</span></span></span><a class="headerlink" href="#c.OCMutableDictionaryRef" title="Link to this definition"></a><br /></dt>
+<dd><p>An opaque reference to a mutable dictionary object. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.OCDictionaryGetTypeID">
+<span class="target" id="group___o_c_dictionary_1gafd5dc6c3e55e6caf5924a7496e9e3ac3"></span><a class="reference internal" href="OCType.html#c.OCTypeID" title="OCTypeID"><span class="n"><span class="pre">OCTypeID</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCDictionaryGetTypeID</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCDictionaryGetTypeID" title="Link to this definition"></a><br /></dt>
+<dd><p>Returns the <a class="reference internal" href="OCType.html#group___o_c_type_1gae4fcca725e41e7af4659ba4902223981"><span class="std std-ref">OCTypeID</span></a> for OCDictionary objects. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Type identifier for OCDictionary. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.OCDictionaryCreateMutable">
+<span class="target" id="group___o_c_dictionary_1ga4cff6e7bcd69532df96355d1fe0e35c4"></span><a class="reference internal" href="#c.OCMutableDictionaryRef" title="OCMutableDictionaryRef"><span class="n"><span class="pre">OCMutableDictionaryRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCDictionaryCreateMutable</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n"><span class="pre">capacity</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCDictionaryCreateMutable" title="Link to this definition"></a><br /></dt>
+<dd><p>Creates a new mutable dictionary with initial capacity. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>capacity</strong> – Number of key-value pairs to allocate space for initially. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>New <a class="reference internal" href="#group___o_c_dictionary_1ga19045ab0d11ee2e868fdef402778e539"><span class="std std-ref">OCMutableDictionaryRef</span></a> or NULL on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.OCDictionaryCreateCopy">
+<span class="target" id="group___o_c_dictionary_1ga96b8d9d1addb6dbe23cb9194d7cca4cc"></span><a class="reference internal" href="#c.OCDictionaryRef" title="OCDictionaryRef"><span class="n"><span class="pre">OCDictionaryRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCDictionaryCreateCopy</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.OCDictionaryRef" title="OCDictionaryRef"><span class="n"><span class="pre">OCDictionaryRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">theDictionary</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCDictionaryCreateCopy" title="Link to this definition"></a><br /></dt>
+<dd><p>Creates an immutable copy of a dictionary. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>theDictionary</strong> – Dictionary to copy. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>New <a class="reference internal" href="#group___o_c_dictionary_1gaa6826a3d2e9e148e7bbc4df333300257"><span class="std std-ref">OCDictionaryRef</span></a>, or NULL on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.OCDictionaryCreateMutableCopy">
+<span class="target" id="group___o_c_dictionary_1ga3e49d8746bb109d8fad49c9c4a57109a"></span><a class="reference internal" href="#c.OCMutableDictionaryRef" title="OCMutableDictionaryRef"><span class="n"><span class="pre">OCMutableDictionaryRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCDictionaryCreateMutableCopy</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.OCDictionaryRef" title="OCDictionaryRef"><span class="n"><span class="pre">OCDictionaryRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">theDictionary</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCDictionaryCreateMutableCopy" title="Link to this definition"></a><br /></dt>
+<dd><p>Creates a mutable copy of a dictionary. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>theDictionary</strong> – Dictionary to copy. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>New <a class="reference internal" href="#group___o_c_dictionary_1ga19045ab0d11ee2e868fdef402778e539"><span class="std std-ref">OCMutableDictionaryRef</span></a>, or NULL on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.OCDictionaryGetCount">
+<span class="target" id="group___o_c_dictionary_1ga8ed87aa17072e8099b3ad40a69ee47ef"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCDictionaryGetCount</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.OCDictionaryRef" title="OCDictionaryRef"><span class="n"><span class="pre">OCDictionaryRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">theDictionary</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCDictionaryGetCount" title="Link to this definition"></a><br /></dt>
+<dd><p>Gets the number of key-value pairs in a dictionary. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>theDictionary</strong> – Dictionary to query. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Count of entries. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.OCDictionaryGetValue">
+<span class="target" id="group___o_c_dictionary_1ga14954a4cc6e33d4a5376d0eae232a4b6"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">OCDictionaryGetValue</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.OCDictionaryRef" title="OCDictionaryRef"><span class="n"><span class="pre">OCDictionaryRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">theDictionary</span></span>, <a class="reference internal" href="OCType.html#c.OCStringRef" title="OCStringRef"><span class="n"><span class="pre">OCStringRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">key</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCDictionaryGetValue" title="Link to this definition"></a><br /></dt>
+<dd><p>Retrieves the value for a specific key. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>theDictionary</strong> – Dictionary to search. </p></li>
+<li><p><strong>key</strong> – Key to look up. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pointer to value, or NULL if not found. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.OCDictionaryContainsKey">
+<span class="target" id="group___o_c_dictionary_1ga4b75ce767832960f198d99067df78bd2"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCDictionaryContainsKey</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.OCDictionaryRef" title="OCDictionaryRef"><span class="n"><span class="pre">OCDictionaryRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">theDictionary</span></span>, <a class="reference internal" href="OCType.html#c.OCStringRef" title="OCStringRef"><span class="n"><span class="pre">OCStringRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">key</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCDictionaryContainsKey" title="Link to this definition"></a><br /></dt>
+<dd><p>Checks if the dictionary contains the specified key. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>theDictionary</strong> – Dictionary to search. </p></li>
+<li><p><strong>key</strong> – Key to test. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>true if key is found, false otherwise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.OCDictionaryContainsValue">
+<span class="target" id="group___o_c_dictionary_1gaa3fdeb2856a793f706d5a7043d27d50d"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCDictionaryContainsValue</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.OCDictionaryRef" title="OCDictionaryRef"><span class="n"><span class="pre">OCDictionaryRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">theDictionary</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCDictionaryContainsValue" title="Link to this definition"></a><br /></dt>
+<dd><p>Checks if the dictionary contains the specified value. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>theDictionary</strong> – Dictionary to search. </p></li>
+<li><p><strong>value</strong> – Value to look for. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>true if value is found, false otherwise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.OCDictionaryAddValue">
+<span class="target" id="group___o_c_dictionary_1gae1e0ea2c05c3bd1502813ef217dbe96b"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCDictionaryAddValue</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.OCMutableDictionaryRef" title="OCMutableDictionaryRef"><span class="n"><span class="pre">OCMutableDictionaryRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">theDictionary</span></span>, <a class="reference internal" href="OCType.html#c.OCStringRef" title="OCStringRef"><span class="n"><span class="pre">OCStringRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">key</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCDictionaryAddValue" title="Link to this definition"></a><br /></dt>
+<dd><p>Adds or replaces a key-value pair in a mutable dictionary. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>theDictionary</strong> – Dictionary to modify. </p></li>
+<li><p><strong>key</strong> – Key to add or update. </p></li>
+<li><p><strong>value</strong> – Value to associate with the key. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.OCDictionarySetValue">
+<span class="target" id="group___o_c_dictionary_1gab328fd4e26c74ea88d96e97f86745b40"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCDictionarySetValue</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.OCMutableDictionaryRef" title="OCMutableDictionaryRef"><span class="n"><span class="pre">OCMutableDictionaryRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">theDictionary</span></span>, <a class="reference internal" href="OCType.html#c.OCStringRef" title="OCStringRef"><span class="n"><span class="pre">OCStringRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">key</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCDictionarySetValue" title="Link to this definition"></a><br /></dt>
+<dd><p>Sets the value for a key (alias of OCDictionaryAddValue). </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>theDictionary</strong> – Dictionary to modify. </p></li>
+<li><p><strong>key</strong> – Key to set. </p></li>
+<li><p><strong>value</strong> – Value to assign. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.OCDictionaryReplaceValue">
+<span class="target" id="group___o_c_dictionary_1ga336c8359fbf8f0ea42f0224a43620e3f"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCDictionaryReplaceValue</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.OCMutableDictionaryRef" title="OCMutableDictionaryRef"><span class="n"><span class="pre">OCMutableDictionaryRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">theDictionary</span></span>, <a class="reference internal" href="OCType.html#c.OCStringRef" title="OCStringRef"><span class="n"><span class="pre">OCStringRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">key</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCDictionaryReplaceValue" title="Link to this definition"></a><br /></dt>
+<dd><p>Replaces the value for an existing key. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>theDictionary</strong> – Dictionary to modify. </p></li>
+<li><p><strong>key</strong> – Key whose value is to be replaced. </p></li>
+<li><p><strong>value</strong> – New value to assign. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.OCDictionaryRemoveValue">
+<span class="target" id="group___o_c_dictionary_1gad8c8c16895fe5f027022dd7d49371f5a"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCDictionaryRemoveValue</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.OCMutableDictionaryRef" title="OCMutableDictionaryRef"><span class="n"><span class="pre">OCMutableDictionaryRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">theDictionary</span></span>, <a class="reference internal" href="OCType.html#c.OCStringRef" title="OCStringRef"><span class="n"><span class="pre">OCStringRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">key</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCDictionaryRemoveValue" title="Link to this definition"></a><br /></dt>
+<dd><p>Removes a key-value pair from the dictionary. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>theDictionary</strong> – Dictionary to modify. </p></li>
+<li><p><strong>key</strong> – Key to remove. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.OCDictionaryGetCountOfValue">
+<span class="target" id="group___o_c_dictionary_1gab262835ddfd52d604acf688f8e98bd34"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCDictionaryGetCountOfValue</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.OCMutableDictionaryRef" title="OCMutableDictionaryRef"><span class="n"><span class="pre">OCMutableDictionaryRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">theDictionary</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCDictionaryGetCountOfValue" title="Link to this definition"></a><br /></dt>
+<dd><p>Counts how many times a value appears in the dictionary. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>theDictionary</strong> – Dictionary to search. </p></li>
+<li><p><strong>value</strong> – Value to count. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Number of occurrences. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.OCDictionaryGetKeysAndValues">
+<span class="target" id="group___o_c_dictionary_1ga3b725d5b5bb2da3a5161c8ff5fbb7f0d"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCDictionaryGetKeysAndValues</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.OCDictionaryRef" title="OCDictionaryRef"><span class="n"><span class="pre">OCDictionaryRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">theDictionary</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">keys</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCDictionaryGetKeysAndValues" title="Link to this definition"></a><br /></dt>
+<dd><p>Retrieves all keys and values into parallel arrays. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>theDictionary</strong> – Dictionary to query. </p></li>
+<li><p><strong>keys</strong> – Output array of keys. </p></li>
+<li><p><strong>values</strong> – Output array of values. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.OCDictionaryCreateArrayWithAllKeys">
+<span class="target" id="group___o_c_dictionary_1ga91ca42e27f0f16784890b06105d8de11"></span><a class="reference internal" href="OCString.html#c.OCArrayRef" title="OCArrayRef"><span class="n"><span class="pre">OCArrayRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCDictionaryCreateArrayWithAllKeys</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.OCDictionaryRef" title="OCDictionaryRef"><span class="n"><span class="pre">OCDictionaryRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">theDictionary</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCDictionaryCreateArrayWithAllKeys" title="Link to this definition"></a><br /></dt>
+<dd><p>Creates an array containing all keys in the dictionary. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>theDictionary</strong> – Dictionary to query. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>New <a class="reference internal" href="OCArray.html#group___o_c_array_1ga258ada3c18aefb7cd00f9fae05441cc9"><span class="std std-ref">OCArrayRef</span></a> of keys, or NULL. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.OCDictionaryCreateArrayWithAllValues">
+<span class="target" id="group___o_c_dictionary_1ga7b3cb3c2e7e423d482487ebebb51bcce"></span><a class="reference internal" href="OCString.html#c.OCArrayRef" title="OCArrayRef"><span class="n"><span class="pre">OCArrayRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCDictionaryCreateArrayWithAllValues</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.OCDictionaryRef" title="OCDictionaryRef"><span class="n"><span class="pre">OCDictionaryRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">theDictionary</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCDictionaryCreateArrayWithAllValues" title="Link to this definition"></a><br /></dt>
+<dd><p>Creates an array containing all values in the dictionary. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>theDictionary</strong> – Dictionary to query. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>New <a class="reference internal" href="OCArray.html#group___o_c_array_1ga258ada3c18aefb7cd00f9fae05441cc9"><span class="std std-ref">OCArrayRef</span></a> of values, or NULL. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
 </section>
 
 

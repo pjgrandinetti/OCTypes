@@ -12,18 +12,25 @@
 
 #include "OCLibrary.h"
 
-/** @defgroup OCType OCType
- *  @brief Core type definitions and memory management functions.
- *  @{
+/**
+ * @defgroup OCType OCType
+ * @brief Core type definitions and memory management functions.
+ * @{
  */
 
 /**
  * @brief Macro to check if an object is NULL and return a specified value if it is.
+ *
  * @param OBJECT The object to check.
  * @param X The value to return if OBJECT is NULL.
+ *
  * @ingroup OCType
  */
-#define IF_NO_OBJECT_EXISTS_RETURN(OBJECT,X) if(NULL==OBJECT) {printf("*** WARNING - %s - object doesn't exist.\n",__func__); return X;}
+#define IF_NO_OBJECT_EXISTS_RETURN(OBJECT, X) \
+    if (NULL == OBJECT) { \
+        printf("*** WARNING - %s - object doesn't exist.\n", __func__); \
+        return X; \
+    }
 
 /**
  * @brief Defines an identifier for an OCType.
@@ -42,7 +49,7 @@ typedef int32_t OCIndex;
  * @ingroup OCType
  */
 enum CommonConstants {
-    /** Represents a value not found, typically used as a return value from search functions. */
+    /** Value returned when an item is not found. */
     kOCNotFound = -1
 };
 
@@ -51,7 +58,7 @@ enum CommonConstants {
  * This is the base type for all objects in the OCTypes system.
  * @ingroup OCType
  */
-typedef struct __OCType * OCTypeRef;
+typedef struct __OCType *OCTypeRef;
 
 /**
  * @brief Defines special type ID values.
@@ -64,85 +71,93 @@ enum SpecialTypeIDs {
 
 /**
  * @brief Compares two OCType instances for equality.
- * @param theType1 A pointer to the first OCType instance.
- * @param theType2 A pointer to the second OCType instance.
- * @return True if the types are considered equal, false otherwise.
+ *
+ * @param theType1 Pointer to the first OCType.
+ * @param theType2 Pointer to the second OCType.
+ * @return true if equal, false otherwise.
+ *
  * @ingroup OCType
  */
-bool OCTypeEqual(const void * theType1, const void * theType2);
+bool OCTypeEqual(const void *theType1, const void *theType2);
 
 /**
  * @brief Registers a new OCType with the system.
- * @param typeName A string representing the name of the type to register.
- * @return The OCTypeID assigned to the newly registered type.
- * Returns _kOCNotATypeID if registration fails.
+ *
+ * @param typeName A null-terminated C string representing the type name.
+ * @return The OCTypeID assigned, or _kOCNotATypeID on failure.
+ *
  * @ingroup OCType
  */
 OCTypeID OCRegisterType(char *typeName);
 
 /**
- * @brief Releases an OCType instance, decrementing its retain count.
- * @param ptr A pointer to the OCType instance to release.
+ * @brief Releases an OCType instance by decrementing its retain count.
+ *
+ * @param ptr Pointer to the OCType to release.
+ *
  * @ingroup OCType
  */
-void OCRelease(const void * ptr);
+void OCRelease(const void *ptr);
 
 /**
- * @brief Retains an OCType instance, incrementing its retain count.
- * @param ptr A pointer to the OCType instance to retain.
- * @return A pointer to the retained OCType instance (the same as ptr), or NULL if ptr is NULL.
+ * @brief Retains an OCType instance by incrementing its retain count.
+ *
+ * @param ptr Pointer to the OCType to retain.
+ * @return The same pointer, or NULL if input was NULL.
+ *
  * @ingroup OCType
  */
-const void *OCRetain(const void * ptr);
+const void *OCRetain(const void *ptr);
 
 /**
  * @brief A reference to an immutable OCString instance.
  * @ingroup OCType
  */
-typedef const struct __OCString * OCStringRef;
+typedef const struct __OCString *OCStringRef;
 
 /**
- * @brief Creates a string representation of an OCType instance suitable for formatting.
- * @param ptr A pointer to the OCType instance.
- * @return An OCStringRef containing the formatted description.
- * Returns NULL if ptr is NULL.
+ * @brief Generates a formatted string description of an OCType.
+ *
+ * @param ptr Pointer to the OCType instance.
+ * @return A new OCStringRef describing the object, or NULL.
+ *
  * @ingroup OCType
  */
-OCStringRef OCTypeCopyFormattingDesc(const void * ptr);
+OCStringRef OCTypeCopyFormattingDesc(const void *ptr);
 
 /**
  * @brief Creates a descriptive string representation of an OCType instance.
- * @param ptr A pointer to the OCType instance.
- * @return An OCStringRef containing the description.
- * Returns NULL if ptr is NULL.
- * @ingroup OCType
- */
-OCStringRef OCCopyDescription(const void * ptr);
-
-/**
- * @brief Gets the OCTypeID of an OCType instance.
- * @param ptr A pointer to the OCType instance.
- * @return The OCTypeID of the instance, or _kOCNotATypeID if ptr is NULL.
- * @ingroup OCType
- */
-OCTypeID OCGetTypeID(const void * ptr);
-
-/**
- * @brief The fundamental base structure for all OCTypes.
  *
- * This structure is embedded as the first member in all OCType-compatible
- * objects. It holds common information like the type identifier, retain count,
- * and function pointers for essential operations.
+ * @param ptr Pointer to the OCType instance.
+ * @return A descriptive OCStringRef, or NULL.
+ *
+ * @ingroup OCType
+ */
+OCStringRef OCCopyDescription(const void *ptr);
+
+/**
+ * @brief Gets the OCTypeID associated with an OCType instance.
+ *
+ * @param ptr Pointer to the OCType instance.
+ * @return A valid OCTypeID, or _kOCNotATypeID.
+ *
+ * @ingroup OCType
+ */
+OCTypeID OCGetTypeID(const void *ptr);
+
+/**
+ * @brief Base structure shared by all OCType-compatible objects.
+ *
  * @ingroup OCType
  */
 typedef struct __OCBase {
-    OCTypeID typeID; /**< The type identifier for this object. */
-    uint32_t retainCount; /**< The retain count for this object. */
-    void (*finalize)(const void *); /**< Function pointer for finalizing (deallocating) the object. */
-    bool (*equal)(const void *, const void *); /**< Function pointer for comparing objects for equality. */
-    OCStringRef (*copyFormattingDesc)(OCTypeRef cf); /**< Function pointer for creating a formatted string description. */
+    OCTypeID typeID;  /**< Type identifier. */
+    uint32_t retainCount;  /**< Reference count. */
+    void (*finalize)(const void *);  /**< Finalizer function. */
+    bool (*equal)(const void *, const void *);  /**< Equality comparator. */
+    OCStringRef (*copyFormattingDesc)(OCTypeRef cf);  /**< Description formatter. */
 } OCBase;
 
 /** @} */ // end of OCType group
 
-#endif
+#endif // OCType_h

@@ -51,7 +51,24 @@
 <li class="toctree-l1"><a class="reference internal" href="OCString.html">OCString</a></li>
 <li class="toctree-l1"><a class="reference internal" href="OCArray.html">OCArray</a></li>
 <li class="toctree-l1"><a class="reference internal" href="OCDictionary.html">OCDictionary</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">OCData</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">OCData</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCDataRef"><code class="docutils literal notranslate"><span class="pre">OCDataRef</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCMutableDataRef"><code class="docutils literal notranslate"><span class="pre">OCMutableDataRef</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCDataGetTypeID"><code class="docutils literal notranslate"><span class="pre">OCDataGetTypeID()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCDataCreate"><code class="docutils literal notranslate"><span class="pre">OCDataCreate()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCDataCreateWithBytesNoCopy"><code class="docutils literal notranslate"><span class="pre">OCDataCreateWithBytesNoCopy()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCDataCreateCopy"><code class="docutils literal notranslate"><span class="pre">OCDataCreateCopy()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCDataCreateMutable"><code class="docutils literal notranslate"><span class="pre">OCDataCreateMutable()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCDataCreateMutableCopy"><code class="docutils literal notranslate"><span class="pre">OCDataCreateMutableCopy()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCDataGetLength"><code class="docutils literal notranslate"><span class="pre">OCDataGetLength()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCDataGetBytePtr"><code class="docutils literal notranslate"><span class="pre">OCDataGetBytePtr()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCDataGetMutableBytePtr"><code class="docutils literal notranslate"><span class="pre">OCDataGetMutableBytePtr()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCDataGetBytes"><code class="docutils literal notranslate"><span class="pre">OCDataGetBytes()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCDataSetLength"><code class="docutils literal notranslate"><span class="pre">OCDataSetLength()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCDataIncreaseLength"><code class="docutils literal notranslate"><span class="pre">OCDataIncreaseLength()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCDataAppendBytes"><code class="docutils literal notranslate"><span class="pre">OCDataAppendBytes()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="OCLibrary.html">OCLibrary</a></li>
 <li class="toctree-l1"><a class="reference internal" href="OCMath.html">OCMath</a></li>
 </ul>
@@ -82,6 +99,240 @@
              
   <section id="ocdata">
 <h1>OCData<a class="headerlink" href="#ocdata" title="Link to this heading"></a></h1>
+<p>Declares the OCData and OCMutableData interfaces for handling binary data. </p>
+<p>OCData provides immutable and mutable representations of raw byte sequences, with memory safety and efficient operations. </p>
+<dl>
+<dt class="sig sig-object cpp">
+<span class="target" id="group___o_c_data"></span><em><span class="pre">group</span></em> <span class="sig-name descname"><span class="pre">OCData</span></span></dt>
+<dd><p>Binary data buffer types and utilities. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-typedefs">Typedefs</p>
+<dl class="c type">
+<dt class="sig sig-object c" id="c.OCDataRef">
+<span class="target" id="group___o_c_data_1ga2791cc4c74800d85862dcfb7c002c57c"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">__OCData</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">OCDataRef</span></span></span><a class="headerlink" href="#c.OCDataRef" title="Link to this definition"></a><br /></dt>
+<dd><p>A reference to an immutable data object. </p>
+</dd></dl>
+
+<dl class="c type">
+<dt class="sig sig-object c" id="c.OCMutableDataRef">
+<span class="target" id="group___o_c_data_1gaa4e0a88e16159a6586cf3cc2715bf7a4"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">__OCData</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">OCMutableDataRef</span></span></span><a class="headerlink" href="#c.OCMutableDataRef" title="Link to this definition"></a><br /></dt>
+<dd><p>A reference to a mutable data object. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.OCDataGetTypeID">
+<span class="target" id="group___o_c_data_1ga95e064aa51f1169c329760843a661d21"></span><a class="reference internal" href="OCType.html#c.OCTypeID" title="OCTypeID"><span class="n"><span class="pre">OCTypeID</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCDataGetTypeID</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCDataGetTypeID" title="Link to this definition"></a><br /></dt>
+<dd><p>Returns the unique type identifier for OCData objects. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="OCType.html#group___o_c_type_1gae4fcca725e41e7af4659ba4902223981"><span class="std std-ref">OCTypeID</span></a> for OCData. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.OCDataCreate">
+<span class="target" id="group___o_c_data_1ga064a00845d8d76e1757f2ae28287e406"></span><a class="reference internal" href="#c.OCDataRef" title="OCDataRef"><span class="n"><span class="pre">OCDataRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCDataCreate</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">bytes</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n"><span class="pre">length</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCDataCreate" title="Link to this definition"></a><br /></dt>
+<dd><p>Creates a new immutable data object by copying bytes. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bytes</strong> – Pointer to the source byte buffer. </p></li>
+<li><p><strong>length</strong> – Number of bytes to copy. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>New <a class="reference internal" href="#group___o_c_data_1ga2791cc4c74800d85862dcfb7c002c57c"><span class="std std-ref">OCDataRef</span></a>, or NULL on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.OCDataCreateWithBytesNoCopy">
+<span class="target" id="group___o_c_data_1ga470a88e8d2c94ee1eee9c5be2b2c10e8"></span><a class="reference internal" href="#c.OCDataRef" title="OCDataRef"><span class="n"><span class="pre">OCDataRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCDataCreateWithBytesNoCopy</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">bytes</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n"><span class="pre">length</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCDataCreateWithBytesNoCopy" title="Link to this definition"></a><br /></dt>
+<dd><p>Creates an immutable data object referencing existing memory (no copy). </p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Caller must ensure that <code class="docutils literal notranslate"><span class="pre">bytes</span></code> remains valid and unmodified. </p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bytes</strong> – Pointer to the byte buffer. </p></li>
+<li><p><strong>length</strong> – Length of the byte buffer. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>New <a class="reference internal" href="#group___o_c_data_1ga2791cc4c74800d85862dcfb7c002c57c"><span class="std std-ref">OCDataRef</span></a>, or NULL on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.OCDataCreateCopy">
+<span class="target" id="group___o_c_data_1ga2ded5654d329a34c2641b74b2ca36a27"></span><a class="reference internal" href="#c.OCDataRef" title="OCDataRef"><span class="n"><span class="pre">OCDataRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCDataCreateCopy</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.OCDataRef" title="OCDataRef"><span class="n"><span class="pre">OCDataRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">theData</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCDataCreateCopy" title="Link to this definition"></a><br /></dt>
+<dd><p>Creates a new <a class="reference internal" href="#group___o_c_data_1ga2791cc4c74800d85862dcfb7c002c57c"><span class="std std-ref">OCDataRef</span></a> by copying an existing one. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>theData</strong> – Source <a class="reference internal" href="#group___o_c_data_1ga2791cc4c74800d85862dcfb7c002c57c"><span class="std std-ref">OCDataRef</span></a> to copy. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Copy of the data, or NULL on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.OCDataCreateMutable">
+<span class="target" id="group___o_c_data_1ga9ebd96eca5c242d281851abaaef350ee"></span><a class="reference internal" href="#c.OCMutableDataRef" title="OCMutableDataRef"><span class="n"><span class="pre">OCMutableDataRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCDataCreateMutable</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n"><span class="pre">capacity</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCDataCreateMutable" title="Link to this definition"></a><br /></dt>
+<dd><p>Creates a new mutable data object with a specified capacity. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>capacity</strong> – Initial capacity in bytes. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>New <a class="reference internal" href="#group___o_c_data_1gaa4e0a88e16159a6586cf3cc2715bf7a4"><span class="std std-ref">OCMutableDataRef</span></a>, or NULL on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.OCDataCreateMutableCopy">
+<span class="target" id="group___o_c_data_1ga911d93411ee2f054aa7278fbee719aa0"></span><a class="reference internal" href="#c.OCMutableDataRef" title="OCMutableDataRef"><span class="n"><span class="pre">OCMutableDataRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCDataCreateMutableCopy</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n"><span class="pre">capacity</span></span>, <a class="reference internal" href="#c.OCDataRef" title="OCDataRef"><span class="n"><span class="pre">OCDataRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">theData</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCDataCreateMutableCopy" title="Link to this definition"></a><br /></dt>
+<dd><p>Creates a mutable copy of existing data with a specified capacity. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>capacity</strong> – Minimum capacity of the new object. </p></li>
+<li><p><strong>theData</strong> – Source data to copy (can be NULL). </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>New <a class="reference internal" href="#group___o_c_data_1gaa4e0a88e16159a6586cf3cc2715bf7a4"><span class="std std-ref">OCMutableDataRef</span></a>. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.OCDataGetLength">
+<span class="target" id="group___o_c_data_1ga9f4ff101b422969d95125b4907db11c6"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCDataGetLength</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.OCDataRef" title="OCDataRef"><span class="n"><span class="pre">OCDataRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">theData</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCDataGetLength" title="Link to this definition"></a><br /></dt>
+<dd><p>Gets the length of a data object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>theData</strong> – <a class="reference internal" href="#group___o_c_data_1ga2791cc4c74800d85862dcfb7c002c57c"><span class="std std-ref">OCDataRef</span></a> or <a class="reference internal" href="#group___o_c_data_1gaa4e0a88e16159a6586cf3cc2715bf7a4"><span class="std std-ref">OCMutableDataRef</span></a>. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Length in bytes. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.OCDataGetBytePtr">
+<span class="target" id="group___o_c_data_1ga8034e2f856018d0d6d20046f4c60368d"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">OCDataGetBytePtr</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.OCDataRef" title="OCDataRef"><span class="n"><span class="pre">OCDataRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">theData</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCDataGetBytePtr" title="Link to this definition"></a><br /></dt>
+<dd><p>Returns a read-only pointer to internal bytes. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>theData</strong> – <a class="reference internal" href="#group___o_c_data_1ga2791cc4c74800d85862dcfb7c002c57c"><span class="std std-ref">OCDataRef</span></a> or <a class="reference internal" href="#group___o_c_data_1gaa4e0a88e16159a6586cf3cc2715bf7a4"><span class="std std-ref">OCMutableDataRef</span></a>. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pointer to bytes, or NULL. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.OCDataGetMutableBytePtr">
+<span class="target" id="group___o_c_data_1ga0687b801fad6261b60317cadde11a508"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">OCDataGetMutableBytePtr</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.OCMutableDataRef" title="OCMutableDataRef"><span class="n"><span class="pre">OCMutableDataRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">theData</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCDataGetMutableBytePtr" title="Link to this definition"></a><br /></dt>
+<dd><p>Returns a mutable pointer to internal bytes. </p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Use with care. Modifications may affect internal state. </p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>theData</strong> – Mutable data object. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pointer to bytes, or NULL. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.OCDataGetBytes">
+<span class="target" id="group___o_c_data_1gaf8e480dbc9f33a85c14e577b10562b09"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCDataGetBytes</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.OCDataRef" title="OCDataRef"><span class="n"><span class="pre">OCDataRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">theData</span></span>, <a class="reference internal" href="OCLibrary.html#c.OCRange" title="OCRange"><span class="n"><span class="pre">OCRange</span></span></a><span class="w"> </span><span class="n"><span class="pre">range</span></span>, <span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">buffer</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCDataGetBytes" title="Link to this definition"></a><br /></dt>
+<dd><p>Copies a byte range from the data object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>theData</strong> – Source data. </p></li>
+<li><p><strong>range</strong> – Range to copy. </p></li>
+<li><p><strong>buffer</strong> – Destination buffer. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.OCDataSetLength">
+<span class="target" id="group___o_c_data_1ga0aeec266f7cac0e95afa2ace75285923"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCDataSetLength</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.OCMutableDataRef" title="OCMutableDataRef"><span class="n"><span class="pre">OCMutableDataRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">theData</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n"><span class="pre">length</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCDataSetLength" title="Link to this definition"></a><br /></dt>
+<dd><p>Sets the length of a mutable data object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>theData</strong> – Mutable data. </p></li>
+<li><p><strong>length</strong> – New length in bytes. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.OCDataIncreaseLength">
+<span class="target" id="group___o_c_data_1ga2cd63346b6b288dc85faed2f19dab51b"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCDataIncreaseLength</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.OCMutableDataRef" title="OCMutableDataRef"><span class="n"><span class="pre">OCMutableDataRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">theData</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n"><span class="pre">extraLength</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCDataIncreaseLength" title="Link to this definition"></a><br /></dt>
+<dd><p>Increases the length of mutable data. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>theData</strong> – Mutable data. </p></li>
+<li><p><strong>extraLength</strong> – Bytes to add. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.OCDataAppendBytes">
+<span class="target" id="group___o_c_data_1gaa06a258e921af271d391b3fca34c0b60"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCDataAppendBytes</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.OCMutableDataRef" title="OCMutableDataRef"><span class="n"><span class="pre">OCMutableDataRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">theData</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">bytes</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n"><span class="pre">length</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCDataAppendBytes" title="Link to this definition"></a><br /></dt>
+<dd><p>Appends raw bytes to the end of a mutable data object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>theData</strong> – Target mutable data. </p></li>
+<li><p><strong>bytes</strong> – Pointer to source data. </p></li>
+<li><p><strong>length</strong> – Number of bytes to append. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
 </section>
 
 
