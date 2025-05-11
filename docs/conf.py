@@ -44,10 +44,10 @@ breathe_default_project = 'OCTypes'
 # -- Warning suppression -----------------------------------------------------
 
 # Suppress specific warnings that are common and often benign in C projects
+# For Sphinx >= 3.1.0, this should suppress "Duplicate C declaration" warnings.
+# The local build shows [duplicate_declaration.c] as the warning type.
 suppress_warnings = [
-    'duplicate_declaration',  # For typedefs appearing in multiple modules
-    'c.duplicate_declaration',  # For typedefs appearing in multiple modules
-    'duplicate_declaration.c',  # For typedefs appearing in multiple modules
+    'duplicate_declaration.c',  # For C domain duplicate declarations
 ]
 
 # -- Options for HTML output -------------------------------------------------
