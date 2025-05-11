@@ -15,7 +15,7 @@ extensions = [
     'breathe',
 ]
 
-# Intersphinx mappings (only Python for now)
+# Only Python intersphinx for now
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
 }
@@ -23,9 +23,10 @@ intersphinx_mapping = {
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
-# We don’t need Sphinx’s duplicate_declaration suppression here;
-# Breathe will handle its own warnings separately.
-suppress_warnings = []
+# Tell Sphinx itself not to stop on duplicate C declarations
+suppress_warnings = [
+    'duplicate_declaration',
+]
 
 # -- Breathe Configuration ---------------------------------------------------
 
@@ -34,9 +35,9 @@ breathe_projects = {
 }
 breathe_default_project = "OCTypes"
 
-# Silence only the duplicate-declaration.c warnings coming out of Doxygen’s XML
+# And tell Breathe/Doxygen XML to ignore duplicate‐declaration.c warnings
 breathe_suppress_warnings = [
-    "duplicate_declaration.c"
+    "duplicate_declaration.c",
 ]
 
 breathe_verbose = False
