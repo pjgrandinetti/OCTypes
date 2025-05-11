@@ -163,11 +163,23 @@ static bool OCAutoreleasePoolsManagerRemovePool(OCAutoreleasePoolRef thePool)
     
     autorelease_pool_manager->number_of_pools = poolIndex;
     
-    if(autorelease_pool_manager->number_of_pools>0) {
-        autorelease_pool_manager->pools = realloc(autorelease_pool_manager->pools,autorelease_pool_manager->number_of_pools*sizeof(OCTypeRef));
-        return true;
+    if(autorelease_pool_manager->number_of_pools == 0) {
+        if (autorelease_pool_manager->pools != NULL) {
+            free(autorelease_pool_manager->pools);
+            autorelease_pool_manager->pools = NULL;
+        }
+    } else {
+        // Try to shrink the allocation.
+        OCAutoreleasePoolRef *new_pools_ptr = realloc(autorelease_pool_manager->pools, autorelease_pool_manager->number_of_pools * sizeof(OCAutoreleasePoolRef));
+        if (new_pools_ptr == NULL) {
+            // realloc failed to shrink. The original 'pools' pointer is still valid but too large.
+            fprintf(stderr, "*** WARNING - %s %s - realloc failed to shrink pools array. Memory may be overallocated.\n", __FILE__, __func__);
+            // Keep the old pointer: autorelease_pool_manager->pools remains unchanged.
+        } else {
+            autorelease_pool_manager->pools = new_pools_ptr;
+        }
     }
-    return false;
+    return true; // Return true if the pool was found and processed.
 }
 
 static bool OCAutoreleasePoolsManagerDeallocate(OCAutoreleasePoolsManagerRef thePoolsManager)
@@ -212,10 +224,29 @@ static void OCAutoreleasePoolsManagerAddPool(OCAutoreleasePoolRef thePool)
     if(autorelease_pool_manager==NULL) autorelease_pool_manager = OCAutoreleasePoolsManagerCreate();
     if(autorelease_pool_manager) {
         autorelease_pool_manager->number_of_pools++;
-        autorelease_pool_manager->pools = realloc(autorelease_pool_manager->pools,
+        OCAutoreleasePoolRef *new_pools_ptr = realloc(autorelease_pool_manager->pools,
                                                   autorelease_pool_manager->number_of_pools
-                                                  *sizeof(OCTypeRef));
-        autorelease_pool_manager->pools[autorelease_pool_manager->number_of_pools-1] = thePool;
+                                                  * sizeof(OCAutoreleasePoolRef)); // Use OCAutoreleasePoolRef
+        if (new_pools_ptr == NULL && autorelease_pool_manager->number_of_pools > 0) { // Check if realloc failed (and it's not a 0-size alloc)
+            fprintf(stderr, "*** ERROR - %s %s - realloc failed to grow pools array. Pool cannot be added.\n", __FILE__, __func__);
+            autorelease_pool_manager->number_of_pools--; // Revert count
+            // autorelease_pool_manager->pools remains unchanged (valid old pointer or NULL)
+            return; // Exit without adding the pool
+        }
+        autorelease_pool_manager->pools = new_pools_ptr;
+        if (autorelease_pool_manager->pools != NULL) { // Ensure pools is not NULL before assigning to its element
+             autorelease_pool_manager->pools[autorelease_pool_manager->number_of_pools-1] = thePool;
+        } else if (autorelease_pool_manager->number_of_pools > 0) {
+            // This case (pools is NULL but number_of_pools > 0) should ideally not happen if realloc(NULL, size) behaves like malloc(size).
+            // If it does, it's a critical error state.
+            fprintf(stderr, "*** CRITICAL ERROR - %s %s - pools array is NULL after realloc with non-zero count.\n", __FILE__, __func__);
+            autorelease_pool_manager->number_of_pools--; // Revert count
+            return;
+        }
+        // If number_of_pools is 1 and new_pools_ptr was NULL (malloc failed),
+        // then pools is NULL, and the above access is guarded.
+        // However, if new_pools_ptr is NULL and number_of_pools was already >0, then pools would be the old valid pointer.
+        // The logic for realloc failure handling could be more robust, but this covers the basic case.
     }
     return;
 }
@@ -324,7 +355,7 @@ static bool OCAutoreleasePoolAddObject(OCAutoreleasePoolRef thePool, const void 
         OCAutoreleasePoolObjectRef pool_object = OCAutoreleasePoolObjectCreate(object,release);
         thePool->number_of_pool_objects++;
         thePool->pool_objects = realloc(thePool->pool_objects,
-                                        thePool->number_of_pool_objects*sizeof(OCTypeRef));
+                                        thePool->number_of_pool_objects*sizeof(OCAutoreleasePoolObjectRef)); // Corrected sizeof
         thePool->pool_objects[thePool->number_of_pool_objects-1] = pool_object;
         return true;
     }
