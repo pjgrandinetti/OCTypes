@@ -1,36 +1,47 @@
 # Configuration file for the Sphinx documentation builder.
+# https://www.sphinx-doc.org/en/master/usage/configuration.html
 
 import os
 import sys
+import warnings
+from sphinx.util.logging import SphinxWarning
 
-# Add project root to sys.path for autodoc or other extensions
+# -- Path setup --------------------------------------------------------------
+# If extensions (or modules to document with autodoc) are in another directory,
+# add these directories to sys.path here.
 sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
-project = 'OCTypes'
+project = 'octypes'
 author = 'pjgrandinetti'
 release = 'latest'
 
 # -- General configuration ---------------------------------------------------
+# List of Sphinx extension module names
 extensions = [
     'breathe',
-    'sphinx_rtd_theme',
 ]
 
-# Breathe configuration for Doxygen XML output
-breathe_projects = {
-    'OCTypes': os.path.abspath('doxygen/xml')
-}
-breathe_default_project = 'OCTypes'
-
-# Suppress specific warnings so builds don’t break on duplicate C declarations
-suppress_warnings = [
-    'c.duplicate_declaration',  # ignore duplicate C declarations from Doxygen
-]
-
-# Templates and static paths
+# Templates path
 templates_path = ['_templates']
+
+# Patterns to exclude
 exclude_patterns = []
+
+# -- Breathe configuration ---------------------------------------------------
+# Point Breathe at the Doxygen XML output
+breathe_projects = {
+    'octypes': '../doxygen/xml'
+}
+breathe_default_project = 'octypes'
+
+# -- Warning suppression -----------------------------------------------------
+# Silently ignore duplicate C declarations (they come from multiple modules)
+warnings.filterwarnings(
+    'ignore',
+    message=r'.*Duplicate C declaration.*',
+    category=SphinxWarning
+)
 
 # -- Options for HTML output -------------------------------------------------
 html_theme = 'sphinx_rtd_theme'
