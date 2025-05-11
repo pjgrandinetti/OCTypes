@@ -54,10 +54,10 @@
     double complex ComplexNodeEvaluate(ComplexNodeRef tree);
     void ComplexNodeFree(ComplexNodeRef node);
     void ocpcerror(char *s, ...);
-    
+
 %}
 
-%define api.prefix "ocpc" // Use modern Bison directive
+%name-prefix="ocpc"
 
 %union {
     ComplexNodeRef a;
