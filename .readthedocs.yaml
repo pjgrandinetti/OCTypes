@@ -32,8 +32,12 @@ build:
     - sphinx-build --version || echo "sphinx-build still not found after manual install"
     - which sphinx-build || echo "sphinx-build location not found"
     - echo "--- Running Doxygen ---"
-    # Assumes Doxyfile is at docs/Doxyfile
-    - doxygen docs/Doxyfile
+    - echo "Current directory before Doxygen: $(pwd)"
+    - echo "Contents of src/ before Doxygen:"
+    - ls -la src/
+    - doxygen docs/Doxyfile > doxygen_run.log 2>&1
+    - echo "Doxygen command finished. Log content:"
+    - cat doxygen_run.log
     - 'echo "--- Listing Doxygen Output Directory (expected location for conf.py: docs/doxygen/xml) ---"'
     - ls -lR docs/doxygen/ || echo "docs/doxygen/ not found or listing failed."
     - echo "--- Listing Alternative Doxygen Output Directory (docs/xml) ---"
