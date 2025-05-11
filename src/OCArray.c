@@ -378,10 +378,25 @@ void OCArraySortValues(OCMutableArrayRef theArray, OCRange range, OCComparatorFu
     qsort_r(base_ptr, nmemb, element_size, thunk_last_qsort_compare_wrapper, &myContext);
 
 #elif (defined(__GNUC__) && (defined(_WIN32) || defined(__CYGWIN__))) // MinGW or Cygwin with GCC
-    // Prefer GNU qsort_r on MinGW/Cygwin as _GNU_SOURCE is defined (confirmed by logs)
-    // and C11 qsort_s availability is problematic.
-    // The thunk_last_qsort_compare_wrapper is suitable for GNU qsort_r.
-    qsort_r(base_ptr, nmemb, element_size, thunk_last_qsort_compare_wrapper, &myContext);
+    // Fallback sort for MinGW/Cygwin: manual insertion sort using comparator with context.
+    {
+        void **arr = base_ptr;
+        for (size_t i = 1; i < nmemb; i++) {
+            void *tmp = arr[i];
+            size_t j = i;
+            while (j > 0) {
+                void *prev = arr[j - 1];
+                // comparator returns >0 if prev > tmp
+                if (myContext.comparator(prev, tmp, myContext.context) > 0) {
+                    arr[j] = arr[j - 1];
+                    j--;
+                } else {
+                    break;
+                }
+            }
+            arr[j] = tmp;
+        }
+    }
 
 #elif defined(_MSC_VER) && defined(_WIN32) // MSVC on Windows
     // Attempt to use MSVC's qsort_s. __STDC_WANT_LIB_EXT1__ should be defined and active.
