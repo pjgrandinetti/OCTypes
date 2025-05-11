@@ -4,29 +4,42 @@
 
 A lightweight library for doing object oriented programming in C.
 
+## Requirements
+
+Ensure you have installed:
+
+- A C compiler (e.g., clang or gcc)
+- Make
+- Doxygen
+- Python 3 with `sphinx` and `breathe` (`pip install -r docs/requirements.txt`)
+
+## Building the Library
+
+Compile the static library:
+
+```bash
+make
+```
+
+This produces `libOCTypes.a`.
+
 ## Documentation
 
-The API documentation for OCTypes is built using Doxygen and Sphinx with the Breathe extension. 
+To build the API docs (after the library is built):
 
-To build the documentation locally:
+```bash
+make docs  # from project root
+```
 
-1.  Ensure you have Doxygen, Python, and the necessary Python packages installed. You can install the Python packages using pip:
-    ```bash
-    pip install -r docs/requirements.txt
-    ```
-2.  Navigate to the `docs` directory:
-    ```bash
-    cd docs
-    ```
-3.  Build the Doxygen XML output and then the Sphinx HTML documentation:
-    ```bash
-    make html 
-    # or, if you don't have a Makefile target yet for the full docs build:
-    # doxygen Doxyfile && sphinx-build -b html . _build
-    ```
-    (Assuming a Doxyfile exists in the `docs` directory or project root that outputs XML to `docs/doxygen/xml`)
+The HTML output appears in `docs/_build/html`.
 
-The documentation will be available in `docs/_build/html`.
+## Running the Test Suite
 
-For more details, see the [documentation itself](<link-to-hosted-docs-if-available>).
+After building the library, run:
+
+```bash
+make test        # build and run all tests
+make test-debug  # run under LLDB
+make test-asan   # with AddressSanitizer
+```
 
