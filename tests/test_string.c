@@ -72,9 +72,6 @@ bool stringTest2(void) {
     if (!OCStringEqual(out2, STR("Ix(H2)"))) PRINTERROR;
     OCRelease(out2);
 
-    OCRelease(fmt1);
-    OCRelease(arg1);
-    OCRelease(fmt2);
     fprintf(stderr, "%s end...without problems\n", __func__);
     return true;
 }
