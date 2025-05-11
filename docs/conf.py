@@ -1,52 +1,38 @@
+# Configuration file for the Sphinx documentation builder.
+
+import os
+import sys
+
+# Add project root to sys.path for autodoc or other extensions
+sys.path.insert(0, os.path.abspath('..'))
+
 # -- Project information -----------------------------------------------------
-
 project = 'OCTypes'
-copyright = '2025, Philip Grandinetti'
-author = 'Philip Grandinetti'
-release = '0.1.0'
-
-# Use the C domain by default
-primary_domain = 'c'
-
+author = 'pjgrandinetti'
+release = 'latest'
 
 # -- General configuration ---------------------------------------------------
-
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.intersphinx',
     'breathe',
+    'sphinx_rtd_theme',
 ]
 
-intersphinx_mapping = {
-    'python': ('https://docs.python.org/3', None),
-}
-
-templates_path = ['_templates']
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
-
-# Silence the “Duplicate C declaration” warning from the C domain
-suppress_warnings = [
-    'duplicate_declaration.c',
-]
-
-
-# -- Breathe configuration ---------------------------------------------------
-
+# Breathe configuration for Doxygen XML output
 breathe_projects = {
-    "OCTypes": "doxygen/xml"
+    'OCTypes': os.path.abspath('doxygen/xml')
 }
-breathe_default_project = "OCTypes"
-breathe_verbose = False
-breathe_default_members = ('members', 'undoc-members')
-breathe_default_domain = 'c'
-breathe_domain_by_extension = {
-    'h': 'c',
-    'c': 'c',
-}
+breathe_default_project = 'OCTypes'
 
+# Suppress specific warnings so builds don’t break on duplicate C declarations
+suppress_warnings = [
+    'c.duplicate_declaration',  # ignore duplicate C declarations from Doxygen
+]
 
-# -- HTML output --------------------------------------------------------------
+# Templates and static paths
+templates_path = ['_templates']
+exclude_patterns = []
 
+# -- Options for HTML output -------------------------------------------------
 html_theme = 'sphinx_rtd_theme'
-# html_static_path = ['_static']  # uncomment if you actually have a _static dir
+html_static_path = ['_static']
 
