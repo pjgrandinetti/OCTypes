@@ -1,17 +1,5 @@
 # docs/conf.py
 
-import warnings
-from sphinx.errors import SphinxWarning
-
-# -----------------------------------------------------------------------------
-# Suppress the “Duplicate C declaration” warning entirely:
-# -----------------------------------------------------------------------------
-warnings.filterwarnings(
-    'ignore',
-    r'Duplicate C declaration.*',
-    category=SphinxWarning
-)
-
 # -- Project information -----------------------------------------------------
 
 project = 'OCTypes'
@@ -21,6 +9,7 @@ release = '0.1.0'
 
 # Use the C domain by default
 primary_domain = 'c'
+
 
 # -- General configuration ---------------------------------------------------
 
@@ -38,11 +27,11 @@ intersphinx_mapping = {
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
-# Also suppress duplicate‐declaration warnings at the Sphinx level
+# Silence exactly that “Duplicate C declaration” warning (substring match)
 suppress_warnings = [
-    'duplicate_declaration',     # generic
-    'c:duplicate_declaration',   # C‐domain
+    'Duplicate C declaration',
 ]
+
 
 # -- Breathe configuration ---------------------------------------------------
 
@@ -58,7 +47,8 @@ breathe_domain_by_extension = {
     'c': 'c',
 }
 
+
 # -- HTML output --------------------------------------------------------------
 
 html_theme = 'sphinx_rtd_theme'
-# html_static_path = ['_static']
+# html_static_path = ['_static']  # uncomment if you actually have a _static dir
