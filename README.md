@@ -1,7 +1,7 @@
 # libOCTypes
 
 ![CI Status](https://github.com/YourUsername/OCTypes/actions/workflows/ci.yml/badge.svg)
-[![Documentation Status](https://readthedocs.org/projects/octypes/badge/?version=latest)](https://octypes.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/OCTypes/badge/?version=latest)](https://OCTypes.readthedocs.io/en/latest/?badge=latest)
 
 A lightweight library for doing object oriented programming in C.
 
@@ -36,7 +36,7 @@ The HTML output appears in `docs/_build/html`.
 
 ### Online Documentation
 
-The latest documentation is hosted on Read the Docs: https://octypes.readthedocs.io/en/latest/
+The latest documentation is hosted on Read the Docs: https://OCTypes.readthedocs.io/en/latest/
 
 A Read the Docs configuration file (`.readthedocs.yml`) is included at the project root to automate the documentation build.
 

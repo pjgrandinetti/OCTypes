@@ -11,7 +11,7 @@ import warnings
 sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
-project = 'octypes'
+project = 'OCTypes'
 author = 'pjgrandinetti'
 release = 'latest'
 
@@ -30,9 +30,9 @@ exclude_patterns = []
 # -- Breathe configuration ---------------------------------------------------
 # Point Breathe at the Doxygen XML output
 breathe_projects = {
-    'octypes': '../doxygen/xml'
+    'OCTypes': '../doxygen/xml'
 }
-breathe_default_project = 'octypes'
+breathe_default_project = 'OCTypes'
 
 # -- Warning suppression -----------------------------------------------------
 # Silently ignore duplicate C declarations (they come from multiple modules)
