@@ -31,7 +31,7 @@ typedef struct __OCString * OCMutableStringRef;
 
 /**
  * @def STR
- * @brief Macro to create a constant OCStringRef from a C string literal.
+ * @brief Macro to create a constant OCStringRef from a C string literal.  STR("…") is implemented as a compile-time constant OCString that you do not own, so you must not call OCRelease on it. It lives for the lifetime of your process.
  */
 #define STR(cStr)  __OCStringMakeConstantString("" cStr "")
 
