@@ -1,18 +1,22 @@
 OCMath
 ======
 
-.. doxygengroup:: OCMath
-   :project: OCTypes
+Extended math utilities for real and complex number operations.
+
+.. doxygenfile:: OCMath.h
 
 Functions
 ---------
 
-.. doxygencfunction:: double cabs(double complex z)
-
-.. doxygencfunction:: double creal(double complex z)
-
-.. doxygencfunction:: double cimag(double complex z)
-
-.. doxygencfunction:: double norm(double complex z)
-
-.. doxygencfunction:: double cargument(double complex z)
+.. doxygenfunction:: cargument
+.. doxygenfunction:: ccbrt
+.. doxygenfunction:: cqtrt
+.. doxygenfunction:: OCCompareFloatValues
+.. doxygenfunction:: OCCompareDoubleValues
+.. doxygenfunction:: OCCompareDoubleValuesLoose
+.. doxygenfunction:: OCCompareFloatValuesLoose
+.. doxygenfunction:: OCDoubleFloor
+.. doxygenfunction:: OCDoubleCeil
+.. doxygenfunction:: complex_sine
+.. doxygenfunction:: complex_cosine
+.. doxygenfunction:: complex_tangent
