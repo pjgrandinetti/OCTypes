@@ -1,0 +1,492 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+  <compounddef id="_o_c_number_8h" kind="file" language="C++">
+    <compoundname>OCNumber.h</compoundname>
+    <includes refid="_o_c_library_8h" local="yes">OCLibrary.h</includes>
+    <includedby refid="_o_c_library_8h" local="yes">/Users/philip/Github/Software/OCTypes/src/OCLibrary.h</includedby>
+    <incdepgraph>
+      <node id="30">
+        <label>OCArray.h</label>
+        <link refid="_o_c_array_8h_source"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="24">
+        <label>OCAutoreleasePool.h</label>
+        <link refid="_o_c_autorelease_pool_8h_source"/>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="28">
+        <label>OCBoolean.h</label>
+        <link refid="_o_c_boolean_8h_source"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="27">
+        <label>OCData.h</label>
+        <link refid="_o_c_data_8h_source"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="29">
+        <label>OCDictionary.h</label>
+        <link refid="_o_c_dictionary_8h_source"/>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>OCLibrary.h</label>
+        <link refid="_o_c_library_8h_source"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+        <childnode refid="1" relation="include">
+        </childnode>
+        <childnode refid="29" relation="include">
+        </childnode>
+        <childnode refid="30" relation="include">
+        </childnode>
+      </node>
+      <node id="23">
+        <label>OCMath.h</label>
+        <link refid="_o_c_math_8h_source"/>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>/Users/philip/Github/Software/OCTypes/src/OCNumber.h</label>
+        <link refid="_o_c_number_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="26">
+        <label>OCString.h</label>
+        <link refid="_o_c_string_8h_source"/>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="25">
+        <label>OCType.h</label>
+        <link refid="_o_c_type_8h_source"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>assert.h</label>
+      </node>
+      <node id="12">
+        <label>complex.h</label>
+      </node>
+      <node id="6">
+        <label>ctype.h</label>
+      </node>
+      <node id="7">
+        <label>errno.h</label>
+      </node>
+      <node id="8">
+        <label>float.h</label>
+      </node>
+      <node id="20">
+        <label>inttypes.h</label>
+      </node>
+      <node id="9">
+        <label>limits.h</label>
+      </node>
+      <node id="10">
+        <label>locale.h</label>
+      </node>
+      <node id="11">
+        <label>math.h</label>
+      </node>
+      <node id="13">
+        <label>setjmp.h</label>
+      </node>
+      <node id="14">
+        <label>signal.h</label>
+      </node>
+      <node id="4">
+        <label>stdarg.h</label>
+      </node>
+      <node id="21">
+        <label>stdbool.h</label>
+      </node>
+      <node id="15">
+        <label>stddef.h</label>
+      </node>
+      <node id="22">
+        <label>stdint.h</label>
+      </node>
+      <node id="16">
+        <label>stdio.h</label>
+      </node>
+      <node id="17">
+        <label>stdlib.h</label>
+      </node>
+      <node id="18">
+        <label>string.h</label>
+      </node>
+      <node id="3">
+        <label>sys/types.h</label>
+      </node>
+      <node id="19">
+        <label>time.h</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="3">
+        <label>/Users/philip/Github/Software/OCTypes/src/OCArray.h</label>
+        <link refid="_o_c_array_8h_source"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>/Users/philip/Github/Software/OCTypes/src/OCAutoreleasePool.h</label>
+        <link refid="_o_c_autorelease_pool_8h_source"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>/Users/philip/Github/Software/OCTypes/src/OCBoolean.h</label>
+        <link refid="_o_c_boolean_8h_source"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>/Users/philip/Github/Software/OCTypes/src/OCData.h</label>
+        <link refid="_o_c_data_8h_source"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>/Users/philip/Github/Software/OCTypes/src/OCDictionary.h</label>
+        <link refid="_o_c_dictionary_8h_source"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>/Users/philip/Github/Software/OCTypes/src/OCLibrary.h</label>
+        <link refid="_o_c_library_8h_source"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="1" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="8">
+        <label>/Users/philip/Github/Software/OCTypes/src/OCMath.h</label>
+        <link refid="_o_c_math_8h_source"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>/Users/philip/Github/Software/OCTypes/src/OCNumber.h</label>
+        <link refid="_o_c_number_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="9">
+        <label>/Users/philip/Github/Software/OCTypes/src/OCString.h</label>
+        <link refid="_o_c_string_8h_source"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="10">
+        <label>/Users/philip/Github/Software/OCTypes/src/OCType.h</label>
+        <link refid="_o_c_type_8h_source"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="union_____number" prot="public">__Number</innerclass>
+    <sectiondef kind="define">
+      <member refid="group___o_c_number_1gad63fe03ae4d523e4812c2492bd9b0664" kind="define"><name>SInt8Type</name></member>
+      <member refid="group___o_c_number_1ga99548ee28a3cfe11ff6710a3f6bd3fd1" kind="define"><name>SInt16Type</name></member>
+      <member refid="group___o_c_number_1ga6075f350bd86134132c0f47780b23fdf" kind="define"><name>SInt32Type</name></member>
+      <member refid="group___o_c_number_1ga010b606b6ee3fd8ddae1eceb1449dbf1" kind="define"><name>SInt64Type</name></member>
+      <member refid="group___o_c_number_1ga187c2b7a4cc2be8a74427b687d256883" kind="define"><name>Float32Type</name></member>
+      <member refid="group___o_c_number_1gaeaaa128d07c9bb3de2e2bcfc228cb234" kind="define"><name>Float64Type</name></member>
+      <member refid="group___o_c_number_1gae6124d213bf1f0aad629efdf2b9295e3" kind="define"><name>UInt8Type</name></member>
+      <member refid="group___o_c_number_1gab97bbe21ba48c9d300353b8b584ce9d7" kind="define"><name>UInt16Type</name></member>
+      <member refid="group___o_c_number_1ga3d9ce637d1913ac15c2653b900de5b16" kind="define"><name>UInt32Type</name></member>
+      <member refid="group___o_c_number_1ga6e76765306f9c9b1b6a1a0c3bab2d0e4" kind="define"><name>UInt64Type</name></member>
+      <member refid="group___o_c_number_1gabb96e15ee62b980e841d363177a0c9cd" kind="define"><name>Float32ComplexType</name></member>
+      <member refid="group___o_c_number_1gad5533ec0f4b65f2d40690a3d2ac481f0" kind="define"><name>Float64ComplexType</name></member>
+    </sectiondef>
+    <sectiondef kind="enum">
+      <member refid="group___o_c_number_1ga48705b7a724a22d77df7a1714a59320c" kind="enum"><name>OCNumberType</name></member>
+      <member refid="group___o_c_number_1ga5f9c0c63a25005f2faaa220f7160b834" kind="enum"><name>numberType</name></member>
+    </sectiondef>
+    <sectiondef kind="typedef">
+      <member refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kind="typedef"><name>OCNumberRef</name></member>
+      <member refid="group___o_c_number_1gae675db5b0df40c3be80e2aca1d6d370f" kind="typedef"><name>OCNumberType</name></member>
+      <member refid="group___o_c_number_1gaf68bc180f629027175fdd38b75f7d7ae" kind="typedef"><name>__Number</name></member>
+      <member refid="group___o_c_number_1gad0c37aa7563a5f774737f8aca85cce5c" kind="typedef"><name>numberType</name></member>
+    </sectiondef>
+    <sectiondef kind="func">
+      <member refid="group___o_c_number_1ga13420249c38d6296b578043bfc323e95" kind="function"><name>OCNumberGetTypeID</name></member>
+      <member refid="group___o_c_number_1ga72cfc634eef8aa9078897f83499c82f8" kind="function"><name>OCNumberCreate</name></member>
+      <member refid="group___o_c_number_1ga86230140fc4fdd90e5c96ed9cef84a17" kind="function"><name>OCNumberCreateWithUInt8</name></member>
+      <member refid="group___o_c_number_1gabedfc6f91be2ce0595a4de1a421fba39" kind="function"><name>OCNumberCreateWithUInt16</name></member>
+      <member refid="group___o_c_number_1ga1958f4a0241c77dcdc21a700330c4202" kind="function"><name>OCNumberCreateWithUInt32</name></member>
+      <member refid="group___o_c_number_1gaaa7771b7733765276bf912fefa15ef0f" kind="function"><name>OCNumberCreateWithUInt64</name></member>
+      <member refid="group___o_c_number_1gae0422b19ce598fae0330ea1f2b66b36d" kind="function"><name>OCNumberCreateWithSInt8</name></member>
+      <member refid="group___o_c_number_1gaad45ebc219f2a93dad63222fb8fab71c" kind="function"><name>OCNumberCreateWithSInt16</name></member>
+      <member refid="group___o_c_number_1gaef3fa8e2779babd28b191ef13957da0d" kind="function"><name>OCNumberCreateWithSInt32</name></member>
+      <member refid="group___o_c_number_1ga5c5499df1b1dc7ca07844f64bf98f7d8" kind="function"><name>OCNumberCreateWithSInt64</name></member>
+      <member refid="group___o_c_number_1gab2cce8d5144653218ecf8c431dbceebe" kind="function"><name>OCNumberCreateWithFloat</name></member>
+      <member refid="group___o_c_number_1ga857395a3ce57df83883cfb405f5b3b1b" kind="function"><name>OCNumberCreateWithDouble</name></member>
+      <member refid="group___o_c_number_1ga904b2891e246256f2d21c401e22a682b" kind="function"><name>OCNumberCreateWithFloatComplex</name></member>
+      <member refid="group___o_c_number_1ga4488ced2638b85bcbc94abfb6103348d" kind="function"><name>OCNumberCreateWithDoubleComplex</name></member>
+      <member refid="group___o_c_number_1gadfe30598eeb8eaf11ec9cead6084dd19" kind="function"><name>OCNumberCreateWithLongDouble</name></member>
+      <memberdef kind="function" id="_o_c_number_8h_1a72fc4ed5e9bd8f7376804bc56cb2f890" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int OCNumberTypeSize</definition>
+        <argsstring>(OCNumberType type)</argsstring>
+        <name>OCNumberTypeSize</name>
+        <param>
+          <type><ref refid="group___o_c_number_1ga48705b7a724a22d77df7a1714a59320c" kindref="member">OCNumberType</ref></type>
+          <declname>type</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCNumberTypeSize :brief: Returns the size in bytes of the C type corresponding to an <ref refid="group___o_c_number_1ga48705b7a724a22d77df7a1714a59320c" kindref="member">OCNumberType</ref>. :param type: The <ref refid="group___o_c_number_1ga48705b7a724a22d77df7a1714a59320c" kindref="member">OCNumberType</ref> to query. :return: The size in bytes of the specified number type. Returns 0 if the type is invalid. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" line="264" column="5" declfile="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" declline="264" declcolumn="5"/>
+      </memberdef>
+      <memberdef kind="function" id="_o_c_number_8h_1a71a346602f6947259cf718ec08863420" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+        <definition>OCStringRef OCNumberCreateStringValue</definition>
+        <argsstring>(OCNumberRef theNumber)</argsstring>
+        <name>OCNumberCreateStringValue</name>
+        <param>
+          <type><ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref></type>
+          <declname>theNumber</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCNumberCreateStringValue :brief: Creates a string representation of the OCNumber&apos;s value. :param theNumber: The <ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref> object to convert to a string. :return: A new <ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref> object containing the string representation of the number, or NULL if theNumber is NULL or on memory allocation failure. The caller is responsible for releasing the returned <ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref> using OCRelease. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" line="274" column="13" declfile="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" declline="274" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="_o_c_number_8h_1a9c0feb4db6dd8b31efd5e7ecc02ab60a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void OCNumberGetValue</definition>
+        <argsstring>(OCNumberRef number, OCNumberType type, void *outValue)</argsstring>
+        <name>OCNumberGetValue</name>
+        <param>
+          <type><ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref></type>
+          <declname>number</declname>
+        </param>
+        <param>
+          <type><ref refid="group___o_c_number_1ga48705b7a724a22d77df7a1714a59320c" kindref="member">OCNumberType</ref></type>
+          <declname>type</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>outValue</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCNumberGetValue :brief: Retrieves the raw value of an OCNumber object. :param number: The <ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref> object. :param type: The expected <ref refid="group___o_c_number_1ga48705b7a724a22d77df7a1714a59320c" kindref="member">OCNumberType</ref> of the value. This function currently requires this type to match the internal type of the OCNumber object. :param outValue: A pointer to a memory location where the value will be copied. The caller must ensure that <computeroutput>outValue</computeroutput> points to a variable of the correct type and size corresponding to the <computeroutput>type</computeroutput> parameter. :note: If <computeroutput>number</computeroutput> or <computeroutput>outValue</computeroutput> is NULL, or if <computeroutput>type</computeroutput> does not match the internal type of <computeroutput>number</computeroutput>, the function does nothing. A more robust implementation might return a status or handle type conversions. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" line="289" column="6" declfile="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" declline="289" declcolumn="6"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="comment">//<sp/><sp/>OCNumber.h</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="comment">//<sp/><sp/>OCTypes</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="comment">//<sp/><sp/>Created<sp/>by<sp/>Philip<sp/>Grandinetti<sp/>on<sp/>5/15/17.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>OCNumber_h</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>OCNumber_h</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;OCLibrary.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight></codeline>
+<codeline lineno="37" refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">__OCNumber<sp/>*<sp/><ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref>;</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"></highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight><highlight class="comment">//<sp/>These<sp/>#defines<sp/>are<sp/>legacy<sp/>or<sp/>internal<sp/>mapping<sp/>values<sp/>for<sp/>OCNumberType.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight><highlight class="comment">//<sp/>It&apos;s<sp/>generally<sp/>recommended<sp/>to<sp/>use<sp/>the<sp/>OCNumberType<sp/>enum<sp/>values<sp/>directly.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SInt8Type<sp/>1</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SInt16Type<sp/>2</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SInt32Type<sp/>3</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>SInt64Type<sp/>4</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>Float32Type<sp/>5</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>Float64Type<sp/>6</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="47"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>UInt8Type<sp/>17</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="48"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>UInt16Type<sp/>18</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="49"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>UInt32Type<sp/>19</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="50"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>UInt64Type<sp/>20</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="51"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>Float32ComplexType<sp/>24</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="52"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>Float64ComplexType<sp/>26</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="53"><highlight class="normal"></highlight></codeline>
+<codeline lineno="61" refid="group___o_c_number_1ga48705b7a724a22d77df7a1714a59320c" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/><ref refid="group___o_c_number_1ga48705b7a724a22d77df7a1714a59320c" kindref="member">OCNumberType</ref><sp/>{</highlight></codeline>
+<codeline lineno="62" refid="group___o_c_number_1gga48705b7a724a22d77df7a1714a59320ca7093e2ca623d4e5151395e28f8afce14" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_number_1gga48705b7a724a22d77df7a1714a59320ca7093e2ca623d4e5151395e28f8afce14" kindref="member">kOCNumberSInt8Type</ref><sp/>=<sp/>SInt8Type,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="63" refid="group___o_c_number_1gga48705b7a724a22d77df7a1714a59320ca2f0e60868c07b2a34e129c9a903dcb18" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_number_1gga48705b7a724a22d77df7a1714a59320ca2f0e60868c07b2a34e129c9a903dcb18" kindref="member">kOCNumberSInt16Type</ref><sp/>=<sp/>SInt16Type,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="64" refid="group___o_c_number_1gga48705b7a724a22d77df7a1714a59320ca9bffaf8e4231acdb92ab6ae7778d651c" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_number_1gga48705b7a724a22d77df7a1714a59320ca9bffaf8e4231acdb92ab6ae7778d651c" kindref="member">kOCNumberSInt32Type</ref><sp/>=<sp/>SInt32Type,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="65" refid="group___o_c_number_1gga48705b7a724a22d77df7a1714a59320cabdf1565c915d6c39d599872ca8717c40" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_number_1gga48705b7a724a22d77df7a1714a59320cabdf1565c915d6c39d599872ca8717c40" kindref="member">kOCNumberSInt64Type</ref><sp/>=<sp/>SInt64Type,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="66" refid="group___o_c_number_1gga48705b7a724a22d77df7a1714a59320cad3f63ffdb54f08785015956dbb14e22e" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_number_1gga48705b7a724a22d77df7a1714a59320cad3f63ffdb54f08785015956dbb14e22e" kindref="member">kOCNumberFloat32Type</ref><sp/>=<sp/>Float32Type,<sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="67" refid="group___o_c_number_1gga48705b7a724a22d77df7a1714a59320cac064321571c3c8b40cd154c2549df2f7" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_number_1gga48705b7a724a22d77df7a1714a59320cac064321571c3c8b40cd154c2549df2f7" kindref="member">kOCNumberFloat64Type</ref><sp/>=<sp/>Float64Type,<sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="68" refid="group___o_c_number_1gga48705b7a724a22d77df7a1714a59320ca01c8afafdc283f526f89977287fc4353" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_number_1gga48705b7a724a22d77df7a1714a59320ca01c8afafdc283f526f89977287fc4353" kindref="member">kOCNumberUInt8Type</ref><sp/>=<sp/>UInt8Type,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="69" refid="group___o_c_number_1gga48705b7a724a22d77df7a1714a59320cada9f7c7628a0b0e3864ac91a5aaf8586" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_number_1gga48705b7a724a22d77df7a1714a59320cada9f7c7628a0b0e3864ac91a5aaf8586" kindref="member">kOCNumberUInt16Type</ref><sp/>=<sp/>UInt16Type,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="70" refid="group___o_c_number_1gga48705b7a724a22d77df7a1714a59320cadb01cf3dccaa860e009399ab8468e848" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_number_1gga48705b7a724a22d77df7a1714a59320cadb01cf3dccaa860e009399ab8468e848" kindref="member">kOCNumberUInt32Type</ref><sp/>=<sp/>UInt32Type,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="71" refid="group___o_c_number_1gga48705b7a724a22d77df7a1714a59320ca825fa671116c8d6d6ae885c9032029fd" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_number_1gga48705b7a724a22d77df7a1714a59320ca825fa671116c8d6d6ae885c9032029fd" kindref="member">kOCNumberUInt64Type</ref><sp/>=<sp/>UInt64Type,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="72" refid="group___o_c_number_1gga48705b7a724a22d77df7a1714a59320cae1fca49da59183108284092e0e8c4bcd" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_number_1gga48705b7a724a22d77df7a1714a59320cae1fca49da59183108284092e0e8c4bcd" kindref="member">kOCNumberFloat32ComplexType</ref><sp/>=<sp/>Float32ComplexType,<sp/></highlight></codeline>
+<codeline lineno="73" refid="group___o_c_number_1gga48705b7a724a22d77df7a1714a59320ca2cae3e73332cfdc9162ed6f8064bbf7a" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_number_1gga48705b7a724a22d77df7a1714a59320ca2cae3e73332cfdc9162ed6f8064bbf7a" kindref="member">kOCNumberFloat64ComplexType</ref><sp/>=<sp/>Float64ComplexType<sp/><sp/></highlight></codeline>
+<codeline lineno="74" refid="group___o_c_number_1gae675db5b0df40c3be80e2aca1d6d370f" refkind="member"><highlight class="normal">}<sp/><ref refid="group___o_c_number_1ga48705b7a724a22d77df7a1714a59320c" kindref="member">OCNumberType</ref>;</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"></highlight></codeline>
+<codeline lineno="97" refid="union_____number" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">union<sp/></highlight><highlight class="normal"><ref refid="union_____number" kindref="compound">__Number</ref></highlight></codeline>
+<codeline lineno="98"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="99"><highlight class="normal"><sp/><sp/><sp/><sp/>int8_t<sp/><sp/>int8Value;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="100"><highlight class="normal"><sp/><sp/><sp/><sp/>int16_t<sp/>int16Value;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="101"><highlight class="normal"><sp/><sp/><sp/><sp/>int32_t<sp/>int32Value;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="102"><highlight class="normal"><sp/><sp/><sp/><sp/>int64_t<sp/>int64Value;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="103"><highlight class="normal"><sp/><sp/><sp/><sp/>uint8_t<sp/>uint8Value;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="104"><highlight class="normal"><sp/><sp/><sp/><sp/>uint16_t<sp/>uint16Value;<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="105"><highlight class="normal"><sp/><sp/><sp/><sp/>uint32_t<sp/>uint32Value;<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="106"><highlight class="normal"><sp/><sp/><sp/><sp/>uint64_t<sp/>uint64Value;<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="107"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/><sp/><sp/>floatValue;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="108"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><sp/>doubleValue;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="109"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>complex<sp/>floatComplexValue;<sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="110"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>complex<sp/>doubleComplexValue;<sp/><sp/></highlight></codeline>
+<codeline lineno="111" refid="group___o_c_number_1gaf68bc180f629027175fdd38b75f7d7ae" refkind="member"><highlight class="normal">}<sp/><ref refid="union_____number" kindref="compound">__Number</ref>;</highlight></codeline>
+<codeline lineno="112"><highlight class="normal"></highlight></codeline>
+<codeline lineno="119" refid="group___o_c_number_1ga5f9c0c63a25005f2faaa220f7160b834" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/><ref refid="group___o_c_number_1ga5f9c0c63a25005f2faaa220f7160b834" kindref="member">numberType</ref><sp/>{</highlight></codeline>
+<codeline lineno="120"><highlight class="normal"><sp/><sp/><sp/><sp/>kPSNumberFloat32Type<sp/>=<sp/>Float32Type,</highlight></codeline>
+<codeline lineno="121"><highlight class="normal"><sp/><sp/><sp/><sp/>kPSNumberFloat64Type<sp/>=<sp/>Float64Type,</highlight></codeline>
+<codeline lineno="122"><highlight class="normal"><sp/><sp/><sp/><sp/>kPSNumberFloat32ComplexType<sp/>=<sp/>Float32ComplexType,</highlight></codeline>
+<codeline lineno="123"><highlight class="normal"><sp/><sp/><sp/><sp/>kPSNumberFloat64ComplexType<sp/>=<sp/>Float64ComplexType,</highlight></codeline>
+<codeline lineno="124" refid="group___o_c_number_1gad0c37aa7563a5f774737f8aca85cce5c" refkind="member"><highlight class="normal">}<sp/><ref refid="group___o_c_number_1ga5f9c0c63a25005f2faaa220f7160b834" kindref="member">numberType</ref>;</highlight></codeline>
+<codeline lineno="125"><highlight class="normal"></highlight></codeline>
+<codeline lineno="131" refid="group___o_c_number_1ga13420249c38d6296b578043bfc323e95" refkind="member"><highlight class="normal"><ref refid="group___o_c_type_1gae4fcca725e41e7af4659ba4902223981" kindref="member">OCTypeID</ref><sp/><ref refid="group___o_c_number_1ga13420249c38d6296b578043bfc323e95" kindref="member">OCNumberGetTypeID</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="132"><highlight class="normal"></highlight></codeline>
+<codeline lineno="142" refid="group___o_c_number_1ga72cfc634eef8aa9078897f83499c82f8" refkind="member"><highlight class="normal"><ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref><sp/><ref refid="group___o_c_number_1ga72cfc634eef8aa9078897f83499c82f8" kindref="member">OCNumberCreate</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="group___o_c_number_1ga48705b7a724a22d77df7a1714a59320c" kindref="member">OCNumberType</ref><sp/>type,<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*value);</highlight></codeline>
+<codeline lineno="143"><highlight class="normal"></highlight></codeline>
+<codeline lineno="147"><highlight class="normal"></highlight></codeline>
+<codeline lineno="154" refid="group___o_c_number_1ga86230140fc4fdd90e5c96ed9cef84a17" refkind="member"><highlight class="normal"><ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref><sp/><ref refid="group___o_c_number_1ga86230140fc4fdd90e5c96ed9cef84a17" kindref="member">OCNumberCreateWithUInt8</ref>(uint8_t<sp/>value);</highlight></codeline>
+<codeline lineno="161" refid="group___o_c_number_1gabedfc6f91be2ce0595a4de1a421fba39" refkind="member"><highlight class="normal"><ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref><sp/><ref refid="group___o_c_number_1gabedfc6f91be2ce0595a4de1a421fba39" kindref="member">OCNumberCreateWithUInt16</ref>(uint16_t<sp/>value);</highlight></codeline>
+<codeline lineno="168" refid="group___o_c_number_1ga1958f4a0241c77dcdc21a700330c4202" refkind="member"><highlight class="normal"><ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref><sp/><ref refid="group___o_c_number_1ga1958f4a0241c77dcdc21a700330c4202" kindref="member">OCNumberCreateWithUInt32</ref>(uint32_t<sp/>value);</highlight></codeline>
+<codeline lineno="175" refid="group___o_c_number_1gaaa7771b7733765276bf912fefa15ef0f" refkind="member"><highlight class="normal"><ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref><sp/><ref refid="group___o_c_number_1gaaa7771b7733765276bf912fefa15ef0f" kindref="member">OCNumberCreateWithUInt64</ref>(uint64_t<sp/>value);</highlight></codeline>
+<codeline lineno="176"><highlight class="normal"></highlight></codeline>
+<codeline lineno="180"><highlight class="normal"></highlight></codeline>
+<codeline lineno="187" refid="group___o_c_number_1gae0422b19ce598fae0330ea1f2b66b36d" refkind="member"><highlight class="normal"><ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref><sp/><ref refid="group___o_c_number_1gae0422b19ce598fae0330ea1f2b66b36d" kindref="member">OCNumberCreateWithSInt8</ref>(int8_t<sp/>value);</highlight></codeline>
+<codeline lineno="194" refid="group___o_c_number_1gaad45ebc219f2a93dad63222fb8fab71c" refkind="member"><highlight class="normal"><ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref><sp/><ref refid="group___o_c_number_1gaad45ebc219f2a93dad63222fb8fab71c" kindref="member">OCNumberCreateWithSInt16</ref>(int16_t<sp/>value);</highlight></codeline>
+<codeline lineno="201" refid="group___o_c_number_1gaef3fa8e2779babd28b191ef13957da0d" refkind="member"><highlight class="normal"><ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref><sp/><ref refid="group___o_c_number_1gaef3fa8e2779babd28b191ef13957da0d" kindref="member">OCNumberCreateWithSInt32</ref>(int32_t<sp/>value);</highlight></codeline>
+<codeline lineno="208" refid="group___o_c_number_1ga5c5499df1b1dc7ca07844f64bf98f7d8" refkind="member"><highlight class="normal"><ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref><sp/><ref refid="group___o_c_number_1ga5c5499df1b1dc7ca07844f64bf98f7d8" kindref="member">OCNumberCreateWithSInt64</ref>(int64_t<sp/>value);</highlight></codeline>
+<codeline lineno="209"><highlight class="normal"></highlight></codeline>
+<codeline lineno="213"><highlight class="normal"></highlight></codeline>
+<codeline lineno="220" refid="group___o_c_number_1gab2cce8d5144653218ecf8c431dbceebe" refkind="member"><highlight class="normal"><ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref><sp/><ref refid="group___o_c_number_1gab2cce8d5144653218ecf8c431dbceebe" kindref="member">OCNumberCreateWithFloat</ref>(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>value);</highlight></codeline>
+<codeline lineno="227" refid="group___o_c_number_1ga857395a3ce57df83883cfb405f5b3b1b" refkind="member"><highlight class="normal"><ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref><sp/><ref refid="group___o_c_number_1ga857395a3ce57df83883cfb405f5b3b1b" kindref="member">OCNumberCreateWithDouble</ref>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>value);</highlight></codeline>
+<codeline lineno="228"><highlight class="normal"></highlight></codeline>
+<codeline lineno="232"><highlight class="normal"></highlight></codeline>
+<codeline lineno="239" refid="group___o_c_number_1ga904b2891e246256f2d21c401e22a682b" refkind="member"><highlight class="normal"><ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref><sp/><ref refid="group___o_c_number_1ga904b2891e246256f2d21c401e22a682b" kindref="member">OCNumberCreateWithFloatComplex</ref>(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>complex<sp/>value);</highlight></codeline>
+<codeline lineno="246" refid="group___o_c_number_1ga4488ced2638b85bcbc94abfb6103348d" refkind="member"><highlight class="normal"><ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref><sp/><ref refid="group___o_c_number_1ga4488ced2638b85bcbc94abfb6103348d" kindref="member">OCNumberCreateWithDoubleComplex</ref>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>complex<sp/>value);</highlight></codeline>
+<codeline lineno="247"><highlight class="normal"></highlight></codeline>
+<codeline lineno="254" refid="group___o_c_number_1gadfe30598eeb8eaf11ec9cead6084dd19" refkind="member"><highlight class="normal"><ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref><sp/><ref refid="group___o_c_number_1gadfe30598eeb8eaf11ec9cead6084dd19" kindref="member">OCNumberCreateWithLongDouble</ref>(</highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>value);</highlight></codeline>
+<codeline lineno="255"><highlight class="normal"><sp/></highlight><highlight class="comment">//<sp/>end<sp/>of<sp/>OCNumber<sp/>group</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="257"><highlight class="normal"></highlight></codeline>
+<codeline lineno="264"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>OCNumberTypeSize(<ref refid="group___o_c_number_1ga48705b7a724a22d77df7a1714a59320c" kindref="member">OCNumberType</ref><sp/>type);</highlight></codeline>
+<codeline lineno="265"><highlight class="normal"></highlight></codeline>
+<codeline lineno="274"><highlight class="normal"><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref><sp/>OCNumberCreateStringValue(<ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref><sp/>theNumber);</highlight></codeline>
+<codeline lineno="275"><highlight class="normal"></highlight></codeline>
+<codeline lineno="289"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>OCNumberGetValue(<ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref><sp/>number,<sp/><ref refid="group___o_c_number_1ga48705b7a724a22d77df7a1714a59320c" kindref="member">OCNumberType</ref><sp/>type,<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*outValue);</highlight></codeline>
+<codeline lineno="290"><highlight class="normal"></highlight></codeline>
+<codeline lineno="291"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>OCNumber_h<sp/>*/</highlight><highlight class="preprocessor"></highlight></codeline>
+    </programlisting>
+    <location file="/Users/philip/Github/Software/OCTypes/src/OCNumber.h"/>
+  </compounddef>
+</doxygen>

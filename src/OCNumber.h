@@ -10,17 +10,26 @@
 
 #include "OCLibrary.h"
 
+/** @defgroup OCNumber OCNumber */
+/** @addtogroup OCNumber
+ *  @{
+ */
+
 /**
- * @file OCNumber.h
- * @brief Defines the OCNumberRef type and related functions for representing various numerical types.
+ * .. _OCNumber_h:
+ *
+ * OCNumber.h
+ * ==========
+ *
+ * Defines the OCNumberRef type and related functions for representing various numerical types.
  *
  * OCNumber provides a way to work with different numerical data types (integers, floats, complex numbers)
  * as OCType objects. It allows for creation and inspection of these numerical objects.
  */
 
 /**
- * @typedef OCNumberRef
- * @brief An opaque reference to an immutable OCNumber object.
+ * :type OCNumberRef:
+ * :brief: An opaque reference to an immutable OCNumber object.
  *
  * OCNumberRef is used to represent various numerical values within the OCTypes framework.
  * These objects encapsulate primitive number types and provide a common interface for them.
@@ -43,8 +52,8 @@ typedef const struct __OCNumber * OCNumberRef;
 #define Float64ComplexType 26
 
 /**
- * @enum OCNumberType
- * @brief Enumerates the specific numerical data types that an OCNumber object can represent.
+ * :enum: OCNumberType
+ * :brief: Enumerates the specific numerical data types that an OCNumber object can represent.
  *
  * This enumeration is used when creating an OCNumber object to specify its underlying
  * data type and can be queried to determine the type of an existing OCNumber.
@@ -65,33 +74,47 @@ typedef enum OCNumberType {
 } OCNumberType;
 
 /**
- * @union __Number
- * @brief A union to hold the actual numerical value for an OCNumber object.
- * @internal
+ * :union: __Number
+ * :brief: A union to hold the actual numerical value for an OCNumber object.
+ * :meta: internal
+ *
  * This union is used internally by the OCNumber implementation to store the value
  * corresponding to its OCNumberType.
+ * 
+ * :ivar int8Value: Value if type is kOCNumberSInt8Type.
+ * :ivar int16Value: Value if type is kOCNumberSInt16Type.
+ * :ivar int32Value: Value if type is kOCNumberSInt32Type.
+ * :ivar int64Value: Value if type is kOCNumberSInt64Type.
+ * :ivar uint8Value: Value if type is kOCNumberUInt8Type.
+ * :ivar uint16Value: Value if type is kOCNumberUInt16Type.
+ * :ivar uint32Value: Value if type is kOCNumberUInt32Type.
+ * :ivar uint64Value: Value if type is kOCNumberUInt64Type.
+ * :ivar floatValue: Value if type is kOCNumberFloat32Type.
+ * :ivar doubleValue: Value if type is kOCNumberFloat64Type.
+ * :ivar floatComplexValue: Value if type is kOCNumberFloat32ComplexType.
+ * :ivar doubleComplexValue: Value if type is kOCNumberFloat64ComplexType.
  */
 typedef union __Number
 {
-    int8_t  int8Value;          /**< Value if type is kOCNumberSInt8Type. */
-    int16_t int16Value;         /**< Value if type is kOCNumberSInt16Type. */
-    int32_t int32Value;         /**< Value if type is kOCNumberSInt32Type. */
-    int64_t int64Value;         /**< Value if type is kOCNumberSInt64Type. */
-    uint8_t uint8Value;         /**< Value if type is kOCNumberUInt8Type. */
-    uint16_t uint16Value;       /**< Value if type is kOCNumberUInt16Type. */
-    uint32_t uint32Value;       /**< Value if type is kOCNumberUInt32Type. */
-    uint64_t uint64Value;       /**< Value if type is kOCNumberUInt64Type. */
-    float   floatValue;         /**< Value if type is kOCNumberFloat32Type. */
-    double  doubleValue;        /**< Value if type is kOCNumberFloat64Type. */
-    float complex floatComplexValue;    /**< Value if type is kOCNumberFloat32ComplexType. */
-    double complex doubleComplexValue;  /**< Value if type is kOCNumberFloat64ComplexType. */
+    int8_t  int8Value;          
+    int16_t int16Value;         
+    int32_t int32Value;         
+    int64_t int64Value;         
+    uint8_t uint8Value;         
+    uint16_t uint16Value;       
+    uint32_t uint32Value;       
+    uint64_t uint64Value;       
+    float   floatValue;         
+    double  doubleValue;        
+    float complex floatComplexValue;    
+    double complex doubleComplexValue;  
 } __Number;
 
 /**
- * @enum numberType
- * @brief A legacy or alternative enumeration for some number types.
- * @deprecated This enum appears to be a subset of OCNumberType or a legacy definition.
- *             Prefer using OCNumberType for new code.
+ * :enum: numberType
+ * :brief: A legacy or alternative enumeration for some number types.
+ * :deprecated: This enum appears to be a subset of OCNumberType or a legacy definition.
+ *              Prefer using OCNumberType for new code.
  */
 typedef enum numberType {
     kPSNumberFloat32Type = Float32Type,
@@ -101,140 +124,167 @@ typedef enum numberType {
 } numberType;
 
 /**
- * @brief Returns the unique type identifier for the OCNumber class.
- * @return The OCTypeID associated with OCNumber objects.
+ * :func: OCNumberGetTypeID
+ * :brief: Returns the unique type identifier for the OCNumber class.
+ * :return: The OCTypeID associated with OCNumber objects.
  */
 OCTypeID OCNumberGetTypeID(void);
 
 /**
- * @brief Creates a new OCNumber object with the specified type and value.
- * @param type The OCNumberType specifying the data type of the number.
- * @param value A pointer to the actual numerical value. The pointed-to data will be copied.
- *              The size of the data pointed to must match the size of the specified `type`.
- * @return A new OCNumberRef object, or NULL if creation fails (e.g., invalid type, memory allocation failure).
- *         The caller is responsible for releasing the returned object using OCRelease.
+ * :func: OCNumberCreate
+ * :brief: Creates a new OCNumber object with the specified type and value.
+ * :param type: The OCNumberType specifying the data type of the number.
+ * :param value: A pointer to the actual numerical value. The pointed-to data will be copied.
+ *               The size of the data pointed to must match the size of the specified `type`.
+ * :return: A new OCNumberRef object, or NULL if creation fails (e.g., invalid type, memory allocation failure).
+ *          The caller is responsible for releasing the returned object using OCRelease.
  */
 OCNumberRef OCNumberCreate(const OCNumberType type, void *value);
 
-/** @name Convenience Constructors for Unsigned Integer Types */
-/** @{ */
 /**
- * @brief Creates a new OCNumber object with a uint8_t value.
- * @param value The uint8_t value.
- * @return A new OCNumberRef object, or NULL on failure. Caller owns the returned object.
+ * .. rubric:: Convenience Constructors for Unsigned Integer Types
+ */
+
+/**
+ * :func: OCNumberCreateWithUInt8
+ * :brief: Creates a new OCNumber object with a uint8_t value.
+ * :param value: The uint8_t value.
+ * :return: A new OCNumberRef object, or NULL on failure. Caller owns the returned object.
  */
 OCNumberRef OCNumberCreateWithUInt8(uint8_t value);
 /**
- * @brief Creates a new OCNumber object with a uint16_t value.
- * @param value The uint16_t value.
- * @return A new OCNumberRef object, or NULL on failure. Caller owns the returned object.
+ * :func: OCNumberCreateWithUInt16
+ * :brief: Creates a new OCNumber object with a uint16_t value.
+ * :param value: The uint16_t value.
+ * :return: A new OCNumberRef object, or NULL on failure. Caller owns the returned object.
  */
 OCNumberRef OCNumberCreateWithUInt16(uint16_t value);
 /**
- * @brief Creates a new OCNumber object with a uint32_t value.
- * @param value The uint32_t value.
- * @return A new OCNumberRef object, or NULL on failure. Caller owns the returned object.
+ * :func: OCNumberCreateWithUInt32
+ * :brief: Creates a new OCNumber object with a uint32_t value.
+ * :param value: The uint32_t value.
+ * :return: A new OCNumberRef object, or NULL on failure. Caller owns the returned object.
  */
 OCNumberRef OCNumberCreateWithUInt32(uint32_t value);
 /**
- * @brief Creates a new OCNumber object with a uint64_t value.
- * @param value The uint64_t value.
- * @return A new OCNumberRef object, or NULL on failure. Caller owns the returned object.
+ * :func: OCNumberCreateWithUInt64
+ * :brief: Creates a new OCNumber object with a uint64_t value.
+ * :param value: The uint64_t value.
+ * :return: A new OCNumberRef object, or NULL on failure. Caller owns the returned object.
  */
 OCNumberRef OCNumberCreateWithUInt64(uint64_t value);
-/** @} */
 
-/** @name Convenience Constructors for Signed Integer Types */
-/** @{ */
 /**
- * @brief Creates a new OCNumber object with an int8_t value.
- * @param value The int8_t value.
- * @return A new OCNumberRef object, or NULL on failure. Caller owns the returned object.
+ * .. rubric:: Convenience Constructors for Signed Integer Types
+ */
+
+/**
+ * :func: OCNumberCreateWithSInt8
+ * :brief: Creates a new OCNumber object with an int8_t value.
+ * :param value: The int8_t value.
+ * :return: A new OCNumberRef object, or NULL on failure. Caller owns the returned object.
  */
 OCNumberRef OCNumberCreateWithSInt8(int8_t value);
 /**
- * @brief Creates a new OCNumber object with an int16_t value.
- * @param value The int16_t value.
- * @return A new OCNumberRef object, or NULL on failure. Caller owns the returned object.
+ * :func: OCNumberCreateWithSInt16
+ * :brief: Creates a new OCNumber object with an int16_t value.
+ * :param value: The int16_t value.
+ * :return: A new OCNumberRef object, or NULL on failure. Caller owns the returned object.
  */
 OCNumberRef OCNumberCreateWithSInt16(int16_t value);
 /**
- * @brief Creates a new OCNumber object with an int32_t value.
- * @param value The int32_t value.
- * @return A new OCNumberRef object, or NULL on failure. Caller owns the returned object.
+ * :func: OCNumberCreateWithSInt32
+ * :brief: Creates a new OCNumber object with an int32_t value.
+ * :param value: The int32_t value.
+ * :return: A new OCNumberRef object, or NULL on failure. Caller owns the returned object.
  */
 OCNumberRef OCNumberCreateWithSInt32(int32_t value);
 /**
- * @brief Creates a new OCNumber object with an int64_t value.
- * @param value The int64_t value.
- * @return A new OCNumberRef object, or NULL on failure. Caller owns the returned object.
+ * :func: OCNumberCreateWithSInt64
+ * :brief: Creates a new OCNumber object with an int64_t value.
+ * :param value: The int64_t value.
+ * :return: A new OCNumberRef object, or NULL on failure. Caller owns the returned object.
  */
 OCNumberRef OCNumberCreateWithSInt64(int64_t value);
-/** @} */
 
-/** @name Convenience Constructors for Floating-Point Types */
-/** @{ */
 /**
- * @brief Creates a new OCNumber object with a float value.
- * @param value The float value.
- * @return A new OCNumberRef object, or NULL on failure. Caller owns the returned object.
+ * .. rubric:: Convenience Constructors for Floating-Point Types
+ */
+
+/**
+ * :func: OCNumberCreateWithFloat
+ * :brief: Creates a new OCNumber object with a float value.
+ * :param value: The float value.
+ * :return: A new OCNumberRef object, or NULL on failure. Caller owns the returned object.
  */
 OCNumberRef OCNumberCreateWithFloat(float value);
 /**
- * @brief Creates a new OCNumber object with a double value.
- * @param value The double value.
- * @return A new OCNumberRef object, or NULL on failure. Caller owns the returned object.
+ * :func: OCNumberCreateWithDouble
+ * :brief: Creates a new OCNumber object with a double value.
+ * :param value: The double value.
+ * :return: A new OCNumberRef object, or NULL on failure. Caller owns the returned object.
  */
 OCNumberRef OCNumberCreateWithDouble(double value);
-/** @} */
 
-/** @name Convenience Constructors for Complex Floating-Point Types */
-/** @{ */
 /**
- * @brief Creates a new OCNumber object with a float complex value.
- * @param value The float complex value.
- * @return A new OCNumberRef object, or NULL on failure. Caller owns the returned object.
+ * .. rubric:: Convenience Constructors for Complex Floating-Point Types
+ */
+
+/**
+ * :func: OCNumberCreateWithFloatComplex
+ * :brief: Creates a new OCNumber object with a float complex value.
+ * :param value: The float complex value.
+ * :return: A new OCNumberRef object, or NULL on failure. Caller owns the returned object.
  */
 OCNumberRef OCNumberCreateWithFloatComplex(float complex value);
 /**
- * @brief Creates a new OCNumber object with a double complex value.
- * @param value The double complex value.
- * @return A new OCNumberRef object, or NULL on failure. Caller owns the returned object.
+ * :func: OCNumberCreateWithDoubleComplex
+ * :brief: Creates a new OCNumber object with a double complex value.
+ * :param value: The double complex value.
+ * :return: A new OCNumberRef object, or NULL on failure. Caller owns the returned object.
  */
 OCNumberRef OCNumberCreateWithDoubleComplex(double complex value);
-/** @} */
-
-// Note: The following two declarations are duplicates of the ones immediately above.
-// OCNumberRef OCNumberCreateWithFloatComplex(float complex value);
-// OCNumberRef OCNumberCreateWithDoubleComplex(double complex value);
 
 /**
- * @brief Returns the size in bytes of the C type corresponding to an OCNumberType.
- * @param type The OCNumberType to query.
- * @return The size in bytes of the specified number type. Returns 0 if the type is invalid.
+ * :func: OCNumberCreateWithLongDouble
+ * :brief: Creates a new OCNumber object with a long double value.
+ * :param value: The long double value.
+ * :return: A new OCNumberRef object, or NULL on failure. Caller owns the returned object.
+ */
+OCNumberRef OCNumberCreateWithLongDouble(long double value);
+
+/** @} */ // end of OCNumber group
+
+/**
+ * :func: OCNumberTypeSize
+ * :brief: Returns the size in bytes of the C type corresponding to an OCNumberType.
+ * :param type: The OCNumberType to query.
+ * :return: The size in bytes of the specified number type. Returns 0 if the type is invalid.
  */
 int OCNumberTypeSize(OCNumberType type);
 
 /**
- * @brief Creates a string representation of the OCNumber's value.
- * @param theNumber The OCNumberRef object to convert to a string.
- * @return A new OCStringRef object containing the string representation of the number,
- *         or NULL if theNumber is NULL or on memory allocation failure.
- *         The caller is responsible for releasing the returned OCStringRef using OCRelease.
+ * :func: OCNumberCreateStringValue
+ * :brief: Creates a string representation of the OCNumber's value.
+ * :param theNumber: The OCNumberRef object to convert to a string.
+ * :return: A new OCStringRef object containing the string representation of the number,
+ *          or NULL if theNumber is NULL or on memory allocation failure.
+ *          The caller is responsible for releasing the returned OCStringRef using OCRelease.
  */
 OCStringRef OCNumberCreateStringValue(OCNumberRef theNumber);
 
 /**
- * @brief Retrieves the raw value of an OCNumber object.
- * @param number The OCNumberRef object.
- * @param type The expected OCNumberType of the value. This function currently requires
- *             this type to match the internal type of the OCNumber object.
- * @param outValue A pointer to a memory location where the value will be copied.
- *                 The caller must ensure that `outValue` points to a variable of the
- *                 correct type and size corresponding to the `type` parameter.
- * @note If `number` or `outValue` is NULL, or if `type` does not match the internal
- *       type of `number`, the function does nothing. A more robust implementation
- *       might return a status or handle type conversions.
+ * :func: OCNumberGetValue
+ * :brief: Retrieves the raw value of an OCNumber object.
+ * :param number: The OCNumberRef object.
+ * :param type: The expected OCNumberType of the value. This function currently requires
+ *              this type to match the internal type of the OCNumber object.
+ * :param outValue: A pointer to a memory location where the value will be copied.
+ *                  The caller must ensure that `outValue` points to a variable of the
+ *                  correct type and size corresponding to the `type` parameter.
+ * :note: If `number` or `outValue` is NULL, or if `type` does not match the internal
+ *        type of `number`, the function does nothing. A more robust implementation
+ *        might return a status or handle type conversions.
  */
 void OCNumberGetValue(OCNumberRef number, OCNumberType type, void *outValue);
 

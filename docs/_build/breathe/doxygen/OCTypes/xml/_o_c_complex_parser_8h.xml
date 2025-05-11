@@ -1,0 +1,221 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+  <compounddef id="_o_c_complex_parser_8h" kind="file" language="C++">
+    <compoundname>OCComplexParser.h</compoundname>
+    <innerclass refid="union_y_y_s_t_y_p_e" prot="public">YYSTYPE</innerclass>
+    <sectiondef kind="define">
+      <memberdef kind="define" id="_o_c_complex_parser_8h_1abc544a4ed22112e62773c113652c5063" prot="public" static="no">
+        <name>NUMBER</name>
+        <initializer>258</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCComplexParser.h" line="48" column="9" bodyfile="/Users/philip/Github/Software/OCTypes/src/OCComplexParser.h" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_o_c_complex_parser_8h_1a587e21dda1f72be700a6206023ad681b" prot="public" static="no">
+        <name>FUNC</name>
+        <initializer>259</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCComplexParser.h" line="49" column="9" bodyfile="/Users/philip/Github/Software/OCTypes/src/OCComplexParser.h" bodystart="49" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_o_c_complex_parser_8h_1a2ab8b9b6f234db3746d118f4f0335043" prot="public" static="no">
+        <name>UMINUS</name>
+        <initializer>260</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCComplexParser.h" line="50" column="9" bodyfile="/Users/philip/Github/Software/OCTypes/src/OCComplexParser.h" bodystart="50" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_o_c_complex_parser_8h_1a4ccf5315e8f5c1cec48ec67ca1771e3a" prot="public" static="no">
+        <name>yystype</name>
+        <initializer><ref refid="union_y_y_s_t_y_p_e" kindref="compound">YYSTYPE</ref> /* obsolescent; will be withdrawn */</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCComplexParser.h" line="66" column="10" bodyfile="/Users/philip/Github/Software/OCTypes/src/OCComplexParser.h" bodystart="66" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_o_c_complex_parser_8h_1af0232d21120b2cfc5e5f82f0fbadab3c" prot="public" static="no">
+        <name>YYSTYPE_IS_DECLARED</name>
+        <initializer>1</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCComplexParser.h" line="67" column="10" bodyfile="/Users/philip/Github/Software/OCTypes/src/OCComplexParser.h" bodystart="67" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_o_c_complex_parser_8h_1a2e3dbf169c5ee24cf6af37c61cf3995d" prot="public" static="no">
+        <name>YYSTYPE_IS_TRIVIAL</name>
+        <initializer>1</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCComplexParser.h" line="68" column="10" bodyfile="/Users/philip/Github/Software/OCTypes/src/OCComplexParser.h" bodystart="68" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="enum">
+      <memberdef kind="enum" id="_o_c_complex_parser_8h_1a15c9f7bd2f0e9686df5d9df4f3314aa9" prot="public" static="no" strong="no">
+        <type></type>
+        <name>yytokentype</name>
+        <enumvalue id="_o_c_complex_parser_8h_1a15c9f7bd2f0e9686df5d9df4f3314aa9a12a90dfe20486bbe3e075afcd19ef2d0" prot="public">
+          <name>NUMBER</name>
+          <initializer>= 258</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="_o_c_complex_parser_8h_1a15c9f7bd2f0e9686df5d9df4f3314aa9a389e03ce61ac2d93fd54069187ab58af" prot="public">
+          <name>FUNC</name>
+          <initializer>= 259</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="_o_c_complex_parser_8h_1a15c9f7bd2f0e9686df5d9df4f3314aa9a1547315a0271bfc281fb75946da5f3d9" prot="public">
+          <name>UMINUS</name>
+          <initializer>= 260</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCComplexParser.h" line="41" column="4" bodyfile="/Users/philip/Github/Software/OCTypes/src/OCComplexParser.h" bodystart="41" bodyend="45"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="_o_c_complex_parser_8h_1ac56824fbd095909aa72c2a98afb4b9f0" prot="public" static="no">
+        <type>union YYSTYPE</type>
+        <definition>typedef union YYSTYPE YYSTYPE</definition>
+        <argsstring></argsstring>
+        <name>YYSTYPE</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCComplexParser.h" line="65" column="8"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="var">
+      <memberdef kind="variable" id="_o_c_complex_parser_8h_1ad81fc52b52d031c27f5c63d1fcf6bfd6" prot="public" static="no" extern="yes" mutable="no">
+        <type><ref refid="union_y_y_s_t_y_p_e" kindref="compound">YYSTYPE</ref></type>
+        <definition>YYSTYPE ocpclval</definition>
+        <argsstring></argsstring>
+        <name>ocpclval</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCComplexParser.h" line="71" column="16" declfile="/Users/philip/Github/Software/OCTypes/src/OCComplexParser.h" declline="71" declcolumn="16"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/*<sp/>A<sp/>Bison<sp/>parser,<sp/>made<sp/>by<sp/>GNU<sp/>Bison<sp/>2.3.<sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="comment">/*<sp/>Skeleton<sp/>interface<sp/>for<sp/>Bison&apos;s<sp/>Yacc-like<sp/>parsers<sp/>in<sp/>C</highlight></codeline>
+<codeline lineno="4"><highlight class="comment"></highlight></codeline>
+<codeline lineno="5"><highlight class="comment"><sp/><sp/><sp/>Copyright<sp/>(C)<sp/>1984,<sp/>1989,<sp/>1990,<sp/>2000,<sp/>2001,<sp/>2002,<sp/>2003,<sp/>2004,<sp/>2005,<sp/>2006</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"><sp/><sp/><sp/>Free<sp/>Software<sp/>Foundation,<sp/>Inc.</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"></highlight></codeline>
+<codeline lineno="8"><highlight class="comment"><sp/><sp/><sp/>This<sp/>program<sp/>is<sp/>free<sp/>software;<sp/>you<sp/>can<sp/>redistribute<sp/>it<sp/>and/or<sp/>modify</highlight></codeline>
+<codeline lineno="9"><highlight class="comment"><sp/><sp/><sp/>it<sp/>under<sp/>the<sp/>terms<sp/>of<sp/>the<sp/>GNU<sp/>General<sp/>Public<sp/>License<sp/>as<sp/>published<sp/>by</highlight></codeline>
+<codeline lineno="10"><highlight class="comment"><sp/><sp/><sp/>the<sp/>Free<sp/>Software<sp/>Foundation;<sp/>either<sp/>version<sp/>2,<sp/>or<sp/>(at<sp/>your<sp/>option)</highlight></codeline>
+<codeline lineno="11"><highlight class="comment"><sp/><sp/><sp/>any<sp/>later<sp/>version.</highlight></codeline>
+<codeline lineno="12"><highlight class="comment"></highlight></codeline>
+<codeline lineno="13"><highlight class="comment"><sp/><sp/><sp/>This<sp/>program<sp/>is<sp/>distributed<sp/>in<sp/>the<sp/>hope<sp/>that<sp/>it<sp/>will<sp/>be<sp/>useful,</highlight></codeline>
+<codeline lineno="14"><highlight class="comment"><sp/><sp/><sp/>but<sp/>WITHOUT<sp/>ANY<sp/>WARRANTY;<sp/>without<sp/>even<sp/>the<sp/>implied<sp/>warranty<sp/>of</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"><sp/><sp/><sp/>MERCHANTABILITY<sp/>or<sp/>FITNESS<sp/>FOR<sp/>A<sp/>PARTICULAR<sp/>PURPOSE.<sp/><sp/>See<sp/>the</highlight></codeline>
+<codeline lineno="16"><highlight class="comment"><sp/><sp/><sp/>GNU<sp/>General<sp/>Public<sp/>License<sp/>for<sp/>more<sp/>details.</highlight></codeline>
+<codeline lineno="17"><highlight class="comment"></highlight></codeline>
+<codeline lineno="18"><highlight class="comment"><sp/><sp/><sp/>You<sp/>should<sp/>have<sp/>received<sp/>a<sp/>copy<sp/>of<sp/>the<sp/>GNU<sp/>General<sp/>Public<sp/>License</highlight></codeline>
+<codeline lineno="19"><highlight class="comment"><sp/><sp/><sp/>along<sp/>with<sp/>this<sp/>program;<sp/>if<sp/>not,<sp/>write<sp/>to<sp/>the<sp/>Free<sp/>Software</highlight></codeline>
+<codeline lineno="20"><highlight class="comment"><sp/><sp/><sp/>Foundation,<sp/>Inc.,<sp/>51<sp/>Franklin<sp/>Street,<sp/>Fifth<sp/>Floor,</highlight></codeline>
+<codeline lineno="21"><highlight class="comment"><sp/><sp/><sp/>Boston,<sp/>MA<sp/>02110-1301,<sp/>USA.<sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="comment">/*<sp/>As<sp/>a<sp/>special<sp/>exception,<sp/>you<sp/>may<sp/>create<sp/>a<sp/>larger<sp/>work<sp/>that<sp/>contains</highlight></codeline>
+<codeline lineno="24"><highlight class="comment"><sp/><sp/><sp/>part<sp/>or<sp/>all<sp/>of<sp/>the<sp/>Bison<sp/>parser<sp/>skeleton<sp/>and<sp/>distribute<sp/>that<sp/>work</highlight></codeline>
+<codeline lineno="25"><highlight class="comment"><sp/><sp/><sp/>under<sp/>terms<sp/>of<sp/>your<sp/>choice,<sp/>so<sp/>long<sp/>as<sp/>that<sp/>work<sp/>isn&apos;t<sp/>itself<sp/>a</highlight></codeline>
+<codeline lineno="26"><highlight class="comment"><sp/><sp/><sp/>parser<sp/>generator<sp/>using<sp/>the<sp/>skeleton<sp/>or<sp/>a<sp/>modified<sp/>version<sp/>thereof</highlight></codeline>
+<codeline lineno="27"><highlight class="comment"><sp/><sp/><sp/>as<sp/>a<sp/>parser<sp/>skeleton.<sp/><sp/>Alternatively,<sp/>if<sp/>you<sp/>modify<sp/>or<sp/>redistribute</highlight></codeline>
+<codeline lineno="28"><highlight class="comment"><sp/><sp/><sp/>the<sp/>parser<sp/>skeleton<sp/>itself,<sp/>you<sp/>may<sp/>(at<sp/>your<sp/>option)<sp/>remove<sp/>this</highlight></codeline>
+<codeline lineno="29"><highlight class="comment"><sp/><sp/><sp/>special<sp/>exception,<sp/>which<sp/>will<sp/>cause<sp/>the<sp/>skeleton<sp/>and<sp/>the<sp/>resulting</highlight></codeline>
+<codeline lineno="30"><highlight class="comment"><sp/><sp/><sp/>Bison<sp/>output<sp/>files<sp/>to<sp/>be<sp/>licensed<sp/>under<sp/>the<sp/>GNU<sp/>General<sp/>Public</highlight></codeline>
+<codeline lineno="31"><highlight class="comment"><sp/><sp/><sp/>License<sp/>without<sp/>this<sp/>special<sp/>exception.</highlight></codeline>
+<codeline lineno="32"><highlight class="comment"></highlight></codeline>
+<codeline lineno="33"><highlight class="comment"><sp/><sp/><sp/>This<sp/>special<sp/>exception<sp/>was<sp/>added<sp/>by<sp/>the<sp/>Free<sp/>Software<sp/>Foundation<sp/>in</highlight></codeline>
+<codeline lineno="34"><highlight class="comment"><sp/><sp/><sp/>version<sp/>2.2<sp/>of<sp/>Bison.<sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight><highlight class="comment">/*<sp/>Tokens.<sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="37"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>YYTOKENTYPE</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="38"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>define<sp/>YYTOKENTYPE</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="39"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">/*<sp/>Put<sp/>the<sp/>tokens<sp/>into<sp/>the<sp/>symbol<sp/>table,<sp/>so<sp/>that<sp/>GDB<sp/>and<sp/>other<sp/>debuggers</highlight></codeline>
+<codeline lineno="40"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/>know<sp/>about<sp/>them.<sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/>yytokentype<sp/>{</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>NUMBER<sp/>=<sp/>258,</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>FUNC<sp/>=<sp/>259,</highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>UMINUS<sp/>=<sp/>260</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="47"><highlight class="normal"></highlight><highlight class="comment">/*<sp/>Tokens.<sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="48"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>NUMBER<sp/>258</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="49"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>FUNC<sp/>259</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="50"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>UMINUS<sp/>260</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="51"><highlight class="normal"></highlight></codeline>
+<codeline lineno="52"><highlight class="normal"></highlight></codeline>
+<codeline lineno="53"><highlight class="normal"></highlight></codeline>
+<codeline lineno="54"><highlight class="normal"></highlight></codeline>
+<codeline lineno="55"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>!<sp/>defined<sp/>YYSTYPE<sp/>&amp;&amp;<sp/>!<sp/>defined<sp/>YYSTYPE_IS_DECLARED</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="56" refid="union_y_y_s_t_y_p_e" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">union<sp/></highlight><highlight class="normal"><ref refid="union_y_y_s_t_y_p_e" kindref="compound">YYSTYPE</ref></highlight></codeline>
+<codeline lineno="57"><highlight class="normal">#line<sp/>63<sp/></highlight><highlight class="stringliteral">&quot;OCComplexParser.y&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="58"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="59"><highlight class="normal"><sp/><sp/><sp/><sp/>ComplexNodeRef<sp/>a;</highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>complex<sp/>d;</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>fn;</highlight></codeline>
+<codeline lineno="62"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"></highlight><highlight class="comment">/*<sp/>Line<sp/>1529<sp/>of<sp/>yacc.c.<sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="64"><highlight class="normal"></highlight><highlight class="preprocessor">#line<sp/>65<sp/>&quot;y.tab.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="65"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="union_y_y_s_t_y_p_e" kindref="compound">YYSTYPE</ref>;</highlight></codeline>
+<codeline lineno="66"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>define<sp/>yystype<sp/>YYSTYPE<sp/></highlight><highlight class="comment">/*<sp/>obsolescent;<sp/>will<sp/>be<sp/>withdrawn<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="67"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>define<sp/>YYSTYPE_IS_DECLARED<sp/>1</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="68"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>define<sp/>YYSTYPE_IS_TRIVIAL<sp/>1</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="69"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="70"><highlight class="normal"></highlight></codeline>
+<codeline lineno="71"><highlight class="normal"></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/><ref refid="union_y_y_s_t_y_p_e" kindref="compound">YYSTYPE</ref><sp/>ocpclval;</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/Users/philip/Github/Software/OCTypes/src/OCComplexParser.h"/>
+  </compounddef>
+</doxygen>

@@ -27,6 +27,11 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+/** @defgroup OCLibrary OCLibrary */
+/** @addtogroup OCLibrary
+ *  @{
+ */
+
 /**
  * OCComparisonResult values returned by comparison callbacks.
  */
@@ -41,31 +46,39 @@ typedef enum OCComparisonResult {
 
 /**
  * Callback function type for comparing two values.
- * @param val1 Pointer to the first value.
- * @param val2 Pointer to the second value.
- * @param context User-defined context pointer.
- * @return An OCComparisonResult indicating ordering.
+ * 
+ * :param val1: Pointer to the first value.
+ * :param val2: Pointer to the second value.
+ * :param context: User-defined context pointer.
+ * :return: An OCComparisonResult indicating ordering.
  */
 typedef OCComparisonResult (* OCComparatorFunction)(const void *val1, const void *val2, void *context);
 
 typedef unsigned long OCOptionFlags;
 
+/**
+ * :brief: Flags for string comparison operations.
+ * :note: These values are used with OCStringCompareFlags.
+ */
 enum {
-    kOCCompareCaseInsensitive = 1,
-    kOCCompareBackwards = 4,    /* Starting from the end of the string */
-    kOCCompareAnchored = 8,     /* Only at the specified starting point */
-    kOCCompareNonliteral = 16,  /* If specified, loose equivalence is performed (o-umlaut == o, umlaut) */
-    kOCCompareLocalized = 32,   /* User's default locale is used for the comparisons */
-    kOCCompareNumerically = 64, /* Numeric comparison is used; that is, Foo2.txt < Foo7.txt < Foo25.txt */
-    kOCCompareDiacriticInsensitive = 128, /* If specified, ignores diacritics (o-umlaut == o) */
-    kOCCompareWidthInsensitive = 256, /* If specified, ignores width differences ('a' == UFF41) */
-    kOCCompareForcedOrdering = 512 /* If specified, comparisons are forced to return either kCFCompareLessThan or kCFCompareGreaterThan if the strings are equivalent but not strictly equal, for stability when sorting (e.g. "aaa" > "AAA" with kCFCompareCaseInsensitive specified) */
+    kOCCompareCaseInsensitive = 1, /**< Perform a case-insensitive comparison. */
+    kOCCompareBackwards = 4,    /**< Start comparison from the end of the string. */
+    kOCCompareAnchored = 8,     /**< Comparison is anchored to the starting point. */
+    kOCCompareNonliteral = 16,  /**< Perform loose equivalence (e.g., o-umlaut == o, umlaut). */
+    kOCCompareLocalized = 32,   /**< Use the user's default locale for comparisons. */
+    kOCCompareNumerically = 64, /**< Perform numeric comparison (e.g., Foo2.txt < Foo7.txt < Foo25.txt). */
+    kOCCompareDiacriticInsensitive = 128, /**< Ignore diacritics during comparison (e.g., o-umlaut == o). */
+    kOCCompareWidthInsensitive = 256, /**< Ignore width differences (e.g., 'a' == UFF41). */
+    kOCCompareForcedOrdering = 512 /**< Force an ordering if strings are equivalent but not strictly equal (for sorting stability). */
 };
-typedef OCOptionFlags OCStringCompareFlags;
+typedef OCOptionFlags OCStringCompareFlags; /**< :type: OCStringCompareFlags - Type for string comparison option flags. */
 
+/**
+ * :brief: Additional comparison flags, primarily for diacritics.
+ */
 enum {
-    kOCCompareDiacriticsInsensitive = 128, /* kOCCompareDiacriticInsensitive */
-    kOCCompareDiacriticsInsensitiveCompatibilityMask = ((1 << 28)|kOCCompareDiacriticInsensitive),
+    kOCCompareDiacriticsInsensitive = 128, /**< Alias for kOCCompareDiacriticInsensitive. */
+    kOCCompareDiacriticsInsensitiveCompatibilityMask = ((1 << 28)|kOCCompareDiacriticInsensitive), /**< Mask for compatibility regarding diacritic insensitivity. */
 };
 
 #if !defined(OC_INLINE)
@@ -74,18 +87,22 @@ enum {
 
 /**
  * Range structure representing a contiguous set of elements.
+ * 
+ * :ivar location: Starting index of the range.
+ * :ivar length:   Number of elements in the range.
  */
 typedef struct {
-    uint64_t location; /**< Starting index of the range. */
-    uint64_t length;   /**< Number of elements in the range. */
+    uint64_t location; 
+    uint64_t length;   
 } OCRange;
 
 #if defined(OC_INLINE)
 /**
  * Creates a range with a given location and length.
- * @param loc Starting index of the range.
- * @param len Number of elements in the range.
- * @return A new OCRange with specified parameters.
+ * 
+ * :param loc: Starting index of the range.
+ * :param len: Number of elements in the range.
+ * :return: A new OCRange with specified parameters.
  */
 OC_INLINE OCRange OCRangeMake(uint64_t loc, uint64_t len) {
     OCRange range;
@@ -106,5 +123,12 @@ OC_INLINE OCRange OCRangeMake(uint64_t loc, uint64_t len) {
 #include "OCNumber.h"
 #include "OCDictionary.h"
 #include "OCArray.h"
+
+/**
+ * @brief Initializes the OCTypes library.
+ */
+void OCLibraryTeardown(void);
+
+/** @} */ // end of OCLibrary group
 
 #endif /* OCLibrary_h */

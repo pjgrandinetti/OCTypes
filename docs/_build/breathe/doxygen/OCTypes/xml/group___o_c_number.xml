@@ -1,0 +1,654 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+  <compounddef id="group___o_c_number" kind="group">
+    <compoundname>OCNumber</compoundname>
+    <title>OCNumber</title>
+    <innerclass refid="union_____number" prot="public">__Number</innerclass>
+    <sectiondef kind="enum">
+      <memberdef kind="enum" id="group___o_c_number_1ga48705b7a724a22d77df7a1714a59320c" prot="public" static="no" strong="no">
+        <type></type>
+        <name>OCNumberType</name>
+        <enumvalue id="group___o_c_number_1gga48705b7a724a22d77df7a1714a59320ca7093e2ca623d4e5151395e28f8afce14" prot="public">
+          <name>kOCNumberSInt8Type</name>
+          <initializer>= SInt8Type</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+<para>Signed 8-bit integer. </para>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group___o_c_number_1gga48705b7a724a22d77df7a1714a59320ca2f0e60868c07b2a34e129c9a903dcb18" prot="public">
+          <name>kOCNumberSInt16Type</name>
+          <initializer>= SInt16Type</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+<para>Signed 16-bit integer. </para>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group___o_c_number_1gga48705b7a724a22d77df7a1714a59320ca9bffaf8e4231acdb92ab6ae7778d651c" prot="public">
+          <name>kOCNumberSInt32Type</name>
+          <initializer>= SInt32Type</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+<para>Signed 32-bit integer. </para>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group___o_c_number_1gga48705b7a724a22d77df7a1714a59320cabdf1565c915d6c39d599872ca8717c40" prot="public">
+          <name>kOCNumberSInt64Type</name>
+          <initializer>= SInt64Type</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+<para>Signed 64-bit integer. </para>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group___o_c_number_1gga48705b7a724a22d77df7a1714a59320cad3f63ffdb54f08785015956dbb14e22e" prot="public">
+          <name>kOCNumberFloat32Type</name>
+          <initializer>= Float32Type</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+<para>32-bit floating-point number (float). </para>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group___o_c_number_1gga48705b7a724a22d77df7a1714a59320cac064321571c3c8b40cd154c2549df2f7" prot="public">
+          <name>kOCNumberFloat64Type</name>
+          <initializer>= Float64Type</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+<para>64-bit floating-point number (double). </para>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group___o_c_number_1gga48705b7a724a22d77df7a1714a59320ca01c8afafdc283f526f89977287fc4353" prot="public">
+          <name>kOCNumberUInt8Type</name>
+          <initializer>= UInt8Type</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+<para>Unsigned 8-bit integer. </para>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group___o_c_number_1gga48705b7a724a22d77df7a1714a59320cada9f7c7628a0b0e3864ac91a5aaf8586" prot="public">
+          <name>kOCNumberUInt16Type</name>
+          <initializer>= UInt16Type</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+<para>Unsigned 16-bit integer. </para>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group___o_c_number_1gga48705b7a724a22d77df7a1714a59320cadb01cf3dccaa860e009399ab8468e848" prot="public">
+          <name>kOCNumberUInt32Type</name>
+          <initializer>= UInt32Type</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+<para>Unsigned 32-bit integer. </para>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group___o_c_number_1gga48705b7a724a22d77df7a1714a59320ca825fa671116c8d6d6ae885c9032029fd" prot="public">
+          <name>kOCNumberUInt64Type</name>
+          <initializer>= UInt64Type</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+<para>Unsigned 64-bit integer. </para>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group___o_c_number_1gga48705b7a724a22d77df7a1714a59320cae1fca49da59183108284092e0e8c4bcd" prot="public">
+          <name>kOCNumberFloat32ComplexType</name>
+          <initializer>= Float32ComplexType</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+<para>32-bit complex floating-point number (float complex). </para>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group___o_c_number_1gga48705b7a724a22d77df7a1714a59320ca2cae3e73332cfdc9162ed6f8064bbf7a" prot="public">
+          <name>kOCNumberFloat64ComplexType</name>
+          <initializer>= Float64ComplexType</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+<para>64-bit complex floating-point number (double complex). </para>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:enum: <ref refid="group___o_c_number_1ga48705b7a724a22d77df7a1714a59320c" kindref="member">OCNumberType</ref> :brief: Enumerates the specific numerical data types that an OCNumber object can represent.</para>
+<para>This enumeration is used when creating an OCNumber object to specify its underlying data type and can be queried to determine the type of an existing OCNumber. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" line="61" column="1" bodyfile="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" bodystart="61" bodyend="74"/>
+      </memberdef>
+      <memberdef kind="enum" id="group___o_c_number_1ga5f9c0c63a25005f2faaa220f7160b834" prot="public" static="no" strong="no">
+        <type></type>
+        <name>numberType</name>
+        <enumvalue id="group___o_c_number_1gga5f9c0c63a25005f2faaa220f7160b834a9ece21193233283b4e73d3b4e41d41a3" prot="public">
+          <name>kPSNumberFloat32Type</name>
+          <initializer>= Float32Type</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group___o_c_number_1gga5f9c0c63a25005f2faaa220f7160b834ae603cb742cf036eff10e08bf39e679de" prot="public">
+          <name>kPSNumberFloat64Type</name>
+          <initializer>= Float64Type</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group___o_c_number_1gga5f9c0c63a25005f2faaa220f7160b834aff667f5fd2334cb11f755c1722c59bdd" prot="public">
+          <name>kPSNumberFloat32ComplexType</name>
+          <initializer>= Float32ComplexType</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="group___o_c_number_1gga5f9c0c63a25005f2faaa220f7160b834a718dbf9a1be1b807b7864f8d317125c1" prot="public">
+          <name>kPSNumberFloat64ComplexType</name>
+          <initializer>= Float64ComplexType</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:enum: <ref refid="group___o_c_number_1ga5f9c0c63a25005f2faaa220f7160b834" kindref="member">numberType</ref> :brief: A legacy or alternative enumeration for some number types. :deprecated: This enum appears to be a subset of <ref refid="group___o_c_number_1ga48705b7a724a22d77df7a1714a59320c" kindref="member">OCNumberType</ref> or a legacy definition. Prefer using <ref refid="group___o_c_number_1ga48705b7a724a22d77df7a1714a59320c" kindref="member">OCNumberType</ref> for new code. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" line="119" column="1" bodyfile="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" bodystart="119" bodyend="124"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" prot="public" static="no">
+        <type>const struct __OCNumber *</type>
+        <definition>typedef const struct __OCNumber* OCNumberRef</definition>
+        <argsstring></argsstring>
+        <name>OCNumberRef</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>.. _OCNumber_h:</para>
+<sect1 id="group___o_c_number_1autotoc_md9">
+<title>OCNumber.h</title><para>Defines the <ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref> type and related functions for representing various numerical types.</para>
+<para>OCNumber provides a way to work with different numerical data types (integers, floats, complex numbers) as OCType objects. It allows for creation and inspection of these numerical objects. :type <ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref>: :brief: An opaque reference to an immutable OCNumber object.</para>
+<para><ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref> is used to represent various numerical values within the OCTypes framework. These objects encapsulate primitive number types and provide a common interface for them. </para>
+</sect1>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" line="37" column="32" bodyfile="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" bodystart="37" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group___o_c_number_1gae675db5b0df40c3be80e2aca1d6d370f" prot="public" static="no">
+        <type>enum <ref refid="group___o_c_number_1ga48705b7a724a22d77df7a1714a59320c" kindref="member">OCNumberType</ref></type>
+        <definition>typedef enum OCNumberType OCNumberType</definition>
+        <argsstring></argsstring>
+        <name>OCNumberType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:enum: <ref refid="group___o_c_number_1ga48705b7a724a22d77df7a1714a59320c" kindref="member">OCNumberType</ref> :brief: Enumerates the specific numerical data types that an OCNumber object can represent.</para>
+<para>This enumeration is used when creating an OCNumber object to specify its underlying data type and can be queried to determine the type of an existing OCNumber. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" line="74" column="14"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group___o_c_number_1gaf68bc180f629027175fdd38b75f7d7ae" prot="public" static="no">
+        <type>union __Number</type>
+        <definition>typedef union __Number __Number</definition>
+        <argsstring></argsstring>
+        <name>__Number</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:union: <ref refid="union_____number" kindref="compound">__Number</ref> :brief: A union to hold the actual numerical value for an OCNumber object. :meta: internal</para>
+<para>This union is used internally by the OCNumber implementation to store the value corresponding to its <ref refid="group___o_c_number_1ga48705b7a724a22d77df7a1714a59320c" kindref="member">OCNumberType</ref>.</para>
+<para>:ivar int8Value: Value if type is kOCNumberSInt8Type. :ivar int16Value: Value if type is kOCNumberSInt16Type. :ivar int32Value: Value if type is kOCNumberSInt32Type. :ivar int64Value: Value if type is kOCNumberSInt64Type. :ivar uint8Value: Value if type is kOCNumberUInt8Type. :ivar uint16Value: Value if type is kOCNumberUInt16Type. :ivar uint32Value: Value if type is kOCNumberUInt32Type. :ivar uint64Value: Value if type is kOCNumberUInt64Type. :ivar floatValue: Value if type is kOCNumberFloat32Type. :ivar doubleValue: Value if type is kOCNumberFloat64Type. :ivar floatComplexValue: Value if type is kOCNumberFloat32ComplexType. :ivar doubleComplexValue: Value if type is kOCNumberFloat64ComplexType. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" line="111" column="10"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group___o_c_number_1gad0c37aa7563a5f774737f8aca85cce5c" prot="public" static="no">
+        <type>enum <ref refid="group___o_c_number_1ga5f9c0c63a25005f2faaa220f7160b834" kindref="member">numberType</ref></type>
+        <definition>typedef enum numberType numberType</definition>
+        <argsstring></argsstring>
+        <name>numberType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:enum: <ref refid="group___o_c_number_1ga5f9c0c63a25005f2faaa220f7160b834" kindref="member">numberType</ref> :brief: A legacy or alternative enumeration for some number types. :deprecated: This enum appears to be a subset of <ref refid="group___o_c_number_1ga48705b7a724a22d77df7a1714a59320c" kindref="member">OCNumberType</ref> or a legacy definition. Prefer using <ref refid="group___o_c_number_1ga48705b7a724a22d77df7a1714a59320c" kindref="member">OCNumberType</ref> for new code. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" line="124" column="12"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="group___o_c_number_1ga13420249c38d6296b578043bfc323e95" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_type_1gae4fcca725e41e7af4659ba4902223981" kindref="member">OCTypeID</ref></type>
+        <definition>OCTypeID OCNumberGetTypeID</definition>
+        <argsstring>(void)</argsstring>
+        <name>OCNumberGetTypeID</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCNumberGetTypeID :brief: Returns the unique type identifier for the OCNumber class. :return: The <ref refid="group___o_c_type_1gae4fcca725e41e7af4659ba4902223981" kindref="member">OCTypeID</ref> associated with OCNumber objects. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" line="131" column="10" declfile="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" declline="131" declcolumn="10"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_number_1ga72cfc634eef8aa9078897f83499c82f8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref></type>
+        <definition>OCNumberRef OCNumberCreate</definition>
+        <argsstring>(const OCNumberType type, void *value)</argsstring>
+        <name>OCNumberCreate</name>
+        <param>
+          <type>const <ref refid="group___o_c_number_1ga48705b7a724a22d77df7a1714a59320c" kindref="member">OCNumberType</ref></type>
+          <declname>type</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCNumberCreate :brief: Creates a new OCNumber object with the specified type and value. :param type: The <ref refid="group___o_c_number_1ga48705b7a724a22d77df7a1714a59320c" kindref="member">OCNumberType</ref> specifying the data type of the number. :param value: A pointer to the actual numerical value. The pointed-to data will be copied. The size of the data pointed to must match the size of the specified <computeroutput>type</computeroutput>. :return: A new <ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref> object, or NULL if creation fails (e.g., invalid type, memory allocation failure). The caller is responsible for releasing the returned object using OCRelease. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" line="142" column="13" declfile="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" declline="142" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_number_1ga86230140fc4fdd90e5c96ed9cef84a17" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref></type>
+        <definition>OCNumberRef OCNumberCreateWithUInt8</definition>
+        <argsstring>(uint8_t value)</argsstring>
+        <name>OCNumberCreateWithUInt8</name>
+        <param>
+          <type>uint8_t</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>.. rubric:: Convenience Constructors for Unsigned Integer Types :func: OCNumberCreateWithUInt8 :brief: Creates a new OCNumber object with a uint8_t value. :param value: The uint8_t value. :return: A new <ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref> object, or NULL on failure. Caller owns the returned object. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" line="154" column="13" declfile="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" declline="154" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_number_1gabedfc6f91be2ce0595a4de1a421fba39" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref></type>
+        <definition>OCNumberRef OCNumberCreateWithUInt16</definition>
+        <argsstring>(uint16_t value)</argsstring>
+        <name>OCNumberCreateWithUInt16</name>
+        <param>
+          <type>uint16_t</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCNumberCreateWithUInt16 :brief: Creates a new OCNumber object with a uint16_t value. :param value: The uint16_t value. :return: A new <ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref> object, or NULL on failure. Caller owns the returned object. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" line="161" column="13" declfile="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" declline="161" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_number_1ga1958f4a0241c77dcdc21a700330c4202" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref></type>
+        <definition>OCNumberRef OCNumberCreateWithUInt32</definition>
+        <argsstring>(uint32_t value)</argsstring>
+        <name>OCNumberCreateWithUInt32</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCNumberCreateWithUInt32 :brief: Creates a new OCNumber object with a uint32_t value. :param value: The uint32_t value. :return: A new <ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref> object, or NULL on failure. Caller owns the returned object. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" line="168" column="13" declfile="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" declline="168" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_number_1gaaa7771b7733765276bf912fefa15ef0f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref></type>
+        <definition>OCNumberRef OCNumberCreateWithUInt64</definition>
+        <argsstring>(uint64_t value)</argsstring>
+        <name>OCNumberCreateWithUInt64</name>
+        <param>
+          <type>uint64_t</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCNumberCreateWithUInt64 :brief: Creates a new OCNumber object with a uint64_t value. :param value: The uint64_t value. :return: A new <ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref> object, or NULL on failure. Caller owns the returned object. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" line="175" column="13" declfile="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" declline="175" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_number_1gae0422b19ce598fae0330ea1f2b66b36d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref></type>
+        <definition>OCNumberRef OCNumberCreateWithSInt8</definition>
+        <argsstring>(int8_t value)</argsstring>
+        <name>OCNumberCreateWithSInt8</name>
+        <param>
+          <type>int8_t</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>.. rubric:: Convenience Constructors for Signed Integer Types :func: OCNumberCreateWithSInt8 :brief: Creates a new OCNumber object with an int8_t value. :param value: The int8_t value. :return: A new <ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref> object, or NULL on failure. Caller owns the returned object. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" line="187" column="13" declfile="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" declline="187" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_number_1gaad45ebc219f2a93dad63222fb8fab71c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref></type>
+        <definition>OCNumberRef OCNumberCreateWithSInt16</definition>
+        <argsstring>(int16_t value)</argsstring>
+        <name>OCNumberCreateWithSInt16</name>
+        <param>
+          <type>int16_t</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCNumberCreateWithSInt16 :brief: Creates a new OCNumber object with an int16_t value. :param value: The int16_t value. :return: A new <ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref> object, or NULL on failure. Caller owns the returned object. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" line="194" column="13" declfile="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" declline="194" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_number_1gaef3fa8e2779babd28b191ef13957da0d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref></type>
+        <definition>OCNumberRef OCNumberCreateWithSInt32</definition>
+        <argsstring>(int32_t value)</argsstring>
+        <name>OCNumberCreateWithSInt32</name>
+        <param>
+          <type>int32_t</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCNumberCreateWithSInt32 :brief: Creates a new OCNumber object with an int32_t value. :param value: The int32_t value. :return: A new <ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref> object, or NULL on failure. Caller owns the returned object. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" line="201" column="13" declfile="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" declline="201" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_number_1ga5c5499df1b1dc7ca07844f64bf98f7d8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref></type>
+        <definition>OCNumberRef OCNumberCreateWithSInt64</definition>
+        <argsstring>(int64_t value)</argsstring>
+        <name>OCNumberCreateWithSInt64</name>
+        <param>
+          <type>int64_t</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCNumberCreateWithSInt64 :brief: Creates a new OCNumber object with an int64_t value. :param value: The int64_t value. :return: A new <ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref> object, or NULL on failure. Caller owns the returned object. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" line="208" column="13" declfile="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" declline="208" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_number_1gab2cce8d5144653218ecf8c431dbceebe" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref></type>
+        <definition>OCNumberRef OCNumberCreateWithFloat</definition>
+        <argsstring>(float value)</argsstring>
+        <name>OCNumberCreateWithFloat</name>
+        <param>
+          <type>float</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>.. rubric:: Convenience Constructors for Floating-Point Types :func: OCNumberCreateWithFloat :brief: Creates a new OCNumber object with a float value. :param value: The float value. :return: A new <ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref> object, or NULL on failure. Caller owns the returned object. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" line="220" column="13" declfile="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" declline="220" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_number_1ga857395a3ce57df83883cfb405f5b3b1b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref></type>
+        <definition>OCNumberRef OCNumberCreateWithDouble</definition>
+        <argsstring>(double value)</argsstring>
+        <name>OCNumberCreateWithDouble</name>
+        <param>
+          <type>double</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCNumberCreateWithDouble :brief: Creates a new OCNumber object with a double value. :param value: The double value. :return: A new <ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref> object, or NULL on failure. Caller owns the returned object. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" line="227" column="13" declfile="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" declline="227" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_number_1ga904b2891e246256f2d21c401e22a682b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref></type>
+        <definition>OCNumberRef OCNumberCreateWithFloatComplex</definition>
+        <argsstring>(float complex value)</argsstring>
+        <name>OCNumberCreateWithFloatComplex</name>
+        <param>
+          <type>float complex</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>.. rubric:: Convenience Constructors for Complex Floating-Point Types :func: OCNumberCreateWithFloatComplex :brief: Creates a new OCNumber object with a float complex value. :param value: The float complex value. :return: A new <ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref> object, or NULL on failure. Caller owns the returned object. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" line="239" column="13" declfile="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" declline="239" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_number_1ga4488ced2638b85bcbc94abfb6103348d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref></type>
+        <definition>OCNumberRef OCNumberCreateWithDoubleComplex</definition>
+        <argsstring>(double complex value)</argsstring>
+        <name>OCNumberCreateWithDoubleComplex</name>
+        <param>
+          <type>double complex</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCNumberCreateWithDoubleComplex :brief: Creates a new OCNumber object with a double complex value. :param value: The double complex value. :return: A new <ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref> object, or NULL on failure. Caller owns the returned object. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" line="246" column="13" declfile="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" declline="246" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_number_1gadfe30598eeb8eaf11ec9cead6084dd19" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref></type>
+        <definition>OCNumberRef OCNumberCreateWithLongDouble</definition>
+        <argsstring>(long double value)</argsstring>
+        <name>OCNumberCreateWithLongDouble</name>
+        <param>
+          <type>long double</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCNumberCreateWithLongDouble :brief: Creates a new OCNumber object with a long double value. :param value: The long double value. :return: A new <ref refid="group___o_c_number_1ga339231e281d1948a4c2122108c0a3d77" kindref="member">OCNumberRef</ref> object, or NULL on failure. Caller owns the returned object. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" line="254" column="13" declfile="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" declline="254" declcolumn="13"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="define">
+      <memberdef kind="define" id="group___o_c_number_1gad63fe03ae4d523e4812c2492bd9b0664" prot="public" static="no">
+        <name>SInt8Type</name>
+        <initializer>1</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" line="41" column="9" bodyfile="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" bodystart="41" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group___o_c_number_1ga99548ee28a3cfe11ff6710a3f6bd3fd1" prot="public" static="no">
+        <name>SInt16Type</name>
+        <initializer>2</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" line="42" column="9" bodyfile="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" bodystart="42" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group___o_c_number_1ga6075f350bd86134132c0f47780b23fdf" prot="public" static="no">
+        <name>SInt32Type</name>
+        <initializer>3</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" line="43" column="9" bodyfile="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group___o_c_number_1ga010b606b6ee3fd8ddae1eceb1449dbf1" prot="public" static="no">
+        <name>SInt64Type</name>
+        <initializer>4</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" line="44" column="9" bodyfile="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group___o_c_number_1ga187c2b7a4cc2be8a74427b687d256883" prot="public" static="no">
+        <name>Float32Type</name>
+        <initializer>5</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" line="45" column="9" bodyfile="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group___o_c_number_1gaeaaa128d07c9bb3de2e2bcfc228cb234" prot="public" static="no">
+        <name>Float64Type</name>
+        <initializer>6</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" line="46" column="9" bodyfile="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group___o_c_number_1gae6124d213bf1f0aad629efdf2b9295e3" prot="public" static="no">
+        <name>UInt8Type</name>
+        <initializer>17</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" line="47" column="9" bodyfile="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group___o_c_number_1gab97bbe21ba48c9d300353b8b584ce9d7" prot="public" static="no">
+        <name>UInt16Type</name>
+        <initializer>18</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" line="48" column="9" bodyfile="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group___o_c_number_1ga3d9ce637d1913ac15c2653b900de5b16" prot="public" static="no">
+        <name>UInt32Type</name>
+        <initializer>19</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" line="49" column="9" bodyfile="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" bodystart="49" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group___o_c_number_1ga6e76765306f9c9b1b6a1a0c3bab2d0e4" prot="public" static="no">
+        <name>UInt64Type</name>
+        <initializer>20</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" line="50" column="9" bodyfile="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" bodystart="50" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group___o_c_number_1gabb96e15ee62b980e841d363177a0c9cd" prot="public" static="no">
+        <name>Float32ComplexType</name>
+        <initializer>24</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" line="51" column="9" bodyfile="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" bodystart="51" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="group___o_c_number_1gad5533ec0f4b65f2d40690a3d2ac481f0" prot="public" static="no">
+        <name>Float64ComplexType</name>
+        <initializer>26</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" line="52" column="9" bodyfile="/Users/philip/Github/Software/OCTypes/src/OCNumber.h" bodystart="52" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,22 @@
+# Doxyfile 1.9.1
+
+PROJECT_NAME           = "OCTypes"
+PROJECT_BRIEF          = "A lightweight library for object-oriented programming in C"
+OUTPUT_DIRECTORY       = doxygen
+INPUT                  = ../src
+RECURSIVE              = YES
+EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = NO
+EXTRACT_STATIC         = YES
+FILE_PATTERNS          = *.h
+JAVADOC_AUTOBRIEF      = NO
+QT_AUTOBRIEF           = NO
+MARKDOWN_SUPPORT       = YES
+AUTOLINK_SUPPORT       = YES
+BUILTIN_STL_SUPPORT    = NO
+STRIP_CODE_COMMENTS    = NO
+GENERATE_HTML          = NO
+GENERATE_LATEX         = NO
+GENERATE_XML           = YES
+XML_OUTPUT             = xml
+XML_PROGRAMLISTING     = YES

@@ -1,0 +1,953 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+  <compounddef id="group___o_c_string" kind="group">
+    <compoundname>OCString</compoundname>
+    <title>OCString</title>
+    <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" prot="public" static="no">
+        <type>const struct __OCString *</type>
+        <definition>typedef const struct __OCString* OCStringRef</definition>
+        <argsstring></argsstring>
+        <name>OCStringRef</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:type <ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref>: :brief: Opaque reference to an immutable OCString. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="35" column="32" bodyfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" bodystart="35" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group___o_c_string_1ga43f3fb9d6dc8cc05f3daaccdad5cfed7" prot="public" static="no">
+        <type>struct __OCString *</type>
+        <definition>typedef struct __OCString* OCMutableStringRef</definition>
+        <argsstring></argsstring>
+        <name>OCMutableStringRef</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:type <ref refid="group___o_c_string_1ga43f3fb9d6dc8cc05f3daaccdad5cfed7" kindref="member">OCMutableStringRef</ref>: :brief: Opaque reference to a mutable OCString. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="40" column="26" bodyfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" bodystart="40" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group___o_c_string_1ga258ada3c18aefb7cd00f9fae05441cc9" prot="public" static="no">
+        <type>const struct __OCArray *</type>
+        <definition>typedef const struct __OCArray* OCArrayRef</definition>
+        <argsstring></argsstring>
+        <name>OCArrayRef</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="254" column="31" bodyfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" bodystart="254" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="group___o_c_string_1ga037e253b88a25af8d55b2ea2351e728e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_type_1gae4fcca725e41e7af4659ba4902223981" kindref="member">OCTypeID</ref></type>
+        <definition>OCTypeID OCStringGetTypeID</definition>
+        <argsstring>(void)</argsstring>
+        <name>OCStringGetTypeID</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCStringGetTypeID :brief: Returns the unique type identifier for OCString objects. :return: <ref refid="group___o_c_type_1gae4fcca725e41e7af4659ba4902223981" kindref="member">OCTypeID</ref> for OCString type. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="53" column="10" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="53" declcolumn="10"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1gad734b63b237b545928dc873cdc716fc9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+        <definition>OCStringRef OCStringCreateWithCString</definition>
+        <argsstring>(const char *string)</argsstring>
+        <name>OCStringCreateWithCString</name>
+        <param>
+          <type>const char *</type>
+          <declname>string</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCStringCreateWithCString :brief: Creates an immutable OCString from a null-terminated C string. :param string: Null-terminated UTF-8 C string. :return: New <ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref> (ownership transferred to caller), or NULL on failure. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="61" column="13" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="61" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1gaa345ec5760dd0b8f6aeea9c97e0b43f0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_string_1ga43f3fb9d6dc8cc05f3daaccdad5cfed7" kindref="member">OCMutableStringRef</ref></type>
+        <definition>OCMutableStringRef OCStringCreateMutableCopy</definition>
+        <argsstring>(OCStringRef theString)</argsstring>
+        <name>OCStringCreateMutableCopy</name>
+        <param>
+          <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+          <declname>theString</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCStringCreateMutableCopy :brief: Creates a mutable copy of an immutable OCString. :param theString: Immutable OCString to copy. :return: New <ref refid="group___o_c_string_1ga43f3fb9d6dc8cc05f3daaccdad5cfed7" kindref="member">OCMutableStringRef</ref> (ownership transferred to caller). </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="68" column="20" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="68" declcolumn="20"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1gac86e353c898e5aa65f532adf572154f4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+        <definition>OCStringRef OCStringCreateWithSubstring</definition>
+        <argsstring>(OCStringRef str, OCRange range)</argsstring>
+        <name>OCStringCreateWithSubstring</name>
+        <param>
+          <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+          <declname>str</declname>
+        </param>
+        <param>
+          <type><ref refid="struct_o_c_range" kindref="compound">OCRange</ref></type>
+          <declname>range</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCStringCreateWithSubstring :brief: Creates an immutable OCString from a substring of another OCString. :param str: Source OCString. :param range: Range of substring to extract. :return: New <ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref> (ownership transferred to caller). </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="76" column="13" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="76" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1gad266598fdd65762bc222d27cf3468dcc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void OCStringAppend</definition>
+        <argsstring>(OCMutableStringRef theString, OCStringRef appendedString)</argsstring>
+        <name>OCStringAppend</name>
+        <param>
+          <type><ref refid="group___o_c_string_1ga43f3fb9d6dc8cc05f3daaccdad5cfed7" kindref="member">OCMutableStringRef</ref></type>
+          <declname>theString</declname>
+        </param>
+        <param>
+          <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+          <declname>appendedString</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCStringAppend :brief: Appends an immutable OCString to a mutable OCString. :param theString: Mutable OCString to append to. :param appendedString: Immutable OCString to append. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="84" column="6" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="84" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1ga602c4eb1ac9176f8f332ac192074ad76" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void OCStringAppendCString</definition>
+        <argsstring>(OCMutableStringRef theString, const char *cString)</argsstring>
+        <name>OCStringAppendCString</name>
+        <param>
+          <type><ref refid="group___o_c_string_1ga43f3fb9d6dc8cc05f3daaccdad5cfed7" kindref="member">OCMutableStringRef</ref></type>
+          <declname>theString</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>cString</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCStringAppendCString :brief: Appends a C string to a mutable OCString. :param theString: Mutable OCString to append to. :param cString: Null-terminated UTF-8 C string to append. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="91" column="6" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="91" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1ga863b0d48c3f153660092ef649e2a7136" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_string_1ga43f3fb9d6dc8cc05f3daaccdad5cfed7" kindref="member">OCMutableStringRef</ref></type>
+        <definition>OCMutableStringRef OCStringCreateMutable</definition>
+        <argsstring>(uint64_t capacity)</argsstring>
+        <name>OCStringCreateMutable</name>
+        <param>
+          <type>uint64_t</type>
+          <declname>capacity</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCStringCreateMutable :brief: Creates a new mutable OCString with specified initial capacity. :param capacity: Initial capacity for the mutable string. :return: New <ref refid="group___o_c_string_1ga43f3fb9d6dc8cc05f3daaccdad5cfed7" kindref="member">OCMutableStringRef</ref> (ownership transferred to caller). </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="99" column="20" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="99" declcolumn="20"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1gaf909bea85eb321435fd09b41b09e700c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_string_1ga43f3fb9d6dc8cc05f3daaccdad5cfed7" kindref="member">OCMutableStringRef</ref></type>
+        <definition>OCMutableStringRef OCMutableStringCreateWithCString</definition>
+        <argsstring>(const char *cString)</argsstring>
+        <name>OCMutableStringCreateWithCString</name>
+        <param>
+          <type>const char *</type>
+          <declname>cString</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCMutableStringCreateWithCString :brief: Creates a mutable OCString from a null-terminated C string. :param cString: Null-terminated UTF-8 C string. :return: New <ref refid="group___o_c_string_1ga43f3fb9d6dc8cc05f3daaccdad5cfed7" kindref="member">OCMutableStringRef</ref> (ownership transferred to caller). </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="106" column="20" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="106" declcolumn="20"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1gacfd9d0faa42907d92762b57f1012cd1a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>const char *</type>
+        <definition>const char * OCStringGetCString</definition>
+        <argsstring>(OCStringRef theString)</argsstring>
+        <name>OCStringGetCString</name>
+        <param>
+          <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+          <declname>theString</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCStringGetCString :brief: Returns a C string representation of an immutable OCString. :param theString: Immutable OCString. :return: Null-terminated UTF-8 C string. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="113" column="12" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="113" declcolumn="12"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1gad9fc6def535af806e3afff5e164750e8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+        <definition>OCStringRef OCStringCreateCopy</definition>
+        <argsstring>(OCStringRef theString)</argsstring>
+        <name>OCStringCreateCopy</name>
+        <param>
+          <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+          <declname>theString</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCStringCreateCopy :brief: Creates a new immutable copy of an OCString. :param theString: Source OCString. :return: New <ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref> (ownership transferred to caller). </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="120" column="13" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="120" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1ga41bfdc942058fe704c81122e10011273" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_library_1ga395ff068e826f2b8cdaab226094399c8" kindref="member">OCComparisonResult</ref></type>
+        <definition>OCComparisonResult OCStringCompare</definition>
+        <argsstring>(OCStringRef theString1, OCStringRef theString2, OCStringCompareFlags compareOptions)</argsstring>
+        <name>OCStringCompare</name>
+        <param>
+          <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+          <declname>theString1</declname>
+        </param>
+        <param>
+          <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+          <declname>theString2</declname>
+        </param>
+        <param>
+          <type><ref refid="group___o_c_library_1ga8cf127efce721c11c176225d4e73d0fe" kindref="member">OCStringCompareFlags</ref></type>
+          <declname>compareOptions</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCStringCompare :brief: Compares two OCStrings with specified options. :param theString1: First OCString. :param theString2: Second OCString. :param compareOptions: Comparison options flags. :return: Comparison result indicating order or equality. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="129" column="20" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="129" declcolumn="20"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1ga0002be7ee5cd0d2358e8f50bf0e26584" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint64_t</type>
+        <definition>uint64_t OCStringGetLength</definition>
+        <argsstring>(OCStringRef theString)</argsstring>
+        <name>OCStringGetLength</name>
+        <param>
+          <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+          <declname>theString</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCStringGetLength :brief: Returns the length of an OCString. :param theString: OCString. :return: Length of the string. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="136" column="10" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="136" declcolumn="10"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1ga86d57b0cd4a4ab08873690f831ba340b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void OCStringLowercase</definition>
+        <argsstring>(OCMutableStringRef theString)</argsstring>
+        <name>OCStringLowercase</name>
+        <param>
+          <type><ref refid="group___o_c_string_1ga43f3fb9d6dc8cc05f3daaccdad5cfed7" kindref="member">OCMutableStringRef</ref></type>
+          <declname>theString</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCStringLowercase :brief: Converts a mutable OCString to lowercase. :param theString: Mutable OCString. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="142" column="6" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="142" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1ga4c0e930c7d12f846ea73fc7aef6ad600" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void OCStringUppercase</definition>
+        <argsstring>(OCMutableStringRef theString)</argsstring>
+        <name>OCStringUppercase</name>
+        <param>
+          <type><ref refid="group___o_c_string_1ga43f3fb9d6dc8cc05f3daaccdad5cfed7" kindref="member">OCMutableStringRef</ref></type>
+          <declname>theString</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCStringUppercase :brief: Converts a mutable OCString to uppercase. :param theString: Mutable OCString. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="148" column="6" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="148" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1gad3f3d7bcb2a28ae5bb37bde6ce9f4c75" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void OCStringTrimWhitespace</definition>
+        <argsstring>(OCMutableStringRef theString)</argsstring>
+        <name>OCStringTrimWhitespace</name>
+        <param>
+          <type><ref refid="group___o_c_string_1ga43f3fb9d6dc8cc05f3daaccdad5cfed7" kindref="member">OCMutableStringRef</ref></type>
+          <declname>theString</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCStringTrimWhitespace :brief: Trims whitespace characters from both ends of a mutable OCString. :param theString: Mutable OCString. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="154" column="6" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="154" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1gac7b917b1d6ba3fb86fe5eace460bdd1e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool OCStringTrimMatchingParentheses</definition>
+        <argsstring>(OCMutableStringRef theString)</argsstring>
+        <name>OCStringTrimMatchingParentheses</name>
+        <param>
+          <type><ref refid="group___o_c_string_1ga43f3fb9d6dc8cc05f3daaccdad5cfed7" kindref="member">OCMutableStringRef</ref></type>
+          <declname>theString</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCStringTrimMatchingParentheses :brief: Trims matching parentheses from both ends of a mutable OCString if present. :param theString: Mutable OCString. :return: true if parentheses were trimmed, false otherwise. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="161" column="6" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="161" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1gaeae1ecd14b11d93bf8453f7403ce1160" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void OCStringDelete</definition>
+        <argsstring>(OCMutableStringRef theString, OCRange range)</argsstring>
+        <name>OCStringDelete</name>
+        <param>
+          <type><ref refid="group___o_c_string_1ga43f3fb9d6dc8cc05f3daaccdad5cfed7" kindref="member">OCMutableStringRef</ref></type>
+          <declname>theString</declname>
+        </param>
+        <param>
+          <type><ref refid="struct_o_c_range" kindref="compound">OCRange</ref></type>
+          <declname>range</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCStringDelete :brief: Deletes a substring from a mutable OCString. :param theString: Mutable OCString. :param range: Range of characters to delete. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="169" column="6" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="169" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1ga18d6c56901bbc7c9f3685deedcff7207" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void OCStringInsert</definition>
+        <argsstring>(OCMutableStringRef str, int64_t idx, OCStringRef insertedStr)</argsstring>
+        <name>OCStringInsert</name>
+        <param>
+          <type><ref refid="group___o_c_string_1ga43f3fb9d6dc8cc05f3daaccdad5cfed7" kindref="member">OCMutableStringRef</ref></type>
+          <declname>str</declname>
+        </param>
+        <param>
+          <type>int64_t</type>
+          <declname>idx</declname>
+        </param>
+        <param>
+          <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+          <declname>insertedStr</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCStringInsert :brief: Inserts an OCString into a mutable OCString at a specified index. :param str: Mutable OCString to insert into. :param idx: Index at which to insert. :param insertedStr: OCString to insert. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="177" column="6" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="177" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1gaca97cdc40e00c952efa29f3c16ac6af3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void OCStringReplace</definition>
+        <argsstring>(OCMutableStringRef str, OCRange range, OCStringRef replacement)</argsstring>
+        <name>OCStringReplace</name>
+        <param>
+          <type><ref refid="group___o_c_string_1ga43f3fb9d6dc8cc05f3daaccdad5cfed7" kindref="member">OCMutableStringRef</ref></type>
+          <declname>str</declname>
+        </param>
+        <param>
+          <type><ref refid="struct_o_c_range" kindref="compound">OCRange</ref></type>
+          <declname>range</declname>
+        </param>
+        <param>
+          <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+          <declname>replacement</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCStringReplace :brief: Replaces a range in a mutable OCString with another OCString. :param str: Mutable OCString. :param range: Range to replace. :param replacement: OCString to insert. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="185" column="6" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="185" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1ga43422c46b7460dc82c8b554627ba8c3c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void OCStringReplaceAll</definition>
+        <argsstring>(OCMutableStringRef str, OCStringRef replacement)</argsstring>
+        <name>OCStringReplaceAll</name>
+        <param>
+          <type><ref refid="group___o_c_string_1ga43f3fb9d6dc8cc05f3daaccdad5cfed7" kindref="member">OCMutableStringRef</ref></type>
+          <declname>str</declname>
+        </param>
+        <param>
+          <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+          <declname>replacement</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCStringReplaceAll :brief: Replaces the entire contents of a mutable OCString with another OCString. :param str: Mutable OCString. :param replacement: OCString to set. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="192" column="6" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="192" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1gad78325fded662d45bff93476a113835f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>char</type>
+        <definition>char OCStringGetCharacterAtIndex</definition>
+        <argsstring>(OCStringRef theString, uint64_t index)</argsstring>
+        <name>OCStringGetCharacterAtIndex</name>
+        <param>
+          <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+          <declname>theString</declname>
+        </param>
+        <param>
+          <type>uint64_t</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCStringGetCharacterAtIndex :brief: Returns the character at a specified index in an OCString. :param theString: OCString. :param index: Index of character. :return: Character at index. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="201" column="6" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="201" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1ga5ce546e784f93e730d7cf7e35b2752b2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>float complex</type>
+        <definition>float complex OCStringGetFloatComplexValue</definition>
+        <argsstring>(OCStringRef string)</argsstring>
+        <name>OCStringGetFloatComplexValue</name>
+        <param>
+          <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+          <declname>string</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCStringGetFloatComplexValue :brief: Parses and returns the float complex value represented by the OCString. :param string: OCString containing complex arithmetic expression. :return: Parsed float complex value. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="208" column="15" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="208" declcolumn="15"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1ga7f4dce3c05ba947933a76942f8dd3c12" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>double complex</type>
+        <definition>double complex OCStringGetDoubleComplexValue</definition>
+        <argsstring>(OCStringRef string)</argsstring>
+        <name>OCStringGetDoubleComplexValue</name>
+        <param>
+          <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+          <declname>string</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCStringGetDoubleComplexValue :brief: Parses and returns the double complex value represented by the OCString. :param string: OCString containing complex arithmetic expression. :return: Parsed double complex value. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="215" column="16" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="215" declcolumn="16"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1ga0d6c7c5d4fabc8a81679d18cfe03ba54" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="struct_o_c_range" kindref="compound">OCRange</ref></type>
+        <definition>OCRange OCStringFind</definition>
+        <argsstring>(OCStringRef string, OCStringRef stringToFind, OCOptionFlags compareOptions)</argsstring>
+        <name>OCStringFind</name>
+        <param>
+          <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+          <declname>string</declname>
+        </param>
+        <param>
+          <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+          <declname>stringToFind</declname>
+        </param>
+        <param>
+          <type>OCOptionFlags</type>
+          <declname>compareOptions</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCStringFind :brief: Finds a substring within an OCString with specified options. :param string: Source OCString. :param stringToFind: Substring to find. :param compareOptions: Comparison options flags. :return: Range of found substring or {0,0} if not found. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="225" column="9" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="225" declcolumn="9"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1ga224f8dd4cc352673f2f7e444496bb8de" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int64_t</type>
+        <definition>int64_t OCStringFindAndReplace2</definition>
+        <argsstring>(OCMutableStringRef string, OCStringRef stringToFind, OCStringRef replacementString)</argsstring>
+        <name>OCStringFindAndReplace2</name>
+        <param>
+          <type><ref refid="group___o_c_string_1ga43f3fb9d6dc8cc05f3daaccdad5cfed7" kindref="member">OCMutableStringRef</ref></type>
+          <declname>string</declname>
+        </param>
+        <param>
+          <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+          <declname>stringToFind</declname>
+        </param>
+        <param>
+          <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+          <declname>replacementString</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCStringFindAndReplace2 :brief: Finds and replaces all occurrences of a substring in a mutable OCString. :param string: Mutable OCString to modify. :param stringToFind: Substring to find. :param replacementString: Replacement OCString. :return: Number of replacements made. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="235" column="9" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="235" declcolumn="9"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1ga85574974c44f644eaadcfad2209251ec" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int64_t</type>
+        <definition>int64_t OCStringFindAndReplace</definition>
+        <argsstring>(OCMutableStringRef string, OCStringRef stringToFind, OCStringRef replacementString, OCRange rangeToSearch, OCOptionFlags compareOptions)</argsstring>
+        <name>OCStringFindAndReplace</name>
+        <param>
+          <type><ref refid="group___o_c_string_1ga43f3fb9d6dc8cc05f3daaccdad5cfed7" kindref="member">OCMutableStringRef</ref></type>
+          <declname>string</declname>
+        </param>
+        <param>
+          <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+          <declname>stringToFind</declname>
+        </param>
+        <param>
+          <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+          <declname>replacementString</declname>
+        </param>
+        <param>
+          <type><ref refid="struct_o_c_range" kindref="compound">OCRange</ref></type>
+          <declname>rangeToSearch</declname>
+        </param>
+        <param>
+          <type>OCOptionFlags</type>
+          <declname>compareOptions</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCStringFindAndReplace :brief: Finds and replaces occurrences of a substring within a specified range in a mutable OCString. :param string: Mutable OCString to modify. :param stringToFind: Substring to find. :param replacementString: Replacement OCString. :param rangeToSearch: Range within string to search. :param compareOptions: Comparison options flags. :return: Number of replacements made. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="248" column="9" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="248" declcolumn="9"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1gaf6f91487cbd7ed4310a22b842bbb61f5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_array_1ga258ada3c18aefb7cd00f9fae05441cc9" kindref="member">OCArrayRef</ref></type>
+        <definition>OCArrayRef OCStringCreateArrayWithFindResults</definition>
+        <argsstring>(OCStringRef string, OCStringRef stringToFind, OCRange rangeToSearch, OCOptionFlags compareOptions)</argsstring>
+        <name>OCStringCreateArrayWithFindResults</name>
+        <param>
+          <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+          <declname>string</declname>
+        </param>
+        <param>
+          <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+          <declname>stringToFind</declname>
+        </param>
+        <param>
+          <type><ref refid="struct_o_c_range" kindref="compound">OCRange</ref></type>
+          <declname>rangeToSearch</declname>
+        </param>
+        <param>
+          <type>OCOptionFlags</type>
+          <declname>compareOptions</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCStringCreateArrayWithFindResults :brief: Creates an array of ranges where a substring is found within an OCString. :param string: Source OCString. :param stringToFind: Substring to find. :param rangeToSearch: Range within string to search. :param compareOptions: Comparison options flags. :return: OCArrayRef containing ranges of found substrings. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="265" column="12" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="265" declcolumn="12"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1gadc889840b31e2fb4f5ff520389ee6ffc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_array_1ga258ada3c18aefb7cd00f9fae05441cc9" kindref="member">OCArrayRef</ref></type>
+        <definition>OCArrayRef OCStringCreateArrayBySeparatingStrings</definition>
+        <argsstring>(OCStringRef string, OCStringRef separatorString)</argsstring>
+        <name>OCStringCreateArrayBySeparatingStrings</name>
+        <param>
+          <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+          <declname>string</declname>
+        </param>
+        <param>
+          <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+          <declname>separatorString</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCStringCreateArrayBySeparatingStrings :brief: Creates an array of OCStrings by splitting a string using a separator string. :param string: Source OCString. :param separatorString: Separator OCString. :return: OCArrayRef containing separated OCStrings. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="273" column="12" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="273" declcolumn="12"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1gab8dec3f0291150472e9078d06af15913" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void OCStringShow</definition>
+        <argsstring>(OCStringRef theString)</argsstring>
+        <name>OCStringShow</name>
+        <param>
+          <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+          <declname>theString</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCStringShow :brief: Prints the OCString to standard output. :param theString: OCString to display. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="280" column="6" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="280" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1gaede074b8fe01644bbcbce35d7b4a5883" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool OCStringEqual</definition>
+        <argsstring>(OCStringRef theString1, OCStringRef theString2)</argsstring>
+        <name>OCStringEqual</name>
+        <param>
+          <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+          <declname>theString1</declname>
+        </param>
+        <param>
+          <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+          <declname>theString2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCStringEqual :brief: Compares two OCStrings for equality. :param theString1: First OCString. :param theString2: Second OCString. :return: true if equal, false otherwise. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="288" column="6" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="288" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1ga5da53115c750e1bcca4a6b44de925ed2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+        <definition>OCStringRef OCStringCreateWithFormat</definition>
+        <argsstring>(OCStringRef format,...)</argsstring>
+        <name>OCStringCreateWithFormat</name>
+        <param>
+          <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+          <declname>format</declname>
+        </param>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCStringCreateWithFormat :brief: Creates an immutable OCString using a format string and arguments. :param format: Format OCString. :param ...: Variable arguments for the format string. :return: New <ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref> (ownership transferred to caller). </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="297" column="14" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="297" declcolumn="14"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1gaea94bbf4fb482206686af404069ee60e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void OCStringAppendFormat</definition>
+        <argsstring>(OCMutableStringRef theString, OCStringRef format,...)</argsstring>
+        <name>OCStringAppendFormat</name>
+        <param>
+          <type><ref refid="group___o_c_string_1ga43f3fb9d6dc8cc05f3daaccdad5cfed7" kindref="member">OCMutableStringRef</ref></type>
+          <declname>theString</declname>
+        </param>
+        <param>
+          <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+          <declname>format</declname>
+        </param>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCStringAppendFormat :brief: Appends formatted text to a mutable OCString. :param theString: Mutable OCString. :param format: Format OCString. :param ...: Variable arguments for the format string. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="305" column="6" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="305" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1ga7ac8eaf686c799c8e73f7a943ca2b340" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+        <definition>OCStringRef __OCStringMakeConstantString</definition>
+        <argsstring>(const char *cStr)</argsstring>
+        <name>__OCStringMakeConstantString</name>
+        <param>
+          <type>const char *</type>
+          <declname>cStr</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:meta: internal Creates a constant <ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref>; private API. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="308" column="13" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="308" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1ga31ce343b2a56559fe0d80236c10f299e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>double complex</type>
+        <definition>double complex OCComplexFromCString</definition>
+        <argsstring>(const char *string)</argsstring>
+        <name>OCComplexFromCString</name>
+        <param>
+          <type>const char *</type>
+          <declname>string</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCComplexFromCString :brief: Calculates and returns the double complex value represented by the complex arithmetic expression in the string. :param string: A string that contains a complex arithmetic expression. :return: The double complex value represented by string, or <computeroutput>nan(&quot;&quot;)</computeroutput> or <computeroutput>nan(NULL)</computeroutput> if there is a scanning error. :discussion: Examples:<itemizedlist>
+<listitem><para>double val = PSComplexFromString(&quot;0.123 + 0.456*I&quot;); // val = 0.123 + 0.456*I</para>
+</listitem><listitem><para>double val = PSComplexFromString(&quot;(0.123 + 0.456*I)/(1.32+4.5*I)&quot;); // val = 0.100688+0.00220167*I </para>
+</listitem></itemizedlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="319" column="16" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="319" declcolumn="16"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1ga0be937a3a16226abd5ac5df6fafc3e2f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+        <definition>OCStringRef PSFloatCreateStringValue</definition>
+        <argsstring>(float value)</argsstring>
+        <name>PSFloatCreateStringValue</name>
+        <param>
+          <type>float</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: PSFloatCreateStringValue :brief: Creates an OCString representing a float value. :param value: Float value. :return: New <ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref> representing the float. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="327" column="13" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="327" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1ga2823611eb76970a8fb2e5a18d8df3ed2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+        <definition>OCStringRef OCDoubleCreateStringValue</definition>
+        <argsstring>(double value)</argsstring>
+        <name>OCDoubleCreateStringValue</name>
+        <param>
+          <type>double</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCDoubleCreateStringValue :brief: Creates an OCString representing a double value. :param value: Double value. :return: New <ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref> representing the double. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="334" column="13" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="334" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1ga6d155e4710caa2288cefd367d897d078" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+        <definition>OCStringRef OCFloatComplexCreateStringValue</definition>
+        <argsstring>(float complex value, OCStringRef format)</argsstring>
+        <name>OCFloatComplexCreateStringValue</name>
+        <param>
+          <type>float complex</type>
+          <declname>value</declname>
+        </param>
+        <param>
+          <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+          <declname>format</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: OCFloatComplexCreateStringValue :brief: Creates an OCString representing a float complex value using a format. :param value: Float complex value. :param format: Format OCString. :return: New <ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref> representing the complex value. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="342" column="13" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="342" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1gade01921be0b6bc10432dc2a66c04cc51" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+        <definition>OCStringRef PSDoubleComplexCreateStringValue</definition>
+        <argsstring>(double complex value, OCStringRef format)</argsstring>
+        <name>PSDoubleComplexCreateStringValue</name>
+        <param>
+          <type>double complex</type>
+          <declname>value</declname>
+        </param>
+        <param>
+          <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+          <declname>format</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: PSDoubleComplexCreateStringValue :brief: Creates an OCString representing a double complex value using a format. :param value: Double complex value. :param format: Format OCString. :return: New <ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref> representing the complex value. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="350" column="13" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="350" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1ga7eabba69bc094704c0b66b5e0cfafafe" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool characterIsUpperCaseLetter</definition>
+        <argsstring>(char character)</argsstring>
+        <name>characterIsUpperCaseLetter</name>
+        <param>
+          <type>char</type>
+          <declname>character</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: characterIsUpperCaseLetter :brief: Checks if a character is an uppercase letter. :param character: Character to check. :return: true if uppercase letter, false otherwise. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="358" column="6" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="358" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1ga37a317257b001c57a150a47e7ee44555" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool characterIsLowerCaseLetter</definition>
+        <argsstring>(char character)</argsstring>
+        <name>characterIsLowerCaseLetter</name>
+        <param>
+          <type>char</type>
+          <declname>character</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: characterIsLowerCaseLetter :brief: Checks if a character is a lowercase letter. :param character: Character to check. :return: true if lowercase letter, false otherwise. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="365" column="6" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="365" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1gae6a9bfc8dbea273592126b7eb34f4b62" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool characterIsDigitOrDecimalPoint</definition>
+        <argsstring>(char character)</argsstring>
+        <name>characterIsDigitOrDecimalPoint</name>
+        <param>
+          <type>char</type>
+          <declname>character</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: characterIsDigitOrDecimalPoint :brief: Checks if a character is a digit or decimal point. :param character: Character to check. :return: true if digit or decimal point, false otherwise. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="372" column="6" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="372" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_string_1gae70f7f24251bbdb581c838d7386e1613" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool characterIsDigitOrDecimalPointOrSpace</definition>
+        <argsstring>(char character)</argsstring>
+        <name>characterIsDigitOrDecimalPointOrSpace</name>
+        <param>
+          <type>char</type>
+          <declname>character</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:func: characterIsDigitOrDecimalPointOrSpace :brief: Checks if a character is a digit, decimal point, or space. :param character: Character to check. :return: true if digit, decimal point, or space, false otherwise. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="379" column="6" declfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" declline="379" declcolumn="6"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="define">
+      <memberdef kind="define" id="group___o_c_string_1ga65542178535d41e3a1e98890a6f93cf3" prot="public" static="no">
+        <name>STR</name>
+        <param><defname>cStr</defname></param>
+        <initializer><ref refid="group___o_c_string_1ga7ac8eaf686c799c8e73f7a943ca2b340" kindref="member">__OCStringMakeConstantString</ref>(&quot;&quot; cStr &quot;&quot;)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:def STR: :brief: Macro to create a constant <ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref> from a C string literal. STR(&quot;...&quot;) is implemented as a compile-time constant OCString that you do not own, so you must not call OCRelease on it. It lives for the lifetime of your process. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/philip/Github/Software/OCTypes/src/OCString.h" line="46" column="9" bodyfile="/Users/philip/Github/Software/OCTypes/src/OCString.h" bodystart="46" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>.. _OCString_h:</para>
+<sect1 id="group___o_c_string_1autotoc_md10">
+<title>OCString.h</title><para>Immutable and mutable OCString reference types and operations.</para>
+<para>Provides creation, manipulation, comparison, and conversion functions for OCTypes string objects, including support for complex arithmetic parsing.</para>
+</sect1>
+    </detaileddescription>
+  </compounddef>
+</doxygen>
