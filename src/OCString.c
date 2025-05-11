@@ -107,21 +107,34 @@ static struct __OCString *OCStringAllocate()
 
 OCStringRef OCStringCreateWithCString(const char *cString)
 {
-    if(NULL==cString) return NULL;
-    struct __OCString *theString = OCStringAllocate();
-    if(NULL == theString) return NULL; // Check if OCStringAllocate failed
-
-    theString->length = strlen(cString);
-    theString->capacity = theString->length; // Use the already computed length for capacity
-
-    theString->string = malloc(theString->length + 1); // Allocate buffer for string content + null terminator
-    if (NULL == theString->string) { // Check if malloc for the character buffer failed
-        OCRelease(theString); // Release the OCString structure itself
-        return NULL;          // Return NULL to indicate failure
+    if (cString == NULL) {
+        return NULL;
     }
-    strcpy(theString->string, cString); // Copy the C string into the buffer
+
+    // Allocate the OCString structure (retainCount = 1)
+    struct __OCString *theString = OCStringAllocate();
+    if (theString == NULL) {
+        return NULL;
+    }
+
+    // Compute length and set capacity
+    size_t len = strlen(cString);
+    theString->length   = len;
+    theString->capacity = len;
+
+    // Allocate buffer for contents (+1 for '\0')
+    theString->string = malloc(len + 1);
+    if (theString->string == NULL) {
+        OCRelease(theString);
+        return NULL;
+    }
+
+    // Copy the bytes, including the terminating null
+    memcpy(theString->string, cString, len + 1);
+
     return theString;
 }
+
 
 OCStringRef OCStringCreateCopy(OCStringRef theString)
 {
