@@ -4,7 +4,6 @@
 import os
 import sys
 import warnings
-from sphinx.util.logging import SphinxWarning
 
 # -- Path setup --------------------------------------------------------------
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -40,10 +39,9 @@ breathe_default_project = 'octypes'
 warnings.filterwarnings(
     'ignore',
     message=r'.*Duplicate C declaration.*',
-    category=SphinxWarning
+    category=Warning
 )
 
 # -- Options for HTML output -------------------------------------------------
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
-
