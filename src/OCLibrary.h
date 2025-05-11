@@ -1,12 +1,9 @@
-//
-//  OCLibrary
-//  OCTypes
-//
-//  Created by philip on 5/17/17.
-//
-
 #ifndef OCLibrary_h
 #define OCLibrary_h
+
+#ifndef __private_extern__
+#define __private_extern__
+#endif
 
 #include <sys/types.h>
 #include <stdarg.h>
