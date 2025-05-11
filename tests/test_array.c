@@ -1,6 +1,7 @@
 #include "test_array.h"
 #include "../src/OCString.h" // For OCStringRef, OCStringCreateWithCString, OCStringEqual, OCRelease
 #include "../src/OCArray.h"  // For OCArray specific functions like OCArrayCreateMutable, OCArrayAppendValue etc.
+#include <inttypes.h>   // For PRIu64
 
 // Adapter for OCArraySortValues on OCStringRefs:
 OCComparisonResult OCStringCompareAdapter(const void *a, const void *b, void *ctx) {
@@ -414,7 +415,7 @@ bool arrayTest4_search_sort(void) {
         temp_str = OCStringCreateWithCString(sorted_expected[i]);
         if (!temp_str) { fprintf(stderr, "Error: OCStringCreateWithCString for sorted_expected failed in %s\n", __func__); goto cleanup; }
         if (!(OCTypeEqual(OCArrayGetValueAtIndex(marr, i), temp_str))) {
-            fprintf(stderr, "Assertion failed: OCArraySortValues element %llu mismatch in %s\n", i, __func__);
+            fprintf(stderr, "Assertion failed: OCArraySortValues element %" PRIu64 " mismatch in %s\n", i, __func__);
             goto cleanup; // temp_str will be released in cleanup
         }
         OCRelease(temp_str); temp_str = NULL;
@@ -422,37 +423,37 @@ bool arrayTest4_search_sort(void) {
 
     uint64_t found_idx; // OCArrayBSearchValues returns int64_t, but kOCNotFound is -1 (long). Using uint64_t and checking against kOCNotFound is fine.
     found_idx = OCArrayBSearchValues(marr, OCRangeMake(0, OCArrayGetCount(marr)), s_c, (OCComparatorFunction)OCStringCompareAdapter, NULL);
-    if (!(found_idx == 2)) { fprintf(stderr, "Assertion failed: OCArrayBSearchValues for s_c (expected 2, got %llu) failed in %s\n", found_idx, __func__); goto cleanup; }
+    if (!(found_idx == 2)) { fprintf(stderr, "Assertion failed: OCArrayBSearchValues for s_c (expected 2, got %" PRIu64 ") failed in %s\n", found_idx, __func__); goto cleanup; }
 
     found_idx = OCArrayBSearchValues(marr, OCRangeMake(0, OCArrayGetCount(marr)), s_a, (OCComparatorFunction)OCStringCompareAdapter, NULL);
-    if (!(found_idx == 0)) { fprintf(stderr, "Assertion failed: OCArrayBSearchValues for s_a (expected 0, got %llu) failed in %s\n", found_idx, __func__); goto cleanup; }
+    if (!(found_idx == 0)) { fprintf(stderr, "Assertion failed: OCArrayBSearchValues for s_a (expected 0, got %" PRIu64 ") failed in %s\n", found_idx, __func__); goto cleanup; }
 
     found_idx = OCArrayBSearchValues(marr, OCRangeMake(0, OCArrayGetCount(marr)), s_e, (OCComparatorFunction)OCStringCompareAdapter, NULL);
-    if (!(found_idx == 4)) { fprintf(stderr, "Assertion failed: OCArrayBSearchValues for s_e (expected 4, got %llu) failed in %s\n", found_idx, __func__); goto cleanup; }
+    if (!(found_idx == 4)) { fprintf(stderr, "Assertion failed: OCArrayBSearchValues for s_e (expected 4, got %" PRIu64 ") failed in %s\n", found_idx, __func__); goto cleanup; }
 
     found_idx = OCArrayBSearchValues(marr, OCRangeMake(0, OCArrayGetCount(marr)), s_f, (OCComparatorFunction)OCStringCompareAdapter, NULL);
-    if (!(found_idx == kOCNotFound)) { fprintf(stderr, "Assertion failed: OCArrayBSearchValues for s_f (not found, expected %ld, got %llu) failed in %s\n", (long)kOCNotFound, found_idx, __func__); goto cleanup; }
+    if (!(found_idx == kOCNotFound)) { fprintf(stderr, "Assertion failed: OCArrayBSearchValues for s_f (not found, expected %ld, got %" PRIu64 ") failed in %s\n", (long)kOCNotFound, found_idx, __func__); goto cleanup; }
 
     found_idx = OCArrayBSearchValues(marr, OCRangeMake(0, 0), s_a, (OCComparatorFunction)OCStringCompareAdapter, NULL);
-    if (!(found_idx == kOCNotFound)) { fprintf(stderr, "Assertion failed: OCArrayBSearchValues with empty range (expected %ld, got %llu) failed in %s\n", (long)kOCNotFound, found_idx, __func__); goto cleanup; }
+    if (!(found_idx == kOCNotFound)) { fprintf(stderr, "Assertion failed: OCArrayBSearchValues with empty range (expected %ld, got %" PRIu64 ") failed in %s\n", (long)kOCNotFound, found_idx, __func__); goto cleanup; }
 
     // marr: [a, b, c, d, e]
     found_idx = OCArrayBSearchValues(marr, OCRangeMake(2, 3), s_d, (OCComparatorFunction)OCStringCompareAdapter, NULL); // Search [c, d, e]
-    if (!(found_idx == 3)) { fprintf(stderr, "Assertion failed: OCArrayBSearchValues for s_d in sub-range [2,3] (expected 3, got %llu) failed in %s\n", found_idx, __func__); goto cleanup; }
+    if (!(found_idx == 3)) { fprintf(stderr, "Assertion failed: OCArrayBSearchValues for s_d in sub-range [2,3] (expected 3, got %" PRIu64 ") failed in %s\n", found_idx, __func__); goto cleanup; }
 
     found_idx = OCArrayBSearchValues(marr, OCRangeMake(0, 2), s_b, (OCComparatorFunction)OCStringCompareAdapter, NULL); // Search [a, b]
-    if (!(found_idx == 1)) { fprintf(stderr, "Assertion failed: OCArrayBSearchValues for s_b in sub-range [0,2] (expected 1, got %llu) failed in %s\n", found_idx, __func__); goto cleanup; }
+    if (!(found_idx == 1)) { fprintf(stderr, "Assertion failed: OCArrayBSearchValues for s_b in sub-range [0,2] (expected 1, got %" PRIu64 ") failed in %s\n", found_idx, __func__); goto cleanup; }
 
     found_idx = OCArrayBSearchValues(marr, OCRangeMake(4, 1), s_e, (OCComparatorFunction)OCStringCompareAdapter, NULL); // Search [e]
-    if (!(found_idx == 4)) { fprintf(stderr, "Assertion failed: OCArrayBSearchValues for s_e in sub-range [4,1] (expected 4, got %llu) failed in %s\n", found_idx, __func__); goto cleanup; }
+    if (!(found_idx == 4)) { fprintf(stderr, "Assertion failed: OCArrayBSearchValues for s_e in sub-range [4,1] (expected 4, got %" PRIu64 ") failed in %s\n", found_idx, __func__); goto cleanup; }
 
     found_idx = OCArrayBSearchValues(marr, OCRangeMake(1, 3), s_a, (OCComparatorFunction)OCStringCompareAdapter, NULL); // Search [b, c, d] -> s_a not found
-    if (!(found_idx == kOCNotFound)) { fprintf(stderr, "Assertion failed: OCArrayBSearchValues for s_a (not found) in sub-range [1,3] (expected %ld, got %llu) failed in %s\n", (long)kOCNotFound, found_idx, __func__); goto cleanup; }
+    if (!(found_idx == kOCNotFound)) { fprintf(stderr, "Assertion failed: OCArrayBSearchValues for s_a (not found) in sub-range [1,3] (expected %ld, got %" PRIu64 ") failed in %s\n", (long)kOCNotFound, found_idx, __func__); goto cleanup; }
 
     empty_marr = OCArrayCreateMutable(0, &kOCTypeArrayCallBacks);
     if (!empty_marr) { fprintf(stderr, "Error: OCArrayCreateMutable for empty_marr failed in %s\n", __func__); goto cleanup; }
     found_idx = OCArrayBSearchValues(empty_marr, OCRangeMake(0, OCArrayGetCount(empty_marr)), s_a, (OCComparatorFunction)OCStringCompareAdapter, NULL);
-    if (!(found_idx == kOCNotFound)) { fprintf(stderr, "Assertion failed: OCArrayBSearchValues on empty array (expected %ld, got %llu) failed in %s\n", (long)kOCNotFound, found_idx, __func__); goto cleanup; }
+    if (!(found_idx == kOCNotFound)) { fprintf(stderr, "Assertion failed: OCArrayBSearchValues on empty array (expected %ld, got %" PRIu64 ") failed in %s\n", (long)kOCNotFound, found_idx, __func__); goto cleanup; }
     OCRelease(empty_marr); empty_marr = NULL;
 
     fprintf(stderr, "%s end...without problems\n", __func__);
