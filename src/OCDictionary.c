@@ -33,7 +33,7 @@ bool __OCDictionaryEqual(const void * theType1, const void * theType2)
     // For Dictionaries to be equal the keys-values must have the same storage order
     // This doesn't allow dictionaries with the identical key-values but in different
     // storage to be equal.  Need to fix this.
-    for(u_int64_t index = 0;index< theDictionary1->count; index++) {
+    for(uint64_t index = 0; index < theDictionary1->count; index++) {
         OCStringRef key1 = theDictionary1->keys[index];
         OCStringRef key2 = theDictionary2->keys[index];
         if(!OCTypeEqual(key1, key2)) return false;
@@ -230,7 +230,7 @@ void OCDictionaryReplaceValue(OCMutableDictionaryRef theDictionary, OCStringRef 
 void OCDictionaryRemoveValue(OCMutableDictionaryRef theDictionary, OCStringRef key)
 {
     int64_t indexOfKey = OCDictionaryIndexOfKey( theDictionary,  key);
-    if(index<0) return;
+    if(indexOfKey < 0) return;
     OCRelease(theDictionary->keys[indexOfKey]);
     OCRelease(theDictionary->values[indexOfKey]);
     for(uint64_t index = indexOfKey;index<theDictionary->count;index++) {
