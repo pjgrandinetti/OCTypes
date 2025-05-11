@@ -4,7 +4,6 @@
 
 import os
 import sys
-import warnings
 
 # If your extensions (or modules to document with autodoc) are in
 # the project root, add that directory to sys.path here:
@@ -55,9 +54,6 @@ html_theme = 'sphinx_rtd_theme'
 
 # If you have no static files at all (you removed _static), clear this:
 html_static_path = []
-
-# If you need to suppress specific Sphinx warnings, you can do it here:
-# warnings.filterwarnings('ignore', category=SomeWarningClass)
 
 # ——— Breathe/C domain fixes ———
 # Ensure that C files and headers use the C domain in Sphinx/breathe
