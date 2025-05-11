@@ -1,249 +1,259 @@
-//
-//  OCString.h
-//  OCTypes
-//
-//  Created by philip on 5/10/17.
-//
-
 /**
- * .. _OCString_h:
- *
- * OCString.h
- * ==========
- *
- * Immutable and mutable OCString reference types and operations.
+ * @file OCString.h
+ * @brief Immutable and mutable OCString reference types and operations.
  *
  * Provides creation, manipulation, comparison, and conversion functions
  * for OCTypes string objects, including support for complex arithmetic parsing.
  */
-
 #ifndef OCString_h
 #define OCString_h
 
+// System & OCTypes headers
 #include <complex.h>
 #include "OCLibrary.h"
 
-/** @defgroup OCString OCString */
-/** @addtogroup OCString
+/** @defgroup OCString OCString
+ *  @brief Immutable and mutable OCString operations.
  *  @{
  */
 
 /**
- * :type OCStringRef:
- * :brief: Opaque reference to an immutable OCString.
+ * @brief Opaque reference to an immutable OCString.
+ * @ingroup OCString
  */
 typedef const struct __OCString * OCStringRef;
+
 /**
- * :type OCMutableStringRef:
- * :brief: Opaque reference to a mutable OCString.
+ * @brief Opaque reference to a mutable OCString.
+ * @ingroup OCString
  */
 typedef struct __OCString * OCMutableStringRef;
 
 /**
- * :def STR:
- * :brief: Macro to create a constant OCStringRef from a C string literal.  STR("...") is implemented as a compile-time constant OCString that you do not own, so you must not call OCRelease on it. It lives for the lifetime of your process.
+ * @brief Macro to create a constant OCStringRef from a C string literal.
+ * @param cStr C string literal.
+ * @return A compile-time constant OCStringRef; do not release.
+ * @ingroup OCString
  */
 #define STR(cStr)  __OCStringMakeConstantString("" cStr "")
 
 /**
- * :func: OCStringGetTypeID
- * :brief: Returns the unique type identifier for OCString objects.
- * :return: OCTypeID for OCString type.
+ * @brief Returns the unique type identifier for OCString objects.
+ * @return The OCTypeID for OCString.
+ * @ingroup OCString
  */
 OCTypeID OCStringGetTypeID(void);
 
 /**
- * :func: OCStringCreateWithCString
- * :brief: Creates an immutable OCString from a null-terminated C string.
- * :param string: Null-terminated UTF-8 C string.
- * :return: New OCStringRef (ownership transferred to caller), or NULL on failure.
+ * @brief Creates an immutable OCString from a C string.
+ * @param string Null-terminated UTF-8 C string.
+ * @return New OCStringRef, or NULL on failure.
+ * @ingroup OCString
  */
 OCStringRef OCStringCreateWithCString(const char *string);
+
 /**
- * :func: OCStringCreateMutableCopy
- * :brief: Creates a mutable copy of an immutable OCString.
- * :param theString: Immutable OCString to copy.
- * :return: New OCMutableStringRef (ownership transferred to caller).
+ * @brief Creates a mutable copy of an immutable OCString.
+ * @param theString Immutable OCString to copy.
+ * @return New OCMutableStringRef (ownership transferred to caller).
+ * @ingroup OCString
  */
 OCMutableStringRef OCStringCreateMutableCopy(OCStringRef theString);
+
 /**
- * :func: OCStringCreateWithSubstring
- * :brief: Creates an immutable OCString from a substring of another OCString.
- * :param str: Source OCString.
- * :param range: Range of substring to extract.
- * :return: New OCStringRef (ownership transferred to caller).
+ * @brief Creates an immutable OCString from a substring.
+ * @param str Source OCString.
+ * @param range Range of substring to extract.
+ * @return New OCStringRef, or NULL on failure.
+ * @ingroup OCString
  */
 OCStringRef OCStringCreateWithSubstring(OCStringRef str, OCRange range);
 
 /**
- * :func: OCStringAppend
- * :brief: Appends an immutable OCString to a mutable OCString.
- * :param theString: Mutable OCString to append to.
- * :param appendedString: Immutable OCString to append.
+ * @brief Appends an immutable OCString to a mutable OCString.
+ * @param theString Mutable OCString to append to.
+ * @param appendedString Immutable OCString to append.
+ * @ingroup OCString
  */
 void OCStringAppend(OCMutableStringRef theString, OCStringRef appendedString);
+
 /**
- * :func: OCStringAppendCString
- * :brief: Appends a C string to a mutable OCString.
- * :param theString: Mutable OCString to append to.
- * :param cString: Null-terminated UTF-8 C string to append.
+ * @brief Appends a C string to a mutable OCString.
+ * @param theString Mutable OCString to append to.
+ * @param cString Null-terminated UTF-8 C string to append.
+ * @ingroup OCString
  */
 void OCStringAppendCString(OCMutableStringRef theString, const char *cString);
 
 /**
- * :func: OCStringCreateMutable
- * :brief: Creates a new mutable OCString with specified initial capacity.
- * :param capacity: Initial capacity for the mutable string.
- * :return: New OCMutableStringRef (ownership transferred to caller).
+ * @brief Creates a new mutable OCString with specified initial capacity.
+ * @param capacity Initial capacity for the mutable string.
+ * @return New OCMutableStringRef (ownership transferred to caller).
+ * @ingroup OCString
  */
 OCMutableStringRef OCStringCreateMutable(uint64_t capacity);
+
 /**
- * :func: OCMutableStringCreateWithCString
- * :brief: Creates a mutable OCString from a null-terminated C string.
- * :param cString: Null-terminated UTF-8 C string.
- * :return: New OCMutableStringRef (ownership transferred to caller).
+ * @brief Creates a mutable OCString from a null-terminated C string.
+ * @param cString Null-terminated UTF-8 C string.
+ * @return New OCMutableStringRef (ownership transferred to caller).
+ * @ingroup OCString
  */
 OCMutableStringRef OCMutableStringCreateWithCString(const char *cString);
+
 /**
- * :func: OCStringGetCString
- * :brief: Returns a C string representation of an immutable OCString.
- * :param theString: Immutable OCString.
- * :return: Null-terminated UTF-8 C string.
+ * @brief Returns a C string representation of an immutable OCString.
+ * @param theString Immutable OCString.
+ * @return Null-terminated UTF-8 C string.
+ * @ingroup OCString
  */
 const char *OCStringGetCString(OCStringRef theString);
+
 /**
- * :func: OCStringCreateCopy
- * :brief: Creates a new immutable copy of an OCString.
- * :param theString: Source OCString.
- * :return: New OCStringRef (ownership transferred to caller).
+ * @brief Creates a new immutable copy of an OCString.
+ * @param theString Source OCString.
+ * @return New OCStringRef (ownership transferred to caller).
+ * @ingroup OCString
  */
 OCStringRef OCStringCreateCopy(OCStringRef theString);
+
 /**
- * :func: OCStringCompare
- * :brief: Compares two OCStrings with specified options.
- * :param theString1: First OCString.
- * :param theString2: Second OCString.
- * :param compareOptions: Comparison options flags.
- * :return: Comparison result indicating order or equality.
+ * @brief Compares two OCStrings with specified options.
+ * @param theString1 First OCString.
+ * @param theString2 Second OCString.
+ * @param compareOptions Comparison options flags.
+ * @return Comparison result indicating order or equality.
+ * @ingroup OCString
  */
 OCComparisonResult OCStringCompare(OCStringRef theString1, OCStringRef theString2, OCStringCompareFlags compareOptions);
+
 /**
- * :func: OCStringGetLength
- * :brief: Returns the length of an OCString.
- * :param theString: OCString.
- * :return: Length of the string.
+ * @brief Returns the length of an OCString.
+ * @param theString OCString.
+ * @return Length of the string.
+ * @ingroup OCString
  */
 uint64_t OCStringGetLength(OCStringRef theString);
+
 /**
- * :func: OCStringLowercase
- * :brief: Converts a mutable OCString to lowercase.
- * :param theString: Mutable OCString.
+ * @brief Converts a mutable OCString to lowercase.
+ * @param theString Mutable OCString.
+ * @ingroup OCString
  */
 void OCStringLowercase(OCMutableStringRef theString);
+
 /**
- * :func: OCStringUppercase
- * :brief: Converts a mutable OCString to uppercase.
- * :param theString: Mutable OCString.
+ * @brief Converts a mutable OCString to uppercase.
+ * @param theString Mutable OCString.
+ * @ingroup OCString
  */
 void OCStringUppercase(OCMutableStringRef theString);
+
 /**
- * :func: OCStringTrimWhitespace
- * :brief: Trims whitespace characters from both ends of a mutable OCString.
- * :param theString: Mutable OCString.
+ * @brief Trims whitespace characters from both ends of a mutable OCString.
+ * @param theString Mutable OCString.
+ * @ingroup OCString
  */
 void OCStringTrimWhitespace(OCMutableStringRef theString);
+
 /**
- * :func: OCStringTrimMatchingParentheses
- * :brief: Trims matching parentheses from both ends of a mutable OCString if present.
- * :param theString: Mutable OCString.
- * :return: true if parentheses were trimmed, false otherwise.
+ * @brief Trims matching parentheses from both ends of a mutable OCString if present.
+ * @param theString Mutable OCString.
+ * @return true if parentheses were trimmed, false otherwise.
+ * @ingroup OCString
  */
 bool OCStringTrimMatchingParentheses(OCMutableStringRef theString);
 
 /**
- * :func: OCStringDelete
- * :brief: Deletes a substring from a mutable OCString.
- * :param theString: Mutable OCString.
- * :param range: Range of characters to delete.
+ * @brief Deletes a substring from a mutable OCString.
+ * @param theString Mutable OCString.
+ * @param range Range of characters to delete.
+ * @ingroup OCString
  */
 void OCStringDelete(OCMutableStringRef theString, OCRange range);
+
 /**
- * :func: OCStringInsert
- * :brief: Inserts an OCString into a mutable OCString at a specified index.
- * :param str: Mutable OCString to insert into.
- * :param idx: Index at which to insert.
- * :param insertedStr: OCString to insert.
+ * @brief Inserts an OCString into a mutable OCString at a specified index.
+ * @param str Mutable OCString to insert into.
+ * @param idx Index at which to insert.
+ * @param insertedStr OCString to insert.
+ * @ingroup OCString
  */
 void OCStringInsert(OCMutableStringRef str, int64_t idx, OCStringRef insertedStr);
+
 /**
- * :func: OCStringReplace
- * :brief: Replaces a range in a mutable OCString with another OCString.
- * :param str: Mutable OCString.
- * :param range: Range to replace.
- * :param replacement: OCString to insert.
+ * @brief Replaces a range in a mutable OCString with another OCString.
+ * @param str Mutable OCString.
+ * @param range Range to replace.
+ * @param replacement OCString to insert.
+ * @ingroup OCString
  */
 void OCStringReplace(OCMutableStringRef str, OCRange range, OCStringRef replacement);
+
 /**
- * :func: OCStringReplaceAll
- * :brief: Replaces the entire contents of a mutable OCString with another OCString.
- * :param str: Mutable OCString.
- * :param replacement: OCString to set.
+ * @brief Replaces the entire contents of a mutable OCString with another OCString.
+ * @param str Mutable OCString.
+ * @param replacement OCString to set.
+ * @ingroup OCString
  */
 void OCStringReplaceAll(OCMutableStringRef str, OCStringRef replacement);
 
 /**
- * :func: OCStringGetCharacterAtIndex
- * :brief: Returns the character at a specified index in an OCString.
- * :param theString: OCString.
- * :param index: Index of character.
- * :return: Character at index.
+ * @brief Returns the character at a specified index in an OCString.
+ * @param theString OCString.
+ * @param index Index of character.
+ * @return Character at index.
+ * @ingroup OCString
  */
 char OCStringGetCharacterAtIndex(OCStringRef theString, uint64_t index);
+
 /**
- * :func: OCStringGetFloatComplexValue
- * :brief: Parses and returns the float complex value represented by the OCString.
- * :param string: OCString containing complex arithmetic expression.
- * :return: Parsed float complex value.
+ * @brief Parses and returns the float complex value represented by the OCString.
+ * @param string OCString containing complex arithmetic expression.
+ * @return Parsed float complex value.
+ * @ingroup OCString
  */
 float complex OCStringGetFloatComplexValue(OCStringRef string);
+
 /**
- * :func: OCStringGetDoubleComplexValue
- * :brief: Parses and returns the double complex value represented by the OCString.
- * :param string: OCString containing complex arithmetic expression.
- * :return: Parsed double complex value.
+ * @brief Parses and returns the double complex value represented by the OCString.
+ * @param string OCString containing complex arithmetic expression.
+ * @return Parsed double complex value.
+ * @ingroup OCString
  */
 double complex OCStringGetDoubleComplexValue(OCStringRef string);
 
 /**
- * :func: OCStringFind
- * :brief: Finds a substring within an OCString with specified options.
- * :param string: Source OCString.
- * :param stringToFind: Substring to find.
- * :param compareOptions: Comparison options flags.
- * :return: Range of found substring or {0,0} if not found.
+ * @brief Finds a substring within an OCString with specified options.
+ * @param string Source OCString.
+ * @param stringToFind Substring to find.
+ * @param compareOptions Comparison options flags.
+ * @return Range of found substring or {0,0} if not found.
+ * @ingroup OCString
  */
 OCRange OCStringFind(OCStringRef string, OCStringRef stringToFind, OCOptionFlags compareOptions);
 
 /**
- * :func: OCStringFindAndReplace2
- * :brief: Finds and replaces all occurrences of a substring in a mutable OCString.
- * :param string: Mutable OCString to modify.
- * :param stringToFind: Substring to find.
- * :param replacementString: Replacement OCString.
- * :return: Number of replacements made.
+ * @brief Finds and replaces all occurrences of a substring in a mutable OCString.
+ * @param string Mutable OCString to modify.
+ * @param stringToFind Substring to find.
+ * @param replacementString Replacement OCString.
+ * @return Number of replacements made.
+ * @ingroup OCString
  */
 int64_t OCStringFindAndReplace2(OCMutableStringRef string,
                                OCStringRef stringToFind,
                                OCStringRef replacementString);
+
 /**
- * :func: OCStringFindAndReplace
- * :brief: Finds and replaces occurrences of a substring within a specified range in a mutable OCString.
- * :param string: Mutable OCString to modify.
- * :param stringToFind: Substring to find.
- * :param replacementString: Replacement OCString.
- * :param rangeToSearch: Range within string to search.
- * :param compareOptions: Comparison options flags.
- * :return: Number of replacements made.
+ * @brief Finds and replaces occurrences of a substring within a specified range in a mutable OCString.
+ * @param string Mutable OCString to modify.
+ * @param stringToFind Substring to find.
+ * @param replacementString Replacement OCString.
+ * @param rangeToSearch Range within string to search.
+ * @param compareOptions Comparison options flags.
+ * @return Number of replacements made.
+ * @ingroup OCString
  */
 int64_t OCStringFindAndReplace(OCMutableStringRef string,
                                OCStringRef stringToFind,
@@ -254,127 +264,139 @@ int64_t OCStringFindAndReplace(OCMutableStringRef string,
 typedef const struct __OCArray * OCArrayRef;
 
 /**
- * :func: OCStringCreateArrayWithFindResults
- * :brief: Creates an array of ranges where a substring is found within an OCString.
- * :param string: Source OCString.
- * :param stringToFind: Substring to find.
- * :param rangeToSearch: Range within string to search.
- * :param compareOptions: Comparison options flags.
- * :return: OCArrayRef containing ranges of found substrings.
+ * @brief Creates an array of ranges where a substring is found within an OCString.
+ * @param string Source OCString.
+ * @param stringToFind Substring to find.
+ * @param rangeToSearch Range within string to search.
+ * @param compareOptions Comparison options flags.
+ * @return OCArrayRef containing ranges of found substrings.
+ * @ingroup OCString
  */
 OCArrayRef OCStringCreateArrayWithFindResults(OCStringRef string, OCStringRef stringToFind, OCRange rangeToSearch, OCOptionFlags compareOptions);
+
 /**
- * :func: OCStringCreateArrayBySeparatingStrings
- * :brief: Creates an array of OCStrings by splitting a string using a separator string.
- * :param string: Source OCString.
- * :param separatorString: Separator OCString.
- * :return: OCArrayRef containing separated OCStrings.
+ * @brief Creates an array of OCStrings by splitting a string using a separator string.
+ * @param string Source OCString.
+ * @param separatorString Separator OCString.
+ * @return OCArrayRef containing separated OCStrings.
+ * @ingroup OCString
  */
 OCArrayRef OCStringCreateArrayBySeparatingStrings(OCStringRef string, OCStringRef separatorString);
 
 /**
- * :func: OCStringShow
- * :brief: Prints the OCString to standard output.
- * :param theString: OCString to display.
+ * @brief Prints the OCString to standard output.
+ * @param theString OCString to display.
+ * @ingroup OCString
  */
 void OCStringShow(OCStringRef theString);
+
 /**
- * :func: OCStringEqual
- * :brief: Compares two OCStrings for equality.
- * :param theString1: First OCString.
- * :param theString2: Second OCString.
- * :return: true if equal, false otherwise.
+ * @brief Compares two OCStrings for equality.
+ * @param theString1 First OCString.
+ * @param theString2 Second OCString.
+ * @return true if equal, false otherwise.
+ * @ingroup OCString
  */
 bool OCStringEqual(OCStringRef theString1, OCStringRef theString2);
 
 /**
- * :func: OCStringCreateWithFormat
- * :brief: Creates an immutable OCString using a format string and arguments.
- * :param format: Format OCString.
- * :param ...: Variable arguments for the format string.
- * :return: New OCStringRef (ownership transferred to caller).
+ * @brief Creates an immutable OCString using a format string and arguments.
+ * @param format Format OCString.
+ * @param ... Variable arguments for the format string.
+ * @return New OCStringRef (ownership transferred to caller).
+ * @ingroup OCString
  */
 OCStringRef  OCStringCreateWithFormat(OCStringRef format, ...);
+
 /**
- * :func: OCStringAppendFormat
- * :brief: Appends formatted text to a mutable OCString.
- * :param theString: Mutable OCString.
- * :param format: Format OCString.
- * :param ...: Variable arguments for the format string.
+ * @brief Appends formatted text to a mutable OCString.
+ * @param theString Mutable OCString.
+ * @param format Format OCString.
+ * @param ... Variable arguments for the format string.
+ * @ingroup OCString
  */
 void OCStringAppendFormat(OCMutableStringRef theString, OCStringRef format, ...);
 
-/** :meta: internal Creates a constant OCStringRef; private API. */
+/** \cond INTERNAL */
+/**
+ * @brief Creates a constant OCStringRef; private API.
+ * @param cStr C string literal.
+ * @return A compile-time constant OCStringRef; do not release.
+ */
 OCStringRef __OCStringMakeConstantString(const char *cStr);
+/** \endcond */
 
 /**
- * :func: OCComplexFromCString
- * :brief: Calculates and returns the double complex value represented by the complex arithmetic expression in the string.
- * :param string: A string that contains a complex arithmetic expression.
- * :return: The double complex value represented by string, or `nan("")` or `nan(NULL)` if there is a scanning error.
- * :discussion: Examples:
- *   - double val = PSComplexFromString("0.123 + 0.456*I"); // val = 0.123 + 0.456*I
- *   - double val = PSComplexFromString("(0.123 + 0.456*I)/(1.32+4.5*I)"); // val = 0.100688+0.00220167*I
+ * @brief Calculates and returns the double complex value represented by the complex arithmetic expression in the string.
+ * @param string A string that contains a complex arithmetic expression.
+ * @return The double complex value represented by string, or `nan("")` or `nan(NULL)` if there is a scanning error.
+ * @ingroup OCString
  */
 double complex OCComplexFromCString(const char *string);
 
 /**
- * :func: PSFloatCreateStringValue
- * :brief: Creates an OCString representing a float value.
- * :param value: Float value.
- * :return: New OCStringRef representing the float.
+ * @brief Creates an OCString representing a float value.
+ * @param value Float value.
+ * @return New OCStringRef representing the float.
+ * @ingroup OCString
  */
-OCStringRef PSFloatCreateStringValue(float value);
-/**
- * :func: OCDoubleCreateStringValue
- * :brief: Creates an OCString representing a double value.
- * :param value: Double value.
- * :return: New OCStringRef representing the double.
- */
-OCStringRef OCDoubleCreateStringValue(double value);
-/**
- * :func: OCFloatComplexCreateStringValue
- * :brief: Creates an OCString representing a float complex value using a format.
- * :param value: Float complex value.
- * :param format: Format OCString.
- * :return: New OCStringRef representing the complex value.
- */
-OCStringRef OCFloatComplexCreateStringValue(float complex value, OCStringRef format);
-/**
- * :func: PSDoubleComplexCreateStringValue
- * :brief: Creates an OCString representing a double complex value using a format.
- * :param value: Double complex value.
- * :param format: Format OCString.
- * :return: New OCStringRef representing the complex value.
- */
-OCStringRef PSDoubleComplexCreateStringValue(double complex value,OCStringRef format);
+OCStringRef OCFloatCreateStringValue(float value);
 
 /**
- * :func: characterIsUpperCaseLetter
- * :brief: Checks if a character is an uppercase letter.
- * :param character: Character to check.
- * :return: true if uppercase letter, false otherwise.
+ * @brief Creates an OCString representing a double value.
+ * @param value Double value.
+ * @return New OCStringRef representing the double.
+ * @ingroup OCString
+ */
+OCStringRef OCDoubleCreateStringValue(double value);
+
+/**
+ * @brief Creates an OCString representing a float complex value using a format.
+ * @param value Float complex value.
+ * @param format Format OCString.
+ * @return New OCStringRef representing the complex value.
+ * @ingroup OCString
+ */
+OCStringRef OCFloatComplexCreateStringValue(float complex value, OCStringRef format);
+
+/**
+ * @brief Creates an OCString representing a double complex value using a format.
+ * @param value Double complex value.
+ * @param format Format OCString.
+ * @return New OCStringRef representing the complex value.
+ * @ingroup OCString
+ */
+OCStringRef OCDoubleComplexCreateStringValue(double complex value,OCStringRef format);
+
+/**
+ * @brief Checks if a character is an uppercase letter.
+ * @param character Character to check.
+ * @return true if uppercase letter, false otherwise.
+ * @ingroup OCString
  */
 bool characterIsUpperCaseLetter(char character);
+
 /**
- * :func: characterIsLowerCaseLetter
- * :brief: Checks if a character is a lowercase letter.
- * :param character: Character to check.
- * :return: true if lowercase letter, false otherwise.
+ * @brief Checks if a character is a lowercase letter.
+ * @param character Character to check.
+ * @return true if lowercase letter, false otherwise.
+ * @ingroup OCString
  */
 bool characterIsLowerCaseLetter(char character);
+
 /**
- * :func: characterIsDigitOrDecimalPoint
- * :brief: Checks if a character is a digit or decimal point.
- * :param character: Character to check.
- * :return: true if digit or decimal point, false otherwise.
+ * @brief Checks if a character is a digit or decimal point.
+ * @param character Character to check.
+ * @return true if digit or decimal point, false otherwise.
+ * @ingroup OCString
  */
 bool characterIsDigitOrDecimalPoint(char character);
+
 /**
- * :func: characterIsDigitOrDecimalPointOrSpace
- * :brief: Checks if a character is a digit, decimal point, or space.
- * :param character: Character to check.
- * :return: true if digit, decimal point, or space, false otherwise.
+ * @brief Checks if a character is a digit, decimal point, or space.
+ * @param character Character to check.
+ * @return true if digit, decimal point, or space, false otherwise.
+ * @ingroup OCString
  */
 bool characterIsDigitOrDecimalPointOrSpace(char character);
 

@@ -1,0 +1,232 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OCNumber &mdash; OCTypes 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="OCBoolean" href="OCBoolean.html" />
+    <link rel="prev" title="OCAutoreleasePool" href="OCAutoreleasePool.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            OCTypes
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">API Documentation:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="OCType.html">OCType</a></li>
+<li class="toctree-l1"><a class="reference internal" href="OCAutoreleasePool.html">OCAutoreleasePool</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">OCNumber</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCNumberTypeSize"><code class="docutils literal notranslate"><span class="pre">OCNumberTypeSize()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCNumberCreateStringValue"><code class="docutils literal notranslate"><span class="pre">OCNumberCreateStringValue()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCNumberGetValue"><code class="docutils literal notranslate"><span class="pre">OCNumberGetValue()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.__Number"><code class="docutils literal notranslate"><span class="pre">__Number</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#c.__Number.int8Value"><code class="docutils literal notranslate"><span class="pre">int8Value</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#c.__Number.int16Value"><code class="docutils literal notranslate"><span class="pre">int16Value</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#c.__Number.int32Value"><code class="docutils literal notranslate"><span class="pre">int32Value</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#c.__Number.int64Value"><code class="docutils literal notranslate"><span class="pre">int64Value</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#c.__Number.uint8Value"><code class="docutils literal notranslate"><span class="pre">uint8Value</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#c.__Number.uint16Value"><code class="docutils literal notranslate"><span class="pre">uint16Value</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#c.__Number.uint32Value"><code class="docutils literal notranslate"><span class="pre">uint32Value</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#c.__Number.uint64Value"><code class="docutils literal notranslate"><span class="pre">uint64Value</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#c.__Number.floatValue"><code class="docutils literal notranslate"><span class="pre">floatValue</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#c.__Number.doubleValue"><code class="docutils literal notranslate"><span class="pre">doubleValue</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#c.__Number.floatComplexValue"><code class="docutils literal notranslate"><span class="pre">floatComplexValue</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#c.__Number.doubleComplexValue"><code class="docutils literal notranslate"><span class="pre">doubleComplexValue</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="OCBoolean.html">OCBoolean</a></li>
+<li class="toctree-l1"><a class="reference internal" href="OCString.html">OCString</a></li>
+<li class="toctree-l1"><a class="reference internal" href="OCArray.html">OCArray</a></li>
+<li class="toctree-l1"><a class="reference internal" href="OCDictionary.html">OCDictionary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="OCData.html">OCData</a></li>
+<li class="toctree-l1"><a class="reference internal" href="OCLibrary.html">OCLibrary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="OCMath.html">OCMath</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">OCTypes</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">OCNumber</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/OCNumber.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="ocnumber">
+<h1>OCNumber<a class="headerlink" href="#ocnumber" title="Link to this heading"></a></h1>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.OCNumberTypeSize">
+<span class="target" id="_o_c_number_8h_1a72fc4ed5e9bd8f7376804bc56cb2f890"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCNumberTypeSize</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">OCNumberType</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCNumberTypeSize" title="Link to this definition"></a><br /></dt>
+<dd><p>:func: OCNumberTypeSize :brief: Returns the size in bytes of the C type corresponding to an OCNumberType. :param type: The OCNumberType to query. :return: The size in bytes of the specified number type. Returns 0 if the type is invalid. </p>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.OCNumberCreateStringValue">
+<span class="target" id="_o_c_number_8h_1a71a346602f6947259cf718ec08863420"></span><a class="reference internal" href="OCType.html#c.OCStringRef" title="OCStringRef"><span class="n"><span class="pre">OCStringRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCNumberCreateStringValue</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">OCNumberRef</span></span><span class="w"> </span><span class="n"><span class="pre">theNumber</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCNumberCreateStringValue" title="Link to this definition"></a><br /></dt>
+<dd><p>:func: OCNumberCreateStringValue :brief: Creates a string representation of the OCNumber’s value. :param theNumber: The OCNumberRef object to convert to a string. :return: A new <a class="reference internal" href="OCString.html#group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4"><span class="std std-ref">OCStringRef</span></a> object containing the string representation of the number, or NULL if theNumber is NULL or on memory allocation failure. The caller is responsible for releasing the returned <a class="reference internal" href="OCString.html#group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4"><span class="std std-ref">OCStringRef</span></a> using OCRelease. </p>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.OCNumberGetValue">
+<span class="target" id="_o_c_number_8h_1a9c0feb4db6dd8b31efd5e7ecc02ab60a"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCNumberGetValue</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">OCNumberRef</span></span><span class="w"> </span><span class="n"><span class="pre">number</span></span>, <span class="n"><span class="pre">OCNumberType</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">outValue</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCNumberGetValue" title="Link to this definition"></a><br /></dt>
+<dd><p>:func: OCNumberGetValue :brief: Retrieves the raw value of an OCNumber object. :param number: The OCNumberRef object. :param type: The expected OCNumberType of the value. This function currently requires this type to match the internal type of the OCNumber object. :param outValue: A pointer to a memory location where the value will be copied. The caller must ensure that <code class="docutils literal notranslate"><span class="pre">outValue</span></code> points to a variable of the correct type and size corresponding to the <code class="docutils literal notranslate"><span class="pre">type</span></code> parameter. :note: If <code class="docutils literal notranslate"><span class="pre">number</span></code> or <code class="docutils literal notranslate"><span class="pre">outValue</span></code> is NULL, or if <code class="docutils literal notranslate"><span class="pre">type</span></code> does not match the internal type of <code class="docutils literal notranslate"><span class="pre">number</span></code>, the function does nothing. A more robust implementation might return a status or handle type conversions. </p>
+</dd></dl>
+
+</div>
+<dl class="c union">
+<dt class="sig sig-object c" id="c.__Number">
+<span class="target" id="union_____number"></span><span class="k"><span class="pre">union</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">__Number</span></span></span><a class="headerlink" href="#c.__Number" title="Link to this definition"></a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;OCNumber.h&gt;</em></div>
+<p>:union: <a class="reference internal" href="#union_____number"><span class="std std-ref">__Number</span></a> :brief: A union to hold the actual numerical value for an OCNumber object. :meta: internal</p>
+<p>This union is used internally by the OCNumber implementation to store the value corresponding to its OCNumberType.</p>
+<p>:ivar int8Value: Value if type is kOCNumberSInt8Type. :ivar int16Value: Value if type is kOCNumberSInt16Type. :ivar int32Value: Value if type is kOCNumberSInt32Type. :ivar int64Value: Value if type is kOCNumberSInt64Type. :ivar uint8Value: Value if type is kOCNumberUInt8Type. :ivar uint16Value: Value if type is kOCNumberUInt16Type. :ivar uint32Value: Value if type is kOCNumberUInt32Type. :ivar uint64Value: Value if type is kOCNumberUInt64Type. :ivar floatValue: Value if type is kOCNumberFloat32Type. :ivar doubleValue: Value if type is kOCNumberFloat64Type. :ivar floatComplexValue: Value if type is kOCNumberFloat32ComplexType. :ivar doubleComplexValue: Value if type is kOCNumberFloat64ComplexType. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt class="sig sig-object c" id="c.__Number.int8Value">
+<span class="target" id="union_____number_1ab5075cb9a00c16fbd3754c5c75aceadd"></span><span class="n"><span class="pre">int8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">int8Value</span></span></span><a class="headerlink" href="#c.__Number.int8Value" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.__Number.int16Value">
+<span class="target" id="union_____number_1a929e0bc74548b848b9783ac078944c0a"></span><span class="n"><span class="pre">int16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">int16Value</span></span></span><a class="headerlink" href="#c.__Number.int16Value" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.__Number.int32Value">
+<span class="target" id="union_____number_1ad73f9668caba282ea02a274a4b986049"></span><span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">int32Value</span></span></span><a class="headerlink" href="#c.__Number.int32Value" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.__Number.int64Value">
+<span class="target" id="union_____number_1ae09604a41bb73b0200a2da821817a315"></span><span class="n"><span class="pre">int64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">int64Value</span></span></span><a class="headerlink" href="#c.__Number.int64Value" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.__Number.uint8Value">
+<span class="target" id="union_____number_1a0dde6a53a7af4933b9f0dadfd5e53cc6"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">uint8Value</span></span></span><a class="headerlink" href="#c.__Number.uint8Value" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.__Number.uint16Value">
+<span class="target" id="union_____number_1a5acaf58f90afef9bc9af64ef1671bfdf"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">uint16Value</span></span></span><a class="headerlink" href="#c.__Number.uint16Value" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.__Number.uint32Value">
+<span class="target" id="union_____number_1adcab64a9287dabda58a3003b4f00e770"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">uint32Value</span></span></span><a class="headerlink" href="#c.__Number.uint32Value" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.__Number.uint64Value">
+<span class="target" id="union_____number_1a7f351278a34078cf329778ee6f399607"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">uint64Value</span></span></span><a class="headerlink" href="#c.__Number.uint64Value" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.__Number.floatValue">
+<span class="target" id="union_____number_1a2d092c062cdd40b94612350c294c483c"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">floatValue</span></span></span><a class="headerlink" href="#c.__Number.floatValue" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.__Number.doubleValue">
+<span class="target" id="union_____number_1a73515bd8d69d4dab26c9b97070adb126"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">doubleValue</span></span></span><a class="headerlink" href="#c.__Number.doubleValue" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.__Number.floatComplexValue">
+<span class="target" id="union_____number_1ac2c1d9fc103f4d85ddd8fcfc2d4a2d93"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="kt"><span class="pre">complex</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">floatComplexValue</span></span></span><a class="headerlink" href="#c.__Number.floatComplexValue" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.__Number.doubleComplexValue">
+<span class="target" id="union_____number_1ab6d174d7a1868c5a66250ee360c962f7"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="kt"><span class="pre">complex</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">doubleComplexValue</span></span></span><a class="headerlink" href="#c.__Number.doubleComplexValue" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="OCAutoreleasePool.html" class="btn btn-neutral float-left" title="OCAutoreleasePool" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="OCBoolean.html" class="btn btn-neutral float-right" title="OCBoolean" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Philip Grandinetti.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

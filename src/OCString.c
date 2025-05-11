@@ -1573,7 +1573,7 @@ OCStringRef OCDoubleCreateStringValue(double value)
     return OCStringCreateWithFormat(STR("%.16lg"),value);
 }
 
-OCStringRef PSFloatCreateStringValue(float value)
+OCStringRef OCFloatCreateStringValue(float value)
 {
     if(value==0.0) return STR("0");
     
@@ -1606,7 +1606,7 @@ OCStringRef PSFloatCreateStringValue(float value)
 }
 
 
-OCStringRef PSDoubleComplexCreateStringValue(double complex value,OCStringRef format)
+OCStringRef OCDoubleComplexCreateStringValue(double complex value,OCStringRef format)
 {
     if(value==0.0) return STR("0");
     OCStringRef realString = OCDoubleCreateStringValue(creal(value));

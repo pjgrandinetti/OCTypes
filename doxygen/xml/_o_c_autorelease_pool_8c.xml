@@ -1,0 +1,942 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+  <compounddef id="_o_c_autorelease_pool_8c" kind="file" language="C++">
+    <compoundname>OCAutoreleasePool.c</compoundname>
+    <includes refid="_o_c_library_8h" local="yes">OCLibrary.h</includes>
+    <incdepgraph>
+      <node id="31">
+        <label>OCArray.h</label>
+        <link refid="_o_c_array_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>src/OCAutoreleasePool.c</label>
+        <link refid="_o_c_autorelease_pool_8c"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="24">
+        <label>OCAutoreleasePool.h</label>
+        <link refid="_o_c_autorelease_pool_8h"/>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="28">
+        <label>OCBoolean.h</label>
+        <link refid="_o_c_boolean_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="27">
+        <label>OCData.h</label>
+        <link refid="_o_c_data_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="30">
+        <label>OCDictionary.h</label>
+        <link refid="_o_c_dictionary_8h"/>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="31" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>OCLibrary.h</label>
+        <link refid="_o_c_library_8h"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+        <childnode refid="29" relation="include">
+        </childnode>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="31" relation="include">
+        </childnode>
+      </node>
+      <node id="23">
+        <label>OCMath.h</label>
+        <link refid="_o_c_math_8h"/>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="29">
+        <label>OCNumber.h</label>
+        <link refid="_o_c_number_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="26">
+        <label>OCString.h</label>
+        <link refid="_o_c_string_8h"/>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="25">
+        <label>OCType.h</label>
+        <link refid="_o_c_type_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>assert.h</label>
+      </node>
+      <node id="12">
+        <label>complex.h</label>
+      </node>
+      <node id="6">
+        <label>ctype.h</label>
+      </node>
+      <node id="7">
+        <label>errno.h</label>
+      </node>
+      <node id="8">
+        <label>float.h</label>
+      </node>
+      <node id="20">
+        <label>inttypes.h</label>
+      </node>
+      <node id="9">
+        <label>limits.h</label>
+      </node>
+      <node id="10">
+        <label>locale.h</label>
+      </node>
+      <node id="11">
+        <label>math.h</label>
+      </node>
+      <node id="13">
+        <label>setjmp.h</label>
+      </node>
+      <node id="14">
+        <label>signal.h</label>
+      </node>
+      <node id="4">
+        <label>stdarg.h</label>
+      </node>
+      <node id="21">
+        <label>stdbool.h</label>
+      </node>
+      <node id="15">
+        <label>stddef.h</label>
+      </node>
+      <node id="22">
+        <label>stdint.h</label>
+      </node>
+      <node id="16">
+        <label>stdio.h</label>
+      </node>
+      <node id="17">
+        <label>stdlib.h</label>
+      </node>
+      <node id="18">
+        <label>string.h</label>
+      </node>
+      <node id="3">
+        <label>sys/types.h</label>
+      </node>
+      <node id="19">
+        <label>time.h</label>
+      </node>
+    </incdepgraph>
+    <innerclass refid="struct___o_c_autorelease_pool_object" prot="public">_OCAutoreleasePoolObject</innerclass>
+    <innerclass refid="struct___o_c_autorelease_pool" prot="public">_OCAutoreleasePool</innerclass>
+    <innerclass refid="struct___o_c_autorelease_pools_manager" prot="public">_OCAutoreleasePoolsManager</innerclass>
+    <sectiondef kind="define">
+      <memberdef kind="define" id="_o_c_autorelease_pool_8c_1a3fff9ce329964b961ee891f64ff33653" prot="public" static="no">
+        <name>FREE</name>
+        <param><defname>X</defname></param>
+        <initializer>{free(X); X=NULL;}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCAutoreleasePool.c" line="10" column="9" bodyfile="src/OCAutoreleasePool.c" bodystart="10" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_o_c_autorelease_pool_8c_1afd813a932599a99dfa3d373167831200" prot="public" static="no">
+        <name>IF_SELF_DOESNT_EXISTS_RETURN</name>
+        <param><defname>X</defname></param>
+        <initializer>if(NULL==theUnit) {fprintf(stderr, &quot;*** WARNING - %s %s - object doesn&apos;t exist.\n&quot;,__FILE__,__func__); return X;}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCAutoreleasePool.c" line="14" column="9" bodyfile="src/OCAutoreleasePool.c" bodystart="14" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_o_c_autorelease_pool_8c_1a63af46417482c0016ec831cd4a965683" prot="public" static="no">
+        <name>POOL_NOT_FOUND</name>
+        <initializer>-1</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCAutoreleasePool.c" line="21" column="9" bodyfile="src/OCAutoreleasePool.c" bodystart="21" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_o_c_autorelease_pool_8c_1a68957ffc4dc908242faf4cef09b98686" prot="public" static="no">
+        <name>POOLOBJECT_NOT_FOUND</name>
+        <initializer>-1</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCAutoreleasePool.c" line="22" column="9" bodyfile="src/OCAutoreleasePool.c" bodystart="22" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="_o_c_autorelease_pool_8c_1abfdd57437ce029ae0fc02f7625abca2a" prot="public" static="no">
+        <type>struct <ref refid="struct___o_c_autorelease_pool_object" kindref="compound">_OCAutoreleasePoolObject</ref> *</type>
+        <definition>typedef struct _OCAutoreleasePoolObject* OCAutoreleasePoolObjectRef</definition>
+        <argsstring></argsstring>
+        <name>OCAutoreleasePoolObjectRef</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCAutoreleasePool.c" line="29" column="40" bodyfile="src/OCAutoreleasePool.c" bodystart="29" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="_o_c_autorelease_pool_8c_1aa428bb45da6fa85a17625e34cb0d39fe" prot="public" static="no">
+        <type>struct <ref refid="struct___o_c_autorelease_pools_manager" kindref="compound">_OCAutoreleasePoolsManager</ref> *</type>
+        <definition>typedef struct _OCAutoreleasePoolsManager* OCAutoreleasePoolsManagerRef</definition>
+        <argsstring></argsstring>
+        <name>OCAutoreleasePoolsManagerRef</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCAutoreleasePool.c" line="43" column="41" bodyfile="src/OCAutoreleasePool.c" bodystart="43" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="var">
+      <memberdef kind="variable" id="_o_c_autorelease_pool_8c_1a84a952ce66d0a461c161d601b9d8a180" prot="public" static="yes" mutable="no">
+        <type><ref refid="_o_c_autorelease_pool_8c_1aa428bb45da6fa85a17625e34cb0d39fe" kindref="member">OCAutoreleasePoolsManagerRef</ref></type>
+        <definition>OCAutoreleasePoolsManagerRef autorelease_pool_manager</definition>
+        <argsstring></argsstring>
+        <name>autorelease_pool_manager</name>
+        <initializer>= NULL</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCAutoreleasePool.c" line="46" column="37" bodyfile="src/OCAutoreleasePool.c" bodystart="46" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="_o_c_autorelease_pool_8c_1a38d625806f49f8175dfcae01bb0d5176" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="_o_c_autorelease_pool_8c_1abfdd57437ce029ae0fc02f7625abca2a" kindref="member">OCAutoreleasePoolObjectRef</ref></type>
+        <definition>static OCAutoreleasePoolObjectRef OCAutoreleasePoolObjectCreate</definition>
+        <argsstring>(const void *object, void(*release)(const void *))</argsstring>
+        <name>OCAutoreleasePoolObjectCreate</name>
+        <param>
+          <type>const void *</type>
+          <declname>object</declname>
+        </param>
+        <param>
+          <type>void(*)(const void *)</type>
+          <declname>release</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCAutoreleasePool.c" line="59" column="35" bodyfile="src/OCAutoreleasePool.c" bodystart="59" bodyend="68"/>
+      </memberdef>
+      <memberdef kind="function" id="_o_c_autorelease_pool_8c_1a1ac1507f4aad29892257f4a783185477" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>static bool OCAutoreleasePoolObjectDeallocate</definition>
+        <argsstring>(OCAutoreleasePoolObjectRef thePoolObject)</argsstring>
+        <name>OCAutoreleasePoolObjectDeallocate</name>
+        <param>
+          <type><ref refid="_o_c_autorelease_pool_8c_1abfdd57437ce029ae0fc02f7625abca2a" kindref="member">OCAutoreleasePoolObjectRef</ref></type>
+          <declname>thePoolObject</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCAutoreleasePool.c" line="76" column="13" bodyfile="src/OCAutoreleasePool.c" bodystart="76" bodyend="85"/>
+      </memberdef>
+      <memberdef kind="function" id="_o_c_autorelease_pool_8c_1ac9fa55e381a1d96b4d9c2248c84c8544" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void *</type>
+        <definition>static void * OCAutoreleasePoolObjectGetReleaseFunction</definition>
+        <argsstring>(OCAutoreleasePoolObjectRef thePoolObject)</argsstring>
+        <name>OCAutoreleasePoolObjectGetReleaseFunction</name>
+        <param>
+          <type><ref refid="_o_c_autorelease_pool_8c_1abfdd57437ce029ae0fc02f7625abca2a" kindref="member">OCAutoreleasePoolObjectRef</ref></type>
+          <declname>thePoolObject</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCAutoreleasePool.c" line="93" column="13" bodyfile="src/OCAutoreleasePool.c" bodystart="93" bodyend="98"/>
+      </memberdef>
+      <memberdef kind="function" id="_o_c_autorelease_pool_8c_1ac7ba6b36faca576f2d375e748bab2d60" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>const void *</type>
+        <definition>static const void * OCAutoreleasePoolObjectGetObject</definition>
+        <argsstring>(OCAutoreleasePoolObjectRef thePoolObject)</argsstring>
+        <name>OCAutoreleasePoolObjectGetObject</name>
+        <param>
+          <type><ref refid="_o_c_autorelease_pool_8c_1abfdd57437ce029ae0fc02f7625abca2a" kindref="member">OCAutoreleasePoolObjectRef</ref></type>
+          <declname>thePoolObject</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCAutoreleasePool.c" line="106" column="20" bodyfile="src/OCAutoreleasePool.c" bodystart="106" bodyend="111"/>
+      </memberdef>
+      <memberdef kind="function" id="_o_c_autorelease_pool_8c_1a8e3e0e04ae281c96103d6e8e95c7cccc" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>static bool OCAutoreleasePoolDeallocate</definition>
+        <argsstring>(OCAutoreleasePoolRef thePool)</argsstring>
+        <name>OCAutoreleasePoolDeallocate</name>
+        <param>
+          <type><ref refid="group___o_c_autorelease_pool_1ga56ec2ec00e14fe2d7fc810fcbfd75615" kindref="member">OCAutoreleasePoolRef</ref></type>
+          <declname>thePool</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCAutoreleasePool.c" line="302" column="13" bodyfile="src/OCAutoreleasePool.c" bodystart="302" bodyend="321" declfile="src/OCAutoreleasePool.c" declline="118" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="_o_c_autorelease_pool_8c_1a30fbdf12684dcdc7d3d4be8da014cc07" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>static bool OCAutoreleasePoolAddObject</definition>
+        <argsstring>(OCAutoreleasePoolRef thePool, const void *object, void(*release)(const void *))</argsstring>
+        <name>OCAutoreleasePoolAddObject</name>
+        <param>
+          <type><ref refid="group___o_c_autorelease_pool_1ga56ec2ec00e14fe2d7fc810fcbfd75615" kindref="member">OCAutoreleasePoolRef</ref></type>
+          <declname>thePool</declname>
+        </param>
+        <param>
+          <type>const void *</type>
+          <declname>object</declname>
+        </param>
+        <param>
+          <type>void(*)(const void *)</type>
+          <declname>release</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCAutoreleasePool.c" line="350" column="13" bodyfile="src/OCAutoreleasePool.c" bodystart="350" bodyend="363" declfile="src/OCAutoreleasePool.c" declline="119" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="_o_c_autorelease_pool_8c_1ad9e9bd21a7228780b7006607fb77a10d" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="_o_c_autorelease_pool_8c_1aa428bb45da6fa85a17625e34cb0d39fe" kindref="member">OCAutoreleasePoolsManagerRef</ref></type>
+        <definition>static OCAutoreleasePoolsManagerRef OCAutoreleasePoolsManagerCreate</definition>
+        <argsstring>(void)</argsstring>
+        <name>OCAutoreleasePoolsManagerCreate</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCAutoreleasePool.c" line="122" column="37" bodyfile="src/OCAutoreleasePool.c" bodystart="122" bodyend="130"/>
+      </memberdef>
+      <memberdef kind="function" id="_o_c_autorelease_pool_8c_1acf58c35afe6b434a153890005bc8503f" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>static int OCAutoreleasePoolsManagerIndexOfPool</definition>
+        <argsstring>(OCAutoreleasePoolRef thePool)</argsstring>
+        <name>OCAutoreleasePoolsManagerIndexOfPool</name>
+        <param>
+          <type><ref refid="group___o_c_autorelease_pool_1ga56ec2ec00e14fe2d7fc810fcbfd75615" kindref="member">OCAutoreleasePoolRef</ref></type>
+          <declname>thePool</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCAutoreleasePool.c" line="132" column="12" bodyfile="src/OCAutoreleasePool.c" bodystart="132" bodyend="145"/>
+      </memberdef>
+      <memberdef kind="function" id="_o_c_autorelease_pool_8c_1ace8ebcc96dd184dd0472fe4198031709" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>static bool OCAutoreleasePoolsManagerRemovePool</definition>
+        <argsstring>(OCAutoreleasePoolRef thePool)</argsstring>
+        <name>OCAutoreleasePoolsManagerRemovePool</name>
+        <param>
+          <type><ref refid="group___o_c_autorelease_pool_1ga56ec2ec00e14fe2d7fc810fcbfd75615" kindref="member">OCAutoreleasePoolRef</ref></type>
+          <declname>thePool</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCAutoreleasePool.c" line="152" column="13" bodyfile="src/OCAutoreleasePool.c" bodystart="152" bodyend="183"/>
+      </memberdef>
+      <memberdef kind="function" id="_o_c_autorelease_pool_8c_1aa8769de1edd3d16f88aabd367cd2e22d" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>static bool OCAutoreleasePoolsManagerDeallocate</definition>
+        <argsstring>(OCAutoreleasePoolsManagerRef thePoolsManager)</argsstring>
+        <name>OCAutoreleasePoolsManagerDeallocate</name>
+        <param>
+          <type><ref refid="_o_c_autorelease_pool_8c_1aa428bb45da6fa85a17625e34cb0d39fe" kindref="member">OCAutoreleasePoolsManagerRef</ref></type>
+          <declname>thePoolsManager</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCAutoreleasePool.c" line="185" column="13" bodyfile="src/OCAutoreleasePool.c" bodystart="185" bodyend="201"/>
+      </memberdef>
+      <memberdef kind="function" id="_o_c_autorelease_pool_8c_1aa24fa142dfa164f738c0f2944ae23ddb" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>static int OCAutoreleasePoolsManagerGetNumberOfPools</definition>
+        <argsstring>(void)</argsstring>
+        <name>OCAutoreleasePoolsManagerGetNumberOfPools</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCAutoreleasePool.c" line="208" column="12" bodyfile="src/OCAutoreleasePool.c" bodystart="208" bodyend="213"/>
+      </memberdef>
+      <memberdef kind="function" id="_o_c_autorelease_pool_8c_1af3b7c1b4325136d37d6976cef322059d" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void OCAutoreleasePoolsManagerAddPool</definition>
+        <argsstring>(OCAutoreleasePoolRef thePool)</argsstring>
+        <name>OCAutoreleasePoolsManagerAddPool</name>
+        <param>
+          <type><ref refid="group___o_c_autorelease_pool_1ga56ec2ec00e14fe2d7fc810fcbfd75615" kindref="member">OCAutoreleasePoolRef</ref></type>
+          <declname>thePool</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCAutoreleasePool.c" line="220" column="13" bodyfile="src/OCAutoreleasePool.c" bodystart="220" bodyend="252"/>
+      </memberdef>
+      <memberdef kind="function" id="_o_c_autorelease_pool_8c_1afa80b4ab6f5d19a1362e5957f22c32ce" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>static bool OCAutoreleasePoolsManagerAddObject</definition>
+        <argsstring>(const void *object, void(*release)(const void *))</argsstring>
+        <name>OCAutoreleasePoolsManagerAddObject</name>
+        <param>
+          <type>const void *</type>
+          <declname>object</declname>
+        </param>
+        <param>
+          <type>void(*)(const void *)</type>
+          <declname>release</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCAutoreleasePool.c" line="260" column="13" bodyfile="src/OCAutoreleasePool.c" bodystart="260" bodyend="276"/>
+      </memberdef>
+      <member refid="group___o_c_autorelease_pool_1ga5cfc8e5cd0e12238e896c8ab4e21e731" kind="function"><name>OCAutoreleasePoolCreate</name></member>
+      <member refid="group___o_c_autorelease_pool_1ga3dbf0752793d4f3390e1787fa8b424f1" kind="function"><name>OCAutoreleasePoolRelease</name></member>
+      <memberdef kind="function" id="_o_c_autorelease_pool_8c_1a6dace20227f644370b666de6b59b4965" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>static int OCAutoreleasePoolGetNumberOfPoolObjects</definition>
+        <argsstring>(OCAutoreleasePoolRef thePool)</argsstring>
+        <name>OCAutoreleasePoolGetNumberOfPoolObjects</name>
+        <param>
+          <type><ref refid="group___o_c_autorelease_pool_1ga56ec2ec00e14fe2d7fc810fcbfd75615" kindref="member">OCAutoreleasePoolRef</ref></type>
+          <declname>thePool</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCAutoreleasePool.c" line="336" column="12" bodyfile="src/OCAutoreleasePool.c" bodystart="336" bodyend="340"/>
+      </memberdef>
+      <member refid="group___o_c_autorelease_pool_1ga7606cbde5db540d59e0daa4d73ac0c6f" kind="function"><name>OCAutorelease</name></member>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="comment">//<sp/><sp/>OCAutoreleasePool.c</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="comment">//<sp/><sp/>Created<sp/>by<sp/>Philip<sp/>on<sp/>12/27/09.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_o_c_library_8h" kindref="compound">OCLibrary.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>FREE</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>FREE(X)<sp/>{free(X);<sp/>X=NULL;}</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>IF_SELF_DOESNT_EXISTS_RETURN</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>IF_SELF_DOESNT_EXISTS_RETURN(X)<sp/>if(NULL==theUnit)<sp/>{fprintf(stderr,<sp/>&quot;***<sp/>WARNING<sp/>-<sp/>%s<sp/>%s<sp/>-<sp/>object<sp/>doesn&apos;t<sp/>exist.\n&quot;,__FILE__,__func__);<sp/>return<sp/>X;}</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>IF_NO_OBJECT_EXISTS_RETURN</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>IF_NO_OBJECT_EXISTS_RETURN(OBJECT,X)<sp/>if(OBJECT==NULL)<sp/>{fprintf(stderr,<sp/>&quot;***<sp/>WARNING<sp/>-<sp/>%s<sp/>%s<sp/>-<sp/>object<sp/>doesn&apos;t<sp/>exist.\n&quot;,__FILE__,__func__);<sp/>return<sp/>X;}</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>POOL_NOT_FOUND<sp/>-1</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>POOLOBJECT_NOT_FOUND<sp/>-1</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight></codeline>
+<codeline lineno="24" refid="struct___o_c_autorelease_pool_object" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="struct___o_c_autorelease_pool_object" kindref="compound">_OCAutoreleasePoolObject</ref><sp/>{</highlight></codeline>
+<codeline lineno="25"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*<sp/><ref refid="struct___o_c_autorelease_pool_object_1aa25b0d4044d4656635351720e290fb46" kindref="member">object</ref>;</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"><sp/><sp/><sp/><sp/>void<sp/>(*<ref refid="struct___o_c_autorelease_pool_object_1a333805de0979e78e9871e777d9fddb04" kindref="member">release</ref>)(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*);</highlight></codeline>
+<codeline lineno="27"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="struct___o_c_autorelease_pool_object" kindref="compound">_OCAutoreleasePoolObject</ref><sp/>*<sp/><ref refid="_o_c_autorelease_pool_8c_1abfdd57437ce029ae0fc02f7625abca2a" kindref="member">OCAutoreleasePoolObjectRef</ref>;</highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight></codeline>
+<codeline lineno="31" refid="struct___o_c_autorelease_pool" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="struct___o_c_autorelease_pool" kindref="compound">_OCAutoreleasePool</ref></highlight></codeline>
+<codeline lineno="32"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_o_c_autorelease_pool_8c_1abfdd57437ce029ae0fc02f7625abca2a" kindref="member">OCAutoreleasePoolObjectRef</ref><sp/>*<ref refid="struct___o_c_autorelease_pool_1a919709a2f9a570094fdc182e17630af1" kindref="member">pool_objects</ref>;</highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="struct___o_c_autorelease_pool_1a5ff6e2cddf82d93dfcc96fcdfd060794" kindref="member">number_of_pool_objects</ref>;</highlight></codeline>
+<codeline lineno="35"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight></codeline>
+<codeline lineno="37" refid="struct___o_c_autorelease_pools_manager" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="struct___o_c_autorelease_pools_manager" kindref="compound">_OCAutoreleasePoolsManager</ref></highlight></codeline>
+<codeline lineno="38"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_autorelease_pool_1ga56ec2ec00e14fe2d7fc810fcbfd75615" kindref="member">OCAutoreleasePoolRef</ref><sp/>*<ref refid="struct___o_c_autorelease_pools_manager_1abd8ea6adafd11368f8bdea2b48c00e22" kindref="member">pools</ref>;</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="struct___o_c_autorelease_pools_manager_1ae67b646d775acc6e08963c60ba784583" kindref="member">number_of_pools</ref>;</highlight></codeline>
+<codeline lineno="41"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="struct___o_c_autorelease_pools_manager" kindref="compound">_OCAutoreleasePoolsManager</ref><sp/>*<ref refid="_o_c_autorelease_pool_8c_1aa428bb45da6fa85a17625e34cb0d39fe" kindref="member">OCAutoreleasePoolsManagerRef</ref>;</highlight></codeline>
+<codeline lineno="44"><highlight class="normal"></highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight><highlight class="comment">//<sp/>OCAutoreleasePoolsManager<sp/>is<sp/>a<sp/>Singleton</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="_o_c_autorelease_pool_8c_1aa428bb45da6fa85a17625e34cb0d39fe" kindref="member">OCAutoreleasePoolsManagerRef</ref><sp/><ref refid="_o_c_autorelease_pool_8c_1a84a952ce66d0a461c161d601b9d8a180" kindref="member">autorelease_pool_manager</ref><sp/>=<sp/>NULL;</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"></highlight></codeline>
+<codeline lineno="48"><highlight class="normal"></highlight></codeline>
+<codeline lineno="49"><highlight class="normal"></highlight><highlight class="comment">/**************************************************************************</highlight></codeline>
+<codeline lineno="50"><highlight class="comment"><sp/>OCAutoreleasePoolObject<sp/>methods</highlight></codeline>
+<codeline lineno="51"><highlight class="comment"><sp/>*************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="52"><highlight class="normal"></highlight></codeline>
+<codeline lineno="53"><highlight class="normal"></highlight><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="54"><highlight class="comment"><sp/>@function<sp/>OCAutoreleasePoolObjectCreate</highlight></codeline>
+<codeline lineno="55"><highlight class="comment"><sp/>Creates<sp/>a<sp/>OCAutoreleasePoolObject.</highlight></codeline>
+<codeline lineno="56"><highlight class="comment"><sp/>@param<sp/>object<sp/>The<sp/>object<sp/>wrapped<sp/>into<sp/>OCAutoreleasePoolObject.</highlight></codeline>
+<codeline lineno="57"><highlight class="comment"><sp/>@param<sp/>(*release)(OCTypeRef)<sp/>release<sp/>method<sp/>for<sp/>object.</highlight></codeline>
+<codeline lineno="58"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="59"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="_o_c_autorelease_pool_8c_1abfdd57437ce029ae0fc02f7625abca2a" kindref="member">OCAutoreleasePoolObjectRef</ref><sp/><ref refid="_o_c_autorelease_pool_8c_1a38d625806f49f8175dfcae01bb0d5176" kindref="member">OCAutoreleasePoolObjectCreate</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*<sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">,<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>(*release)(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*))</highlight></codeline>
+<codeline lineno="60"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_o_c_autorelease_pool_8c_1abfdd57437ce029ae0fc02f7625abca2a" kindref="member">OCAutoreleasePoolObjectRef</ref><sp/>thePoolObject<sp/><sp/>=<sp/>malloc(</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/><ref refid="struct___o_c_autorelease_pool_object" kindref="compound">_OCAutoreleasePoolObject</ref>));</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ga89ba75a2ebc9795cbe6fe88902913202" kindref="member">IF_NO_OBJECT_EXISTS_RETURN</ref>(thePoolObject,NULL)</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="65"><highlight class="normal"><sp/><sp/><sp/><sp/>thePoolObject-&gt;<ref refid="struct___o_c_autorelease_pool_object_1aa25b0d4044d4656635351720e290fb46" kindref="member">object</ref><sp/>=<sp/>object;</highlight></codeline>
+<codeline lineno="66"><highlight class="normal"><sp/><sp/><sp/><sp/>thePoolObject-&gt;<ref refid="struct___o_c_autorelease_pool_object_1a333805de0979e78e9871e777d9fddb04" kindref="member">release</ref><sp/>=<sp/>release;</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>thePoolObject;</highlight></codeline>
+<codeline lineno="68"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="69"><highlight class="normal"></highlight></codeline>
+<codeline lineno="70"><highlight class="normal"></highlight><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="71"><highlight class="comment"><sp/>@function<sp/>OCAutoreleasePoolObjectDeallocate</highlight></codeline>
+<codeline lineno="72"><highlight class="comment"><sp/>Deallocates<sp/>a<sp/>OCAutoreleasePoolObject.</highlight></codeline>
+<codeline lineno="73"><highlight class="comment"><sp/>@param<sp/>thePoolObject<sp/>OCAutoreleasePoolObject<sp/>to<sp/>be<sp/>deallocated.</highlight></codeline>
+<codeline lineno="74"><highlight class="comment"><sp/>@result<sp/>YES<sp/>(1)<sp/>if<sp/>successful,<sp/>NO<sp/>(0)<sp/>if<sp/>unsuccessful</highlight></codeline>
+<codeline lineno="75"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="76"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="_o_c_autorelease_pool_8c_1a1ac1507f4aad29892257f4a783185477" kindref="member">OCAutoreleasePoolObjectDeallocate</ref>(<ref refid="_o_c_autorelease_pool_8c_1abfdd57437ce029ae0fc02f7625abca2a" kindref="member">OCAutoreleasePoolObjectRef</ref><sp/>thePoolObject)</highlight></codeline>
+<codeline lineno="77"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ga89ba75a2ebc9795cbe6fe88902913202" kindref="member">IF_NO_OBJECT_EXISTS_RETURN</ref>(thePoolObject,</highlight><highlight class="keyword">false</highlight><highlight class="normal">)</highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="80"><highlight class="normal"><sp/><sp/><sp/><sp/>if(thePoolObject)<sp/>{</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>free(thePoolObject);</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>thePoolObject=NULL;</highlight></codeline>
+<codeline lineno="83"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="85"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="86"><highlight class="normal"></highlight></codeline>
+<codeline lineno="87"><highlight class="normal"></highlight><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="88"><highlight class="comment"><sp/>@function<sp/>OCAutoreleasePoolObjectGetReleaseFunction</highlight></codeline>
+<codeline lineno="89"><highlight class="comment"><sp/>Returns<sp/>the<sp/>release<sp/>function<sp/>for<sp/>object<sp/>wrapped<sp/>in<sp/>OCAutoreleasePoolObject.</highlight></codeline>
+<codeline lineno="90"><highlight class="comment"><sp/>@param<sp/>thePoolObject<sp/>OCAutoreleasePoolObject<sp/>with<sp/>object<sp/>to<sp/>be<sp/>released.</highlight></codeline>
+<codeline lineno="91"><highlight class="comment"><sp/>@result<sp/>release<sp/>function</highlight></codeline>
+<codeline lineno="92"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="93"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*<ref refid="_o_c_autorelease_pool_8c_1ac9fa55e381a1d96b4d9c2248c84c8544" kindref="member">OCAutoreleasePoolObjectGetReleaseFunction</ref>(<ref refid="_o_c_autorelease_pool_8c_1abfdd57437ce029ae0fc02f7625abca2a" kindref="member">OCAutoreleasePoolObjectRef</ref><sp/>thePoolObject)</highlight></codeline>
+<codeline lineno="94"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="95"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ga89ba75a2ebc9795cbe6fe88902913202" kindref="member">IF_NO_OBJECT_EXISTS_RETURN</ref>(thePoolObject,NULL)</highlight></codeline>
+<codeline lineno="96"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="97"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>thePoolObject-&gt;<ref refid="struct___o_c_autorelease_pool_object_1a333805de0979e78e9871e777d9fddb04" kindref="member">release</ref>;</highlight></codeline>
+<codeline lineno="98"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="99"><highlight class="normal"></highlight></codeline>
+<codeline lineno="100"><highlight class="normal"></highlight><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="101"><highlight class="comment"><sp/>@function<sp/>OCAutoreleasePoolObjectGetObject</highlight></codeline>
+<codeline lineno="102"><highlight class="comment"><sp/>Returns<sp/>the<sp/>release<sp/>function<sp/>for<sp/>object<sp/>wrapped<sp/>in<sp/>OCAutoreleasePoolObject.</highlight></codeline>
+<codeline lineno="103"><highlight class="comment"><sp/>@param<sp/>thePoolObject<sp/>OCAutoreleasePoolObject<sp/>with<sp/>object<sp/>to<sp/>be<sp/>released.</highlight></codeline>
+<codeline lineno="104"><highlight class="comment"><sp/>@result<sp/>release<sp/>function</highlight></codeline>
+<codeline lineno="105"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="106"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*<sp/><ref refid="_o_c_autorelease_pool_8c_1ac7ba6b36faca576f2d375e748bab2d60" kindref="member">OCAutoreleasePoolObjectGetObject</ref>(<ref refid="_o_c_autorelease_pool_8c_1abfdd57437ce029ae0fc02f7625abca2a" kindref="member">OCAutoreleasePoolObjectRef</ref><sp/>thePoolObject)</highlight></codeline>
+<codeline lineno="107"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="108"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ga89ba75a2ebc9795cbe6fe88902913202" kindref="member">IF_NO_OBJECT_EXISTS_RETURN</ref>(thePoolObject,NULL)</highlight></codeline>
+<codeline lineno="109"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="110"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>thePoolObject-&gt;<ref refid="struct___o_c_autorelease_pool_object_1aa25b0d4044d4656635351720e290fb46" kindref="member">object</ref>;</highlight></codeline>
+<codeline lineno="111"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="112"><highlight class="normal"></highlight></codeline>
+<codeline lineno="113"><highlight class="normal"></highlight></codeline>
+<codeline lineno="114"><highlight class="normal"></highlight></codeline>
+<codeline lineno="115"><highlight class="normal"></highlight><highlight class="comment">/**************************************************************************</highlight></codeline>
+<codeline lineno="116"><highlight class="comment"><sp/>OCAutoreleasePoolsManager<sp/>methods</highlight></codeline>
+<codeline lineno="117"><highlight class="comment"><sp/>*************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="118"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="_o_c_autorelease_pool_8c_1a8e3e0e04ae281c96103d6e8e95c7cccc" kindref="member">OCAutoreleasePoolDeallocate</ref>(<ref refid="group___o_c_autorelease_pool_1ga56ec2ec00e14fe2d7fc810fcbfd75615" kindref="member">OCAutoreleasePoolRef</ref><sp/>thePool);</highlight></codeline>
+<codeline lineno="119"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="_o_c_autorelease_pool_8c_1a30fbdf12684dcdc7d3d4be8da014cc07" kindref="member">OCAutoreleasePoolAddObject</ref>(<ref refid="group___o_c_autorelease_pool_1ga56ec2ec00e14fe2d7fc810fcbfd75615" kindref="member">OCAutoreleasePoolRef</ref><sp/>thePool,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*<sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">,<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>(*release)(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*));</highlight></codeline>
+<codeline lineno="120"><highlight class="normal"></highlight></codeline>
+<codeline lineno="121"><highlight class="normal"></highlight></codeline>
+<codeline lineno="122"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="_o_c_autorelease_pool_8c_1aa428bb45da6fa85a17625e34cb0d39fe" kindref="member">OCAutoreleasePoolsManagerRef</ref><sp/><ref refid="_o_c_autorelease_pool_8c_1ad9e9bd21a7228780b7006607fb77a10d" kindref="member">OCAutoreleasePoolsManagerCreate</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">)</highlight></codeline>
+<codeline lineno="123"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="124"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_o_c_autorelease_pool_8c_1aa428bb45da6fa85a17625e34cb0d39fe" kindref="member">OCAutoreleasePoolsManagerRef</ref><sp/>thePoolsManager<sp/><sp/>=<sp/>malloc(</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/><ref refid="struct___o_c_autorelease_pools_manager" kindref="compound">_OCAutoreleasePoolsManager</ref>));</highlight></codeline>
+<codeline lineno="125"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ga89ba75a2ebc9795cbe6fe88902913202" kindref="member">IF_NO_OBJECT_EXISTS_RETURN</ref>(thePoolsManager,NULL)</highlight></codeline>
+<codeline lineno="126"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="127"><highlight class="normal"><sp/><sp/><sp/><sp/>thePoolsManager-&gt;<ref refid="struct___o_c_autorelease_pools_manager_1abd8ea6adafd11368f8bdea2b48c00e22" kindref="member">pools</ref><sp/>=<sp/>NULL;</highlight></codeline>
+<codeline lineno="128"><highlight class="normal"><sp/><sp/><sp/><sp/>thePoolsManager-&gt;<ref refid="struct___o_c_autorelease_pools_manager_1ae67b646d775acc6e08963c60ba784583" kindref="member">number_of_pools</ref><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="129"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>thePoolsManager;</highlight></codeline>
+<codeline lineno="130"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="131"><highlight class="normal"></highlight></codeline>
+<codeline lineno="132"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="_o_c_autorelease_pool_8c_1acf58c35afe6b434a153890005bc8503f" kindref="member">OCAutoreleasePoolsManagerIndexOfPool</ref>(<ref refid="group___o_c_autorelease_pool_1ga56ec2ec00e14fe2d7fc810fcbfd75615" kindref="member">OCAutoreleasePoolRef</ref><sp/>thePool)</highlight></codeline>
+<codeline lineno="133"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="134"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ga89ba75a2ebc9795cbe6fe88902913202" kindref="member">IF_NO_OBJECT_EXISTS_RETURN</ref>(<ref refid="_o_c_autorelease_pool_8c_1a84a952ce66d0a461c161d601b9d8a180" kindref="member">autorelease_pool_manager</ref>,<ref refid="_o_c_autorelease_pool_8c_1a63af46417482c0016ec831cd4a965683" kindref="member">POOL_NOT_FOUND</ref>)</highlight></codeline>
+<codeline lineno="135"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ga89ba75a2ebc9795cbe6fe88902913202" kindref="member">IF_NO_OBJECT_EXISTS_RETURN</ref>(thePool,<ref refid="_o_c_autorelease_pool_8c_1a63af46417482c0016ec831cd4a965683" kindref="member">POOL_NOT_FOUND</ref>)</highlight></codeline>
+<codeline lineno="136"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="137"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>poolIndex<sp/>=<sp/><ref refid="_o_c_autorelease_pool_8c_1a63af46417482c0016ec831cd4a965683" kindref="member">POOL_NOT_FOUND</ref>;</highlight></codeline>
+<codeline lineno="138"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=0;i&lt;<ref refid="_o_c_autorelease_pool_8c_1a84a952ce66d0a461c161d601b9d8a180" kindref="member">autorelease_pool_manager</ref>-&gt;number_of_pools;i++)<sp/>{</highlight></codeline>
+<codeline lineno="139"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(<ref refid="_o_c_autorelease_pool_8c_1a84a952ce66d0a461c161d601b9d8a180" kindref="member">autorelease_pool_manager</ref>-&gt;pools[i]<sp/>==<sp/>thePool)<sp/>{</highlight></codeline>
+<codeline lineno="140"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>poolIndex<sp/>=<sp/>i;</highlight></codeline>
+<codeline lineno="141"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">break</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="142"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="143"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="144"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>poolIndex;</highlight></codeline>
+<codeline lineno="145"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="146"><highlight class="normal"></highlight></codeline>
+<codeline lineno="147"><highlight class="normal"></highlight><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="148"><highlight class="comment"><sp/>@function<sp/>OCAutoreleasePoolsManagerRemovePool</highlight></codeline>
+<codeline lineno="149"><highlight class="comment"><sp/>@param<sp/>thePool<sp/>The<sp/>pool<sp/>to<sp/>be<sp/>removed.</highlight></codeline>
+<codeline lineno="150"><highlight class="comment"><sp/>@result<sp/>YES<sp/>(1)<sp/>if<sp/>successful,<sp/>NO<sp/>(0)<sp/>if<sp/>unsuccessful</highlight></codeline>
+<codeline lineno="151"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="152"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="_o_c_autorelease_pool_8c_1ace8ebcc96dd184dd0472fe4198031709" kindref="member">OCAutoreleasePoolsManagerRemovePool</ref>(<ref refid="group___o_c_autorelease_pool_1ga56ec2ec00e14fe2d7fc810fcbfd75615" kindref="member">OCAutoreleasePoolRef</ref><sp/>thePool)</highlight></codeline>
+<codeline lineno="153"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="154"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ga89ba75a2ebc9795cbe6fe88902913202" kindref="member">IF_NO_OBJECT_EXISTS_RETURN</ref>(<ref refid="_o_c_autorelease_pool_8c_1a84a952ce66d0a461c161d601b9d8a180" kindref="member">autorelease_pool_manager</ref>,</highlight><highlight class="keyword">false</highlight><highlight class="normal">)</highlight></codeline>
+<codeline lineno="155"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ga89ba75a2ebc9795cbe6fe88902913202" kindref="member">IF_NO_OBJECT_EXISTS_RETURN</ref>(thePool,false)</highlight></codeline>
+<codeline lineno="156"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="157"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>poolIndex<sp/>=<sp/><sp/><ref refid="_o_c_autorelease_pool_8c_1acf58c35afe6b434a153890005bc8503f" kindref="member">OCAutoreleasePoolsManagerIndexOfPool</ref>(thePool);</highlight></codeline>
+<codeline lineno="158"><highlight class="normal"><sp/><sp/><sp/><sp/>if(poolIndex<sp/>==<sp/><ref refid="_o_c_autorelease_pool_8c_1a63af46417482c0016ec831cd4a965683" kindref="member">POOL_NOT_FOUND</ref>)<sp/>return<sp/>false;</highlight></codeline>
+<codeline lineno="159"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="160"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>deallocate<sp/>pool<sp/>at<sp/>poolIndex<sp/>along<sp/>with<sp/>all<sp/>pools<sp/>with<sp/>higher<sp/>indexes</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="161"><highlight class="normal"><sp/><sp/><sp/><sp/>for(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=<ref refid="_o_c_autorelease_pool_8c_1a84a952ce66d0a461c161d601b9d8a180" kindref="member">autorelease_pool_manager</ref>-&gt;<ref refid="struct___o_c_autorelease_pools_manager_1ae67b646d775acc6e08963c60ba784583" kindref="member">number_of_pools</ref>-1;i&gt;=poolIndex;i--)</highlight></codeline>
+<codeline lineno="162"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="_o_c_autorelease_pool_8c_1a8e3e0e04ae281c96103d6e8e95c7cccc" kindref="member">OCAutoreleasePoolDeallocate</ref>(<ref refid="_o_c_autorelease_pool_8c_1a84a952ce66d0a461c161d601b9d8a180" kindref="member">autorelease_pool_manager</ref>-&gt;<ref refid="struct___o_c_autorelease_pools_manager_1abd8ea6adafd11368f8bdea2b48c00e22" kindref="member">pools</ref>[i]);</highlight></codeline>
+<codeline lineno="163"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="164"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_o_c_autorelease_pool_8c_1a84a952ce66d0a461c161d601b9d8a180" kindref="member">autorelease_pool_manager</ref>-&gt;<ref refid="struct___o_c_autorelease_pools_manager_1ae67b646d775acc6e08963c60ba784583" kindref="member">number_of_pools</ref><sp/>=<sp/>poolIndex;</highlight></codeline>
+<codeline lineno="165"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="166"><highlight class="normal"><sp/><sp/><sp/><sp/>if(<ref refid="_o_c_autorelease_pool_8c_1a84a952ce66d0a461c161d601b9d8a180" kindref="member">autorelease_pool_manager</ref>-&gt;<ref refid="struct___o_c_autorelease_pools_manager_1ae67b646d775acc6e08963c60ba784583" kindref="member">number_of_pools</ref><sp/>==<sp/>0)<sp/>{</highlight></codeline>
+<codeline lineno="167"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="_o_c_autorelease_pool_8c_1a84a952ce66d0a461c161d601b9d8a180" kindref="member">autorelease_pool_manager</ref>-&gt;pools<sp/>!=<sp/>NULL)<sp/>{</highlight></codeline>
+<codeline lineno="168"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>free(autorelease_pool_manager-&gt;pools);</highlight></codeline>
+<codeline lineno="169"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>autorelease_pool_manager-&gt;pools<sp/>=<sp/>NULL;</highlight></codeline>
+<codeline lineno="170"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="171"><highlight class="normal"><sp/><sp/><sp/><sp/>}<sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="172"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Try<sp/>to<sp/>shrink<sp/>the<sp/>allocation.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="173"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group___o_c_autorelease_pool_1ga56ec2ec00e14fe2d7fc810fcbfd75615" kindref="member">OCAutoreleasePoolRef</ref><sp/>*new_pools_ptr<sp/>=<sp/>realloc(<ref refid="_o_c_autorelease_pool_8c_1a84a952ce66d0a461c161d601b9d8a180" kindref="member">autorelease_pool_manager</ref>-&gt;pools,<sp/><ref refid="_o_c_autorelease_pool_8c_1a84a952ce66d0a461c161d601b9d8a180" kindref="member">autorelease_pool_manager</ref>-&gt;number_of_pools<sp/>*<sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(<ref refid="group___o_c_autorelease_pool_1ga56ec2ec00e14fe2d7fc810fcbfd75615" kindref="member">OCAutoreleasePoolRef</ref>));</highlight></codeline>
+<codeline lineno="174"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(new_pools_ptr<sp/>==<sp/>NULL)<sp/>{</highlight></codeline>
+<codeline lineno="175"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>realloc<sp/>failed<sp/>to<sp/>shrink.<sp/>The<sp/>original<sp/>&apos;pools&apos;<sp/>pointer<sp/>is<sp/>still<sp/>valid<sp/>but<sp/>too<sp/>large.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="176"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>fprintf(stderr,<sp/></highlight><highlight class="stringliteral">&quot;***<sp/>WARNING<sp/>-<sp/>%s<sp/>%s<sp/>-<sp/>realloc<sp/>failed<sp/>to<sp/>shrink<sp/>pools<sp/>array.<sp/>Memory<sp/>may<sp/>be<sp/>overallocated.\n&quot;</highlight><highlight class="normal">,<sp/>__FILE__,<sp/>__func__);</highlight></codeline>
+<codeline lineno="177"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Keep<sp/>the<sp/>old<sp/>pointer:<sp/>autorelease_pool_manager-&gt;pools<sp/>remains<sp/>unchanged.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="178"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}<sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="179"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="_o_c_autorelease_pool_8c_1a84a952ce66d0a461c161d601b9d8a180" kindref="member">autorelease_pool_manager</ref>-&gt;pools<sp/>=<sp/>new_pools_ptr;</highlight></codeline>
+<codeline lineno="180"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="181"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="182"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;<sp/></highlight><highlight class="comment">//<sp/>Return<sp/>true<sp/>if<sp/>the<sp/>pool<sp/>was<sp/>found<sp/>and<sp/>processed.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="183"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="184"><highlight class="normal"></highlight></codeline>
+<codeline lineno="185"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="_o_c_autorelease_pool_8c_1aa8769de1edd3d16f88aabd367cd2e22d" kindref="member">OCAutoreleasePoolsManagerDeallocate</ref>(<ref refid="_o_c_autorelease_pool_8c_1aa428bb45da6fa85a17625e34cb0d39fe" kindref="member">OCAutoreleasePoolsManagerRef</ref><sp/>thePoolsManager)</highlight></codeline>
+<codeline lineno="186"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="187"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ga89ba75a2ebc9795cbe6fe88902913202" kindref="member">IF_NO_OBJECT_EXISTS_RETURN</ref>(thePoolsManager,</highlight><highlight class="keyword">false</highlight><highlight class="normal">)</highlight></codeline>
+<codeline lineno="188"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="189"><highlight class="normal"><sp/><sp/><sp/><sp/>for(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=0;i&lt;thePoolsManager-&gt;<ref refid="struct___o_c_autorelease_pools_manager_1ae67b646d775acc6e08963c60ba784583" kindref="member">number_of_pools</ref>;i++)<sp/><ref refid="_o_c_autorelease_pool_8c_1ace8ebcc96dd184dd0472fe4198031709" kindref="member">OCAutoreleasePoolsManagerRemovePool</ref>(thePoolsManager-&gt;<ref refid="struct___o_c_autorelease_pools_manager_1abd8ea6adafd11368f8bdea2b48c00e22" kindref="member">pools</ref>[i]);</highlight></codeline>
+<codeline lineno="190"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="191"><highlight class="normal"><sp/><sp/><sp/><sp/>if(thePoolsManager-&gt;<ref refid="struct___o_c_autorelease_pools_manager_1abd8ea6adafd11368f8bdea2b48c00e22" kindref="member">pools</ref>)<sp/>{</highlight></codeline>
+<codeline lineno="192"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>free(thePoolsManager-&gt;<ref refid="struct___o_c_autorelease_pools_manager_1abd8ea6adafd11368f8bdea2b48c00e22" kindref="member">pools</ref>);</highlight></codeline>
+<codeline lineno="193"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>thePoolsManager-&gt;<ref refid="struct___o_c_autorelease_pools_manager_1abd8ea6adafd11368f8bdea2b48c00e22" kindref="member">pools</ref>=NULL;</highlight></codeline>
+<codeline lineno="194"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="195"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="196"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(thePoolsManager)<sp/>{</highlight></codeline>
+<codeline lineno="197"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>free(thePoolsManager);</highlight></codeline>
+<codeline lineno="198"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>thePoolsManager=NULL;</highlight></codeline>
+<codeline lineno="199"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="200"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="201"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="202"><highlight class="normal"></highlight></codeline>
+<codeline lineno="203"><highlight class="normal"></highlight></codeline>
+<codeline lineno="204"><highlight class="normal"></highlight><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="205"><highlight class="comment"><sp/>@function<sp/>OCAutoreleasePoolsManagerGetNumberOfPools</highlight></codeline>
+<codeline lineno="206"><highlight class="comment"><sp/>@result<sp/>number<sp/>of<sp/>autorelease<sp/>pools</highlight></codeline>
+<codeline lineno="207"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="208"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="_o_c_autorelease_pool_8c_1aa24fa142dfa164f738c0f2944ae23ddb" kindref="member">OCAutoreleasePoolsManagerGetNumberOfPools</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">)</highlight></codeline>
+<codeline lineno="209"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="210"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(<ref refid="_o_c_autorelease_pool_8c_1a84a952ce66d0a461c161d601b9d8a180" kindref="member">autorelease_pool_manager</ref>==NULL)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
+<codeline lineno="211"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="212"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="_o_c_autorelease_pool_8c_1a84a952ce66d0a461c161d601b9d8a180" kindref="member">autorelease_pool_manager</ref>-&gt;number_of_pools;</highlight></codeline>
+<codeline lineno="213"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="214"><highlight class="normal"></highlight></codeline>
+<codeline lineno="215"><highlight class="normal"></highlight><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="216"><highlight class="comment"><sp/>@function<sp/>OCAutoreleasePoolsManagerAddPool</highlight></codeline>
+<codeline lineno="217"><highlight class="comment"><sp/>Adds<sp/>the<sp/>pool<sp/>to<sp/>the<sp/>manager.</highlight></codeline>
+<codeline lineno="218"><highlight class="comment"><sp/>@param<sp/>thePool<sp/>The<sp/>pool<sp/>to<sp/>be<sp/>added.</highlight></codeline>
+<codeline lineno="219"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="220"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_o_c_autorelease_pool_8c_1af3b7c1b4325136d37d6976cef322059d" kindref="member">OCAutoreleasePoolsManagerAddPool</ref>(<ref refid="group___o_c_autorelease_pool_1ga56ec2ec00e14fe2d7fc810fcbfd75615" kindref="member">OCAutoreleasePoolRef</ref><sp/>thePool)</highlight></codeline>
+<codeline lineno="221"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="222"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ga89ba75a2ebc9795cbe6fe88902913202" kindref="member">IF_NO_OBJECT_EXISTS_RETURN</ref>(thePool,)</highlight></codeline>
+<codeline lineno="223"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="224"><highlight class="normal"><sp/><sp/><sp/><sp/>if(<ref refid="_o_c_autorelease_pool_8c_1a84a952ce66d0a461c161d601b9d8a180" kindref="member">autorelease_pool_manager</ref>==NULL)<sp/><ref refid="_o_c_autorelease_pool_8c_1a84a952ce66d0a461c161d601b9d8a180" kindref="member">autorelease_pool_manager</ref><sp/>=<sp/><ref refid="_o_c_autorelease_pool_8c_1ad9e9bd21a7228780b7006607fb77a10d" kindref="member">OCAutoreleasePoolsManagerCreate</ref>();</highlight></codeline>
+<codeline lineno="225"><highlight class="normal"><sp/><sp/><sp/><sp/>if(<ref refid="_o_c_autorelease_pool_8c_1a84a952ce66d0a461c161d601b9d8a180" kindref="member">autorelease_pool_manager</ref>)<sp/>{</highlight></codeline>
+<codeline lineno="226"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="_o_c_autorelease_pool_8c_1a84a952ce66d0a461c161d601b9d8a180" kindref="member">autorelease_pool_manager</ref>-&gt;number_of_pools++;</highlight></codeline>
+<codeline lineno="227"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group___o_c_autorelease_pool_1ga56ec2ec00e14fe2d7fc810fcbfd75615" kindref="member">OCAutoreleasePoolRef</ref><sp/>*new_pools_ptr<sp/>=<sp/>realloc(<ref refid="_o_c_autorelease_pool_8c_1a84a952ce66d0a461c161d601b9d8a180" kindref="member">autorelease_pool_manager</ref>-&gt;pools,</highlight></codeline>
+<codeline lineno="228"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="_o_c_autorelease_pool_8c_1a84a952ce66d0a461c161d601b9d8a180" kindref="member">autorelease_pool_manager</ref>-&gt;number_of_pools</highlight></codeline>
+<codeline lineno="229"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(<ref refid="group___o_c_autorelease_pool_1ga56ec2ec00e14fe2d7fc810fcbfd75615" kindref="member">OCAutoreleasePoolRef</ref>));<sp/></highlight><highlight class="comment">//<sp/>Use<sp/>OCAutoreleasePoolRef</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="230"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(new_pools_ptr<sp/>==<sp/>NULL<sp/>&amp;&amp;<sp/><ref refid="_o_c_autorelease_pool_8c_1a84a952ce66d0a461c161d601b9d8a180" kindref="member">autorelease_pool_manager</ref>-&gt;number_of_pools<sp/>&gt;<sp/>0)<sp/>{<sp/></highlight><highlight class="comment">//<sp/>Check<sp/>if<sp/>realloc<sp/>failed<sp/>(and<sp/>it&apos;s<sp/>not<sp/>a<sp/>0-size<sp/>alloc)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="231"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>fprintf(stderr,<sp/></highlight><highlight class="stringliteral">&quot;***<sp/>ERROR<sp/>-<sp/>%s<sp/>%s<sp/>-<sp/>realloc<sp/>failed<sp/>to<sp/>grow<sp/>pools<sp/>array.<sp/>Pool<sp/>cannot<sp/>be<sp/>added.\n&quot;</highlight><highlight class="normal">,<sp/>__FILE__,<sp/>__func__);</highlight></codeline>
+<codeline lineno="232"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="_o_c_autorelease_pool_8c_1a84a952ce66d0a461c161d601b9d8a180" kindref="member">autorelease_pool_manager</ref>-&gt;number_of_pools--;<sp/></highlight><highlight class="comment">//<sp/>Revert<sp/>count</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="233"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>autorelease_pool_manager-&gt;pools<sp/>remains<sp/>unchanged<sp/>(valid<sp/>old<sp/>pointer<sp/>or<sp/>NULL)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="234"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">;<sp/></highlight><highlight class="comment">//<sp/>Exit<sp/>without<sp/>adding<sp/>the<sp/>pool</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="235"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="236"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="_o_c_autorelease_pool_8c_1a84a952ce66d0a461c161d601b9d8a180" kindref="member">autorelease_pool_manager</ref>-&gt;pools<sp/>=<sp/>new_pools_ptr;</highlight></codeline>
+<codeline lineno="237"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="_o_c_autorelease_pool_8c_1a84a952ce66d0a461c161d601b9d8a180" kindref="member">autorelease_pool_manager</ref>-&gt;pools<sp/>!=<sp/>NULL)<sp/>{<sp/></highlight><highlight class="comment">//<sp/>Ensure<sp/>pools<sp/>is<sp/>not<sp/>NULL<sp/>before<sp/>assigning<sp/>to<sp/>its<sp/>element</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="238"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="_o_c_autorelease_pool_8c_1a84a952ce66d0a461c161d601b9d8a180" kindref="member">autorelease_pool_manager</ref>-&gt;pools[<ref refid="_o_c_autorelease_pool_8c_1a84a952ce66d0a461c161d601b9d8a180" kindref="member">autorelease_pool_manager</ref>-&gt;number_of_pools-1]<sp/>=<sp/>thePool;</highlight></codeline>
+<codeline lineno="239"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}<sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="_o_c_autorelease_pool_8c_1a84a952ce66d0a461c161d601b9d8a180" kindref="member">autorelease_pool_manager</ref>-&gt;number_of_pools<sp/>&gt;<sp/>0)<sp/>{</highlight></codeline>
+<codeline lineno="240"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>This<sp/>case<sp/>(pools<sp/>is<sp/>NULL<sp/>but<sp/>number_of_pools<sp/>&gt;<sp/>0)<sp/>should<sp/>ideally<sp/>not<sp/>happen<sp/>if<sp/>realloc(NULL,<sp/>size)<sp/>behaves<sp/>like<sp/>malloc(size).</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="241"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>If<sp/>it<sp/>does,<sp/>it&apos;s<sp/>a<sp/>critical<sp/>error<sp/>state.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="242"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>fprintf(stderr,<sp/></highlight><highlight class="stringliteral">&quot;***<sp/>CRITICAL<sp/>ERROR<sp/>-<sp/>%s<sp/>%s<sp/>-<sp/>pools<sp/>array<sp/>is<sp/>NULL<sp/>after<sp/>realloc<sp/>with<sp/>non-zero<sp/>count.\n&quot;</highlight><highlight class="normal">,<sp/>__FILE__,<sp/>__func__);</highlight></codeline>
+<codeline lineno="243"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="_o_c_autorelease_pool_8c_1a84a952ce66d0a461c161d601b9d8a180" kindref="member">autorelease_pool_manager</ref>-&gt;number_of_pools--;<sp/></highlight><highlight class="comment">//<sp/>Revert<sp/>count</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="244"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="245"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="246"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>If<sp/>number_of_pools<sp/>is<sp/>1<sp/>and<sp/>new_pools_ptr<sp/>was<sp/>NULL<sp/>(malloc<sp/>failed),</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="247"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>then<sp/>pools<sp/>is<sp/>NULL,<sp/>and<sp/>the<sp/>above<sp/>access<sp/>is<sp/>guarded.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="248"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>However,<sp/>if<sp/>new_pools_ptr<sp/>is<sp/>NULL<sp/>and<sp/>number_of_pools<sp/>was<sp/>already<sp/>&gt;0,<sp/>then<sp/>pools<sp/>would<sp/>be<sp/>the<sp/>old<sp/>valid<sp/>pointer.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="249"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>The<sp/>logic<sp/>for<sp/>realloc<sp/>failure<sp/>handling<sp/>could<sp/>be<sp/>more<sp/>robust,<sp/>but<sp/>this<sp/>covers<sp/>the<sp/>basic<sp/>case.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="250"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="251"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="252"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="253"><highlight class="normal"></highlight></codeline>
+<codeline lineno="254"><highlight class="normal"></highlight><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="255"><highlight class="comment"><sp/>@function<sp/>OCAutoreleasePoolsManagerAddObject</highlight></codeline>
+<codeline lineno="256"><highlight class="comment"><sp/>Adds<sp/>the<sp/>object<sp/>to<sp/>the<sp/>most<sp/>recently<sp/>created<sp/>OCAutoreleasePool.</highlight></codeline>
+<codeline lineno="257"><highlight class="comment"><sp/>@param<sp/>object<sp/>The<sp/>object<sp/>to<sp/>be<sp/>released.</highlight></codeline>
+<codeline lineno="258"><highlight class="comment"><sp/>@param<sp/>release<sp/>The<sp/>method<sp/>that<sp/>releases<sp/>the<sp/>object.</highlight></codeline>
+<codeline lineno="259"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="260"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="_o_c_autorelease_pool_8c_1afa80b4ab6f5d19a1362e5957f22c32ce" kindref="member">OCAutoreleasePoolsManagerAddObject</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*</highlight><highlight class="keywordtype">object</highlight><highlight class="normal">,<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>(*release)(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*))</highlight></codeline>
+<codeline lineno="261"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="262"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ga89ba75a2ebc9795cbe6fe88902913202" kindref="member">IF_NO_OBJECT_EXISTS_RETURN</ref>(<ref refid="_o_c_autorelease_pool_8c_1a84a952ce66d0a461c161d601b9d8a180" kindref="member">autorelease_pool_manager</ref>,</highlight><highlight class="keyword">false</highlight><highlight class="normal">)</highlight></codeline>
+<codeline lineno="263"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ga89ba75a2ebc9795cbe6fe88902913202" kindref="member">IF_NO_OBJECT_EXISTS_RETURN</ref>(</highlight><highlight class="keywordtype">object</highlight><highlight class="normal">,false)</highlight></codeline>
+<codeline lineno="264"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ga89ba75a2ebc9795cbe6fe88902913202" kindref="member">IF_NO_OBJECT_EXISTS_RETURN</ref>(release,false)</highlight></codeline>
+<codeline lineno="265"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="266"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>add<sp/>object<sp/>to<sp/>OCAutoreleasePool<sp/>at<sp/>the<sp/>top<sp/>of<sp/>the<sp/>list</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="267"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="268"><highlight class="normal"><sp/><sp/><sp/><sp/>if(<ref refid="_o_c_autorelease_pool_8c_1a84a952ce66d0a461c161d601b9d8a180" kindref="member">autorelease_pool_manager</ref>-&gt;<ref refid="struct___o_c_autorelease_pools_manager_1abd8ea6adafd11368f8bdea2b48c00e22" kindref="member">pools</ref>)<sp/>{</highlight></codeline>
+<codeline lineno="269"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="_o_c_autorelease_pool_8c_1a30fbdf12684dcdc7d3d4be8da014cc07" kindref="member">OCAutoreleasePoolAddObject</ref>(<ref refid="_o_c_autorelease_pool_8c_1a84a952ce66d0a461c161d601b9d8a180" kindref="member">autorelease_pool_manager</ref>-&gt;pools[<ref refid="_o_c_autorelease_pool_8c_1a84a952ce66d0a461c161d601b9d8a180" kindref="member">autorelease_pool_manager</ref>-&gt;number_of_pools-1],</highlight><highlight class="keywordtype">object</highlight><highlight class="normal">,release);</highlight></codeline>
+<codeline lineno="270"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="271"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="272"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/><sp/><sp/><sp/><sp/><sp/>pool<sp/>exists</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="273"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="274"><highlight class="normal"><sp/><sp/><sp/><sp/>fprintf(stderr,</highlight><highlight class="stringliteral">&quot;***<sp/>ERROR<sp/>-<sp/>%s<sp/>%s<sp/>-<sp/>No<sp/>OCAutoreleasePool<sp/>exists.\n&quot;</highlight><highlight class="normal">,__FILE__,__func__);</highlight></codeline>
+<codeline lineno="275"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="276"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="277"><highlight class="normal"></highlight></codeline>
+<codeline lineno="278"><highlight class="normal"></highlight></codeline>
+<codeline lineno="279"><highlight class="normal"></highlight><highlight class="comment">/**************************************************************************</highlight></codeline>
+<codeline lineno="280"><highlight class="comment"><sp/>OCAutoreleasePool<sp/>methods</highlight></codeline>
+<codeline lineno="281"><highlight class="comment"><sp/>*************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="282"><highlight class="normal"></highlight></codeline>
+<codeline lineno="283"><highlight class="normal"></highlight></codeline>
+<codeline lineno="284"><highlight class="normal"><ref refid="group___o_c_autorelease_pool_1ga56ec2ec00e14fe2d7fc810fcbfd75615" kindref="member">OCAutoreleasePoolRef</ref><sp/><ref refid="group___o_c_autorelease_pool_1ga5cfc8e5cd0e12238e896c8ab4e21e731" kindref="member">OCAutoreleasePoolCreate</ref>()</highlight></codeline>
+<codeline lineno="285"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="286"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_autorelease_pool_1ga56ec2ec00e14fe2d7fc810fcbfd75615" kindref="member">OCAutoreleasePoolRef</ref><sp/>thePool<sp/>=<sp/>malloc(</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/><ref refid="struct___o_c_autorelease_pool" kindref="compound">_OCAutoreleasePool</ref>));</highlight></codeline>
+<codeline lineno="287"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="288"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ga89ba75a2ebc9795cbe6fe88902913202" kindref="member">IF_NO_OBJECT_EXISTS_RETURN</ref>(thePool,NULL)</highlight></codeline>
+<codeline lineno="289"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="290"><highlight class="normal"><sp/><sp/><sp/><sp/>thePool-&gt;<ref refid="struct___o_c_autorelease_pool_1a919709a2f9a570094fdc182e17630af1" kindref="member">pool_objects</ref><sp/>=<sp/>NULL;</highlight></codeline>
+<codeline lineno="291"><highlight class="normal"><sp/><sp/><sp/><sp/>thePool-&gt;<ref refid="struct___o_c_autorelease_pool_1a5ff6e2cddf82d93dfcc96fcdfd060794" kindref="member">number_of_pool_objects</ref><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="292"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_o_c_autorelease_pool_8c_1af3b7c1b4325136d37d6976cef322059d" kindref="member">OCAutoreleasePoolsManagerAddPool</ref>(thePool);</highlight></codeline>
+<codeline lineno="293"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>thePool;</highlight></codeline>
+<codeline lineno="294"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="295"><highlight class="normal"></highlight></codeline>
+<codeline lineno="296"><highlight class="normal"></highlight><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="297"><highlight class="comment"><sp/>@function<sp/>OCAutoreleasePoolDeallocate</highlight></codeline>
+<codeline lineno="298"><highlight class="comment"><sp/>@abstract<sp/>Deallocates<sp/>a<sp/>OCAutoreleasePool<sp/>object.</highlight></codeline>
+<codeline lineno="299"><highlight class="comment"><sp/>@param<sp/>thePool<sp/>The<sp/>pool<sp/>to<sp/>be<sp/>deallocated.</highlight></codeline>
+<codeline lineno="300"><highlight class="comment"><sp/>@result<sp/>YES<sp/>(1)<sp/>if<sp/>successful,<sp/>NO<sp/>(0)<sp/>if<sp/>unsuccessful</highlight></codeline>
+<codeline lineno="301"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="302"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="_o_c_autorelease_pool_8c_1a8e3e0e04ae281c96103d6e8e95c7cccc" kindref="member">OCAutoreleasePoolDeallocate</ref>(<ref refid="group___o_c_autorelease_pool_1ga56ec2ec00e14fe2d7fc810fcbfd75615" kindref="member">OCAutoreleasePoolRef</ref><sp/>thePool)</highlight></codeline>
+<codeline lineno="303"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="304"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ga89ba75a2ebc9795cbe6fe88902913202" kindref="member">IF_NO_OBJECT_EXISTS_RETURN</ref>(thePool,</highlight><highlight class="keyword">false</highlight><highlight class="normal">)</highlight></codeline>
+<codeline lineno="305"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="306"><highlight class="normal"><sp/><sp/><sp/><sp/>for(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i=0;i&lt;thePool-&gt;number_of_pool_objects;i++)<sp/>if(thePool-&gt;pool_objects[i])<sp/>{</highlight></codeline>
+<codeline lineno="307"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="_o_c_autorelease_pool_8c_1abfdd57437ce029ae0fc02f7625abca2a" kindref="member">OCAutoreleasePoolObjectRef</ref><sp/>pool_object<sp/>=<sp/>thePool-&gt;<ref refid="struct___o_c_autorelease_pool_1a919709a2f9a570094fdc182e17630af1" kindref="member">pool_objects</ref>[i];</highlight></codeline>
+<codeline lineno="308"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>void<sp/>(*release_function)(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*)<sp/>=<sp/><ref refid="_o_c_autorelease_pool_8c_1ac9fa55e381a1d96b4d9c2248c84c8544" kindref="member">OCAutoreleasePoolObjectGetReleaseFunction</ref>(pool_object);</highlight></codeline>
+<codeline lineno="309"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(*release_function)(<ref refid="_o_c_autorelease_pool_8c_1ac7ba6b36faca576f2d375e748bab2d60" kindref="member">OCAutoreleasePoolObjectGetObject</ref>(pool_object));</highlight></codeline>
+<codeline lineno="310"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="_o_c_autorelease_pool_8c_1a1ac1507f4aad29892257f4a783185477" kindref="member">OCAutoreleasePoolObjectDeallocate</ref>(pool_object);</highlight></codeline>
+<codeline lineno="311"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="312"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(thePool-&gt;<ref refid="struct___o_c_autorelease_pool_1a919709a2f9a570094fdc182e17630af1" kindref="member">pool_objects</ref>)<sp/>{</highlight></codeline>
+<codeline lineno="313"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>free(thePool-&gt;<ref refid="struct___o_c_autorelease_pool_1a919709a2f9a570094fdc182e17630af1" kindref="member">pool_objects</ref>);</highlight></codeline>
+<codeline lineno="314"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>thePool-&gt;<ref refid="struct___o_c_autorelease_pool_1a919709a2f9a570094fdc182e17630af1" kindref="member">pool_objects</ref>=NULL;</highlight></codeline>
+<codeline lineno="315"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="316"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(thePool)<sp/>{</highlight></codeline>
+<codeline lineno="317"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>free(thePool);</highlight></codeline>
+<codeline lineno="318"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>thePool=NULL;</highlight></codeline>
+<codeline lineno="319"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="320"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="321"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="322"><highlight class="normal"></highlight></codeline>
+<codeline lineno="323"><highlight class="normal"></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="group___o_c_autorelease_pool_1ga3dbf0752793d4f3390e1787fa8b424f1" kindref="member">OCAutoreleasePoolRelease</ref>(<ref refid="group___o_c_autorelease_pool_1ga56ec2ec00e14fe2d7fc810fcbfd75615" kindref="member">OCAutoreleasePoolRef</ref><sp/>thePool)</highlight></codeline>
+<codeline lineno="324"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="325"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ga89ba75a2ebc9795cbe6fe88902913202" kindref="member">IF_NO_OBJECT_EXISTS_RETURN</ref>(thePool,</highlight><highlight class="keyword">false</highlight><highlight class="normal">)</highlight></codeline>
+<codeline lineno="326"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="327"><highlight class="normal"><sp/><sp/><sp/><sp/>return<sp/><ref refid="_o_c_autorelease_pool_8c_1ace8ebcc96dd184dd0472fe4198031709" kindref="member">OCAutoreleasePoolsManagerRemovePool</ref>(thePool);</highlight></codeline>
+<codeline lineno="328"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="329"><highlight class="normal"></highlight></codeline>
+<codeline lineno="330"><highlight class="normal"></highlight><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="331"><highlight class="comment"><sp/>@function<sp/>OCAutoreleasePoolGetNumberOfPoolObjects</highlight></codeline>
+<codeline lineno="332"><highlight class="comment"><sp/>@abstract<sp/>Returns<sp/>the<sp/>number<sp/>of<sp/>objects<sp/>in<sp/>the<sp/>autorelease<sp/>pool</highlight></codeline>
+<codeline lineno="333"><highlight class="comment"><sp/>@param<sp/>thePool<sp/>The<sp/>pool.</highlight></codeline>
+<codeline lineno="334"><highlight class="comment"><sp/>@result<sp/>number<sp/>of<sp/>objects<sp/>in<sp/>pool</highlight></codeline>
+<codeline lineno="335"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="336"><highlight class="normal">static<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="_o_c_autorelease_pool_8c_1a6dace20227f644370b666de6b59b4965" kindref="member">OCAutoreleasePoolGetNumberOfPoolObjects</ref>(<ref refid="group___o_c_autorelease_pool_1ga56ec2ec00e14fe2d7fc810fcbfd75615" kindref="member">OCAutoreleasePoolRef</ref><sp/>thePool)</highlight></codeline>
+<codeline lineno="337"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="338"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ga89ba75a2ebc9795cbe6fe88902913202" kindref="member">IF_NO_OBJECT_EXISTS_RETURN</ref>(thePool,0)</highlight></codeline>
+<codeline lineno="339"><highlight class="normal"><sp/><sp/><sp/><sp/>return<sp/>thePool-&gt;number_of_pool_objects;</highlight></codeline>
+<codeline lineno="340"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="341"><highlight class="normal"></highlight></codeline>
+<codeline lineno="342"><highlight class="normal"></highlight><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="343"><highlight class="comment"><sp/>@function<sp/>OCAutoreleasePoolAddObject</highlight></codeline>
+<codeline lineno="344"><highlight class="comment"><sp/>@abstract<sp/>Adds<sp/>an<sp/>object<sp/>to<sp/>the<sp/>most<sp/>recently<sp/>created<sp/>autorelease<sp/>pool.</highlight></codeline>
+<codeline lineno="345"><highlight class="comment"><sp/>@param<sp/>thePool<sp/>The<sp/>pool<sp/>where<sp/>object<sp/>will<sp/>be<sp/>added.</highlight></codeline>
+<codeline lineno="346"><highlight class="comment"><sp/>@param<sp/>object<sp/>The<sp/>object<sp/>to<sp/>be<sp/>added.</highlight></codeline>
+<codeline lineno="347"><highlight class="comment"><sp/>@param<sp/>release<sp/>The<sp/>release<sp/>function<sp/>for<sp/>object.</highlight></codeline>
+<codeline lineno="348"><highlight class="comment"><sp/>@result<sp/>YES<sp/>(1)<sp/>if<sp/>successful,<sp/>NO<sp/>(0)<sp/>if<sp/>unsuccessful</highlight></codeline>
+<codeline lineno="349"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="350"><highlight class="normal">static<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="_o_c_autorelease_pool_8c_1a30fbdf12684dcdc7d3d4be8da014cc07" kindref="member">OCAutoreleasePoolAddObject</ref>(<ref refid="group___o_c_autorelease_pool_1ga56ec2ec00e14fe2d7fc810fcbfd75615" kindref="member">OCAutoreleasePoolRef</ref><sp/>thePool,<sp/>const<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*<sp/></highlight><highlight class="keywordtype">object</highlight><highlight class="normal">,<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>(*release)(const<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*))</highlight></codeline>
+<codeline lineno="351"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="352"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ga89ba75a2ebc9795cbe6fe88902913202" kindref="member">IF_NO_OBJECT_EXISTS_RETURN</ref>(thePool,</highlight><highlight class="keyword">false</highlight><highlight class="normal">)</highlight></codeline>
+<codeline lineno="353"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="354"><highlight class="normal"><sp/><sp/><sp/><sp/>if(</highlight><highlight class="keywordtype">object</highlight><highlight class="normal">)<sp/>{</highlight></codeline>
+<codeline lineno="355"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="_o_c_autorelease_pool_8c_1abfdd57437ce029ae0fc02f7625abca2a" kindref="member">OCAutoreleasePoolObjectRef</ref><sp/>pool_object<sp/>=<sp/><ref refid="_o_c_autorelease_pool_8c_1a38d625806f49f8175dfcae01bb0d5176" kindref="member">OCAutoreleasePoolObjectCreate</ref>(</highlight><highlight class="keywordtype">object</highlight><highlight class="normal">,release);</highlight></codeline>
+<codeline lineno="356"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>thePool-&gt;number_of_pool_objects++;</highlight></codeline>
+<codeline lineno="357"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>thePool-&gt;pool_objects<sp/>=<sp/>realloc(thePool-&gt;pool_objects,</highlight></codeline>
+<codeline lineno="358"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>thePool-&gt;number_of_pool_objects*</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(<ref refid="_o_c_autorelease_pool_8c_1abfdd57437ce029ae0fc02f7625abca2a" kindref="member">OCAutoreleasePoolObjectRef</ref>));<sp/></highlight><highlight class="comment">//<sp/>Corrected<sp/>sizeof</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="359"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>thePool-&gt;pool_objects[thePool-&gt;number_of_pool_objects-1]<sp/>=<sp/>pool_object;</highlight></codeline>
+<codeline lineno="360"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="361"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="362"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="363"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="364"><highlight class="normal"></highlight></codeline>
+<codeline lineno="365"><highlight class="normal"></highlight></codeline>
+<codeline lineno="366"><highlight class="normal"></highlight></codeline>
+<codeline lineno="367"><highlight class="normal"></highlight><highlight class="comment">/**************************************************************************</highlight></codeline>
+<codeline lineno="368"><highlight class="comment"><sp/>Core<sp/>Foundation<sp/>convenience<sp/>method</highlight></codeline>
+<codeline lineno="369"><highlight class="comment"><sp/>*************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="370"><highlight class="normal"></highlight></codeline>
+<codeline lineno="371"><highlight class="normal"></highlight></codeline>
+<codeline lineno="372"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*<sp/><ref refid="group___o_c_autorelease_pool_1ga7606cbde5db540d59e0daa4d73ac0c6f" kindref="member">OCAutorelease</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*ptr)</highlight></codeline>
+<codeline lineno="373"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="374"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ga89ba75a2ebc9795cbe6fe88902913202" kindref="member">IF_NO_OBJECT_EXISTS_RETURN</ref>(ptr,NULL)</highlight></codeline>
+<codeline lineno="375"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="376"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_o_c_autorelease_pool_8c_1afa80b4ab6f5d19a1362e5957f22c32ce" kindref="member">OCAutoreleasePoolsManagerAddObject</ref>(ptr,<sp/><ref refid="group___o_c_type_1ga2b6e5ce9f5cbfbb459569f2188c445b8" kindref="member">OCRelease</ref>);</highlight></codeline>
+<codeline lineno="377"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>ptr;</highlight></codeline>
+<codeline lineno="378"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="379"><highlight class="normal"></highlight></codeline>
+<codeline lineno="380"><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="src/OCAutoreleasePool.c"/>
+  </compounddef>
+</doxygen>

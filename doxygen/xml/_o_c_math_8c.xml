@@ -1,0 +1,477 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+  <compounddef id="_o_c_math_8c" kind="file" language="C++">
+    <compoundname>OCMath.c</compoundname>
+    <includes refid="_o_c_library_8h" local="yes">OCLibrary.h</includes>
+    <includes local="no">math.h</includes>
+    <includes local="no">complex.h</includes>
+    <includes local="no">assert.h</includes>
+    <includes local="no">stdint.h</includes>
+    <includes local="no">stdlib.h</includes>
+    <incdepgraph>
+      <node id="31">
+        <label>OCArray.h</label>
+        <link refid="_o_c_array_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="24">
+        <label>OCAutoreleasePool.h</label>
+        <link refid="_o_c_autorelease_pool_8h"/>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="28">
+        <label>OCBoolean.h</label>
+        <link refid="_o_c_boolean_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="27">
+        <label>OCData.h</label>
+        <link refid="_o_c_data_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="30">
+        <label>OCDictionary.h</label>
+        <link refid="_o_c_dictionary_8h"/>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="31" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>OCLibrary.h</label>
+        <link refid="_o_c_library_8h"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+        <childnode refid="29" relation="include">
+        </childnode>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="31" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>src/OCMath.c</label>
+        <link refid="_o_c_math_8c"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+      </node>
+      <node id="23">
+        <label>OCMath.h</label>
+        <link refid="_o_c_math_8h"/>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="29">
+        <label>OCNumber.h</label>
+        <link refid="_o_c_number_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="26">
+        <label>OCString.h</label>
+        <link refid="_o_c_string_8h"/>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="25">
+        <label>OCType.h</label>
+        <link refid="_o_c_type_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>assert.h</label>
+      </node>
+      <node id="12">
+        <label>complex.h</label>
+      </node>
+      <node id="6">
+        <label>ctype.h</label>
+      </node>
+      <node id="7">
+        <label>errno.h</label>
+      </node>
+      <node id="8">
+        <label>float.h</label>
+      </node>
+      <node id="20">
+        <label>inttypes.h</label>
+      </node>
+      <node id="9">
+        <label>limits.h</label>
+      </node>
+      <node id="10">
+        <label>locale.h</label>
+      </node>
+      <node id="11">
+        <label>math.h</label>
+      </node>
+      <node id="13">
+        <label>setjmp.h</label>
+      </node>
+      <node id="14">
+        <label>signal.h</label>
+      </node>
+      <node id="4">
+        <label>stdarg.h</label>
+      </node>
+      <node id="21">
+        <label>stdbool.h</label>
+      </node>
+      <node id="15">
+        <label>stddef.h</label>
+      </node>
+      <node id="22">
+        <label>stdint.h</label>
+      </node>
+      <node id="16">
+        <label>stdio.h</label>
+      </node>
+      <node id="17">
+        <label>stdlib.h</label>
+      </node>
+      <node id="18">
+        <label>string.h</label>
+      </node>
+      <node id="3">
+        <label>sys/types.h</label>
+      </node>
+      <node id="19">
+        <label>time.h</label>
+      </node>
+    </incdepgraph>
+    <sectiondef kind="define">
+      <memberdef kind="define" id="_o_c_math_8c_1a4b87f3950ee07ba90da777fe96914fc6" prot="public" static="no">
+        <name>DOUBLE_LOOSE_EPS</name>
+        <initializer>1e-8</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCMath.c" line="16" column="9" bodyfile="src/OCMath.c" bodystart="16" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="_o_c_math_8c_1a26cf3eeb3390e3b6f9240125710fdfad" prot="public" static="no">
+        <name>FLOAT_LOOSE_EPS</name>
+        <initializer>1.2e-6f  /* a bit above 1e-6 to cover ULP rounding */</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCMath.c" line="17" column="9" bodyfile="src/OCMath.c" bodystart="17" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="func">
+      <member refid="group___o_c_math_1ga84e20d3efaac1d5480380185590904cf" kind="function"><name>cargument</name></member>
+      <member refid="group___o_c_math_1ga367869bcdfabf7e0ba51cea0e48f051e" kind="function"><name>ccbrt</name></member>
+      <member refid="group___o_c_math_1gaad866266dc5223508682cc813abedc45" kind="function"><name>cqtrt</name></member>
+      <memberdef kind="function" id="_o_c_math_8c_1a12b195d95453b9262dd7da014fcc58da" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>static bool AlmostEqual2sComplementFloat</definition>
+        <argsstring>(float A, float B, int maxUlps)</argsstring>
+        <name>AlmostEqual2sComplementFloat</name>
+        <param>
+          <type>float</type>
+          <declname>A</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>B</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>maxUlps</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCMath.c" line="33" column="13" bodyfile="src/OCMath.c" bodystart="33" bodyend="40"/>
+      </memberdef>
+      <memberdef kind="function" id="_o_c_math_8c_1a666cf88d180f9e53024091e3f4048965" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>static bool AlmostEqual2sComplementDouble</definition>
+        <argsstring>(double A, double B, int maxUlps)</argsstring>
+        <name>AlmostEqual2sComplementDouble</name>
+        <param>
+          <type>double</type>
+          <declname>A</declname>
+        </param>
+        <param>
+          <type>double</type>
+          <declname>B</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>maxUlps</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCMath.c" line="42" column="13" bodyfile="src/OCMath.c" bodystart="42" bodyend="49"/>
+      </memberdef>
+      <member refid="group___o_c_math_1ga8b4a87c560fee7b0c00a009f8b16b0f6" kind="function"><name>OCCompareFloatValues</name></member>
+      <member refid="group___o_c_math_1ga3c1134855335dd65c652b8a6420f28e2" kind="function"><name>OCCompareDoubleValues</name></member>
+      <memberdef kind="function" id="_o_c_math_8c_1a6a9abb401c9461d27467a37df38b6aa8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_library_1ga395ff068e826f2b8cdaab226094399c8" kindref="member">OCComparisonResult</ref></type>
+        <definition>OCComparisonResult OCCompareIntegerValues</definition>
+        <argsstring>(int64_t a, int64_t b)</argsstring>
+        <name>OCCompareIntegerValues</name>
+        <param>
+          <type>int64_t</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>int64_t</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCMath.c" line="61" column="20" bodyfile="src/OCMath.c" bodystart="61" bodyend="65"/>
+      </memberdef>
+      <member refid="group___o_c_math_1gaec5e5a945fb850212494ccf77b1291c0" kind="function"><name>OCCompareFloatValuesLoose</name></member>
+      <member refid="group___o_c_math_1ga162ecc592aadc86283648b2d47257e78" kind="function"><name>OCCompareDoubleValuesLoose</name></member>
+      <member refid="group___o_c_math_1gad912fb04ad72b439b498f5f472ea5407" kind="function"><name>OCDoubleFloor</name></member>
+      <member refid="group___o_c_math_1ga7d88e9028d420adcf8539cbb81e9a3fc" kind="function"><name>OCDoubleCeil</name></member>
+      <member refid="group___o_c_math_1gaedf6e3f289161b6eb84655ca86cd8055" kind="function"><name>complex_sine</name></member>
+      <member refid="group___o_c_math_1gadf0c6a393fe423d6366f5d233bb885f8" kind="function"><name>complex_cosine</name></member>
+      <member refid="group___o_c_math_1ga682278e8fa0b5a1225b373d708827973" kind="function"><name>complex_tangent</name></member>
+      <memberdef kind="function" id="_o_c_math_8c_1a0a7fd594dedc6efe6d83dec458740d21" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>double complex</type>
+        <definition>double complex raise_to_integer_power</definition>
+        <argsstring>(double complex x, long power)</argsstring>
+        <name>raise_to_integer_power</name>
+        <param>
+          <type>double complex</type>
+          <declname>x</declname>
+        </param>
+        <param>
+          <type>long</type>
+          <declname>power</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCMath.c" line="106" column="16" bodyfile="src/OCMath.c" bodystart="106" bodyend="122"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="comment">//<sp/><sp/>OCMath.c</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="comment">//<sp/><sp/>OCTypes</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="comment">//<sp/><sp/>Created<sp/>by<sp/>philip<sp/>on<sp/>6/7/17.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="comment">//<sp/><sp/>Updated<sp/>2025-05-11<sp/>to<sp/>fix<sp/>loose‐comparison<sp/>thresholds<sp/>and<sp/>use<sp/>correct<sp/>defines.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_o_c_library_8h" kindref="compound">OCLibrary.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;math.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;complex.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;assert.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;stdint.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;stdlib.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>DOUBLE_LOOSE_EPS<sp/>1e-8</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>FLOAT_LOOSE_EPS<sp/><sp/>1.2e-6f<sp/><sp/></highlight><highlight class="comment">/*<sp/>a<sp/>bit<sp/>above<sp/>1e-6<sp/>to<sp/>cover<sp/>ULP<sp/>rounding<sp/>*/</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Use<sp/>the<sp/>standard<sp/>library<sp/>so<sp/>tests<sp/>that<sp/>call<sp/>carg()/csin()/ccos()/ctan()<sp/>match<sp/>exactly:</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="group___o_c_math_1ga84e20d3efaac1d5480380185590904cf" kindref="member">cargument</ref>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>complex<sp/>z)<sp/>{</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>carg(z);</highlight></codeline>
+<codeline lineno="22"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>complex<sp/><ref refid="group___o_c_math_1ga367869bcdfabf7e0ba51cea0e48f051e" kindref="member">ccbrt</ref>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>complex<sp/>z)<sp/>{</highlight></codeline>
+<codeline lineno="25"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>cpow(z,<sp/>1.0/3.0);</highlight></codeline>
+<codeline lineno="26"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>complex<sp/><ref refid="group___o_c_math_1gaad866266dc5223508682cc813abedc45" kindref="member">cqtrt</ref>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>complex<sp/>z)<sp/>{</highlight></codeline>
+<codeline lineno="29"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>cpow(z,<sp/>1.0/4.0);</highlight></codeline>
+<codeline lineno="30"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Strict<sp/>ULP‐based<sp/>comparisons<sp/>for<sp/>“equal”<sp/>in<sp/>the<sp/>strict<sp/>APIs:</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="_o_c_math_8c_1a12b195d95453b9262dd7da014fcc58da" kindref="member">AlmostEqual2sComplementFloat</ref>(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>A,<sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>B,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>maxUlps)<sp/>{</highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/><sp/><sp/><sp/>assert(maxUlps<sp/>&gt;<sp/>0<sp/>&amp;&amp;<sp/>maxUlps<sp/>&lt;<sp/>4<sp/>*<sp/>1024<sp/>*<sp/>1024);</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>aInt<sp/>=<sp/>*(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*)&amp;A;</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(aInt<sp/>&lt;<sp/>0)<sp/>aInt<sp/>=<sp/>0x80000000<sp/>-<sp/>aInt;</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>bInt<sp/>=<sp/>*(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal">*)&amp;B;</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(bInt<sp/>&lt;<sp/>0)<sp/>bInt<sp/>=<sp/>0x80000000<sp/>-<sp/>bInt;</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>abs(aInt<sp/>-<sp/>bInt)<sp/>&lt;=<sp/>maxUlps;</highlight></codeline>
+<codeline lineno="40"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="_o_c_math_8c_1a666cf88d180f9e53024091e3f4048965" kindref="member">AlmostEqual2sComplementDouble</ref>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>A,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>B,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>maxUlps)<sp/>{</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"><sp/><sp/><sp/><sp/>assert(maxUlps<sp/>&gt;<sp/>0<sp/>&amp;&amp;<sp/>maxUlps<sp/>&lt;<sp/>8<sp/>*<sp/>1024<sp/>*<sp/>1024);</highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/><sp/>int64_t<sp/>aInt<sp/>=<sp/>*(int64_t*)&amp;A;</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(aInt<sp/>&lt;<sp/>0)<sp/>aInt<sp/>=<sp/>0x8000000000000000ULL<sp/>-<sp/>aInt;</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"><sp/><sp/><sp/><sp/>int64_t<sp/>bInt<sp/>=<sp/>*(int64_t*)&amp;B;</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(bInt<sp/>&lt;<sp/>0)<sp/>bInt<sp/>=<sp/>0x8000000000000000ULL<sp/>-<sp/>bInt;</highlight></codeline>
+<codeline lineno="48"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>llabs(aInt<sp/>-<sp/>bInt)<sp/>&lt;=<sp/>maxUlps;</highlight></codeline>
+<codeline lineno="49"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="50"><highlight class="normal"></highlight></codeline>
+<codeline lineno="51"><highlight class="normal"><ref refid="group___o_c_library_1ga395ff068e826f2b8cdaab226094399c8" kindref="member">OCComparisonResult</ref><sp/><ref refid="group___o_c_math_1ga8b4a87c560fee7b0c00a009f8b16b0f6" kindref="member">OCCompareFloatValues</ref>(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>v1,<sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>v2)<sp/>{</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="_o_c_math_8c_1a12b195d95453b9262dd7da014fcc58da" kindref="member">AlmostEqual2sComplementFloat</ref>(v1,<sp/>v2,<sp/>8))<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8a1814420156dc0303801cb9129b10dc55" kindref="member">kOCCompareEqualTo</ref>;</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(v1<sp/>&gt;<sp/>v2)<sp/>?<sp/><ref refid="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8a24fbed20d0eee7cfa1896986afdb8f50" kindref="member">kOCCompareGreaterThan</ref><sp/>:<sp/><ref refid="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8a925b5b072d953695f3828c0a8d15aec1" kindref="member">kOCCompareLessThan</ref>;</highlight></codeline>
+<codeline lineno="54"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="55"><highlight class="normal"></highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><ref refid="group___o_c_library_1ga395ff068e826f2b8cdaab226094399c8" kindref="member">OCComparisonResult</ref><sp/><ref refid="group___o_c_math_1ga3c1134855335dd65c652b8a6420f28e2" kindref="member">OCCompareDoubleValues</ref>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>v1,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>v2)<sp/>{</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="_o_c_math_8c_1a666cf88d180f9e53024091e3f4048965" kindref="member">AlmostEqual2sComplementDouble</ref>(v1,<sp/>v2,<sp/>14))<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8a1814420156dc0303801cb9129b10dc55" kindref="member">kOCCompareEqualTo</ref>;</highlight></codeline>
+<codeline lineno="58"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(v1<sp/>&gt;<sp/>v2)<sp/>?<sp/><ref refid="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8a24fbed20d0eee7cfa1896986afdb8f50" kindref="member">kOCCompareGreaterThan</ref><sp/>:<sp/><ref refid="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8a925b5b072d953695f3828c0a8d15aec1" kindref="member">kOCCompareLessThan</ref>;</highlight></codeline>
+<codeline lineno="59"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="60"><highlight class="normal"></highlight></codeline>
+<codeline lineno="61"><highlight class="normal"><ref refid="group___o_c_library_1ga395ff068e826f2b8cdaab226094399c8" kindref="member">OCComparisonResult</ref><sp/><ref refid="_o_c_math_8c_1a6a9abb401c9461d27467a37df38b6aa8" kindref="member">OCCompareIntegerValues</ref>(int64_t<sp/>a,<sp/>int64_t<sp/>b)<sp/>{</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(a<sp/>&gt;<sp/>b)<sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8a24fbed20d0eee7cfa1896986afdb8f50" kindref="member">kOCCompareGreaterThan</ref>;</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(a<sp/>&lt;<sp/>b)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8a925b5b072d953695f3828c0a8d15aec1" kindref="member">kOCCompareLessThan</ref>;</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8a1814420156dc0303801cb9129b10dc55" kindref="member">kOCCompareEqualTo</ref>;</highlight></codeline>
+<codeline lineno="65"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="66"><highlight class="normal"></highlight></codeline>
+<codeline lineno="67"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Loose<sp/>comparisons:<sp/>simple<sp/>absolute‐difference<sp/>against<sp/>an<sp/>epsilon</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><ref refid="group___o_c_library_1ga395ff068e826f2b8cdaab226094399c8" kindref="member">OCComparisonResult</ref><sp/><ref refid="group___o_c_math_1gaec5e5a945fb850212494ccf77b1291c0" kindref="member">OCCompareFloatValuesLoose</ref>(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>v1,<sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>v2)<sp/>{</highlight></codeline>
+<codeline lineno="69"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>diff<sp/>=<sp/>v1<sp/>-<sp/>v2;</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(diff<sp/>&lt;<sp/>0)<sp/>diff<sp/>=<sp/>-diff;</highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(diff<sp/>&lt;=<sp/><ref refid="_o_c_math_8c_1a26cf3eeb3390e3b6f9240125710fdfad" kindref="member">FLOAT_LOOSE_EPS</ref>)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8a1814420156dc0303801cb9129b10dc55" kindref="member">kOCCompareEqualTo</ref>;</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(v1<sp/>&gt;<sp/>v2)<sp/>?<sp/><ref refid="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8a24fbed20d0eee7cfa1896986afdb8f50" kindref="member">kOCCompareGreaterThan</ref><sp/>:<sp/><ref refid="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8a925b5b072d953695f3828c0a8d15aec1" kindref="member">kOCCompareLessThan</ref>;</highlight></codeline>
+<codeline lineno="73"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"></highlight></codeline>
+<codeline lineno="75"><highlight class="normal"><ref refid="group___o_c_library_1ga395ff068e826f2b8cdaab226094399c8" kindref="member">OCComparisonResult</ref><sp/><ref refid="group___o_c_math_1ga162ecc592aadc86283648b2d47257e78" kindref="member">OCCompareDoubleValuesLoose</ref>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>v1,<sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>v2)<sp/>{</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>diff<sp/>=<sp/>v1<sp/>-<sp/>v2;</highlight></codeline>
+<codeline lineno="77"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(diff<sp/>&lt;<sp/>0)<sp/>diff<sp/>=<sp/>-diff;</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(diff<sp/>&lt;=<sp/><ref refid="_o_c_math_8c_1a4b87f3950ee07ba90da777fe96914fc6" kindref="member">DOUBLE_LOOSE_EPS</ref>)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8a1814420156dc0303801cb9129b10dc55" kindref="member">kOCCompareEqualTo</ref>;</highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(v1<sp/>&gt;<sp/>v2)<sp/>?<sp/><ref refid="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8a24fbed20d0eee7cfa1896986afdb8f50" kindref="member">kOCCompareGreaterThan</ref><sp/>:<sp/><ref refid="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8a925b5b072d953695f3828c0a8d15aec1" kindref="member">kOCCompareLessThan</ref>;</highlight></codeline>
+<codeline lineno="80"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"></highlight></codeline>
+<codeline lineno="82"><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="group___o_c_math_1gad912fb04ad72b439b498f5f472ea5407" kindref="member">OCDoubleFloor</ref>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>v)<sp/>{</highlight></codeline>
+<codeline lineno="83"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>c<sp/>=<sp/>ceil(v);</highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="group___o_c_math_1ga3c1134855335dd65c652b8a6420f28e2" kindref="member">OCCompareDoubleValues</ref>(c,<sp/>v)<sp/>==<sp/><ref refid="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8a1814420156dc0303801cb9129b10dc55" kindref="member">kOCCompareEqualTo</ref>)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>c;</highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>floor(v);</highlight></codeline>
+<codeline lineno="86"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="87"><highlight class="normal"></highlight></codeline>
+<codeline lineno="88"><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/><ref refid="group___o_c_math_1ga7d88e9028d420adcf8539cbb81e9a3fc" kindref="member">OCDoubleCeil</ref>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>v)<sp/>{</highlight></codeline>
+<codeline lineno="89"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>f<sp/>=<sp/>floor(v);</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="group___o_c_math_1ga3c1134855335dd65c652b8a6420f28e2" kindref="member">OCCompareDoubleValues</ref>(f,<sp/>v)<sp/>==<sp/><ref refid="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8a1814420156dc0303801cb9129b10dc55" kindref="member">kOCCompareEqualTo</ref>)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>f;</highlight></codeline>
+<codeline lineno="91"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>ceil(v);</highlight></codeline>
+<codeline lineno="92"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="93"><highlight class="normal"></highlight></codeline>
+<codeline lineno="94"><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>complex<sp/><ref refid="group___o_c_math_1gaedf6e3f289161b6eb84655ca86cd8055" kindref="member">complex_sine</ref>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>complex<sp/>z)<sp/>{</highlight></codeline>
+<codeline lineno="95"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>csin(z);</highlight></codeline>
+<codeline lineno="96"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="97"><highlight class="normal"></highlight></codeline>
+<codeline lineno="98"><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>complex<sp/><ref refid="group___o_c_math_1gadf0c6a393fe423d6366f5d233bb885f8" kindref="member">complex_cosine</ref>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>complex<sp/>z)<sp/>{</highlight></codeline>
+<codeline lineno="99"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>ccos(z);</highlight></codeline>
+<codeline lineno="100"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="101"><highlight class="normal"></highlight></codeline>
+<codeline lineno="102"><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>complex<sp/><ref refid="group___o_c_math_1ga682278e8fa0b5a1225b373d708827973" kindref="member">complex_tangent</ref>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>complex<sp/>z)<sp/>{</highlight></codeline>
+<codeline lineno="103"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>ctan(z);</highlight></codeline>
+<codeline lineno="104"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="105"><highlight class="normal"></highlight></codeline>
+<codeline lineno="106"><highlight class="normal"></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>complex<sp/><ref refid="_o_c_math_8c_1a0a7fd594dedc6efe6d83dec458740d21" kindref="member">raise_to_integer_power</ref>(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>complex<sp/>x,<sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/>power)<sp/>{</highlight></codeline>
+<codeline lineno="107"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(power<sp/>==<sp/>0)<sp/>{</highlight></codeline>
+<codeline lineno="108"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>1.0<sp/>+<sp/>0.0*I;</highlight></codeline>
+<codeline lineno="109"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="110"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>positive<sp/>=<sp/>(power<sp/>&gt;<sp/>0);</highlight></codeline>
+<codeline lineno="111"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/>count<sp/><sp/><sp/>=<sp/>positive<sp/>?<sp/>power<sp/>:<sp/>-power;</highlight></codeline>
+<codeline lineno="112"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>complex<sp/>base<sp/>=<sp/>positive<sp/>?<sp/>x<sp/>:<sp/>1.0/x;</highlight></codeline>
+<codeline lineno="113"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>complex<sp/>result<sp/>=<sp/>1.0<sp/>+<sp/>0.0*I;</highlight></codeline>
+<codeline lineno="114"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/>i<sp/>=<sp/>0;<sp/>i<sp/>&lt;<sp/>count;<sp/>++i)<sp/>{</highlight></codeline>
+<codeline lineno="115"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>result<sp/>*=<sp/>base;</highlight></codeline>
+<codeline lineno="116"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="117"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(isnan(creal(result)))<sp/>{</highlight></codeline>
+<codeline lineno="118"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>nan(NULL)<sp/>is<sp/>undefined;<sp/>use<sp/>empty‐string<sp/>tag</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="119"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>nan(</highlight><highlight class="stringliteral">&quot;&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="120"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="121"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>result;</highlight></codeline>
+<codeline lineno="122"><highlight class="normal">}</highlight></codeline>
+    </programlisting>
+    <location file="src/OCMath.c"/>
+  </compounddef>
+</doxygen>

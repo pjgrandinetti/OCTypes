@@ -22,7 +22,7 @@ extensions = [
 
 # Breathe Configuration
 breathe_projects = {
-    "OCTypes": "doxygen/xml/"  # Path to Doxygen XML output, relative to the conf.py file
+    "OCTypes": "doxygen/xml"  # Path to Doxygen XML output, relative to the conf.py file
 }
 breathe_default_project = "OCTypes"
 breathe_default_domain = 'c'  # Default domain is C

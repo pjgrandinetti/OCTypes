@@ -1,0 +1,180 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+  <compounddef id="struct_o_c_format_spec" kind="struct" language="C++" prot="public">
+    <compoundname>OCFormatSpec</compoundname>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_o_c_format_spec_1a8d97b4465f669bb6b8c8eae63ebbd960" prot="public" static="no" mutable="no">
+        <type>int16_t</type>
+        <definition>int16_t OCFormatSpec::size</definition>
+        <argsstring></argsstring>
+        <name>size</name>
+        <qualifiedname>OCFormatSpec::size</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCString.c" line="890" column="13" bodyfile="src/OCString.c" bodystart="890" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_o_c_format_spec_1af805bdadf745e6bd765ec5007ba5372b" prot="public" static="no" mutable="no">
+        <type>int16_t</type>
+        <definition>int16_t OCFormatSpec::type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <qualifiedname>OCFormatSpec::type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCString.c" line="891" column="13" bodyfile="src/OCString.c" bodystart="891" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_o_c_format_spec_1a4a7d4f2ddd46145107014d048a182f26" prot="public" static="no" mutable="no">
+        <type>int32_t</type>
+        <definition>int32_t OCFormatSpec::loc</definition>
+        <argsstring></argsstring>
+        <name>loc</name>
+        <qualifiedname>OCFormatSpec::loc</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCString.c" line="892" column="13" bodyfile="src/OCString.c" bodystart="892" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_o_c_format_spec_1a1c642febf424218c541e46ed9bd3a269" prot="public" static="no" mutable="no">
+        <type>int32_t</type>
+        <definition>int32_t OCFormatSpec::len</definition>
+        <argsstring></argsstring>
+        <name>len</name>
+        <qualifiedname>OCFormatSpec::len</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCString.c" line="893" column="13" bodyfile="src/OCString.c" bodystart="893" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_o_c_format_spec_1a90facef91b6b568bda2db9e0a2bb1925" prot="public" static="no" mutable="no">
+        <type>int32_t</type>
+        <definition>int32_t OCFormatSpec::widthArg</definition>
+        <argsstring></argsstring>
+        <name>widthArg</name>
+        <qualifiedname>OCFormatSpec::widthArg</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCString.c" line="894" column="13" bodyfile="src/OCString.c" bodystart="894" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_o_c_format_spec_1a17e94354bbfacb7cc9bbc878965d7814" prot="public" static="no" mutable="no">
+        <type>int32_t</type>
+        <definition>int32_t OCFormatSpec::precArg</definition>
+        <argsstring></argsstring>
+        <name>precArg</name>
+        <qualifiedname>OCFormatSpec::precArg</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCString.c" line="895" column="13" bodyfile="src/OCString.c" bodystart="895" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_o_c_format_spec_1a3df376bb755f2747150938575394b854" prot="public" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t OCFormatSpec::flags</definition>
+        <argsstring></argsstring>
+        <name>flags</name>
+        <qualifiedname>OCFormatSpec::flags</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCString.c" line="896" column="14" bodyfile="src/OCString.c" bodystart="896" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_o_c_format_spec_1aa3334abb247a00492cbaa83c5240f4e7" prot="public" static="no" mutable="no">
+        <type>int8_t</type>
+        <definition>int8_t OCFormatSpec::mainArgNum</definition>
+        <argsstring></argsstring>
+        <name>mainArgNum</name>
+        <qualifiedname>OCFormatSpec::mainArgNum</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCString.c" line="897" column="12" bodyfile="src/OCString.c" bodystart="897" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_o_c_format_spec_1a87e76448276310a68037a751bc51ae46" prot="public" static="no" mutable="no">
+        <type>int8_t</type>
+        <definition>int8_t OCFormatSpec::precArgNum</definition>
+        <argsstring></argsstring>
+        <name>precArgNum</name>
+        <qualifiedname>OCFormatSpec::precArgNum</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCString.c" line="898" column="12" bodyfile="src/OCString.c" bodystart="898" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_o_c_format_spec_1a9e071e5912592e5b6f0dd543cdbd97d0" prot="public" static="no" mutable="no">
+        <type>int8_t</type>
+        <definition>int8_t OCFormatSpec::widthArgNum</definition>
+        <argsstring></argsstring>
+        <name>widthArgNum</name>
+        <qualifiedname>OCFormatSpec::widthArgNum</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCString.c" line="899" column="12" bodyfile="src/OCString.c" bodystart="899" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_o_c_format_spec_1ac6d9fae0150ed18f4baadeb8f588c780" prot="public" static="no" mutable="no">
+        <type>int8_t</type>
+        <definition>int8_t OCFormatSpec::unused1</definition>
+        <argsstring></argsstring>
+        <name>unused1</name>
+        <qualifiedname>OCFormatSpec::unused1</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCString.c" line="900" column="12" bodyfile="src/OCString.c" bodystart="900" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/OCString.c" line="889" column="1" bodyfile="src/OCString.c" bodystart="889" bodyend="901"/>
+    <listofallmembers>
+      <member refid="struct_o_c_format_spec_1a3df376bb755f2747150938575394b854" prot="public" virt="non-virtual"><scope>OCFormatSpec</scope><name>flags</name></member>
+      <member refid="struct_o_c_format_spec_1a1c642febf424218c541e46ed9bd3a269" prot="public" virt="non-virtual"><scope>OCFormatSpec</scope><name>len</name></member>
+      <member refid="struct_o_c_format_spec_1a4a7d4f2ddd46145107014d048a182f26" prot="public" virt="non-virtual"><scope>OCFormatSpec</scope><name>loc</name></member>
+      <member refid="struct_o_c_format_spec_1aa3334abb247a00492cbaa83c5240f4e7" prot="public" virt="non-virtual"><scope>OCFormatSpec</scope><name>mainArgNum</name></member>
+      <member refid="struct_o_c_format_spec_1a17e94354bbfacb7cc9bbc878965d7814" prot="public" virt="non-virtual"><scope>OCFormatSpec</scope><name>precArg</name></member>
+      <member refid="struct_o_c_format_spec_1a87e76448276310a68037a751bc51ae46" prot="public" virt="non-virtual"><scope>OCFormatSpec</scope><name>precArgNum</name></member>
+      <member refid="struct_o_c_format_spec_1a8d97b4465f669bb6b8c8eae63ebbd960" prot="public" virt="non-virtual"><scope>OCFormatSpec</scope><name>size</name></member>
+      <member refid="struct_o_c_format_spec_1af805bdadf745e6bd765ec5007ba5372b" prot="public" virt="non-virtual"><scope>OCFormatSpec</scope><name>type</name></member>
+      <member refid="struct_o_c_format_spec_1ac6d9fae0150ed18f4baadeb8f588c780" prot="public" virt="non-virtual"><scope>OCFormatSpec</scope><name>unused1</name></member>
+      <member refid="struct_o_c_format_spec_1a90facef91b6b568bda2db9e0a2bb1925" prot="public" virt="non-virtual"><scope>OCFormatSpec</scope><name>widthArg</name></member>
+      <member refid="struct_o_c_format_spec_1a9e071e5912592e5b6f0dd543cdbd97d0" prot="public" virt="non-virtual"><scope>OCFormatSpec</scope><name>widthArgNum</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

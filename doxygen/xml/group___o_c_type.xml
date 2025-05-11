@@ -1,0 +1,386 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+  <compounddef id="group___o_c_type" kind="group">
+    <compoundname>OCType</compoundname>
+    <title>OCType</title>
+    <innerclass refid="struct_____o_c_base" prot="public">__OCBase</innerclass>
+    <sectiondef kind="enum">
+      <memberdef kind="enum" id="group___o_c_type_1ga4b3e3e9af8c54292907f45141e6dd174" prot="public" static="no" strong="no">
+        <type></type>
+        <name>CommonConstants</name>
+        <enumvalue id="group___o_c_type_1gga4b3e3e9af8c54292907f45141e6dd174abac9508514b568411f4ececcff5260ec" prot="public">
+          <name>kOCNotFound</name>
+          <initializer>= -1</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+<para>Represents a value not found, typically used as a return value from search functions. </para>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>Defines common constant values. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCType.h" line="44" column="1" bodyfile="src/OCType.h" bodystart="44" bodyend="47"/>
+      </memberdef>
+      <memberdef kind="enum" id="group___o_c_type_1gad248aac9bbfa64d39561aaaea4ab5a1e" prot="public" static="no" strong="no">
+        <type></type>
+        <name>SpecialTypeIDs</name>
+        <enumvalue id="group___o_c_type_1ggad248aac9bbfa64d39561aaaea4ab5a1eaf0ee6bc8529180c1c8e8037431a72de7" prot="public">
+          <name>_kOCNotATypeID</name>
+          <initializer>= 0</initializer>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+<para>Represents an invalid or uninitialized <ref refid="group___o_c_type_1gae4fcca725e41e7af4659ba4902223981" kindref="member">OCTypeID</ref>. </para>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para>Defines special type ID values. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCType.h" line="60" column="1" bodyfile="src/OCType.h" bodystart="60" bodyend="63"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="group___o_c_type_1gae4fcca725e41e7af4659ba4902223981" prot="public" static="no">
+        <type>uint32_t</type>
+        <definition>typedef uint32_t OCTypeID</definition>
+        <argsstring></argsstring>
+        <name>OCTypeID</name>
+        <briefdescription>
+<para>Defines an identifier for an OCType. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCType.h" line="32" column="18" bodyfile="src/OCType.h" bodystart="32" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group___o_c_type_1ga6ccf3c82bdf9278bdbac738cce5b1487" prot="public" static="no">
+        <type>int32_t</type>
+        <definition>typedef int32_t OCIndex</definition>
+        <argsstring></argsstring>
+        <name>OCIndex</name>
+        <briefdescription>
+<para>Defines an index type, typically used for array or collection indexing. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCType.h" line="38" column="17" bodyfile="src/OCType.h" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group___o_c_type_1ga6acd02149bce3e91fb2fe325ab7f65ed" prot="public" static="no">
+        <type>struct <ref refid="struct_____o_c_type" kindref="compound">__OCType</ref> *</type>
+        <definition>typedef struct __OCType* OCTypeRef</definition>
+        <argsstring></argsstring>
+        <name>OCTypeRef</name>
+        <briefdescription>
+<para>A reference to an opaque OCType structure. This is the base type for all objects in the OCTypes system. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCType.h" line="54" column="24" bodyfile="src/OCType.h" bodystart="54" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group___o_c_type_1ga34a97bf2ed10637e698c2cd3faa193d4" prot="public" static="no">
+        <type>const struct <ref refid="struct_____o_c_string" kindref="compound">__OCString</ref> *</type>
+        <definition>typedef const struct __OCString* OCStringRef</definition>
+        <argsstring></argsstring>
+        <name>OCStringRef</name>
+        <briefdescription>
+<para>A reference to an immutable OCString instance. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCType.h" line="102" column="32" bodyfile="src/OCType.h" bodystart="102" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="group___o_c_type_1ga66b90fed8dd532198f1a04d294dbaa69" prot="public" static="no">
+        <type>struct <ref refid="struct_____o_c_base" kindref="compound">__OCBase</ref></type>
+        <definition>typedef struct __OCBase OCBase</definition>
+        <argsstring></argsstring>
+        <name>OCBase</name>
+        <briefdescription>
+<para>The fundamental base structure for all OCTypes. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This structure is embedded as the first member in all OCType-compatible objects. It holds common information like the type identifier, retain count, and function pointers for essential operations. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCType.h" line="144" column="8"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="group___o_c_type_1ga8c0b9dcf81ef80522730223975b821b0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool OCTypeEqual</definition>
+        <argsstring>(const void *theType1, const void *theType2)</argsstring>
+        <name>OCTypeEqual</name>
+        <param>
+          <type>const void *</type>
+          <declname>theType1</declname>
+        </param>
+        <param>
+          <type>const void *</type>
+          <declname>theType2</declname>
+        </param>
+        <briefdescription>
+<para>Compares two OCType instances for equality. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>theType1</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the first OCType instance. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>theType2</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the second OCType instance. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>True if the types are considered equal, false otherwise. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCType.h" line="72" column="6" bodyfile="src/OCType.c" bodystart="18" bodyend="45" declfile="src/OCType.h" declline="72" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_type_1gaf0ec7b8c3f8096a2c8fa560c10a136bf" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_type_1gae4fcca725e41e7af4659ba4902223981" kindref="member">OCTypeID</ref></type>
+        <definition>OCTypeID OCRegisterType</definition>
+        <argsstring>(char *typeName)</argsstring>
+        <name>OCRegisterType</name>
+        <param>
+          <type>char *</type>
+          <declname>typeName</declname>
+        </param>
+        <briefdescription>
+<para>Registers a new OCType with the system. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>typeName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A string representing the name of the type to register. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The <ref refid="group___o_c_type_1gae4fcca725e41e7af4659ba4902223981" kindref="member">OCTypeID</ref> assigned to the newly registered type. Returns _kOCNotATypeID if registration fails. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCType.h" line="81" column="10" bodyfile="src/OCType.c" bodystart="48" bodyend="82" declfile="src/OCType.h" declline="81" declcolumn="10"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_type_1ga2b6e5ce9f5cbfbb459569f2188c445b8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void OCRelease</definition>
+        <argsstring>(const void *ptr)</argsstring>
+        <name>OCRelease</name>
+        <param>
+          <type>const void *</type>
+          <declname>ptr</declname>
+        </param>
+        <briefdescription>
+<para>Releases an OCType instance, decrementing its retain count. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>ptr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the OCType instance to release. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCType.h" line="88" column="6" bodyfile="src/OCType.c" bodystart="85" bodyend="99" declfile="src/OCType.h" declline="88" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_type_1ga3a27a5361c9635b95b63a833ea378b91" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>const void *</type>
+        <definition>const void * OCRetain</definition>
+        <argsstring>(const void *ptr)</argsstring>
+        <name>OCRetain</name>
+        <param>
+          <type>const void *</type>
+          <declname>ptr</declname>
+        </param>
+        <briefdescription>
+<para>Retains an OCType instance, incrementing its retain count. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>ptr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the OCType instance to retain. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A pointer to the retained OCType instance (the same as ptr), or NULL if ptr is NULL. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCType.h" line="96" column="12" bodyfile="src/OCType.c" bodystart="102" bodyend="114" declfile="src/OCType.h" declline="96" declcolumn="12"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_type_1ga59cd1c60d2487296ea3032c4de8adc0e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+        <definition>OCStringRef OCTypeCopyFormattingDesc</definition>
+        <argsstring>(const void *ptr)</argsstring>
+        <name>OCTypeCopyFormattingDesc</name>
+        <param>
+          <type>const void *</type>
+          <declname>ptr</declname>
+        </param>
+        <briefdescription>
+<para>Creates a string representation of an OCType instance suitable for formatting. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>ptr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the OCType instance. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>An <ref refid="group___o_c_type_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref> containing the formatted description. Returns NULL if ptr is NULL. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCType.h" line="111" column="13" bodyfile="src/OCType.c" bodystart="117" bodyend="122" declfile="src/OCType.h" declline="111" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_type_1ga1935a8db7fe65f4b4801431a6bc4138b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+        <definition>OCStringRef OCCopyDescription</definition>
+        <argsstring>(const void *ptr)</argsstring>
+        <name>OCCopyDescription</name>
+        <param>
+          <type>const void *</type>
+          <declname>ptr</declname>
+        </param>
+        <briefdescription>
+<para>Creates a descriptive string representation of an OCType instance. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>ptr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the OCType instance. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>An <ref refid="group___o_c_type_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref> containing the description. Returns NULL if ptr is NULL. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCType.h" line="120" column="13" bodyfile="src/OCType.c" bodystart="125" bodyend="143" declfile="src/OCType.h" declline="120" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_type_1ga96a3a96939e2701c7df9bc30eaa1a2df" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_type_1gae4fcca725e41e7af4659ba4902223981" kindref="member">OCTypeID</ref></type>
+        <definition>OCTypeID OCGetTypeID</definition>
+        <argsstring>(const void *ptr)</argsstring>
+        <name>OCGetTypeID</name>
+        <param>
+          <type>const void *</type>
+          <declname>ptr</declname>
+        </param>
+        <briefdescription>
+<para>Gets the <ref refid="group___o_c_type_1gae4fcca725e41e7af4659ba4902223981" kindref="member">OCTypeID</ref> of an OCType instance. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>ptr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the OCType instance. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The <ref refid="group___o_c_type_1gae4fcca725e41e7af4659ba4902223981" kindref="member">OCTypeID</ref> of the instance, or _kOCNotATypeID if ptr is NULL. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCType.h" line="128" column="10" bodyfile="src/OCType.c" bodystart="146" bodyend="156" declfile="src/OCType.h" declline="128" declcolumn="10"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="define">
+      <memberdef kind="define" id="group___o_c_type_1ga89ba75a2ebc9795cbe6fe88902913202" prot="public" static="no">
+        <name>IF_NO_OBJECT_EXISTS_RETURN</name>
+        <param><defname>OBJECT</defname></param>
+        <param><defname>X</defname></param>
+        <initializer>if(NULL==OBJECT) {printf(&quot;*** WARNING - %s - object doesn&apos;t exist.\n&quot;,__func__); return X;}</initializer>
+        <briefdescription>
+<para>Macro to check if an object is NULL and return a specified value if it is. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>OBJECT</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The object to check. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>X</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The value to return if OBJECT is NULL. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCType.h" line="26" column="9" bodyfile="src/OCType.h" bodystart="26" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Core type definitions and memory management functions. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

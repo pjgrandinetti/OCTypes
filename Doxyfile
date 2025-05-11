@@ -1,0 +1,48 @@
+# Doxyfile 1.9.1
+
+# Project related settings
+PROJECT_NAME           = "OCTypes"
+PROJECT_NUMBER         = "0.1.0"
+OUTPUT_DIRECTORY       = doxygen
+CREATE_SUBDIRS         = NO
+
+# Input settings
+INPUT                  = src
+FILE_PATTERNS          = *.h *.c
+RECURSIVE              = YES
+
+# Build related settings
+EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = YES
+EXTRACT_STATIC         = YES
+EXTRACT_LOCAL_CLASSES  = YES
+EXTRACT_ANON_NSPACES   = YES
+
+# Documentation related settings
+GENERATE_HTML          = YES
+GENERATE_LATEX         = NO
+GENERATE_XML           = YES
+
+# HTML related settings
+HTML_OUTPUT            = html
+HTML_DYNAMIC_SECTIONS  = YES
+
+# XML related settings
+XML_OUTPUT             = xml
+XML_PROGRAMLISTING     = YES
+
+# Warnings and messages
+WARNINGS               = YES
+WARN_IF_UNDOCUMENTED   = YES
+WARN_NO_PARAMDOC       = YES
+
+# Preprocessor settings
+ENABLE_PREPROCESSING   = YES
+MACRO_EXPANSION        = YES
+EXPAND_ONLY_PREDEF     = NO
+SKIP_FUNCTION_MACROS   = NO
+
+# Dot settings (for graphs)
+HAVE_DOT               = NO
+
+INTERNAL_DOCS = NO

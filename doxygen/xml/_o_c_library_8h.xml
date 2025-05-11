@@ -1,0 +1,510 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+  <compounddef id="_o_c_library_8h" kind="file" language="C++">
+    <compoundname>OCLibrary.h</compoundname>
+    <includes local="no">sys/types.h</includes>
+    <includes local="no">stdarg.h</includes>
+    <includes local="no">assert.h</includes>
+    <includes local="no">ctype.h</includes>
+    <includes local="no">errno.h</includes>
+    <includes local="no">float.h</includes>
+    <includes local="no">limits.h</includes>
+    <includes local="no">locale.h</includes>
+    <includes local="no">math.h</includes>
+    <includes local="no">complex.h</includes>
+    <includes local="no">setjmp.h</includes>
+    <includes local="no">signal.h</includes>
+    <includes local="no">stddef.h</includes>
+    <includes local="no">stdio.h</includes>
+    <includes local="no">stdlib.h</includes>
+    <includes local="no">string.h</includes>
+    <includes local="no">time.h</includes>
+    <includes local="no">inttypes.h</includes>
+    <includes local="no">stdbool.h</includes>
+    <includes local="no">stdint.h</includes>
+    <includes refid="_o_c_math_8h" local="yes">OCMath.h</includes>
+    <includes refid="_o_c_autorelease_pool_8h" local="yes">OCAutoreleasePool.h</includes>
+    <includes refid="_o_c_type_8h" local="yes">OCType.h</includes>
+    <includes refid="_o_c_string_8h" local="yes">OCString.h</includes>
+    <includes refid="_o_c_data_8h" local="yes">OCData.h</includes>
+    <includes refid="_o_c_boolean_8h" local="yes">OCBoolean.h</includes>
+    <includes refid="_o_c_number_8h" local="yes">OCNumber.h</includes>
+    <includes refid="_o_c_dictionary_8h" local="yes">OCDictionary.h</includes>
+    <includes refid="_o_c_array_8h" local="yes">OCArray.h</includes>
+    <includedby refid="_o_c_array_8c" local="yes">src/OCArray.c</includedby>
+    <includedby refid="_o_c_array_8h" local="yes">src/OCArray.h</includedby>
+    <includedby refid="_o_c_autorelease_pool_8c" local="yes">src/OCAutoreleasePool.c</includedby>
+    <includedby refid="_o_c_autorelease_pool_8h" local="yes">src/OCAutoreleasePool.h</includedby>
+    <includedby refid="_o_c_boolean_8c" local="yes">src/OCBoolean.c</includedby>
+    <includedby refid="_o_c_boolean_8h" local="yes">src/OCBoolean.h</includedby>
+    <includedby refid="_o_c_data_8c" local="yes">src/OCData.c</includedby>
+    <includedby refid="_o_c_data_8h" local="yes">src/OCData.h</includedby>
+    <includedby refid="_o_c_dictionary_8c" local="yes">src/OCDictionary.c</includedby>
+    <includedby refid="_o_c_dictionary_8h" local="yes">src/OCDictionary.h</includedby>
+    <includedby refid="_o_c_math_8c" local="yes">src/OCMath.c</includedby>
+    <includedby refid="_o_c_math_8h" local="yes">src/OCMath.h</includedby>
+    <includedby refid="_o_c_number_8c" local="yes">src/OCNumber.c</includedby>
+    <includedby refid="_o_c_number_8h" local="yes">src/OCNumber.h</includedby>
+    <includedby refid="_o_c_string_8c" local="yes">src/OCString.c</includedby>
+    <includedby refid="_o_c_string_8h" local="yes">src/OCString.h</includedby>
+    <includedby refid="_o_c_type_8c" local="yes">src/OCType.c</includedby>
+    <includedby refid="_o_c_type_8h" local="yes">src/OCType.h</includedby>
+    <incdepgraph>
+      <node id="30">
+        <label>OCArray.h</label>
+        <link refid="_o_c_array_8h"/>
+        <childnode refid="1" relation="include">
+        </childnode>
+      </node>
+      <node id="23">
+        <label>OCAutoreleasePool.h</label>
+        <link refid="_o_c_autorelease_pool_8h"/>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="1" relation="include">
+        </childnode>
+      </node>
+      <node id="27">
+        <label>OCBoolean.h</label>
+        <link refid="_o_c_boolean_8h"/>
+        <childnode refid="1" relation="include">
+        </childnode>
+      </node>
+      <node id="26">
+        <label>OCData.h</label>
+        <link refid="_o_c_data_8h"/>
+        <childnode refid="1" relation="include">
+        </childnode>
+      </node>
+      <node id="29">
+        <label>OCDictionary.h</label>
+        <link refid="_o_c_dictionary_8h"/>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="1" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>src/OCLibrary.h</label>
+        <link refid="_o_c_library_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+        <childnode refid="29" relation="include">
+        </childnode>
+        <childnode refid="30" relation="include">
+        </childnode>
+      </node>
+      <node id="22">
+        <label>OCMath.h</label>
+        <link refid="_o_c_math_8h"/>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="1" relation="include">
+        </childnode>
+      </node>
+      <node id="28">
+        <label>OCNumber.h</label>
+        <link refid="_o_c_number_8h"/>
+        <childnode refid="1" relation="include">
+        </childnode>
+      </node>
+      <node id="25">
+        <label>OCString.h</label>
+        <link refid="_o_c_string_8h"/>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="1" relation="include">
+        </childnode>
+      </node>
+      <node id="24">
+        <label>OCType.h</label>
+        <link refid="_o_c_type_8h"/>
+        <childnode refid="1" relation="include">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>assert.h</label>
+      </node>
+      <node id="11">
+        <label>complex.h</label>
+      </node>
+      <node id="5">
+        <label>ctype.h</label>
+      </node>
+      <node id="6">
+        <label>errno.h</label>
+      </node>
+      <node id="7">
+        <label>float.h</label>
+      </node>
+      <node id="19">
+        <label>inttypes.h</label>
+      </node>
+      <node id="8">
+        <label>limits.h</label>
+      </node>
+      <node id="9">
+        <label>locale.h</label>
+      </node>
+      <node id="10">
+        <label>math.h</label>
+      </node>
+      <node id="12">
+        <label>setjmp.h</label>
+      </node>
+      <node id="13">
+        <label>signal.h</label>
+      </node>
+      <node id="3">
+        <label>stdarg.h</label>
+      </node>
+      <node id="20">
+        <label>stdbool.h</label>
+      </node>
+      <node id="14">
+        <label>stddef.h</label>
+      </node>
+      <node id="21">
+        <label>stdint.h</label>
+      </node>
+      <node id="15">
+        <label>stdio.h</label>
+      </node>
+      <node id="16">
+        <label>stdlib.h</label>
+      </node>
+      <node id="17">
+        <label>string.h</label>
+      </node>
+      <node id="2">
+        <label>sys/types.h</label>
+      </node>
+      <node id="18">
+        <label>time.h</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="2">
+        <label>src/OCArray.c</label>
+        <link refid="_o_c_array_8c"/>
+      </node>
+      <node id="3">
+        <label>src/OCArray.h</label>
+        <link refid="_o_c_array_8h"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="1" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>src/OCAutoreleasePool.c</label>
+        <link refid="_o_c_autorelease_pool_8c"/>
+      </node>
+      <node id="6">
+        <label>src/OCAutoreleasePool.h</label>
+        <link refid="_o_c_autorelease_pool_8h"/>
+        <childnode refid="1" relation="include">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>src/OCBoolean.c</label>
+        <link refid="_o_c_boolean_8c"/>
+      </node>
+      <node id="8">
+        <label>src/OCBoolean.h</label>
+        <link refid="_o_c_boolean_8h"/>
+        <childnode refid="1" relation="include">
+        </childnode>
+      </node>
+      <node id="9">
+        <label>src/OCData.c</label>
+        <link refid="_o_c_data_8c"/>
+      </node>
+      <node id="10">
+        <label>src/OCData.h</label>
+        <link refid="_o_c_data_8h"/>
+        <childnode refid="1" relation="include">
+        </childnode>
+      </node>
+      <node id="11">
+        <label>src/OCDictionary.c</label>
+        <link refid="_o_c_dictionary_8c"/>
+      </node>
+      <node id="4">
+        <label>src/OCDictionary.h</label>
+        <link refid="_o_c_dictionary_8h"/>
+        <childnode refid="1" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>src/OCLibrary.h</label>
+        <link refid="_o_c_library_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+      </node>
+      <node id="12">
+        <label>src/OCMath.c</label>
+        <link refid="_o_c_math_8c"/>
+      </node>
+      <node id="13">
+        <label>src/OCMath.h</label>
+        <link refid="_o_c_math_8h"/>
+        <childnode refid="1" relation="include">
+        </childnode>
+      </node>
+      <node id="14">
+        <label>src/OCNumber.c</label>
+        <link refid="_o_c_number_8c"/>
+      </node>
+      <node id="15">
+        <label>src/OCNumber.h</label>
+        <link refid="_o_c_number_8h"/>
+        <childnode refid="1" relation="include">
+        </childnode>
+      </node>
+      <node id="16">
+        <label>src/OCString.c</label>
+        <link refid="_o_c_string_8c"/>
+      </node>
+      <node id="17">
+        <label>src/OCString.h</label>
+        <link refid="_o_c_string_8h"/>
+        <childnode refid="1" relation="include">
+        </childnode>
+      </node>
+      <node id="18">
+        <label>src/OCType.c</label>
+        <link refid="_o_c_type_8c"/>
+      </node>
+      <node id="19">
+        <label>src/OCType.h</label>
+        <link refid="_o_c_type_8h"/>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="1" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="struct_o_c_range" prot="public">OCRange</innerclass>
+    <sectiondef kind="define">
+      <memberdef kind="define" id="_o_c_library_8h_1ae27da90a1a3c8965d55c1540237f7914" prot="public" static="no">
+        <name>__private_extern__</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCLibrary.h" line="5" column="9" bodyfile="src/OCLibrary.h" bodystart="5" bodyend="-1"/>
+      </memberdef>
+      <member refid="group___o_c_library_1ga6dff3711fe4e5834725c878f3bf8be28" kind="define"><name>OC_INLINE</name></member>
+    </sectiondef>
+    <sectiondef kind="enum">
+      <member refid="group___o_c_library_1ga395ff068e826f2b8cdaab226094399c8" kind="enum"><name>OCComparisonResult</name></member>
+      <member refid="group___o_c_library_1ga385dfa16197af8e68314641ea310dbcc" kind="enum"><name></name></member>
+      <member refid="group___o_c_library_1ga2b5dedc4f9f85dc0adfa613e2c9390f6" kind="enum"><name></name></member>
+    </sectiondef>
+    <sectiondef kind="typedef">
+      <member refid="group___o_c_library_1gad3c1fe9c3645b51d58ebe220a3c34945" kind="typedef"><name>OCComparisonResult</name></member>
+      <member refid="group___o_c_library_1ga84ac0c9947faa8de6dbb81352513c1f7" kind="typedef"><name>OCComparatorFunction</name></member>
+      <member refid="group___o_c_library_1ga927ba9e9deb9b3363a3dbb6f7b3368bf" kind="typedef"><name>OCOptionFlags</name></member>
+      <member refid="group___o_c_library_1ga8cf127efce721c11c176225d4e73d0fe" kind="typedef"><name>OCStringCompareFlags</name></member>
+    </sectiondef>
+    <sectiondef kind="func">
+      <member refid="group___o_c_library_1gab90103f8c1c85fc0e399ef780e7f0a39" kind="function"><name>OCRangeMake</name></member>
+      <member refid="group___o_c_library_1gab349757cfd4f6c32c1eee05dcddb0a9d" kind="function"><name>OCLibraryTeardown</name></member>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#ifndef<sp/>OCLibrary_h</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>OCLibrary_h</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>__private_extern__</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5" refid="_o_c_library_8h_1ae27da90a1a3c8965d55c1540237f7914" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>__private_extern__</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;sys/types.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;stdarg.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;assert.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;ctype.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;errno.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;float.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;limits.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;locale.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;math.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;complex.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;setjmp.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;signal.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;stddef.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;stdio.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;stdlib.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;string.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;time.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;inttypes.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;stdbool.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;stdint.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight></codeline>
+<codeline lineno="38" refid="group___o_c_library_1ga395ff068e826f2b8cdaab226094399c8" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/><ref refid="group___o_c_library_1ga395ff068e826f2b8cdaab226094399c8" kindref="member">OCComparisonResult</ref><sp/>{</highlight></codeline>
+<codeline lineno="39" refid="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8a925b5b072d953695f3828c0a8d15aec1" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8a925b5b072d953695f3828c0a8d15aec1" kindref="member">kOCCompareLessThan</ref><sp/>=<sp/>-1,<sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="40" refid="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8a1814420156dc0303801cb9129b10dc55" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8a1814420156dc0303801cb9129b10dc55" kindref="member">kOCCompareEqualTo</ref><sp/>=<sp/>0,<sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="41" refid="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8a24fbed20d0eee7cfa1896986afdb8f50" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8a24fbed20d0eee7cfa1896986afdb8f50" kindref="member">kOCCompareGreaterThan</ref><sp/>=<sp/>1,<sp/></highlight></codeline>
+<codeline lineno="42" refid="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8a6a20be58886934dd284523ec8c730817" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8a6a20be58886934dd284523ec8c730817" kindref="member">kOCCompareUnequalDimensionalities</ref><sp/>=<sp/>2,<sp/></highlight></codeline>
+<codeline lineno="43" refid="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8ad8bd015df3d3fc1ebcdb98d79cf88e65" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8ad8bd015df3d3fc1ebcdb98d79cf88e65" kindref="member">kOCCompareNoSingleValue</ref><sp/>=<sp/>3,<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="44" refid="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8a060162bcc3cc25c32d55febab78a2567" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8a060162bcc3cc25c32d55febab78a2567" kindref="member">kOCCompareError</ref><sp/>=<sp/>99<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="45" refid="group___o_c_library_1gad3c1fe9c3645b51d58ebe220a3c34945" refkind="member"><highlight class="normal">}<sp/><ref refid="group___o_c_library_1ga395ff068e826f2b8cdaab226094399c8" kindref="member">OCComparisonResult</ref>;</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight></codeline>
+<codeline lineno="55" refid="group___o_c_library_1ga84ac0c9947faa8de6dbb81352513c1f7" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="group___o_c_library_1ga395ff068e826f2b8cdaab226094399c8" kindref="member">OCComparisonResult</ref><sp/>(*<sp/><ref refid="group___o_c_library_1ga84ac0c9947faa8de6dbb81352513c1f7" kindref="member">OCComparatorFunction</ref>)(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*val1,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*val2,<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*context);</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"></highlight></codeline>
+<codeline lineno="57" refid="group___o_c_library_1ga927ba9e9deb9b3363a3dbb6f7b3368bf" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/><ref refid="group___o_c_library_1ga927ba9e9deb9b3363a3dbb6f7b3368bf" kindref="member">OCOptionFlags</ref>;</highlight></codeline>
+<codeline lineno="58"><highlight class="normal"></highlight></codeline>
+<codeline lineno="63"><highlight class="normal"></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="64" refid="group___o_c_library_1gga385dfa16197af8e68314641ea310dbcca23905f8ecbab119b20d3f4412b2b520a" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_library_1gga385dfa16197af8e68314641ea310dbcca23905f8ecbab119b20d3f4412b2b520a" kindref="member">kOCCompareCaseInsensitive</ref><sp/>=<sp/>1,<sp/></highlight></codeline>
+<codeline lineno="65" refid="group___o_c_library_1gga385dfa16197af8e68314641ea310dbcca358f36498760fb4e0ad3b725db60b6a2" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_library_1gga385dfa16197af8e68314641ea310dbcca358f36498760fb4e0ad3b725db60b6a2" kindref="member">kOCCompareBackwards</ref><sp/>=<sp/>4,<sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="66" refid="group___o_c_library_1gga385dfa16197af8e68314641ea310dbcca6450506627df0a0e2f2440706bef074b" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_library_1gga385dfa16197af8e68314641ea310dbcca6450506627df0a0e2f2440706bef074b" kindref="member">kOCCompareAnchored</ref><sp/>=<sp/>8,<sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="67" refid="group___o_c_library_1gga385dfa16197af8e68314641ea310dbcca76a1f628cedc68840262d0fe2b8d1783" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_library_1gga385dfa16197af8e68314641ea310dbcca76a1f628cedc68840262d0fe2b8d1783" kindref="member">kOCCompareNonliteral</ref><sp/>=<sp/>16,<sp/><sp/></highlight></codeline>
+<codeline lineno="68" refid="group___o_c_library_1gga385dfa16197af8e68314641ea310dbcca22a92cfc56dbefcb689f436d6c36a288" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_library_1gga385dfa16197af8e68314641ea310dbcca22a92cfc56dbefcb689f436d6c36a288" kindref="member">kOCCompareLocalized</ref><sp/>=<sp/>32,<sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="69" refid="group___o_c_library_1gga385dfa16197af8e68314641ea310dbccabec5d30d60366d270e2c61cb06e05879" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_library_1gga385dfa16197af8e68314641ea310dbccabec5d30d60366d270e2c61cb06e05879" kindref="member">kOCCompareNumerically</ref><sp/>=<sp/>64,<sp/></highlight></codeline>
+<codeline lineno="70" refid="group___o_c_library_1gga385dfa16197af8e68314641ea310dbcca2bf121d2bc3aef98d8c9b683b79aa12e" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_library_1gga385dfa16197af8e68314641ea310dbcca2bf121d2bc3aef98d8c9b683b79aa12e" kindref="member">kOCCompareDiacriticInsensitive</ref><sp/>=<sp/>128,<sp/></highlight></codeline>
+<codeline lineno="71" refid="group___o_c_library_1gga385dfa16197af8e68314641ea310dbcca04d52548782f8fdc716f614ddde535d6" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_library_1gga385dfa16197af8e68314641ea310dbcca04d52548782f8fdc716f614ddde535d6" kindref="member">kOCCompareWidthInsensitive</ref><sp/>=<sp/>256,<sp/></highlight></codeline>
+<codeline lineno="72" refid="group___o_c_library_1gga385dfa16197af8e68314641ea310dbcca03ec9021871285d6f98e91917ff11c40" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_library_1gga385dfa16197af8e68314641ea310dbcca03ec9021871285d6f98e91917ff11c40" kindref="member">kOCCompareForcedOrdering</ref><sp/>=<sp/>512<sp/></highlight></codeline>
+<codeline lineno="73"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="74" refid="group___o_c_library_1ga8cf127efce721c11c176225d4e73d0fe" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="group___o_c_library_1ga927ba9e9deb9b3363a3dbb6f7b3368bf" kindref="member">OCOptionFlags</ref><sp/><ref refid="group___o_c_library_1ga8cf127efce721c11c176225d4e73d0fe" kindref="member">OCStringCompareFlags</ref>;<sp/></highlight></codeline>
+<codeline lineno="75"><highlight class="normal"></highlight></codeline>
+<codeline lineno="79"><highlight class="normal"></highlight><highlight class="keyword">enum</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="80" refid="group___o_c_library_1gga2b5dedc4f9f85dc0adfa613e2c9390f6ac31ad48d6d50a07bb4e06453a984c3d5" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_library_1gga2b5dedc4f9f85dc0adfa613e2c9390f6ac31ad48d6d50a07bb4e06453a984c3d5" kindref="member">kOCCompareDiacriticsInsensitive</ref><sp/>=<sp/>128,<sp/></highlight></codeline>
+<codeline lineno="81" refid="group___o_c_library_1gga2b5dedc4f9f85dc0adfa613e2c9390f6a7a4cf0f10da127c0eb04e3ec2fad287e" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_library_1gga2b5dedc4f9f85dc0adfa613e2c9390f6a7a4cf0f10da127c0eb04e3ec2fad287e" kindref="member">kOCCompareDiacriticsInsensitiveCompatibilityMask</ref><sp/>=<sp/>((1<sp/>&lt;&lt;<sp/>28)|<ref refid="group___o_c_library_1gga385dfa16197af8e68314641ea310dbcca2bf121d2bc3aef98d8c9b683b79aa12e" kindref="member">kOCCompareDiacriticInsensitive</ref>),<sp/></highlight></codeline>
+<codeline lineno="82"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="83"><highlight class="normal"></highlight></codeline>
+<codeline lineno="84"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>!defined(OC_INLINE)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="85" refid="group___o_c_library_1ga6dff3711fe4e5834725c878f3bf8be28" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>OC_INLINE<sp/>static<sp/>__inline__</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="86"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="87"><highlight class="normal"></highlight></codeline>
+<codeline lineno="94" refid="struct_o_c_range" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">{</highlight></codeline>
+<codeline lineno="95" refid="struct_o_c_range_1a87a770d78d123ad882ce0d68803d5be5" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>uint64_t<sp/><ref refid="struct_o_c_range_1a87a770d78d123ad882ce0d68803d5be5" kindref="member">location</ref>;<sp/></highlight></codeline>
+<codeline lineno="96" refid="struct_o_c_range_1a0dbaf7f02ff7918232ed7892c9d4eafd" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>uint64_t<sp/><ref refid="struct_o_c_range_1a0dbaf7f02ff7918232ed7892c9d4eafd" kindref="member">length</ref>;<sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="97"><highlight class="normal">}<sp/><ref refid="struct_o_c_range" kindref="compound">OCRange</ref>;</highlight></codeline>
+<codeline lineno="98"><highlight class="normal"></highlight></codeline>
+<codeline lineno="99"><highlight class="normal"></highlight><highlight class="preprocessor">#if<sp/>defined(OC_INLINE)</highlight><highlight class="preprocessor"></highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="107" refid="group___o_c_library_1gab90103f8c1c85fc0e399ef780e7f0a39" refkind="member"><highlight class="normal"><ref refid="group___o_c_library_1ga6dff3711fe4e5834725c878f3bf8be28" kindref="member">OC_INLINE</ref><sp/><ref refid="struct_o_c_range" kindref="compound">OCRange</ref><sp/><ref refid="group___o_c_library_1gab90103f8c1c85fc0e399ef780e7f0a39" kindref="member">OCRangeMake</ref>(uint64_t<sp/>loc,<sp/>uint64_t<sp/>len)<sp/>{</highlight></codeline>
+<codeline lineno="108"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="struct_o_c_range" kindref="compound">OCRange</ref><sp/>range;</highlight></codeline>
+<codeline lineno="109"><highlight class="normal"><sp/><sp/><sp/><sp/>range.<ref refid="struct_o_c_range_1a87a770d78d123ad882ce0d68803d5be5" kindref="member">location</ref><sp/>=<sp/>loc;</highlight></codeline>
+<codeline lineno="110"><highlight class="normal"><sp/><sp/><sp/><sp/>range.<ref refid="struct_o_c_range_1a0dbaf7f02ff7918232ed7892c9d4eafd" kindref="member">length</ref><sp/>=<sp/>len;</highlight></codeline>
+<codeline lineno="111"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>range;</highlight></codeline>
+<codeline lineno="112"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="113"><highlight class="normal"></highlight><highlight class="preprocessor">#else</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="114"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>OCRangeMake(LOC,<sp/>LEN)<sp/>__OCRangeMake(LOC,<sp/>LEN)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="115"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="116"><highlight class="normal"></highlight></codeline>
+<codeline lineno="117"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_o_c_math_8h" kindref="compound">OCMath.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="118"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_o_c_autorelease_pool_8h" kindref="compound">OCAutoreleasePool.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="119"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_o_c_type_8h" kindref="compound">OCType.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="120"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_o_c_string_8h" kindref="compound">OCString.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="121"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_o_c_data_8h" kindref="compound">OCData.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="122"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_o_c_boolean_8h" kindref="compound">OCBoolean.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="123"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_o_c_number_8h" kindref="compound">OCNumber.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="124"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_o_c_dictionary_8h" kindref="compound">OCDictionary.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="125"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_o_c_array_8h" kindref="compound">OCArray.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="126"><highlight class="normal"></highlight></codeline>
+<codeline lineno="130" refid="group___o_c_library_1gab349757cfd4f6c32c1eee05dcddb0a9d" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group___o_c_library_1gab349757cfd4f6c32c1eee05dcddb0a9d" kindref="member">OCLibraryTeardown</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="131"><highlight class="normal"><sp/></highlight><highlight class="comment">//<sp/>end<sp/>of<sp/>OCLibrary<sp/>group</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="133"><highlight class="normal"></highlight></codeline>
+<codeline lineno="134"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>OCLibrary_h<sp/>*/</highlight><highlight class="preprocessor"></highlight></codeline>
+    </programlisting>
+    <location file="src/OCLibrary.h"/>
+  </compounddef>
+</doxygen>

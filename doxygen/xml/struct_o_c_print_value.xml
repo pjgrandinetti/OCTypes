@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+  <compounddef id="struct_o_c_print_value" kind="struct" language="C++" prot="public">
+    <compoundname>OCPrintValue</compoundname>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_o_c_print_value_1adcf26907e07ed73aebfccdb605c85d8c" prot="public" static="no" mutable="no">
+        <type>int16_t</type>
+        <definition>int16_t OCPrintValue::type</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <qualifiedname>OCPrintValue::type</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCString.c" line="904" column="13" bodyfile="src/OCString.c" bodystart="904" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_o_c_print_value_1ae4ad1bb7801a2919d0e83deb5d7bf682" prot="public" static="no" mutable="no">
+        <type>int16_t</type>
+        <definition>int16_t OCPrintValue::size</definition>
+        <argsstring></argsstring>
+        <name>size</name>
+        <qualifiedname>OCPrintValue::size</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCString.c" line="905" column="13" bodyfile="src/OCString.c" bodystart="905" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_o_c_print_value_1a48f0178cfadbe692e6542ebe0bd09ca4" prot="public" static="no" mutable="no">
+        <type>int64_t</type>
+        <definition>int64_t OCPrintValue::int64Value</definition>
+        <argsstring></argsstring>
+        <name>int64Value</name>
+        <qualifiedname>OCPrintValue::int64Value</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCString.c" line="907" column="17" bodyfile="src/OCString.c" bodystart="907" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_o_c_print_value_1a930bbbb7877ec2a0435748e45eb68a1b" prot="public" static="no" mutable="no">
+        <type>double</type>
+        <definition>double OCPrintValue::doubleValue</definition>
+        <argsstring></argsstring>
+        <name>doubleValue</name>
+        <qualifiedname>OCPrintValue::doubleValue</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCString.c" line="908" column="16" bodyfile="src/OCString.c" bodystart="908" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_o_c_print_value_1a6e00be04da80a8d52b56048c59f36402" prot="public" static="no" mutable="no">
+        <type>void *</type>
+        <definition>void* OCPrintValue::pointerValue</definition>
+        <argsstring></argsstring>
+        <name>pointerValue</name>
+        <qualifiedname>OCPrintValue::pointerValue</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCString.c" line="909" column="14" bodyfile="src/OCString.c" bodystart="909" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_o_c_print_value_1a9f2dd7411bbdd1c6f56674fa633da6ef" prot="public" static="no" mutable="no">
+        <type>union <ref refid="struct_o_c_print_value" kindref="compound">OCPrintValue</ref></type>
+        <definition>union OCPrintValue OCPrintValue::value</definition>
+        <argsstring></argsstring>
+        <name>value</name>
+        <qualifiedname>OCPrintValue::value</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCString.c" line="910" column="11"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="src/OCString.c" line="903" column="1" bodyfile="src/OCString.c" bodystart="903" bodyend="911"/>
+    <listofallmembers>
+      <member refid="struct_o_c_print_value_1a930bbbb7877ec2a0435748e45eb68a1b" prot="public" virt="non-virtual"><scope>OCPrintValue</scope><name>doubleValue</name></member>
+      <member refid="struct_o_c_print_value_1a48f0178cfadbe692e6542ebe0bd09ca4" prot="public" virt="non-virtual"><scope>OCPrintValue</scope><name>int64Value</name></member>
+      <member refid="struct_o_c_print_value_1a6e00be04da80a8d52b56048c59f36402" prot="public" virt="non-virtual"><scope>OCPrintValue</scope><name>pointerValue</name></member>
+      <member refid="struct_o_c_print_value_1ae4ad1bb7801a2919d0e83deb5d7bf682" prot="public" virt="non-virtual"><scope>OCPrintValue</scope><name>size</name></member>
+      <member refid="struct_o_c_print_value_1adcf26907e07ed73aebfccdb605c85d8c" prot="public" virt="non-virtual"><scope>OCPrintValue</scope><name>type</name></member>
+      <member refid="struct_o_c_print_value_1a9f2dd7411bbdd1c6f56674fa633da6ef" prot="public" virt="non-virtual"><scope>OCPrintValue</scope><name>value</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

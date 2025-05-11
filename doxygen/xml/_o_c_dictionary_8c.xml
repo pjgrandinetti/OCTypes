@@ -1,0 +1,664 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+  <compounddef id="_o_c_dictionary_8c" kind="file" language="C++">
+    <compoundname>OCDictionary.c</compoundname>
+    <includes refid="_o_c_library_8h" local="yes">OCLibrary.h</includes>
+    <incdepgraph>
+      <node id="31">
+        <label>OCArray.h</label>
+        <link refid="_o_c_array_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="24">
+        <label>OCAutoreleasePool.h</label>
+        <link refid="_o_c_autorelease_pool_8h"/>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="28">
+        <label>OCBoolean.h</label>
+        <link refid="_o_c_boolean_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="27">
+        <label>OCData.h</label>
+        <link refid="_o_c_data_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>src/OCDictionary.c</label>
+        <link refid="_o_c_dictionary_8c"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="30">
+        <label>OCDictionary.h</label>
+        <link refid="_o_c_dictionary_8h"/>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="31" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>OCLibrary.h</label>
+        <link refid="_o_c_library_8h"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+        <childnode refid="29" relation="include">
+        </childnode>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="31" relation="include">
+        </childnode>
+      </node>
+      <node id="23">
+        <label>OCMath.h</label>
+        <link refid="_o_c_math_8h"/>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="29">
+        <label>OCNumber.h</label>
+        <link refid="_o_c_number_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="26">
+        <label>OCString.h</label>
+        <link refid="_o_c_string_8h"/>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="25">
+        <label>OCType.h</label>
+        <link refid="_o_c_type_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>assert.h</label>
+      </node>
+      <node id="12">
+        <label>complex.h</label>
+      </node>
+      <node id="6">
+        <label>ctype.h</label>
+      </node>
+      <node id="7">
+        <label>errno.h</label>
+      </node>
+      <node id="8">
+        <label>float.h</label>
+      </node>
+      <node id="20">
+        <label>inttypes.h</label>
+      </node>
+      <node id="9">
+        <label>limits.h</label>
+      </node>
+      <node id="10">
+        <label>locale.h</label>
+      </node>
+      <node id="11">
+        <label>math.h</label>
+      </node>
+      <node id="13">
+        <label>setjmp.h</label>
+      </node>
+      <node id="14">
+        <label>signal.h</label>
+      </node>
+      <node id="4">
+        <label>stdarg.h</label>
+      </node>
+      <node id="21">
+        <label>stdbool.h</label>
+      </node>
+      <node id="15">
+        <label>stddef.h</label>
+      </node>
+      <node id="22">
+        <label>stdint.h</label>
+      </node>
+      <node id="16">
+        <label>stdio.h</label>
+      </node>
+      <node id="17">
+        <label>stdlib.h</label>
+      </node>
+      <node id="18">
+        <label>string.h</label>
+      </node>
+      <node id="3">
+        <label>sys/types.h</label>
+      </node>
+      <node id="19">
+        <label>time.h</label>
+      </node>
+    </incdepgraph>
+    <innerclass refid="struct_____o_c_dictionary" prot="public">__OCDictionary</innerclass>
+    <sectiondef kind="var">
+      <memberdef kind="variable" id="_o_c_dictionary_8c_1a61b229753dda8e69781816b240002b22" prot="public" static="yes" mutable="no">
+        <type><ref refid="group___o_c_type_1gae4fcca725e41e7af4659ba4902223981" kindref="member">OCTypeID</ref></type>
+        <definition>OCTypeID kOCDictionaryID</definition>
+        <argsstring></argsstring>
+        <name>kOCDictionaryID</name>
+        <initializer>= <ref refid="group___o_c_type_1ggad248aac9bbfa64d39561aaaea4ab5a1eaf0ee6bc8529180c1c8e8037431a72de7" kindref="member">_kOCNotATypeID</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCDictionary.c" line="10" column="17" bodyfile="src/OCDictionary.c" bodystart="10" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="_o_c_dictionary_8c_1a6856910b2718dda8d4c33d0709cb3d8f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool __OCDictionaryEqual</definition>
+        <argsstring>(const void *theType1, const void *theType2)</argsstring>
+        <name>__OCDictionaryEqual</name>
+        <param>
+          <type>const void *</type>
+          <declname>theType1</declname>
+        </param>
+        <param>
+          <type>const void *</type>
+          <declname>theType2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCDictionary.c" line="23" column="6" bodyfile="src/OCDictionary.c" bodystart="23" bodyend="45"/>
+      </memberdef>
+      <memberdef kind="function" id="_o_c_dictionary_8c_1a662cf86379fb4ccce5a76824370edd8d" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void __OCDictionaryReleaseValues</definition>
+        <argsstring>(OCDictionaryRef theDictionary)</argsstring>
+        <name>__OCDictionaryReleaseValues</name>
+        <param>
+          <type><ref refid="group___o_c_dictionary_1gaa6826a3d2e9e148e7bbc4df333300257" kindref="member">OCDictionaryRef</ref></type>
+          <declname>theDictionary</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCDictionary.c" line="47" column="13" bodyfile="src/OCDictionary.c" bodystart="47" bodyend="53"/>
+      </memberdef>
+      <memberdef kind="function" id="_o_c_dictionary_8c_1a71fe7129bee5568805518bb8d1b8f960" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void __OCDictionaryRetainValues</definition>
+        <argsstring>(OCDictionaryRef theDictionary)</argsstring>
+        <name>__OCDictionaryRetainValues</name>
+        <param>
+          <type><ref refid="group___o_c_dictionary_1gaa6826a3d2e9e148e7bbc4df333300257" kindref="member">OCDictionaryRef</ref></type>
+          <declname>theDictionary</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCDictionary.c" line="55" column="13" bodyfile="src/OCDictionary.c" bodystart="55" bodyend="60"/>
+      </memberdef>
+      <memberdef kind="function" id="_o_c_dictionary_8c_1acd5e67a8f7c82387b2afc9a04b139f2e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void __OCDictionaryFinalize</definition>
+        <argsstring>(const void *theType)</argsstring>
+        <name>__OCDictionaryFinalize</name>
+        <param>
+          <type>const void *</type>
+          <declname>theType</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCDictionary.c" line="62" column="6" bodyfile="src/OCDictionary.c" bodystart="62" bodyend="72"/>
+      </memberdef>
+      <member refid="group___o_c_dictionary_1gafd5dc6c3e55e6caf5924a7496e9e3ac3" kind="function"><name>OCDictionaryGetTypeID</name></member>
+      <memberdef kind="function" id="_o_c_dictionary_8c_1a988098d3c631a91345460d71a9068f3d" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>struct <ref refid="struct_____o_c_dictionary" kindref="compound">__OCDictionary</ref> *</type>
+        <definition>static struct __OCDictionary * OCDictionaryAllocate</definition>
+        <argsstring>()</argsstring>
+        <name>OCDictionaryAllocate</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCDictionary.c" line="80" column="28" bodyfile="src/OCDictionary.c" bodystart="80" bodyend="90"/>
+      </memberdef>
+      <member refid="group___o_c_dictionary_1ga8ed87aa17072e8099b3ad40a69ee47ef" kind="function"><name>OCDictionaryGetCount</name></member>
+      <memberdef kind="function" id="_o_c_dictionary_8c_1accedad276596b2e0d745e59277e7e296" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_dictionary_1gaa6826a3d2e9e148e7bbc4df333300257" kindref="member">OCDictionaryRef</ref></type>
+        <definition>OCDictionaryRef OCDictionaryCreate</definition>
+        <argsstring>(const void **keys, const void **values, uint64_t numValues)</argsstring>
+        <name>OCDictionaryCreate</name>
+        <param>
+          <type>const void **</type>
+          <declname>keys</declname>
+        </param>
+        <param>
+          <type>const void **</type>
+          <declname>values</declname>
+        </param>
+        <param>
+          <type>uint64_t</type>
+          <declname>numValues</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCDictionary.c" line="100" column="17" bodyfile="src/OCDictionary.c" bodystart="100" bodyend="114"/>
+      </memberdef>
+      <member refid="group___o_c_dictionary_1ga4cff6e7bcd69532df96355d1fe0e35c4" kind="function"><name>OCDictionaryCreateMutable</name></member>
+      <member refid="group___o_c_dictionary_1ga96b8d9d1addb6dbe23cb9194d7cca4cc" kind="function"><name>OCDictionaryCreateCopy</name></member>
+      <member refid="group___o_c_dictionary_1ga3e49d8746bb109d8fad49c9c4a57109a" kind="function"><name>OCDictionaryCreateMutableCopy</name></member>
+      <member refid="group___o_c_dictionary_1ga14954a4cc6e33d4a5376d0eae232a4b6" kind="function"><name>OCDictionaryGetValue</name></member>
+      <member refid="group___o_c_dictionary_1ga4b75ce767832960f198d99067df78bd2" kind="function"><name>OCDictionaryContainsKey</name></member>
+      <memberdef kind="function" id="_o_c_dictionary_8c_1a57ea8a6cb590bf50feca2c054916e16b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int64_t</type>
+        <definition>int64_t OCDictionaryIndexOfKey</definition>
+        <argsstring>(OCDictionaryRef theDictionary, OCStringRef key)</argsstring>
+        <name>OCDictionaryIndexOfKey</name>
+        <param>
+          <type><ref refid="group___o_c_dictionary_1gaa6826a3d2e9e148e7bbc4df333300257" kindref="member">OCDictionaryRef</ref></type>
+          <declname>theDictionary</declname>
+        </param>
+        <param>
+          <type><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref></type>
+          <declname>key</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCDictionary.c" line="153" column="9" bodyfile="src/OCDictionary.c" bodystart="153" bodyend="159"/>
+      </memberdef>
+      <member refid="group___o_c_dictionary_1gaa3fdeb2856a793f706d5a7043d27d50d" kind="function"><name>OCDictionaryContainsValue</name></member>
+      <member refid="group___o_c_dictionary_1gae1e0ea2c05c3bd1502813ef217dbe96b" kind="function"><name>OCDictionaryAddValue</name></member>
+      <member refid="group___o_c_dictionary_1ga3b725d5b5bb2da3a5161c8ff5fbb7f0d" kind="function"><name>OCDictionaryGetKeysAndValues</name></member>
+      <member refid="group___o_c_dictionary_1gab328fd4e26c74ea88d96e97f86745b40" kind="function"><name>OCDictionarySetValue</name></member>
+      <member refid="group___o_c_dictionary_1ga336c8359fbf8f0ea42f0224a43620e3f" kind="function"><name>OCDictionaryReplaceValue</name></member>
+      <member refid="group___o_c_dictionary_1gad8c8c16895fe5f027022dd7d49371f5a" kind="function"><name>OCDictionaryRemoveValue</name></member>
+      <member refid="group___o_c_dictionary_1gab262835ddfd52d604acf688f8e98bd34" kind="function"><name>OCDictionaryGetCountOfValue</name></member>
+      <member refid="group___o_c_dictionary_1ga91ca42e27f0f16784890b06105d8de11" kind="function"><name>OCDictionaryCreateArrayWithAllKeys</name></member>
+      <member refid="group___o_c_dictionary_1ga7b3cb3c2e7e423d482487ebebb51bcce" kind="function"><name>OCDictionaryCreateArrayWithAllValues</name></member>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="comment">//<sp/><sp/>OCDictionary.c</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="comment">//<sp/><sp/>OCTypes</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="comment">//<sp/><sp/>Created<sp/>by<sp/>philip<sp/>on<sp/>4/21/17.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_o_c_library_8h" kindref="compound">OCLibrary.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="group___o_c_type_1gae4fcca725e41e7af4659ba4902223981" kindref="member">OCTypeID</ref><sp/><ref refid="_o_c_dictionary_8c_1a61b229753dda8e69781816b240002b22" kindref="member">kOCDictionaryID</ref><sp/>=<sp/><ref refid="group___o_c_type_1ggad248aac9bbfa64d39561aaaea4ab5a1eaf0ee6bc8529180c1c8e8037431a72de7" kindref="member">_kOCNotATypeID</ref>;</highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="comment">//<sp/>OCDictionary<sp/>Opaque<sp/>Type</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13" refid="struct_____o_c_dictionary" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="struct_____o_c_dictionary" kindref="compound">__OCDictionary</ref><sp/>{</highlight></codeline>
+<codeline lineno="14"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ga66b90fed8dd532198f1a04d294dbaa69" kindref="member">OCBase</ref><sp/><ref refid="struct_____o_c_dictionary_1a0cff9f1f6af19d0e28bc56e23ca7faf2" kindref="member">_base</ref>;</highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>OCDictionary<sp/>Type<sp/>attributes</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"><sp/><sp/><sp/><sp/>uint64_t<sp/><ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref>;</highlight></codeline>
+<codeline lineno="18"><highlight class="normal"><sp/><sp/><sp/><sp/>uint64_t<sp/><ref refid="struct_____o_c_dictionary_1acbaebc0ed3b5b5d6ed59b866751d84fa" kindref="member">capacity</ref>;</highlight></codeline>
+<codeline lineno="19"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref><sp/>*<ref refid="struct_____o_c_dictionary_1a9375c1962785112283f0151a5b9ddc7f" kindref="member">keys</ref>;</highlight></codeline>
+<codeline lineno="20"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ga6acd02149bce3e91fb2fe325ab7f65ed" kindref="member">OCTypeRef</ref><sp/>*<ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref>;</highlight></codeline>
+<codeline lineno="21"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="_o_c_dictionary_8c_1a6856910b2718dda8d4c33d0709cb3d8f" kindref="member">__OCDictionaryEqual</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*<sp/>theType1,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*<sp/>theType2)</highlight></codeline>
+<codeline lineno="24"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="25"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_dictionary_1gaa6826a3d2e9e148e7bbc4df333300257" kindref="member">OCDictionaryRef</ref><sp/>theDictionary1<sp/>=<sp/>(<ref refid="group___o_c_dictionary_1gaa6826a3d2e9e148e7bbc4df333300257" kindref="member">OCDictionaryRef</ref>)<sp/>theType1;</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_dictionary_1gaa6826a3d2e9e148e7bbc4df333300257" kindref="member">OCDictionaryRef</ref><sp/>theDictionary2<sp/>=<sp/>(<ref refid="group___o_c_dictionary_1gaa6826a3d2e9e148e7bbc4df333300257" kindref="member">OCDictionaryRef</ref>)<sp/>theType2;</highlight></codeline>
+<codeline lineno="27"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(theDictionary1-&gt;<ref refid="struct_____o_c_dictionary_1a0cff9f1f6af19d0e28bc56e23ca7faf2" kindref="member">_base</ref>.<ref refid="struct_____o_c_base_1a57413231fb08c0b703e49e3052ebeb33" kindref="member">typeID</ref><sp/>!=<sp/>theDictionary2-&gt;<ref refid="struct_____o_c_dictionary_1a0cff9f1f6af19d0e28bc56e23ca7faf2" kindref="member">_base</ref>.<ref refid="struct_____o_c_base_1a57413231fb08c0b703e49e3052ebeb33" kindref="member">typeID</ref>)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(NULL<sp/>==<sp/>theDictionary1<sp/>||<sp/>NULL<sp/>==<sp/>theDictionary2)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="30"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(theDictionary1<sp/>==<sp/>theDictionary2)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="31"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(theDictionary1-&gt;<ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref><sp/>!=<sp/>theDictionary2-&gt;<ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref>)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="32"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>For<sp/>Dictionaries<sp/>to<sp/>be<sp/>equal<sp/>the<sp/>keys-values<sp/>must<sp/>have<sp/>the<sp/>same<sp/>storage<sp/>order</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>This<sp/>doesn&apos;t<sp/>allow<sp/>dictionaries<sp/>with<sp/>the<sp/>identical<sp/>key-values<sp/>but<sp/>in<sp/>different</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>storage<sp/>to<sp/>be<sp/>equal.<sp/><sp/>Need<sp/>to<sp/>fix<sp/>this.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(uint64_t<sp/>index<sp/>=<sp/>0;<sp/>index<sp/>&lt;<sp/>theDictionary1-&gt;<ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref>;<sp/>index++)<sp/>{</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref><sp/>key1<sp/>=<sp/>theDictionary1-&gt;<ref refid="struct_____o_c_dictionary_1a9375c1962785112283f0151a5b9ddc7f" kindref="member">keys</ref>[index];</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref><sp/>key2<sp/>=<sp/>theDictionary2-&gt;<ref refid="struct_____o_c_dictionary_1a9375c1962785112283f0151a5b9ddc7f" kindref="member">keys</ref>[index];</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(!<ref refid="group___o_c_type_1ga8c0b9dcf81ef80522730223975b821b0" kindref="member">OCTypeEqual</ref>(key1,<sp/>key2))<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ga6acd02149bce3e91fb2fe325ab7f65ed" kindref="member">OCTypeRef</ref><sp/>value1<sp/>=<sp/>theDictionary1-&gt;<ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref>[index];</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ga6acd02149bce3e91fb2fe325ab7f65ed" kindref="member">OCTypeRef</ref><sp/>value2<sp/>=<sp/>theDictionary2-&gt;<ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref>[index];</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(!<ref refid="group___o_c_type_1ga8c0b9dcf81ef80522730223975b821b0" kindref="member">OCTypeEqual</ref>(value1,<sp/>value2))<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="45"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight></codeline>
+<codeline lineno="47"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_o_c_dictionary_8c_1a662cf86379fb4ccce5a76824370edd8d" kindref="member">__OCDictionaryReleaseValues</ref>(<ref refid="group___o_c_dictionary_1gaa6826a3d2e9e148e7bbc4df333300257" kindref="member">OCDictionaryRef</ref><sp/>theDictionary)</highlight></codeline>
+<codeline lineno="48"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="49"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>index<sp/>=<sp/>0;index&lt;<sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref>;<sp/>index++)<sp/>{</highlight></codeline>
+<codeline lineno="50"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ga2b6e5ce9f5cbfbb459569f2188c445b8" kindref="member">OCRelease</ref>(theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref>[index]);</highlight></codeline>
+<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ga2b6e5ce9f5cbfbb459569f2188c445b8" kindref="member">OCRelease</ref>(theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a9375c1962785112283f0151a5b9ddc7f" kindref="member">keys</ref>[index]);</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="53"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="54"><highlight class="normal"></highlight></codeline>
+<codeline lineno="55"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_o_c_dictionary_8c_1a71fe7129bee5568805518bb8d1b8f960" kindref="member">__OCDictionaryRetainValues</ref>(<ref refid="group___o_c_dictionary_1gaa6826a3d2e9e148e7bbc4df333300257" kindref="member">OCDictionaryRef</ref><sp/>theDictionary)</highlight></codeline>
+<codeline lineno="56"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>index<sp/>=<sp/>0;index&lt;<sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref>;<sp/>index++)<sp/>{</highlight></codeline>
+<codeline lineno="58"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ga3a27a5361c9635b95b63a833ea378b91" kindref="member">OCRetain</ref>(<sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref>[index]);</highlight></codeline>
+<codeline lineno="59"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="60"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"></highlight></codeline>
+<codeline lineno="62"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_o_c_dictionary_8c_1acd5e67a8f7c82387b2afc9a04b139f2e" kindref="member">__OCDictionaryFinalize</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*<sp/>theType)</highlight></codeline>
+<codeline lineno="63"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(NULL<sp/>==<sp/>theType)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_dictionary_1gaa6826a3d2e9e148e7bbc4df333300257" kindref="member">OCDictionaryRef</ref><sp/>theDictionary<sp/>=<sp/>(<ref refid="group___o_c_dictionary_1gaa6826a3d2e9e148e7bbc4df333300257" kindref="member">OCDictionaryRef</ref>)<sp/>theType;</highlight></codeline>
+<codeline lineno="66"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_o_c_dictionary_8c_1a662cf86379fb4ccce5a76824370edd8d" kindref="member">__OCDictionaryReleaseValues</ref>(theDictionary);<sp/></highlight><highlight class="comment">//<sp/>This<sp/>correctly<sp/>releases<sp/>all<sp/>keys<sp/>and<sp/>values</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="67"><highlight class="normal"></highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Free<sp/>the<sp/>arrays<sp/>for<sp/>keys<sp/>and<sp/>values,<sp/>and<sp/>the<sp/>dictionary<sp/>structure<sp/>itself</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="69"><highlight class="normal"><sp/><sp/><sp/><sp/>free((</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*)theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a9375c1962785112283f0151a5b9ddc7f" kindref="member">keys</ref>);</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"><sp/><sp/><sp/><sp/>free((</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*)theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref>);</highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/><sp/>free((</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*)theDictionary);<sp/></highlight><highlight class="comment">//<sp/>Cast<sp/>to<sp/>(void*)<sp/>to<sp/>avoid<sp/>qualifier<sp/>discard<sp/>warning</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="72"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"></highlight></codeline>
+<codeline lineno="74"><highlight class="normal"><ref refid="group___o_c_type_1gae4fcca725e41e7af4659ba4902223981" kindref="member">OCTypeID</ref><sp/><ref refid="group___o_c_dictionary_1gafd5dc6c3e55e6caf5924a7496e9e3ac3" kindref="member">OCDictionaryGetTypeID</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">)</highlight></codeline>
+<codeline lineno="75"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(<ref refid="_o_c_dictionary_8c_1a61b229753dda8e69781816b240002b22" kindref="member">kOCDictionaryID</ref><sp/>==<sp/><ref refid="group___o_c_type_1ggad248aac9bbfa64d39561aaaea4ab5a1eaf0ee6bc8529180c1c8e8037431a72de7" kindref="member">_kOCNotATypeID</ref>)<sp/><ref refid="_o_c_dictionary_8c_1a61b229753dda8e69781816b240002b22" kindref="member">kOCDictionaryID</ref><sp/>=<sp/><ref refid="group___o_c_type_1gaf0ec7b8c3f8096a2c8fa560c10a136bf" kindref="member">OCRegisterType</ref>(</highlight><highlight class="stringliteral">&quot;OCDictionary&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="77"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="_o_c_dictionary_8c_1a61b229753dda8e69781816b240002b22" kindref="member">kOCDictionaryID</ref>;</highlight></codeline>
+<codeline lineno="78"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="79"><highlight class="normal"></highlight></codeline>
+<codeline lineno="80"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="struct_____o_c_dictionary" kindref="compound">__OCDictionary</ref><sp/>*<ref refid="_o_c_dictionary_8c_1a988098d3c631a91345460d71a9068f3d" kindref="member">OCDictionaryAllocate</ref>()</highlight></codeline>
+<codeline lineno="81"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="struct_____o_c_dictionary" kindref="compound">__OCDictionary</ref><sp/>*theDictionary<sp/>=<sp/>malloc(</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/><ref refid="struct_____o_c_dictionary" kindref="compound">__OCDictionary</ref>));</highlight></codeline>
+<codeline lineno="83"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(NULL<sp/>==<sp/>theDictionary)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>NULL;</highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><sp/><sp/><sp/><sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a0cff9f1f6af19d0e28bc56e23ca7faf2" kindref="member">_base</ref>.<ref refid="struct_____o_c_base_1a57413231fb08c0b703e49e3052ebeb33" kindref="member">typeID</ref><sp/>=<sp/><ref refid="group___o_c_dictionary_1gafd5dc6c3e55e6caf5924a7496e9e3ac3" kindref="member">OCDictionaryGetTypeID</ref>();</highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/><sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a0cff9f1f6af19d0e28bc56e23ca7faf2" kindref="member">_base</ref>.<ref refid="struct_____o_c_base_1a45d13a42e73d92077e1d3b7f04e08767" kindref="member">retainCount</ref><sp/>=<sp/>1;</highlight></codeline>
+<codeline lineno="86"><highlight class="normal"><sp/><sp/><sp/><sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a0cff9f1f6af19d0e28bc56e23ca7faf2" kindref="member">_base</ref>.<ref refid="struct_____o_c_base_1aa2182da1dc0de45f16e782f94bb43cb7" kindref="member">finalize</ref><sp/>=<sp/><ref refid="_o_c_dictionary_8c_1acd5e67a8f7c82387b2afc9a04b139f2e" kindref="member">__OCDictionaryFinalize</ref>;</highlight></codeline>
+<codeline lineno="87"><highlight class="normal"><sp/><sp/><sp/><sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a0cff9f1f6af19d0e28bc56e23ca7faf2" kindref="member">_base</ref>.<ref refid="struct_____o_c_base_1a3b4bd801666626087c490a016c8353d9" kindref="member">equal</ref><sp/>=<sp/><ref refid="_o_c_dictionary_8c_1a6856910b2718dda8d4c33d0709cb3d8f" kindref="member">__OCDictionaryEqual</ref>;</highlight></codeline>
+<codeline lineno="88"><highlight class="normal"><sp/><sp/><sp/><sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a0cff9f1f6af19d0e28bc56e23ca7faf2" kindref="member">_base</ref>.<ref refid="struct_____o_c_base_1a658977341e9751990f8d323f49d9fbaf" kindref="member">copyFormattingDesc</ref><sp/>=<sp/>NULL;</highlight></codeline>
+<codeline lineno="89"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>theDictionary;</highlight></codeline>
+<codeline lineno="90"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="91"><highlight class="normal"></highlight></codeline>
+<codeline lineno="92"><highlight class="normal"></highlight></codeline>
+<codeline lineno="93"><highlight class="normal">uint64_t<sp/><ref refid="group___o_c_dictionary_1ga8ed87aa17072e8099b3ad40a69ee47ef" kindref="member">OCDictionaryGetCount</ref>(<ref refid="group___o_c_dictionary_1gaa6826a3d2e9e148e7bbc4df333300257" kindref="member">OCDictionaryRef</ref><sp/>theDictionary)</highlight></codeline>
+<codeline lineno="94"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="95"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(NULL<sp/>==<sp/>theDictionary)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>0;</highlight></codeline>
+<codeline lineno="96"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref>;</highlight></codeline>
+<codeline lineno="97"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="98"><highlight class="normal"></highlight></codeline>
+<codeline lineno="99"><highlight class="normal"></highlight></codeline>
+<codeline lineno="100"><highlight class="normal"><ref refid="group___o_c_dictionary_1gaa6826a3d2e9e148e7bbc4df333300257" kindref="member">OCDictionaryRef</ref><sp/><ref refid="_o_c_dictionary_8c_1accedad276596b2e0d745e59277e7e296" kindref="member">OCDictionaryCreate</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>**<ref refid="struct_____o_c_dictionary_1a9375c1962785112283f0151a5b9ddc7f" kindref="member">keys</ref>,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>**<ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref>,<sp/>uint64_t<sp/>numValues)</highlight></codeline>
+<codeline lineno="101"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="102"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(NULL==<ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref>)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>NULL;</highlight></codeline>
+<codeline lineno="103"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="struct_____o_c_dictionary" kindref="compound">__OCDictionary</ref><sp/>*theDictionary<sp/>=<sp/><ref refid="_o_c_dictionary_8c_1a988098d3c631a91345460d71a9068f3d" kindref="member">OCDictionaryAllocate</ref>();</highlight></codeline>
+<codeline lineno="104"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(NULL<sp/>==<sp/>theDictionary)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>NULL;</highlight></codeline>
+<codeline lineno="105"><highlight class="normal"><sp/><sp/><sp/><sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref><sp/>=<sp/>(<ref refid="group___o_c_type_1ga6acd02149bce3e91fb2fe325ab7f65ed" kindref="member">OCTypeRef</ref><sp/>*)<sp/>malloc(numValues<sp/>*<sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(<ref refid="group___o_c_type_1ga6acd02149bce3e91fb2fe325ab7f65ed" kindref="member">OCTypeRef</ref>));</highlight></codeline>
+<codeline lineno="106"><highlight class="normal"><sp/><sp/><sp/><sp/>memcpy((</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*)<sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref>,<sp/>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*)<sp/><ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref>,<sp/>numValues<sp/>*<sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*));</highlight></codeline>
+<codeline lineno="107"><highlight class="normal"><sp/><sp/><sp/><sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a9375c1962785112283f0151a5b9ddc7f" kindref="member">keys</ref><sp/>=<sp/>(<ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref>*)<sp/>malloc(numValues<sp/>*<sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(<ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref>));</highlight></codeline>
+<codeline lineno="108"><highlight class="normal"><sp/><sp/><sp/><sp/>memcpy((</highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*)<sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a9375c1962785112283f0151a5b9ddc7f" kindref="member">keys</ref>,<sp/>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*)<sp/><ref refid="struct_____o_c_dictionary_1a9375c1962785112283f0151a5b9ddc7f" kindref="member">keys</ref>,<sp/>numValues<sp/>*<sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*));</highlight></codeline>
+<codeline lineno="109"><highlight class="normal"><sp/><sp/><sp/><sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref><sp/>=<sp/>numValues;</highlight></codeline>
+<codeline lineno="110"><highlight class="normal"><sp/><sp/><sp/><sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1acbaebc0ed3b5b5d6ed59b866751d84fa" kindref="member">capacity</ref><sp/>=<sp/>numValues;</highlight></codeline>
+<codeline lineno="111"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_o_c_dictionary_8c_1a71fe7129bee5568805518bb8d1b8f960" kindref="member">__OCDictionaryRetainValues</ref>(theDictionary);</highlight></codeline>
+<codeline lineno="112"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="113"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>theDictionary;</highlight></codeline>
+<codeline lineno="114"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="115"><highlight class="normal"></highlight></codeline>
+<codeline lineno="116"><highlight class="normal"><ref refid="group___o_c_dictionary_1ga19045ab0d11ee2e868fdef402778e539" kindref="member">OCMutableDictionaryRef</ref><sp/><ref refid="group___o_c_dictionary_1ga4cff6e7bcd69532df96355d1fe0e35c4" kindref="member">OCDictionaryCreateMutable</ref>(uint64_t<sp/><ref refid="struct_____o_c_dictionary_1acbaebc0ed3b5b5d6ed59b866751d84fa" kindref="member">capacity</ref>)</highlight></codeline>
+<codeline lineno="117"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="118"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="struct_____o_c_dictionary" kindref="compound">__OCDictionary</ref><sp/>*theDictionary<sp/>=<sp/><ref refid="_o_c_dictionary_8c_1a988098d3c631a91345460d71a9068f3d" kindref="member">OCDictionaryAllocate</ref>();</highlight></codeline>
+<codeline lineno="119"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(NULL<sp/>==<sp/>theDictionary)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>NULL;</highlight></codeline>
+<codeline lineno="120"><highlight class="normal"><sp/><sp/><sp/><sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref><sp/>=<sp/>(<ref refid="group___o_c_type_1ga6acd02149bce3e91fb2fe325ab7f65ed" kindref="member">OCTypeRef</ref><sp/>*)<sp/>malloc(<ref refid="struct_____o_c_dictionary_1acbaebc0ed3b5b5d6ed59b866751d84fa" kindref="member">capacity</ref><sp/>*<sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(<ref refid="group___o_c_type_1ga6acd02149bce3e91fb2fe325ab7f65ed" kindref="member">OCTypeRef</ref>));</highlight></codeline>
+<codeline lineno="121"><highlight class="normal"><sp/><sp/><sp/><sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a9375c1962785112283f0151a5b9ddc7f" kindref="member">keys</ref><sp/>=<sp/>(<ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref><sp/>*)<sp/>malloc(<ref refid="struct_____o_c_dictionary_1acbaebc0ed3b5b5d6ed59b866751d84fa" kindref="member">capacity</ref><sp/>*<sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(<ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref>));</highlight></codeline>
+<codeline lineno="122"><highlight class="normal"><sp/><sp/><sp/><sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="123"><highlight class="normal"><sp/><sp/><sp/><sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1acbaebc0ed3b5b5d6ed59b866751d84fa" kindref="member">capacity</ref><sp/>=<sp/><ref refid="struct_____o_c_dictionary_1acbaebc0ed3b5b5d6ed59b866751d84fa" kindref="member">capacity</ref>;</highlight></codeline>
+<codeline lineno="124"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>theDictionary;</highlight></codeline>
+<codeline lineno="125"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="126"><highlight class="normal"></highlight></codeline>
+<codeline lineno="127"><highlight class="normal"><ref refid="group___o_c_dictionary_1gaa6826a3d2e9e148e7bbc4df333300257" kindref="member">OCDictionaryRef</ref><sp/><ref refid="group___o_c_dictionary_1ga96b8d9d1addb6dbe23cb9194d7cca4cc" kindref="member">OCDictionaryCreateCopy</ref>(<ref refid="group___o_c_dictionary_1gaa6826a3d2e9e148e7bbc4df333300257" kindref="member">OCDictionaryRef</ref><sp/>theDictionary)</highlight></codeline>
+<codeline lineno="128"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="129"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(<ref refid="group___o_c_dictionary_1gaa6826a3d2e9e148e7bbc4df333300257" kindref="member">OCDictionaryRef</ref>)<sp/><ref refid="_o_c_dictionary_8c_1accedad276596b2e0d745e59277e7e296" kindref="member">OCDictionaryCreate</ref>((</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>**)<sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a9375c1962785112283f0151a5b9ddc7f" kindref="member">keys</ref>,(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>**)<sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref>,theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref>);</highlight></codeline>
+<codeline lineno="130"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="131"><highlight class="normal"></highlight></codeline>
+<codeline lineno="132"><highlight class="normal"><ref refid="group___o_c_dictionary_1ga19045ab0d11ee2e868fdef402778e539" kindref="member">OCMutableDictionaryRef</ref><sp/><ref refid="group___o_c_dictionary_1ga3e49d8746bb109d8fad49c9c4a57109a" kindref="member">OCDictionaryCreateMutableCopy</ref>(<ref refid="group___o_c_dictionary_1gaa6826a3d2e9e148e7bbc4df333300257" kindref="member">OCDictionaryRef</ref><sp/>theDictionary)</highlight></codeline>
+<codeline lineno="133"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="134"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(<ref refid="group___o_c_dictionary_1ga19045ab0d11ee2e868fdef402778e539" kindref="member">OCMutableDictionaryRef</ref>)<sp/><ref refid="_o_c_dictionary_8c_1accedad276596b2e0d745e59277e7e296" kindref="member">OCDictionaryCreate</ref>((</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>**)<sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a9375c1962785112283f0151a5b9ddc7f" kindref="member">keys</ref>,(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>**)<sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref>,theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref>);</highlight></codeline>
+<codeline lineno="135"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="136"><highlight class="normal"></highlight></codeline>
+<codeline lineno="137"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*<sp/><ref refid="group___o_c_dictionary_1ga14954a4cc6e33d4a5376d0eae232a4b6" kindref="member">OCDictionaryGetValue</ref>(<ref refid="group___o_c_dictionary_1gaa6826a3d2e9e148e7bbc4df333300257" kindref="member">OCDictionaryRef</ref><sp/>theDictionary,<sp/><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref><sp/>key)</highlight></codeline>
+<codeline lineno="138"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="139"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/>index=0;index&lt;theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref>;index++)<sp/>{</highlight></codeline>
+<codeline lineno="140"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(<ref refid="group___o_c_string_1ga41bfdc942058fe704c81122e10011273" kindref="member">OCStringCompare</ref>(theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a9375c1962785112283f0151a5b9ddc7f" kindref="member">keys</ref>[index],<sp/>key,<sp/>0)==<ref refid="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8a1814420156dc0303801cb9129b10dc55" kindref="member">kOCCompareEqualTo</ref>)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref>[index];</highlight></codeline>
+<codeline lineno="141"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="142"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>NULL;</highlight></codeline>
+<codeline lineno="143"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="144"><highlight class="normal"></highlight></codeline>
+<codeline lineno="145"><highlight class="normal"></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="group___o_c_dictionary_1ga4b75ce767832960f198d99067df78bd2" kindref="member">OCDictionaryContainsKey</ref>(<ref refid="group___o_c_dictionary_1gaa6826a3d2e9e148e7bbc4df333300257" kindref="member">OCDictionaryRef</ref><sp/>theDictionary,<sp/><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref><sp/>key)</highlight></codeline>
+<codeline lineno="146"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="147"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/>index=0;index&lt;theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref>;index++)<sp/>{</highlight></codeline>
+<codeline lineno="148"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(<ref refid="group___o_c_string_1ga41bfdc942058fe704c81122e10011273" kindref="member">OCStringCompare</ref>(theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a9375c1962785112283f0151a5b9ddc7f" kindref="member">keys</ref>[index],<sp/>key,<sp/>0)==<ref refid="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8a1814420156dc0303801cb9129b10dc55" kindref="member">kOCCompareEqualTo</ref>)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="149"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="150"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="151"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="152"><highlight class="normal"></highlight></codeline>
+<codeline lineno="153"><highlight class="normal">int64_t<sp/><ref refid="_o_c_dictionary_8c_1a57ea8a6cb590bf50feca2c054916e16b" kindref="member">OCDictionaryIndexOfKey</ref>(<ref refid="group___o_c_dictionary_1gaa6826a3d2e9e148e7bbc4df333300257" kindref="member">OCDictionaryRef</ref><sp/>theDictionary,<sp/><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref><sp/>key)</highlight></codeline>
+<codeline lineno="154"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="155"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(int64_t<sp/>index=0;index&lt;theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref>;index++)<sp/>{</highlight></codeline>
+<codeline lineno="156"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(<ref refid="group___o_c_string_1ga41bfdc942058fe704c81122e10011273" kindref="member">OCStringCompare</ref>(theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a9375c1962785112283f0151a5b9ddc7f" kindref="member">keys</ref>[index],<sp/>key,<sp/>0)==<ref refid="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8a1814420156dc0303801cb9129b10dc55" kindref="member">kOCCompareEqualTo</ref>)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>index;</highlight></codeline>
+<codeline lineno="157"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="158"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>-1;</highlight></codeline>
+<codeline lineno="159"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="160"><highlight class="normal"></highlight></codeline>
+<codeline lineno="161"><highlight class="normal"></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="group___o_c_dictionary_1gaa3fdeb2856a793f706d5a7043d27d50d" kindref="member">OCDictionaryContainsValue</ref>(<ref refid="group___o_c_dictionary_1gaa6826a3d2e9e148e7bbc4df333300257" kindref="member">OCDictionaryRef</ref><sp/>theDictionary,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*<sp/>value)</highlight></codeline>
+<codeline lineno="162"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="163"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">long</highlight><highlight class="normal"><sp/>index=0;index&lt;theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref>;index++)<sp/>{</highlight></codeline>
+<codeline lineno="164"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref>[index]<sp/>==<sp/>value)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="165"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="166"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="167"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="168"><highlight class="normal"></highlight></codeline>
+<codeline lineno="169"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group___o_c_dictionary_1gae1e0ea2c05c3bd1502813ef217dbe96b" kindref="member">OCDictionaryAddValue</ref>(<ref refid="group___o_c_dictionary_1ga19045ab0d11ee2e868fdef402778e539" kindref="member">OCMutableDictionaryRef</ref><sp/>theDictionary,<sp/><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref><sp/>key,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*<sp/>value)</highlight></codeline>
+<codeline lineno="170"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="171"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(NULL==theDictionary)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="172"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(NULL==key)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="173"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(NULL==value)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="174"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ga6acd02149bce3e91fb2fe325ab7f65ed" kindref="member">OCTypeRef</ref><sp/>type<sp/>=<sp/>(<ref refid="group___o_c_type_1ga6acd02149bce3e91fb2fe325ab7f65ed" kindref="member">OCTypeRef</ref>)<sp/>value;</highlight></codeline>
+<codeline lineno="175"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1acbaebc0ed3b5b5d6ed59b866751d84fa" kindref="member">capacity</ref>==0<sp/>||<sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref>==theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1acbaebc0ed3b5b5d6ed59b866751d84fa" kindref="member">capacity</ref>)<sp/>{</highlight></codeline>
+<codeline lineno="176"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(NULL==theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref>)<sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref><sp/>=<sp/>(<ref refid="group___o_c_type_1ga6acd02149bce3e91fb2fe325ab7f65ed" kindref="member">OCTypeRef</ref>*)<sp/>malloc(</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(<ref refid="group___o_c_type_1ga6acd02149bce3e91fb2fe325ab7f65ed" kindref="member">OCTypeRef</ref>));</highlight></codeline>
+<codeline lineno="177"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref><sp/>=<sp/>(<ref refid="group___o_c_type_1ga6acd02149bce3e91fb2fe325ab7f65ed" kindref="member">OCTypeRef</ref>*)<sp/>realloc(theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref>,<sp/>(theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref>+1)<sp/>*<sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(<ref refid="group___o_c_type_1ga6acd02149bce3e91fb2fe325ab7f65ed" kindref="member">OCTypeRef</ref>));</highlight></codeline>
+<codeline lineno="178"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="179"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(NULL==theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a9375c1962785112283f0151a5b9ddc7f" kindref="member">keys</ref>)<sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a9375c1962785112283f0151a5b9ddc7f" kindref="member">keys</ref><sp/>=<sp/>(<ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref>*)<sp/>malloc(</highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(<ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref>));</highlight></codeline>
+<codeline lineno="180"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a9375c1962785112283f0151a5b9ddc7f" kindref="member">keys</ref><sp/>=<sp/>(<ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref>*)<sp/>realloc(theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a9375c1962785112283f0151a5b9ddc7f" kindref="member">keys</ref>,<sp/>(theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref>+1)<sp/>*<sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(<ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref>));</highlight></codeline>
+<codeline lineno="181"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="182"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref>[theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref>]<sp/>=<sp/>type;</highlight></codeline>
+<codeline lineno="183"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ga3a27a5361c9635b95b63a833ea378b91" kindref="member">OCRetain</ref>(type);</highlight></codeline>
+<codeline lineno="184"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a9375c1962785112283f0151a5b9ddc7f" kindref="member">keys</ref>[theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref>]<sp/>=<sp/><ref refid="group___o_c_string_1gad9fc6def535af806e3afff5e164750e8" kindref="member">OCStringCreateCopy</ref>(key);</highlight></codeline>
+<codeline lineno="185"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref>++;</highlight></codeline>
+<codeline lineno="186"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1acbaebc0ed3b5b5d6ed59b866751d84fa" kindref="member">capacity</ref>!=0)<sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1acbaebc0ed3b5b5d6ed59b866751d84fa" kindref="member">capacity</ref>++;</highlight></codeline>
+<codeline lineno="187"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="188"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>{</highlight></codeline>
+<codeline lineno="189"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref>[theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref>]<sp/>=<sp/>type;</highlight></codeline>
+<codeline lineno="190"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ga3a27a5361c9635b95b63a833ea378b91" kindref="member">OCRetain</ref>(<sp/>type);</highlight></codeline>
+<codeline lineno="191"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a9375c1962785112283f0151a5b9ddc7f" kindref="member">keys</ref>[theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref>]<sp/>=<sp/><ref refid="group___o_c_string_1gad9fc6def535af806e3afff5e164750e8" kindref="member">OCStringCreateCopy</ref>(key);</highlight></codeline>
+<codeline lineno="192"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref>++;</highlight></codeline>
+<codeline lineno="193"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="194"><highlight class="normal"></highlight></codeline>
+<codeline lineno="195"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="196"><highlight class="normal"></highlight></codeline>
+<codeline lineno="197"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group___o_c_dictionary_1ga3b725d5b5bb2da3a5161c8ff5fbb7f0d" kindref="member">OCDictionaryGetKeysAndValues</ref>(<ref refid="group___o_c_dictionary_1gaa6826a3d2e9e148e7bbc4df333300257" kindref="member">OCDictionaryRef</ref><sp/>theDictionary,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>**<ref refid="struct_____o_c_dictionary_1a9375c1962785112283f0151a5b9ddc7f" kindref="member">keys</ref>,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>**<ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref>)</highlight></codeline>
+<codeline lineno="198"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="199"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref><sp/>*outKeys<sp/>=<sp/>(<ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref><sp/>*)<sp/><ref refid="struct_____o_c_dictionary_1a9375c1962785112283f0151a5b9ddc7f" kindref="member">keys</ref>;</highlight></codeline>
+<codeline lineno="200"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ga6acd02149bce3e91fb2fe325ab7f65ed" kindref="member">OCTypeRef</ref><sp/>*outValues<sp/>=<sp/>(<ref refid="group___o_c_type_1ga6acd02149bce3e91fb2fe325ab7f65ed" kindref="member">OCTypeRef</ref><sp/>*)<sp/><ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref>;</highlight></codeline>
+<codeline lineno="201"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="202"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(uint64_t<sp/>index<sp/>=<sp/>0;<sp/>index&lt;theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref>;index++)<sp/>{</highlight></codeline>
+<codeline lineno="203"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>outKeys[index]<sp/>=<sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a9375c1962785112283f0151a5b9ddc7f" kindref="member">keys</ref>[index];</highlight></codeline>
+<codeline lineno="204"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>outValues[index]<sp/>=<sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref>[index];</highlight></codeline>
+<codeline lineno="205"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="206"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="207"><highlight class="normal"></highlight></codeline>
+<codeline lineno="208"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group___o_c_dictionary_1gab328fd4e26c74ea88d96e97f86745b40" kindref="member">OCDictionarySetValue</ref>(<ref refid="group___o_c_dictionary_1ga19045ab0d11ee2e868fdef402778e539" kindref="member">OCMutableDictionaryRef</ref><sp/>theDictionary,<sp/><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref><sp/>key,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*<sp/>value)</highlight></codeline>
+<codeline lineno="209"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="210"><highlight class="normal"><sp/><sp/><sp/><sp/>int64_t<sp/>index<sp/>=<sp/><ref refid="_o_c_dictionary_8c_1a57ea8a6cb590bf50feca2c054916e16b" kindref="member">OCDictionaryIndexOfKey</ref>(<sp/>theDictionary,<sp/><sp/>key);</highlight></codeline>
+<codeline lineno="211"><highlight class="normal"></highlight></codeline>
+<codeline lineno="212"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(index&lt;0)<sp/>{</highlight></codeline>
+<codeline lineno="213"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group___o_c_dictionary_1gae1e0ea2c05c3bd1502813ef217dbe96b" kindref="member">OCDictionaryAddValue</ref>(theDictionary,<sp/><sp/>key,<sp/><sp/>value);</highlight></codeline>
+<codeline lineno="214"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="215"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="216"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ga2b6e5ce9f5cbfbb459569f2188c445b8" kindref="member">OCRelease</ref>(theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref>[index]);</highlight></codeline>
+<codeline lineno="217"><highlight class="normal"><sp/><sp/><sp/><sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref>[index]<sp/>=<sp/>(<ref refid="group___o_c_type_1ga6acd02149bce3e91fb2fe325ab7f65ed" kindref="member">OCTypeRef</ref>)<sp/><ref refid="group___o_c_type_1ga3a27a5361c9635b95b63a833ea378b91" kindref="member">OCRetain</ref>(value);</highlight></codeline>
+<codeline lineno="218"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="219"><highlight class="normal"></highlight></codeline>
+<codeline lineno="220"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group___o_c_dictionary_1ga336c8359fbf8f0ea42f0224a43620e3f" kindref="member">OCDictionaryReplaceValue</ref>(<ref refid="group___o_c_dictionary_1ga19045ab0d11ee2e868fdef402778e539" kindref="member">OCMutableDictionaryRef</ref><sp/>theDictionary,<sp/><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref><sp/>key,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*<sp/>value)</highlight></codeline>
+<codeline lineno="221"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="222"><highlight class="normal"><sp/><sp/><sp/><sp/>int64_t<sp/>index<sp/>=<sp/><ref refid="_o_c_dictionary_8c_1a57ea8a6cb590bf50feca2c054916e16b" kindref="member">OCDictionaryIndexOfKey</ref>(<sp/>theDictionary,<sp/><sp/>key);</highlight></codeline>
+<codeline lineno="223"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(index&lt;0)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="224"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ga2b6e5ce9f5cbfbb459569f2188c445b8" kindref="member">OCRelease</ref>(theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref>[index]);</highlight></codeline>
+<codeline lineno="225"><highlight class="normal"><sp/><sp/><sp/><sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref>[index]<sp/>=<sp/>(<ref refid="group___o_c_type_1ga6acd02149bce3e91fb2fe325ab7f65ed" kindref="member">OCTypeRef</ref>)<sp/><ref refid="group___o_c_type_1ga3a27a5361c9635b95b63a833ea378b91" kindref="member">OCRetain</ref>(value);</highlight></codeline>
+<codeline lineno="226"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="227"><highlight class="normal"></highlight></codeline>
+<codeline lineno="228"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="group___o_c_dictionary_1gad8c8c16895fe5f027022dd7d49371f5a" kindref="member">OCDictionaryRemoveValue</ref>(<ref refid="group___o_c_dictionary_1ga19045ab0d11ee2e868fdef402778e539" kindref="member">OCMutableDictionaryRef</ref><sp/>theDictionary,<sp/><ref refid="group___o_c_string_1ga34a97bf2ed10637e698c2cd3faa193d4" kindref="member">OCStringRef</ref><sp/>key)</highlight></codeline>
+<codeline lineno="229"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="230"><highlight class="normal"><sp/><sp/><sp/><sp/>int64_t<sp/>indexOfKey<sp/>=<sp/><ref refid="_o_c_dictionary_8c_1a57ea8a6cb590bf50feca2c054916e16b" kindref="member">OCDictionaryIndexOfKey</ref>(<sp/>theDictionary,<sp/><sp/>key);</highlight></codeline>
+<codeline lineno="231"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(indexOfKey<sp/>&lt;<sp/>0)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">;<sp/></highlight><highlight class="comment">//<sp/>Key<sp/>not<sp/>found</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="232"><highlight class="normal"></highlight></codeline>
+<codeline lineno="233"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Release<sp/>the<sp/>key<sp/>and<sp/>value<sp/>being<sp/>removed</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="234"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ga2b6e5ce9f5cbfbb459569f2188c445b8" kindref="member">OCRelease</ref>(theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a9375c1962785112283f0151a5b9ddc7f" kindref="member">keys</ref>[indexOfKey]);</highlight></codeline>
+<codeline lineno="235"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ga2b6e5ce9f5cbfbb459569f2188c445b8" kindref="member">OCRelease</ref>(theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref>[indexOfKey]);</highlight></codeline>
+<codeline lineno="236"><highlight class="normal"></highlight></codeline>
+<codeline lineno="237"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Shift<sp/>subsequent<sp/>elements<sp/>down.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="238"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>The<sp/>loop<sp/>should<sp/>go<sp/>up<sp/>to<sp/>count<sp/>-<sp/>1<sp/>because<sp/>we<sp/>are<sp/>accessing<sp/>index<sp/>and<sp/>index<sp/>+<sp/>1.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="239"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(uint64_t<sp/>index<sp/>=<sp/>indexOfKey;<sp/>index<sp/>&lt;<sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref><sp/>-<sp/>1;<sp/>index++)<sp/>{</highlight></codeline>
+<codeline lineno="240"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a9375c1962785112283f0151a5b9ddc7f" kindref="member">keys</ref>[index]<sp/>=<sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a9375c1962785112283f0151a5b9ddc7f" kindref="member">keys</ref>[index+1];</highlight></codeline>
+<codeline lineno="241"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref>[index]<sp/>=<sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref>[index+1];</highlight></codeline>
+<codeline lineno="242"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="243"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>After<sp/>shifting,<sp/>decrement<sp/>the<sp/>count.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="244"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>The<sp/>elements<sp/>beyond<sp/>the<sp/>new<sp/>count<sp/>are<sp/>effectively<sp/>garbage<sp/>and<sp/>won&apos;t<sp/>be<sp/>accessed.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="245"><highlight class="normal"><sp/><sp/><sp/><sp/>theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref>--;</highlight></codeline>
+<codeline lineno="246"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="247"><highlight class="normal"></highlight></codeline>
+<codeline lineno="248"><highlight class="normal">uint64_t<sp/><ref refid="group___o_c_dictionary_1gab262835ddfd52d604acf688f8e98bd34" kindref="member">OCDictionaryGetCountOfValue</ref>(<ref refid="group___o_c_dictionary_1ga19045ab0d11ee2e868fdef402778e539" kindref="member">OCMutableDictionaryRef</ref><sp/>theDictionary,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*<sp/>value)</highlight></codeline>
+<codeline lineno="249"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="250"><highlight class="normal"><sp/><sp/><sp/><sp/>uint64_t<sp/><ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="251"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(uint64_t<sp/>index<sp/>=<sp/>0;index&lt;theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref>;index++)<sp/>{</highlight></codeline>
+<codeline lineno="252"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(<ref refid="group___o_c_type_1ga8c0b9dcf81ef80522730223975b821b0" kindref="member">OCTypeEqual</ref>(theDictionary-&gt;<ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref>[index],value)==<ref refid="group___o_c_library_1gga395ff068e826f2b8cdaab226094399c8a1814420156dc0303801cb9129b10dc55" kindref="member">kOCCompareEqualTo</ref>)<sp/><ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref>++;</highlight></codeline>
+<codeline lineno="253"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="254"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref>;</highlight></codeline>
+<codeline lineno="255"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="256"><highlight class="normal"></highlight></codeline>
+<codeline lineno="257"><highlight class="normal"><ref refid="group___o_c_array_1ga258ada3c18aefb7cd00f9fae05441cc9" kindref="member">OCArrayRef</ref><sp/><ref refid="group___o_c_dictionary_1ga91ca42e27f0f16784890b06105d8de11" kindref="member">OCDictionaryCreateArrayWithAllKeys</ref>(<ref refid="group___o_c_dictionary_1gaa6826a3d2e9e148e7bbc4df333300257" kindref="member">OCDictionaryRef</ref><sp/>theDictionary)</highlight></codeline>
+<codeline lineno="258"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="259"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(theDictionary==NULL)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>NULL;</highlight></codeline>
+<codeline lineno="260"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="261"><highlight class="normal"><sp/><sp/><sp/><sp/>uint64_t<sp/><ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref><sp/>=<sp/><ref refid="group___o_c_dictionary_1ga8ed87aa17072e8099b3ad40a69ee47ef" kindref="member">OCDictionaryGetCount</ref>(theDictionary);</highlight></codeline>
+<codeline lineno="262"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>**<ref refid="struct_____o_c_dictionary_1a9375c1962785112283f0151a5b9ddc7f" kindref="member">keys</ref><sp/>=<sp/>malloc(<ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref><sp/>*<sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*));</highlight></codeline>
+<codeline lineno="263"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>**<ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref><sp/>=<sp/>malloc(<ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref><sp/>*<sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*));</highlight></codeline>
+<codeline lineno="264"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="265"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_dictionary_1ga3b725d5b5bb2da3a5161c8ff5fbb7f0d" kindref="member">OCDictionaryGetKeysAndValues</ref><sp/>(theDictionary,<sp/>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>**)<sp/><ref refid="struct_____o_c_dictionary_1a9375c1962785112283f0151a5b9ddc7f" kindref="member">keys</ref>,(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>**)<sp/><ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref>);</highlight></codeline>
+<codeline lineno="266"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="267"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_array_1ga258ada3c18aefb7cd00f9fae05441cc9" kindref="member">OCArrayRef</ref><sp/>array<sp/>=<sp/><ref refid="group___o_c_array_1gaebb5f8fa913d5f2ab52058b863f7f504" kindref="member">OCArrayCreate</ref>((</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>**)<sp/><ref refid="struct_____o_c_dictionary_1a9375c1962785112283f0151a5b9ddc7f" kindref="member">keys</ref>,<sp/><ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref>,<sp/>&amp;<ref refid="group___o_c_array_1ga182ff67a03e309f74629c2efe8a2e6e5" kindref="member">kOCTypeArrayCallBacks</ref>);</highlight></codeline>
+<codeline lineno="268"><highlight class="normal"><sp/><sp/><sp/><sp/>free(<ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref>);</highlight></codeline>
+<codeline lineno="269"><highlight class="normal"><sp/><sp/><sp/><sp/>free(<ref refid="struct_____o_c_dictionary_1a9375c1962785112283f0151a5b9ddc7f" kindref="member">keys</ref>);</highlight></codeline>
+<codeline lineno="270"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>array;</highlight></codeline>
+<codeline lineno="271"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="272"><highlight class="normal"></highlight></codeline>
+<codeline lineno="273"><highlight class="normal"><ref refid="group___o_c_array_1ga258ada3c18aefb7cd00f9fae05441cc9" kindref="member">OCArrayRef</ref><sp/><ref refid="group___o_c_dictionary_1ga7b3cb3c2e7e423d482487ebebb51bcce" kindref="member">OCDictionaryCreateArrayWithAllValues</ref>(<ref refid="group___o_c_dictionary_1gaa6826a3d2e9e148e7bbc4df333300257" kindref="member">OCDictionaryRef</ref><sp/>theDictionary)</highlight></codeline>
+<codeline lineno="274"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="275"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal">(theDictionary==NULL)<sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>NULL;</highlight></codeline>
+<codeline lineno="276"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="277"><highlight class="normal"><sp/><sp/><sp/><sp/>uint64_t<sp/><ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref><sp/>=<sp/><ref refid="group___o_c_dictionary_1ga8ed87aa17072e8099b3ad40a69ee47ef" kindref="member">OCDictionaryGetCount</ref>(theDictionary);</highlight></codeline>
+<codeline lineno="278"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>**<ref refid="struct_____o_c_dictionary_1a9375c1962785112283f0151a5b9ddc7f" kindref="member">keys</ref><sp/>=<sp/>malloc(<ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref><sp/>*<sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*));</highlight></codeline>
+<codeline lineno="279"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>**<ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref><sp/>=<sp/>malloc(<ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref><sp/>*<sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*));</highlight></codeline>
+<codeline lineno="280"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="281"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_dictionary_1ga3b725d5b5bb2da3a5161c8ff5fbb7f0d" kindref="member">OCDictionaryGetKeysAndValues</ref><sp/>(theDictionary,<sp/>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>**)<sp/><ref refid="struct_____o_c_dictionary_1a9375c1962785112283f0151a5b9ddc7f" kindref="member">keys</ref>,(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>**)<sp/><ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref>);</highlight></codeline>
+<codeline lineno="282"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="283"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_array_1ga258ada3c18aefb7cd00f9fae05441cc9" kindref="member">OCArrayRef</ref><sp/>array<sp/>=<sp/><ref refid="group___o_c_array_1gaebb5f8fa913d5f2ab52058b863f7f504" kindref="member">OCArrayCreate</ref>((</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>**)<sp/><ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref>,<sp/><ref refid="struct_____o_c_dictionary_1a8040dc69c08050226f955bde79d63247" kindref="member">count</ref>,&amp;<ref refid="group___o_c_array_1ga182ff67a03e309f74629c2efe8a2e6e5" kindref="member">kOCTypeArrayCallBacks</ref>);</highlight></codeline>
+<codeline lineno="284"><highlight class="normal"><sp/><sp/><sp/><sp/>free(<ref refid="struct_____o_c_dictionary_1ab7b99376b067e3a2a850ca6bc0f9d306" kindref="member">values</ref>);</highlight></codeline>
+<codeline lineno="285"><highlight class="normal"><sp/><sp/><sp/><sp/>free(<ref refid="struct_____o_c_dictionary_1a9375c1962785112283f0151a5b9ddc7f" kindref="member">keys</ref>);</highlight></codeline>
+<codeline lineno="286"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>array;</highlight></codeline>
+<codeline lineno="287"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="288"><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="src/OCDictionary.c"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+  <compounddef id="struct___o_c_autorelease_pool" kind="struct" language="C++" prot="public">
+    <compoundname>_OCAutoreleasePool</compoundname>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct___o_c_autorelease_pool_1a919709a2f9a570094fdc182e17630af1" prot="public" static="no" mutable="no">
+        <type><ref refid="_o_c_autorelease_pool_8c_1abfdd57437ce029ae0fc02f7625abca2a" kindref="member">OCAutoreleasePoolObjectRef</ref> *</type>
+        <definition>OCAutoreleasePoolObjectRef* _OCAutoreleasePool::pool_objects</definition>
+        <argsstring></argsstring>
+        <name>pool_objects</name>
+        <qualifiedname>_OCAutoreleasePool::pool_objects</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCAutoreleasePool.c" line="33" column="32" bodyfile="src/OCAutoreleasePool.c" bodystart="33" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct___o_c_autorelease_pool_1a5ff6e2cddf82d93dfcc96fcdfd060794" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int _OCAutoreleasePool::number_of_pool_objects</definition>
+        <argsstring></argsstring>
+        <name>number_of_pool_objects</name>
+        <qualifiedname>_OCAutoreleasePool::number_of_pool_objects</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCAutoreleasePool.c" line="34" column="9" bodyfile="src/OCAutoreleasePool.c" bodystart="34" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="1">
+        <label>_OCAutoreleasePool</label>
+        <link refid="struct___o_c_autorelease_pool"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>pool_objects</edgelabel>
+        </childnode>
+      </node>
+      <node id="2">
+        <label>_OCAutoreleasePoolObject</label>
+        <link refid="struct___o_c_autorelease_pool_object"/>
+      </node>
+    </collaborationgraph>
+    <location file="src/OCAutoreleasePool.c" line="31" column="1" bodyfile="src/OCAutoreleasePool.c" bodystart="32" bodyend="35"/>
+    <listofallmembers>
+      <member refid="struct___o_c_autorelease_pool_1a5ff6e2cddf82d93dfcc96fcdfd060794" prot="public" virt="non-virtual"><scope>_OCAutoreleasePool</scope><name>number_of_pool_objects</name></member>
+      <member refid="struct___o_c_autorelease_pool_1a919709a2f9a570094fdc182e17630af1" prot="public" virt="non-virtual"><scope>_OCAutoreleasePool</scope><name>pool_objects</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

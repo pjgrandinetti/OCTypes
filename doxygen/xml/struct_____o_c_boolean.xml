@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+  <compounddef id="struct_____o_c_boolean" kind="struct" language="C++" prot="public">
+    <compoundname>__OCBoolean</compoundname>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_____o_c_boolean_1abc699f4dc664001b9c113c3babc14584" prot="public" static="no" mutable="no">
+        <type><ref refid="group___o_c_type_1ga66b90fed8dd532198f1a04d294dbaa69" kindref="member">OCBase</ref></type>
+        <definition>OCBase __OCBoolean::_base</definition>
+        <argsstring></argsstring>
+        <name>_base</name>
+        <qualifiedname>__OCBoolean::_base</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCBoolean.c" line="16" column="12" bodyfile="src/OCBoolean.c" bodystart="16" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="2">
+        <label>__OCBase</label>
+        <link refid="struct_____o_c_base"/>
+        <childnode refid="3" relation="usage">
+          <edgelabel>copyFormattingDesc</edgelabel>
+        </childnode>
+      </node>
+      <node id="1">
+        <label>__OCBoolean</label>
+        <link refid="struct_____o_c_boolean"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>_base</edgelabel>
+        </childnode>
+      </node>
+      <node id="3">
+        <label>__OCString</label>
+        <link refid="struct_____o_c_string"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>_base</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="src/OCBoolean.c" line="15" column="1" bodyfile="src/OCBoolean.c" bodystart="15" bodyend="17"/>
+    <listofallmembers>
+      <member refid="struct_____o_c_boolean_1abc699f4dc664001b9c113c3babc14584" prot="public" virt="non-virtual"><scope>__OCBoolean</scope><name>_base</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

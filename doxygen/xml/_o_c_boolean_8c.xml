@@ -1,0 +1,387 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+  <compounddef id="_o_c_boolean_8c" kind="file" language="C++">
+    <compoundname>OCBoolean.c</compoundname>
+    <includes refid="_o_c_library_8h" local="yes">OCLibrary.h</includes>
+    <includes refid="_o_c_type_8h" local="yes">OCType.h</includes>
+    <incdepgraph>
+      <node id="31">
+        <label>OCArray.h</label>
+        <link refid="_o_c_array_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="24">
+        <label>OCAutoreleasePool.h</label>
+        <link refid="_o_c_autorelease_pool_8h"/>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>src/OCBoolean.c</label>
+        <link refid="_o_c_boolean_8c"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+      </node>
+      <node id="28">
+        <label>OCBoolean.h</label>
+        <link refid="_o_c_boolean_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="27">
+        <label>OCData.h</label>
+        <link refid="_o_c_data_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="30">
+        <label>OCDictionary.h</label>
+        <link refid="_o_c_dictionary_8h"/>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="31" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>OCLibrary.h</label>
+        <link refid="_o_c_library_8h"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+        <childnode refid="29" relation="include">
+        </childnode>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="31" relation="include">
+        </childnode>
+      </node>
+      <node id="23">
+        <label>OCMath.h</label>
+        <link refid="_o_c_math_8h"/>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="29">
+        <label>OCNumber.h</label>
+        <link refid="_o_c_number_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="26">
+        <label>OCString.h</label>
+        <link refid="_o_c_string_8h"/>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="25">
+        <label>OCType.h</label>
+        <link refid="_o_c_type_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>assert.h</label>
+      </node>
+      <node id="12">
+        <label>complex.h</label>
+      </node>
+      <node id="6">
+        <label>ctype.h</label>
+      </node>
+      <node id="7">
+        <label>errno.h</label>
+      </node>
+      <node id="8">
+        <label>float.h</label>
+      </node>
+      <node id="20">
+        <label>inttypes.h</label>
+      </node>
+      <node id="9">
+        <label>limits.h</label>
+      </node>
+      <node id="10">
+        <label>locale.h</label>
+      </node>
+      <node id="11">
+        <label>math.h</label>
+      </node>
+      <node id="13">
+        <label>setjmp.h</label>
+      </node>
+      <node id="14">
+        <label>signal.h</label>
+      </node>
+      <node id="4">
+        <label>stdarg.h</label>
+      </node>
+      <node id="21">
+        <label>stdbool.h</label>
+      </node>
+      <node id="15">
+        <label>stddef.h</label>
+      </node>
+      <node id="22">
+        <label>stdint.h</label>
+      </node>
+      <node id="16">
+        <label>stdio.h</label>
+      </node>
+      <node id="17">
+        <label>stdlib.h</label>
+      </node>
+      <node id="18">
+        <label>string.h</label>
+      </node>
+      <node id="3">
+        <label>sys/types.h</label>
+      </node>
+      <node id="19">
+        <label>time.h</label>
+      </node>
+    </incdepgraph>
+    <innerclass refid="struct_____o_c_boolean" prot="public">__OCBoolean</innerclass>
+    <sectiondef kind="var">
+      <memberdef kind="variable" id="_o_c_boolean_8c_1a5cb6a6e07f6eb9ef42f42bdeee0ac4f3" prot="public" static="yes" mutable="no">
+        <type><ref refid="group___o_c_type_1gae4fcca725e41e7af4659ba4902223981" kindref="member">OCTypeID</ref></type>
+        <definition>OCTypeID kOCBooleanTypeID</definition>
+        <argsstring></argsstring>
+        <name>kOCBooleanTypeID</name>
+        <initializer>= <ref refid="group___o_c_type_1ggad248aac9bbfa64d39561aaaea4ab5a1eaf0ee6bc8529180c1c8e8037431a72de7" kindref="member">_kOCNotATypeID</ref></initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCBoolean.c" line="12" column="17" bodyfile="src/OCBoolean.c" bodystart="12" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="_o_c_boolean_8c_1adc990788e2831d77971fb19b0f75e60b" prot="public" static="yes" mutable="no">
+        <type>struct <ref refid="struct_____o_c_boolean" kindref="compound">__OCBoolean</ref></type>
+        <definition>struct __OCBoolean __kOCBooleanTrue</definition>
+        <argsstring></argsstring>
+        <name>__kOCBooleanTrue</name>
+        <initializer>= {
+    ._base = {
+        <ref refid="group___o_c_type_1ggad248aac9bbfa64d39561aaaea4ab5a1eaf0ee6bc8529180c1c8e8037431a72de7" kindref="member">_kOCNotATypeID</ref>, 0, NULL, NULL, NULL
+    }
+}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCBoolean.c" line="18" column="25" bodyfile="src/OCBoolean.c" bodystart="18" bodyend="22"/>
+      </memberdef>
+      <memberdef kind="variable" id="_o_c_boolean_8c_1ac39064aaacd579e4cd18ad9ee7a8175f" prot="public" static="yes" mutable="no">
+        <type>struct <ref refid="struct_____o_c_boolean" kindref="compound">__OCBoolean</ref></type>
+        <definition>struct __OCBoolean __kOCBooleanFalse</definition>
+        <argsstring></argsstring>
+        <name>__kOCBooleanFalse</name>
+        <initializer>= {
+    ._base = {
+        <ref refid="group___o_c_type_1ggad248aac9bbfa64d39561aaaea4ab5a1eaf0ee6bc8529180c1c8e8037431a72de7" kindref="member">_kOCNotATypeID</ref>, 0, NULL, NULL, NULL
+    }
+}</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCBoolean.c" line="23" column="25" bodyfile="src/OCBoolean.c" bodystart="23" bodyend="27"/>
+      </memberdef>
+      <member refid="group___o_c_boolean_1ga3bffcc9a1c9d1db81d6b3763f69f1a50" kind="variable"><name>kOCBooleanTrue</name></member>
+      <member refid="group___o_c_boolean_1gad90327bf96dae0736bc14c3d6cfbbc22" kind="variable"><name>kOCBooleanFalse</name></member>
+    </sectiondef>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="_o_c_boolean_8c_1a0b5160dd7bd68edaa72831367d4ac1b6" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>static bool __OCBooleanEqual</definition>
+        <argsstring>(const void *v1, const void *v2)</argsstring>
+        <name>__OCBooleanEqual</name>
+        <param>
+          <type>const void *</type>
+          <declname>v1</declname>
+        </param>
+        <param>
+          <type>const void *</type>
+          <declname>v2</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCBoolean.c" line="33" column="13" bodyfile="src/OCBoolean.c" bodystart="33" bodyend="35"/>
+      </memberdef>
+      <memberdef kind="function" id="_o_c_boolean_8c_1ad7926ff0c432ac90f77c3b31083a7a38" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void __OCBooleanFinalize</definition>
+        <argsstring>(const void *unused)</argsstring>
+        <name>__OCBooleanFinalize</name>
+        <param>
+          <type>const void *</type>
+          <declname>unused</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCBoolean.c" line="38" column="13" bodyfile="src/OCBoolean.c" bodystart="38" bodyend="40"/>
+      </memberdef>
+      <memberdef kind="function" id="_o_c_boolean_8c_1a1a70bc9ff30788fe7ceeb823942615c8" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void __attribute__</definition>
+        <argsstring>((constructor))</argsstring>
+        <name>__attribute__</name>
+        <param>
+          <type>(constructor)</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCBoolean.c" line="43" column="13" bodyfile="src/OCBoolean.c" bodystart="43" bodyend="53"/>
+      </memberdef>
+      <member refid="group___o_c_boolean_1ga52f1b4e9284046835ad8ee23ef367b65" kind="function"><name>OCBooleanGetTypeID</name></member>
+      <member refid="group___o_c_boolean_1ga890cb16c748073108e829dad87322553" kind="function"><name>OCBooleanGetValue</name></member>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="comment">//<sp/><sp/>OCBoolean.c</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="comment">//<sp/><sp/>OCTypes</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="comment">//<sp/><sp/>Created<sp/>by<sp/>Philip<sp/>Grandinetti<sp/>on<sp/>5/15/17.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="comment">//<sp/><sp/>Updated<sp/>by<sp/>ChatGPT<sp/>on<sp/>2025-05-11.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="comment">//</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_o_c_library_8h" kindref="compound">OCLibrary.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="_o_c_type_8h" kindref="compound">OCType.h</ref>&quot;</highlight><highlight class="normal"><sp/></highlight><highlight class="comment">//<sp/>for<sp/>OCRegisterType,<sp/>OCTypeID,<sp/>_kOCNotATypeID</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Static<sp/>storage<sp/>of<sp/>the<sp/>boolean<sp/>type’s<sp/>OCTypeID</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="group___o_c_type_1gae4fcca725e41e7af4659ba4902223981" kindref="member">OCTypeID</ref><sp/><ref refid="_o_c_boolean_8c_1a5cb6a6e07f6eb9ef42f42bdeee0ac4f3" kindref="member">kOCBooleanTypeID</ref><sp/>=<sp/><ref refid="group___o_c_type_1ggad248aac9bbfa64d39561aaaea4ab5a1eaf0ee6bc8529180c1c8e8037431a72de7" kindref="member">_kOCNotATypeID</ref>;</highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Our<sp/>two<sp/>singletons</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15" refid="struct_____o_c_boolean" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="struct_____o_c_boolean" kindref="compound">__OCBoolean</ref><sp/>{</highlight></codeline>
+<codeline lineno="16"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ga66b90fed8dd532198f1a04d294dbaa69" kindref="member">OCBase</ref><sp/><ref refid="struct_____o_c_boolean_1abc699f4dc664001b9c113c3babc14584" kindref="member">_base</ref>;</highlight></codeline>
+<codeline lineno="17"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="struct_____o_c_boolean" kindref="compound">__OCBoolean</ref><sp/><ref refid="_o_c_boolean_8c_1adc990788e2831d77971fb19b0f75e60b" kindref="member">__kOCBooleanTrue</ref><sp/>=<sp/>{</highlight></codeline>
+<codeline lineno="19"><highlight class="normal"><sp/><sp/><sp/><sp/>._base<sp/>=<sp/>{</highlight></codeline>
+<codeline lineno="20"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ggad248aac9bbfa64d39561aaaea4ab5a1eaf0ee6bc8529180c1c8e8037431a72de7" kindref="member">_kOCNotATypeID</ref>,<sp/>0,<sp/>NULL,<sp/>NULL,<sp/>NULL</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="22"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="struct_____o_c_boolean" kindref="compound">__OCBoolean</ref><sp/><ref refid="_o_c_boolean_8c_1ac39064aaacd579e4cd18ad9ee7a8175f" kindref="member">__kOCBooleanFalse</ref><sp/>=<sp/>{</highlight></codeline>
+<codeline lineno="24"><highlight class="normal"><sp/><sp/><sp/><sp/>._base<sp/>=<sp/>{</highlight></codeline>
+<codeline lineno="25"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="group___o_c_type_1ggad248aac9bbfa64d39561aaaea4ab5a1eaf0ee6bc8529180c1c8e8037431a72de7" kindref="member">_kOCNotATypeID</ref>,<sp/>0,<sp/>NULL,<sp/>NULL,<sp/>NULL</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="27"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="group___o_c_boolean_1ga333efd08bfea7a6d27702fac3afab9be" kindref="member">OCBooleanRef</ref><sp/><ref refid="group___o_c_boolean_1ga3bffcc9a1c9d1db81d6b3763f69f1a50" kindref="member">kOCBooleanTrue</ref><sp/><sp/>=<sp/>&amp;<ref refid="_o_c_boolean_8c_1adc990788e2831d77971fb19b0f75e60b" kindref="member">__kOCBooleanTrue</ref>;</highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="group___o_c_boolean_1ga333efd08bfea7a6d27702fac3afab9be" kindref="member">OCBooleanRef</ref><sp/><ref refid="group___o_c_boolean_1gad90327bf96dae0736bc14c3d6cfbbc22" kindref="member">kOCBooleanFalse</ref><sp/>=<sp/>&amp;<ref refid="_o_c_boolean_8c_1ac39064aaacd579e4cd18ad9ee7a8175f" kindref="member">__kOCBooleanFalse</ref>;</highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Equality<sp/>callback:<sp/>same<sp/>pointer</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="_o_c_boolean_8c_1a0b5160dd7bd68edaa72831367d4ac1b6" kindref="member">__OCBooleanEqual</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*v1,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*v2)<sp/>{</highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>v1<sp/>==<sp/>v2;</highlight></codeline>
+<codeline lineno="35"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight></codeline>
+<codeline lineno="37"><highlight class="normal"></highlight><highlight class="comment">//<sp/>No-op<sp/>finalizer</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="38"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_o_c_boolean_8c_1ad7926ff0c432ac90f77c3b31083a7a38" kindref="member">__OCBooleanFinalize</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*unused)<sp/>{</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"><sp/><sp/><sp/><sp/>(void)unused;</highlight></codeline>
+<codeline lineno="40"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Runs<sp/>before<sp/>main():<sp/>register<sp/>type<sp/>and<sp/>patch<sp/>the<sp/>singletons</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="_o_c_boolean_8c_1a1a70bc9ff30788fe7ceeb823942615c8" kindref="member">__attribute__</ref>((constructor))<sp/>_OCBooleanInitialize(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">)<sp/>{</highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_o_c_boolean_8c_1a5cb6a6e07f6eb9ef42f42bdeee0ac4f3" kindref="member">kOCBooleanTypeID</ref><sp/>=<sp/><ref refid="group___o_c_type_1gaf0ec7b8c3f8096a2c8fa560c10a136bf" kindref="member">OCRegisterType</ref>(</highlight><highlight class="stringliteral">&quot;OCBoolean&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>patch<sp/>up<sp/>each<sp/>base:</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="46"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_o_c_boolean_8c_1adc990788e2831d77971fb19b0f75e60b" kindref="member">__kOCBooleanTrue</ref>._base.typeID<sp/><sp/><sp/>=<sp/><ref refid="_o_c_boolean_8c_1a5cb6a6e07f6eb9ef42f42bdeee0ac4f3" kindref="member">kOCBooleanTypeID</ref>;</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_o_c_boolean_8c_1adc990788e2831d77971fb19b0f75e60b" kindref="member">__kOCBooleanTrue</ref>._base.finalize<sp/>=<sp/><ref refid="_o_c_boolean_8c_1ad7926ff0c432ac90f77c3b31083a7a38" kindref="member">__OCBooleanFinalize</ref>;</highlight></codeline>
+<codeline lineno="48"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_o_c_boolean_8c_1adc990788e2831d77971fb19b0f75e60b" kindref="member">__kOCBooleanTrue</ref>._base.equal<sp/><sp/><sp/><sp/>=<sp/><ref refid="_o_c_boolean_8c_1a0b5160dd7bd68edaa72831367d4ac1b6" kindref="member">__OCBooleanEqual</ref>;</highlight></codeline>
+<codeline lineno="49"><highlight class="normal"></highlight></codeline>
+<codeline lineno="50"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_o_c_boolean_8c_1ac39064aaacd579e4cd18ad9ee7a8175f" kindref="member">__kOCBooleanFalse</ref>._base.typeID<sp/><sp/><sp/>=<sp/><ref refid="_o_c_boolean_8c_1a5cb6a6e07f6eb9ef42f42bdeee0ac4f3" kindref="member">kOCBooleanTypeID</ref>;</highlight></codeline>
+<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_o_c_boolean_8c_1ac39064aaacd579e4cd18ad9ee7a8175f" kindref="member">__kOCBooleanFalse</ref>._base.finalize<sp/>=<sp/><ref refid="_o_c_boolean_8c_1ad7926ff0c432ac90f77c3b31083a7a38" kindref="member">__OCBooleanFinalize</ref>;</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="_o_c_boolean_8c_1ac39064aaacd579e4cd18ad9ee7a8175f" kindref="member">__kOCBooleanFalse</ref>._base.equal<sp/><sp/><sp/><sp/>=<sp/><ref refid="_o_c_boolean_8c_1a0b5160dd7bd68edaa72831367d4ac1b6" kindref="member">__OCBooleanEqual</ref>;</highlight></codeline>
+<codeline lineno="53"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="54"><highlight class="normal"></highlight></codeline>
+<codeline lineno="55"><highlight class="normal"><ref refid="group___o_c_type_1gae4fcca725e41e7af4659ba4902223981" kindref="member">OCTypeID</ref><sp/><ref refid="group___o_c_boolean_1ga52f1b4e9284046835ad8ee23ef367b65" kindref="member">OCBooleanGetTypeID</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">)<sp/>{</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/><ref refid="_o_c_boolean_8c_1a5cb6a6e07f6eb9ef42f42bdeee0ac4f3" kindref="member">kOCBooleanTypeID</ref>;</highlight></codeline>
+<codeline lineno="57"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="58"><highlight class="normal"></highlight></codeline>
+<codeline lineno="59"><highlight class="normal"></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="group___o_c_boolean_1ga890cb16c748073108e829dad87322553" kindref="member">OCBooleanGetValue</ref>(<ref refid="group___o_c_boolean_1ga333efd08bfea7a6d27702fac3afab9be" kindref="member">OCBooleanRef</ref><sp/>b)<sp/>{</highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(b<sp/>==<sp/><ref refid="group___o_c_boolean_1ga3bffcc9a1c9d1db81d6b3763f69f1a50" kindref="member">kOCBooleanTrue</ref>);</highlight></codeline>
+<codeline lineno="61"><highlight class="normal">}</highlight></codeline>
+    </programlisting>
+    <location file="src/OCBoolean.c"/>
+  </compounddef>
+</doxygen>

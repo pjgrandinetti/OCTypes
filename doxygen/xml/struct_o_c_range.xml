@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+  <compounddef id="struct_o_c_range" kind="struct" language="C++" prot="public">
+    <compoundname>OCRange</compoundname>
+    <includes refid="_o_c_library_8h" local="no">OCLibrary.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="struct_o_c_range_1a87a770d78d123ad882ce0d68803d5be5" prot="public" static="no" mutable="no">
+        <type>uint64_t</type>
+        <definition>uint64_t OCRange::location</definition>
+        <argsstring></argsstring>
+        <name>location</name>
+        <qualifiedname>OCRange::location</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCLibrary.h" line="95" column="14" bodyfile="src/OCLibrary.h" bodystart="95" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="struct_o_c_range_1a0dbaf7f02ff7918232ed7892c9d4eafd" prot="public" static="no" mutable="no">
+        <type>uint64_t</type>
+        <definition>uint64_t OCRange::length</definition>
+        <argsstring></argsstring>
+        <name>length</name>
+        <qualifiedname>OCRange::length</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCLibrary.h" line="96" column="14" bodyfile="src/OCLibrary.h" bodystart="96" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Range structure representing a contiguous set of elements.</para>
+<para>:ivar location: Starting index of the range. :ivar length: Number of elements in the range. </para>
+    </detaileddescription>
+    <location file="src/OCLibrary.h" line="94" column="1" bodyfile="src/OCLibrary.h" bodystart="94" bodyend="97"/>
+    <listofallmembers>
+      <member refid="struct_o_c_range_1a0dbaf7f02ff7918232ed7892c9d4eafd" prot="public" virt="non-virtual"><scope>OCRange</scope><name>length</name></member>
+      <member refid="struct_o_c_range_1a87a770d78d123ad882ce0d68803d5be5" prot="public" virt="non-virtual"><scope>OCRange</scope><name>location</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

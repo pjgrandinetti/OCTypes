@@ -1,0 +1,153 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+  <compounddef id="group___o_c_autorelease_pool" kind="group">
+    <compoundname>OCAutoreleasePool</compoundname>
+    <title>OCAutoreleasePool</title>
+    <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="group___o_c_autorelease_pool_1ga56ec2ec00e14fe2d7fc810fcbfd75615" prot="public" static="no">
+        <type>struct <ref refid="struct___o_c_autorelease_pool" kindref="compound">_OCAutoreleasePool</ref> *</type>
+        <definition>typedef struct _OCAutoreleasePool* OCAutoreleasePoolRef</definition>
+        <argsstring></argsstring>
+        <name>OCAutoreleasePoolRef</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>:type <ref refid="group___o_c_autorelease_pool_1ga56ec2ec00e14fe2d7fc810fcbfd75615" kindref="member">OCAutoreleasePoolRef</ref>: :brief: A reference to an opaque OCAutoreleasePool structure.</para>
+<para>This type represents a handle to an autorelease pool instance. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCAutoreleasePool.h" line="70" column="33" bodyfile="src/OCAutoreleasePool.h" bodystart="70" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="group___o_c_autorelease_pool_1ga5cfc8e5cd0e12238e896c8ab4e21e731" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="group___o_c_autorelease_pool_1ga56ec2ec00e14fe2d7fc810fcbfd75615" kindref="member">OCAutoreleasePoolRef</ref></type>
+        <definition>OCAutoreleasePoolRef OCAutoreleasePoolCreate</definition>
+        <argsstring>(void)</argsstring>
+        <name>OCAutoreleasePoolCreate</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Creates a new autorelease pool.</para>
+<para><simplesect kind="return"><para>A reference to the newly created autorelease pool. The caller is responsible for releasing this pool using <ref refid="group___o_c_autorelease_pool_1ga3dbf0752793d4f3390e1787fa8b424f1" kindref="member">OCAutoreleasePoolRelease()</ref> when it is no longer needed. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCAutoreleasePool.h" line="79" column="22" bodyfile="src/OCAutoreleasePool.c" bodystart="284" bodyend="294" declfile="src/OCAutoreleasePool.h" declline="79" declcolumn="22"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_autorelease_pool_1ga3dbf0752793d4f3390e1787fa8b424f1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool OCAutoreleasePoolRelease</definition>
+        <argsstring>(OCAutoreleasePoolRef pool)</argsstring>
+        <name>OCAutoreleasePoolRelease</name>
+        <param>
+          <type><ref refid="group___o_c_autorelease_pool_1ga56ec2ec00e14fe2d7fc810fcbfd75615" kindref="member">OCAutoreleasePoolRef</ref></type>
+          <declname>pool</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Releases an autorelease pool and all objects it contains.</para>
+<para>When an autorelease pool is released, it sends a release message to all objects that were added to it.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>pool</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The <ref refid="group___o_c_autorelease_pool_1ga56ec2ec00e14fe2d7fc810fcbfd75615" kindref="member">OCAutoreleasePoolRef</ref> to be released. Must not be NULL. If <computeroutput>pool</computeroutput> is not the most recently created pool, releasing it will also release all pools created after it. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true if the pool was successfully released, false otherwise. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCAutoreleasePool.h" line="92" column="6" bodyfile="src/OCAutoreleasePool.c" bodystart="323" bodyend="328" declfile="src/OCAutoreleasePool.h" declline="92" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_autorelease_pool_1ga7606cbde5db540d59e0daa4d73ac0c6f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>const void *</type>
+        <definition>const void * OCAutorelease</definition>
+        <argsstring>(const void *ptr)</argsstring>
+        <name>OCAutorelease</name>
+        <param>
+          <type>const void *</type>
+          <declname>ptr</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Adds an object to the current (top-most) autorelease pool.</para>
+<para>The object will receive a release message when the autorelease pool is released. The object must be a valid OCType-compatible pointer.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>ptr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A pointer to the OCType object to be autoreleased. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The same pointer <computeroutput>ptr</computeroutput> that was passed in, allowing for chained calls. </para>
+</simplesect>
+<simplesect kind="warning"><para>If <computeroutput>ptr</computeroutput> is NULL, this may lead to issues when the autorelease pool is deallocated. Ensure <computeroutput>ptr</computeroutput> is non-NULL. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCAutoreleasePool.h" line="105" column="13" bodyfile="src/OCAutoreleasePool.c" bodystart="372" bodyend="378" declfile="src/OCAutoreleasePool.h" declline="105" declcolumn="13"/>
+      </memberdef>
+      <memberdef kind="function" id="group___o_c_autorelease_pool_1gaf9330fb686ee111745e0d8731e26f3c2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void OCAutoreleasePoolDrain</definition>
+        <argsstring>(OCAutoreleasePoolRef pool)</argsstring>
+        <name>OCAutoreleasePoolDrain</name>
+        <param>
+          <type><ref refid="group___o_c_autorelease_pool_1ga56ec2ec00e14fe2d7fc810fcbfd75615" kindref="member">OCAutoreleasePoolRef</ref></type>
+          <declname>pool</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Drains an autorelease pool, releasing all objects it contains without deallocating the pool itself. This is useful when the pool needs to be reused.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>pool</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The <ref refid="group___o_c_autorelease_pool_1ga56ec2ec00e14fe2d7fc810fcbfd75615" kindref="member">OCAutoreleasePoolRef</ref> to be drained. Must not be NULL. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/OCAutoreleasePool.h" line="113" column="6" declfile="src/OCAutoreleasePool.h" declline="113" declcolumn="6"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Implements an autorelease pool for OCTypes. </para>
+    </briefdescription>
+    <detaileddescription>
+<para><bold>Author</bold>: Philip <linebreak/>
+ <bold>Date</bold>: May 10, 2025 <linebreak/>
+</para>
+<para>OCAutoreleasePool provides a mechanism for managing OCType objects using a delayed‐release pool. Usage:<itemizedlist>
+<listitem><para>Create pool: <ref refid="group___o_c_autorelease_pool_1ga5cfc8e5cd0e12238e896c8ab4e21e731" kindref="member">OCAutoreleasePoolCreate()</ref></para>
+</listitem><listitem><para>Autorelease: OCAutorelease(object)</para>
+</listitem><listitem><para>Release pool: OCAutoreleasePoolRelease(pool)</para>
+</listitem></itemizedlist>
+</para>
+<para>Pools can be nested; releasing a nested pool drains only that pool.</para>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

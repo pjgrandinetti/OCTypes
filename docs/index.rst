@@ -8,36 +8,20 @@ OCTypes Documentation
 API Documentation
 -----------------
 
-.. doxygengroup:: OCArray
-   :project: OCTypes
+.. toctree::
+   :maxdepth: 2
+   :caption: API Documentation:
 
-.. doxygengroup:: OCAutoreleasePool
-   :project: OCTypes
-
-.. doxygengroup:: OCBoolean
-   :project: OCTypes
-
-.. doxygengroup:: OCData
-   :project: OCTypes
-
-.. doxygengroup:: OCDictionary
-   :project: OCTypes
-
-.. doxygengroup:: OCLibrary
-   :project: OCTypes
-
-.. doxygengroup:: OCMath
-   :project: OCTypes
-
-.. doxygengroup:: OCNumber
-   :project: OCTypes
-
-.. doxygengroup:: OCString
-   :project: OCTypes
-
-.. doxygengroup:: OCType
-   :project: OCTypes
-
+   api/OCType
+   api/OCAutoreleasePool
+   api/OCNumber
+   api/OCBoolean
+   api/OCString
+   api/OCArray
+   api/OCDictionary
+   api/OCData
+   api/OCLibrary
+   api/OCMath
 
 Indices and tables
 ==================
