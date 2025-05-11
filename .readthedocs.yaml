@@ -51,8 +51,8 @@ build:
     # -E: Always rebuild environment
     # -v: Verbosity
     # Source directory: docs (relative to project root)
-    # Output directory: docs/_build/html (relative to project root)
-    - sphinx-build -W -E -v -b html docs docs/_build/html
+    # Output directory: $READTHEDOCS_OUTPUT/html (where RTD expects it)
+    - sphinx-build -W -E -v -b html docs "$READTHEDOCS_OUTPUT/html"
 
 # Python configuration for installing dependencies
 python:
