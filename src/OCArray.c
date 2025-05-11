@@ -1,10 +1,13 @@
-#if defined(__linux__)
-#define _GNU_SOURCE // For qsort_r
+#if defined(__linux__) || (defined(__GNUC__) && (defined(_WIN32) || defined(__CYGWIN__)))
+  #ifndef _GNU_SOURCE // Guard against multiple definitions
+    #define _GNU_SOURCE // For qsort_r (GNU version) and other extensions
+  #endif
 #endif
 
 #include <stdint.h> // For uint64_t and other standard integer types
-#include <stdlib.h> // For malloc, free, realloc, qsort, qsort_s (if available)
+#include <stdlib.h> // For malloc, free, realloc, qsort, qsort_r, qsort_s
 #include <string.h> // For memcpy
+#include <stdbool.h> // For bool
 
 // Handle Nullability qualifiers for non-Clang compilers (like GCC)
 #if !defined(__clang__)
@@ -19,7 +22,9 @@
 //  Created by philip on 4/2/17.
 //
 
-#include "OCLibrary.h"
+#include "OCLibrary.h" // Should be included after system headers if it also includes them,
+                       // or ensure OCLibrary.h doesn't conflict with _GNU_SOURCE etc.
+                       // Given OCLibrary.h includes stdlib.h, stdio.h etc., defining _GNU_SOURCE first is correct.
 
 static OCTypeID kOCArrayID = _kOCNotATypeID;
 
@@ -313,37 +318,28 @@ struct qsortContext {
     void * context;
 };
 
-// Platform-specific comparator wrappers for qsort_r
-#if defined(__APPLE__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
-// BSD/macOS style comparator wrapper: int (*compar)(void *thunk, const void *a, const void *b)
-static int bsd_qsortCompare_wrapper(void *thunk, const void *val1_ptr, const void *val2_ptr)
+// Comparator wrapper for qsort_r (BSD, macOS) and qsort_s (MSVC)
+// Signature: int (*compar)(void *thunk, const void *a, const void *b)
+#if defined(__APPLE__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || (defined(_MSC_VER) && defined(_WIN32))
+static int thunk_first_qsort_compare_wrapper(void *thunk, const void *val1_ptr, const void *val2_ptr)
 {
     struct qsortContext *myContext = (struct qsortContext *) thunk;
     const void *obj1 = *((const void **) val1_ptr);
     const void *obj2 = *((const void **) val2_ptr);
     return myContext->comparator(obj1, obj2, myContext->context);
 }
-#elif defined(__linux__)
-// GNU/Linux style comparator wrapper: int (*compar)(const void *a, const void *b, void *thunk)
-static int gnu_qsortCompare_wrapper(const void *val1_ptr, const void *val2_ptr, void *thunk)
+#endif
+
+// Comparator wrapper for qsort_r (GNU/Linux, MinGW, Cygwin GCC)
+// Signature: int (*compar)(const void *a, const void *b, void *thunk)
+#if defined(__linux__) || (defined(__GNUC__) && (defined(_WIN32) || defined(__CYGWIN__)))
+static int thunk_last_qsort_compare_wrapper(const void *val1_ptr, const void *val2_ptr, void *thunk)
 {
     struct qsortContext *myContext = (struct qsortContext *) thunk;
     const void *obj1 = *((const void **) val1_ptr);
     const void *obj2 = *((const void **) val2_ptr);
     return myContext->comparator(obj1, obj2, myContext->context);
 }
-#elif defined(_WIN32) || defined(__CYGWIN__)
-// Windows specific qsort_s (MSVC) or potentially MinGW if it defines _WIN32 and supports qsort_s
-// Windows qsort_s comparator: int (*compar)(void *context, const void *a, const void *b)
-static int win_qsort_s_compare_wrapper(void *thunk, const void *val1_ptr, const void *val2_ptr)
-{
-    struct qsortContext *myContext = (struct qsortContext *) thunk;
-    const void *obj1 = *((const void **) val1_ptr);
-    const void *obj2 = *((const void **) val2_ptr);
-    return myContext->comparator(obj1, obj2, myContext->context);
-}
-#else
-// For other platforms, OCArraySortValues will issue a compile-time error.
 #endif
 
 void OCArraySortValues(OCMutableArrayRef theArray, OCRange range, OCComparatorFunction comparator, void *context)
@@ -359,23 +355,21 @@ void OCArraySortValues(OCMutableArrayRef theArray, OCRange range, OCComparatorFu
 
     struct qsortContext myContext = {comparator, context};
     
-    // Correctly calculate the base pointer for the sub-array and number of elements
     void **base_ptr = theArray->data + range.location;
     size_t nmemb = range.length;
-    size_t element_size = sizeof(const void *);
+    size_t element_size = sizeof(void *); // Corrected to sizeof(void *)
 
 #if defined(__APPLE__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
-    qsort_r(base_ptr, nmemb, element_size, &myContext, bsd_qsortCompare_wrapper);
-#elif defined(__linux__)
-    qsort_r(base_ptr, nmemb, element_size, gnu_qsortCompare_wrapper, &myContext);
-#elif defined(_WIN32) || defined(__CYGWIN__)
-    #if defined(__STDC_LIB_EXT1__) || _MSC_VER >= 1400 // Check for C11 Annex K or MSVC version
-        qsort_s(base_ptr, nmemb, element_size, win_qsort_s_compare_wrapper, &myContext);
-    #else
-        #error "qsort_r/qsort_s implementation not specified for this Windows toolchain. Please add a case for your OS or provide a fallback sort."
-    #endif
+    qsort_r(base_ptr, nmemb, element_size, &myContext, thunk_first_qsort_compare_wrapper);
+
+#elif defined(__linux__) || (defined(__GNUC__) && (defined(_WIN32) || defined(__CYGWIN__))) // GNU (Linux, MinGW, Cygwin GCC)
+    qsort_r(base_ptr, nmemb, element_size, thunk_last_qsort_compare_wrapper, &myContext);
+
+#elif defined(_MSC_VER) && defined(_WIN32) // MSVC on Windows
+    qsort_s(base_ptr, nmemb, element_size, thunk_first_qsort_compare_wrapper, &myContext);
+
 #else
-    #error "qsort_r implementation not specified for this platform. Please add a case for your OS or provide a fallback sort."
+    #error "qsort_r or qsort_s is not available or configured for this platform/compiler. Sorting with context may not be supported or may be incorrect."
 #endif
 }
 
