@@ -8,7 +8,6 @@
 
 #if defined(__linux__) || (defined(__GNUC__) && (defined(_WIN32) || defined(__CYGWIN__)))
   // For GNU-specific extensions (like GNU qsort_r if available)
-  // For MinGW, qsort_s is prioritized due to compiler hints and previous qsort_r issues.
   #ifndef _GNU_SOURCE
     #define _GNU_SOURCE
   #endif
@@ -379,20 +378,10 @@ void OCArraySortValues(OCMutableArrayRef theArray, OCRange range, OCComparatorFu
     qsort_r(base_ptr, nmemb, element_size, thunk_last_qsort_compare_wrapper, &myContext);
 
 #elif (defined(__GNUC__) && (defined(_WIN32) || defined(__CYGWIN__))) // MinGW or Cygwin with GCC
-    // Attempt to use C11 qsort_s. __STDC_WANT_LIB_EXT1__ should be defined and active from the top of the file.
-    // Comparator for C11 qsort_s: int (*compar)(const void *x, const void *y, void *context)
-    // Matches: thunk_last_qsort_compare_wrapper
-    #if defined(__STDC_LIB_EXT1__) && __STDC_LIB_EXT1__ >= 201112L
-        // If qsort_s is not declared despite __STDC_WANT_LIB_EXT1__, this call will fail compilation.
-        if (qsort_s(base_ptr, nmemb, element_size, thunk_last_qsort_compare_wrapper, &myContext) != 0) {
-            #warning "qsort_s call returned an error on MinGW/Cygwin GCC."
-            // Consider error handling here, e.g., setting a flag or logging.
-        }
-    #else
-        // If __STDC_LIB_EXT1__ is not defined to a suitable value, qsort_s is likely unavailable.
-        // GNU qsort_r was also problematic (original error).
-        #error "MinGW/Cygwin GCC: C11 qsort_s not available (check __STDC_WANT_LIB_EXT1__ definition and library support). Cannot sort with context."
-    #endif
+    // Prefer GNU qsort_r on MinGW/Cygwin as _GNU_SOURCE is defined (confirmed by logs)
+    // and C11 qsort_s availability is problematic.
+    // The thunk_last_qsort_compare_wrapper is suitable for GNU qsort_r.
+    qsort_r(base_ptr, nmemb, element_size, thunk_last_qsort_compare_wrapper, &myContext);
 
 #elif defined(_MSC_VER) && defined(_WIN32) // MSVC on Windows
     // Attempt to use MSVC's qsort_s. __STDC_WANT_LIB_EXT1__ should be defined and active.

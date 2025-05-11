@@ -55,9 +55,9 @@
     void ComplexNodeFree(ComplexNodeRef node);
     void ocpcerror(char *s, ...);
     
-    %}
+%}
 
-%name-prefix="ocpc"
+%define api.prefix "ocpc" // Use modern Bison directive
 
 %union {
     ComplexNodeRef a;
