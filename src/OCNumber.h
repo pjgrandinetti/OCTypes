@@ -229,13 +229,13 @@ OCStringRef OCNumberCreateStringValue(OCNumberRef theNumber);
  * @param number The OCNumberRef object.
  * @param type The expected OCNumberType of the value. This function currently requires
  *             this type to match the internal type of the OCNumber object.
- * @param valuePtr A pointer to a memory location where the value will be copied.
- *                 The caller must ensure that `valuePtr` points to a variable of the
+ * @param outValue A pointer to a memory location where the value will be copied.
+ *                 The caller must ensure that `outValue` points to a variable of the
  *                 correct type and size corresponding to the `type` parameter.
- * @note If `number` or `valuePtr` is NULL, or if `type` does not match the internal
+ * @note If `number` or `outValue` is NULL, or if `type` does not match the internal
  *       type of `number`, the function does nothing. A more robust implementation
  *       might return a status or handle type conversions.
  */
-void OCNumberGetValue(OCNumberRef number, OCNumberType type, void *valuePtr);
+void OCNumberGetValue(OCNumberRef number, OCNumberType type, void *outValue);
 
 #endif /* OCNumber_h */

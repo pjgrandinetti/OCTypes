@@ -41,10 +41,10 @@ typedef uint32_t OCTypeID;
 typedef int32_t OCIndex;
 
 /**
- * @enum Anonymous enum
+ * @enum CommonConstants
  * @brief Defines common constant values.
  */
-enum {
+enum CommonConstants {
     /** @brief Represents a value not found, typically used as a return value from search functions. */
     kOCNotFound = -1
 };
@@ -57,10 +57,10 @@ enum {
 typedef struct __OCType * OCTypeRef;
 
 /**
- * @enum Anonymous enum
+ * @enum SpecialTypeIDs
  * @brief Defines special type ID values.
  */
-enum {
+enum SpecialTypeIDs {
     /** @brief Represents an invalid or uninitialized OCTypeID. */
     _kOCNotATypeID = 0
 };

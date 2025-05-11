@@ -56,3 +56,6 @@ xcuserdata/
 *.asan
 *.debug
 runTests
+
+# Doxygen output
+docs/doxygen/

@@ -51,7 +51,6 @@ bool OCTypeEqual(const void * theType1, const void * theType2)
 /*!
  @function OCRegisterType
  @abstract Registers a new OCType
- @param typeName A string that contains the OCType name
  @result The OCTypeID for the new OCType
  */
 OCTypeID OCRegisterType(char *typeName)
@@ -97,7 +96,6 @@ OCTypeID OCRegisterType(char *typeName)
 /*!
  @function OCRelease
  @abstract Decrements the reference counter, and frees object when reference counter is zero.
- @param ptr An OCTypeRef
  @discussion Anything entering this routine with a retainCount of zero or less is permanent and cannot be freed.
  */
 void OCRelease(const void * ptr)
@@ -119,7 +117,6 @@ void OCRelease(const void * ptr)
 /*!
  @function OCRetain
  @abstract Increments the reference counter.
- @param ptr An OCTypeRef
  */
 const void *OCRetain(const void * ptr)
 {

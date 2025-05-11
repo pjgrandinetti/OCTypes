@@ -281,7 +281,7 @@ bool OCStringEqual(OCStringRef theString1, OCStringRef theString2);
  * @function OCStringCreateWithFormat
  * @brief Creates an immutable OCString using a format string and arguments.
  * @param format Format OCString.
- * @param ... Format arguments.
+ * @param ... Variable arguments for the format string.
  * @return New OCStringRef (ownership transferred to caller).
  */
 OCStringRef  OCStringCreateWithFormat(OCStringRef format, ...);
@@ -290,32 +290,18 @@ OCStringRef  OCStringCreateWithFormat(OCStringRef format, ...);
  * @brief Appends formatted text to a mutable OCString.
  * @param theString Mutable OCString.
  * @param format Format OCString.
- * @param ... Format arguments.
+ * @param ... Variable arguments for the format string.
  */
 void OCStringAppendFormat(OCMutableStringRef theString, OCStringRef format, ...);
-
 
 /** @internal Creates a constant OCStringRef; private API. */
 OCStringRef __OCStringMakeConstantString(const char *cStr);
 
-/*!
- @function OCComplexFromCString
- @abstract Calculates and Returns the double complex value represented by the complex arithmetic expression in the string.
- @param string A string that contains a complex arithmetic expression
- @result The double complex value represented by string, or nan(NULL) if there is a scanning error (if the string contains disallowed characters or does not represent a double complex value).
- @discussion Consider the following example:
- 
- <pre><code>double val = PSComplexFromString("0.123 + 0.456*I");</code></pre>
- The variable val in this example would contain the complex value 0.123 + 0.456*I after the function is called.
- 
- <pre><code>double val = PSComplexFromString("(0.123 + 0.456*I)/(1.32+4.5*I)");</code></pre>
- The variable val in this example would contain the complex value 0.100688+0.00220167*I after the function is called.
- */
 /**
  * @function OCComplexFromCString
  * @brief Calculates and returns the double complex value represented by the complex arithmetic expression in the string.
  * @param string A string that contains a complex arithmetic expression.
- * @return The double complex value represented by string, or nan(NULL) if there is a scanning error.
+ * @return The double complex value represented by string, or `nan("")` or `nan(NULL)` if there is a scanning error.
  * @discussion Examples:
  *   - double val = PSComplexFromString("0.123 + 0.456*I"); // val = 0.123 + 0.456*I
  *   - double val = PSComplexFromString("(0.123 + 0.456*I)/(1.32+4.5*I)"); // val = 0.100688+0.00220167*I
