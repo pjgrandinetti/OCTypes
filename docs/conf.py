@@ -41,12 +41,6 @@ breathe_projects = {
 # use this project for all the breathe directives
 breathe_default_project = 'OCTypes'
 
-# -- Warning suppression -----------------------------------------------------
-
-# Suppress specific warnings that are common and often benign in C projects.
-# Trying a combination of identifiers as RTD may differ from local.
-suppress_warnings = [
-]
 
 # -- Options for HTML output -------------------------------------------------
 
