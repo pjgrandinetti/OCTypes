@@ -3,97 +3,86 @@ name: Build & Release
 on:
   push:
     tags:
-      - 'v*.*.*'  # e.g. v1.2.3
+      - 'v*.*.*'
 
 jobs:
-  build:
+  build-and-package:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
+        package: [library, headers]
 
     steps:
       - uses: actions/checkout@v3
 
-      - name: Build library (Linux/macOS)
-        if: runner.os != 'Windows'
-        run: make
+      - name: Validate tag
+        run: |
+          TAG=${GITHUB_REF#refs/tags/}
+          if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "✖ Invalid tag format: $TAG"
+            exit 1
+          fi
 
-      # Windows-specific setup
-      - name: Set up MSYS2 and MinGW
-        if: runner.os == 'Windows'
-        uses: msys2/setup-msys2@v2
+      - name: Cache deps & build artifacts
+        uses: actions/cache@v3
         with:
-          msystem: MINGW64
-          update: true
-          install: >-
-            mingw-w64-x86_64-toolchain
-            make
-            flex
-            bison
+          path: |
+            ~/.cache/meson
+            build/
+          key: ${{ runner.os }}-deps-${{ matrix.os }}-${{ github.ref }}
 
-      - name: Build library (Windows)
-        if: runner.os == 'Windows'
-        shell: msys2 {0}
+      - name: Build or Package
+        shell: bash -l {0}
         run: |
-          make clean
-          make CC=gcc CFLAGS="-std=c99 -I . -I src -O3 -Wall -Wextra -Wno-sign-compare -Wno-unused-parameter -Wno-missing-field-initializers" LEX=flex YACC="bison -y"
+          if [ "${{ matrix.package }}" = "library" ]; then
+            if [[ runner.os == 'Windows' ]]; then
+              make clean
+              make CC=gcc CFLAGS="-std=c99 -O3 -Wall" LEX=flex YACC="bison -y"
+            else
+              make
+            fi
+            mkdir -p artifacts
+            cp libOCTypes.a artifacts/libOCTypes-${{ matrix.os }}.a
+            zip -j artifacts/libOCTypes-${{ matrix.os }}.zip artifacts/libOCTypes-${{ matrix.os }}.a
+          else
+            mkdir -p artifacts/include
+            cp src/*.h artifacts/include/
+            zip -j artifacts/libOCTypes-headers-${{ matrix.os }}.zip artifacts/include/*.h
+          fi
 
-      - name: Package library
-        run: |
-          mkdir -p artifacts
-          cp libOCTypes.a artifacts/libOCTypes-${{ matrix.os }}.a
-          zip -j artifacts/libOCTypes-${{ matrix.os }}.zip artifacts/libOCTypes-${{ matrix.os }}.a
-
-      - name: Upload build artifact
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: libOCTypes-${{ matrix.os }}
-          path: artifacts/libOCTypes-${{ matrix.os }}.zip
-
-  headers:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Package headers
-        run: |
-          mkdir -p artifacts/include
-          cp src/*.h artifacts/include/
-          zip -j artifacts/libOCTypes-headers.zip artifacts/include/*.h
-
-      - name: Upload headers artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: libOCTypes-headers
-          path: artifacts/libOCTypes-headers.zip
+          name: ${{ matrix.package }}-${{ matrix.os }}
+          path: artifacts/*.zip
 
   release:
-    needs: [build, headers]
+    needs: build-and-package
     runs-on: ubuntu-latest
-
     steps:
-      - name: Download all artifacts
+      - name: Download Artifacts
         uses: actions/download-artifact@v4
         with:
           path: artifacts
 
-      - name: Create GitHub Release
+      - name: Create Release
+        uses: actions/create-release@v1
         id: create_release
-        uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ github.ref_name }}
-          name: Release ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload all assets
-        run: |
-          for file in artifacts/**/*.zip; do
-            echo "Uploading $file"
-            gh release upload "${{ github.ref_name }}" "$file" --clobber
-          done
+      - name: Upload Release Assets
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: artifacts/*.zip
+          asset_name: |
+            libOCTypes-${{ matrix.os }}.zip
+            libOCTypes-headers-${{ matrix.os }}.zip
+          asset_content_type: application/zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GH_REPO: ${{ github.repository }}

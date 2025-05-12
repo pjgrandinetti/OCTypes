@@ -1,17 +1,22 @@
-name: C Library CI
+name: CI & Release
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
+    tags:
+      - 'v*.*.*'
   pull_request:
-    branches: [ master ]
+    branches:
+      - master
 
 jobs:
   build:
+    name: Build & Test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout repository
@@ -23,14 +28,13 @@ jobs:
           make clean
           make test-asan
 
-      # Windows specific steps using MinGW
       - name: Set up MSYS2 and MinGW
         if: runner.os == 'Windows'
         uses: msys2/setup-msys2@v2
         with:
           msystem: MINGW64
           update: true
-          install: >-
+          install: |
             mingw-w64-x86_64-toolchain
             make
             flex
@@ -41,16 +45,66 @@ jobs:
         shell: msys2 {0}
         run: |
           make clean
-          make CC=gcc CFLAGS="-std=c99 -I . -I src -O3 -Wall -Wextra -Wno-sign-compare -Wno-unused-parameter -Wno-missing-field-initializers" LEX=flex YACC="bison -y"
+          make CC=gcc \
+               CFLAGS="-std=c99 -I. -Isrc -O3 -Wall -Wextra \
+                       -Wno-sign-compare -Wno-unused-parameter \
+                       -Wno-missing-field-initializers" \
+               LEX=flex YACC="bison -y"
 
-      - name: Verify library (Windows)
-        if: runner.os == 'Windows'
-        shell: msys2 {0} # Use msys2 shell for ls consistency
+      - name: Upload library artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: libOCTypes-${{ matrix.os }}
+          path: libOCTypes.a
+
+  release:
+    name: Package & Release
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Package libraries
         run: |
-          echo "Built library (Windows):"
-          ls -l libOCTypes.a
-      - name: Verify library (Linux/macOS)
-        if: runner.os != 'Windows'
-        run: |
-          echo "Built library (Linux/macOS):"
-          ls -l libOCTypes.a
+          mkdir -p packages
+          for osdir in artifacts/*; do
+            os=$(basename "$osdir")
+            src="$osdir/libOCTypes.a"
+            dest="packages/libOCTypes-${os}.a"
+
+            # Copy the .a
+            cp "$src" "$dest"
+
+            # ZIP cross-platform
+            if [[ "$os" == windows-latest ]]; then
+              pwsh -Command "Compress-Archive -Path $dest -DestinationPath ${dest%.a}.zip"
+            else
+              zip -j "${dest%.a}.zip" "$dest"
+            fi
+          done
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Release Assets
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: packages/*.zip
+          asset_name: |
+            libOCTypes-ubuntu-latest.zip
+            libOCTypes-macos-latest.zip
+            libOCTypes-windows-latest.zip
+          asset_content_type: application/zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
