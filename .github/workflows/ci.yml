@@ -22,13 +22,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Build and test on Linux/macOS
+      - name: Build & test on Linux/macOS
         if: runner.os != 'Windows'
         run: |
           make clean
           make test-asan
 
-      - name: Set up MSYS2 and MinGW
+      - name: Set up MSYS2 & MinGW (Windows)
         if: runner.os == 'Windows'
         uses: msys2/setup-msys2@v2
         with:
@@ -40,7 +40,7 @@ jobs:
             flex
             bison
 
-      - name: Build on Windows with MinGW
+      - name: Build on Windows
         if: runner.os == 'Windows'
         shell: msys2 {0}
         run: |
@@ -68,43 +68,26 @@ jobs:
         with:
           path: artifacts
 
-      - name: Package libraries
+      - name: Package libraries into ZIPs
         run: |
           mkdir -p packages
           for osdir in artifacts/*; do
             os=$(basename "$osdir")
-            src="$osdir/libOCTypes.a"
-            dest="packages/libOCTypes-${os}.a"
+            lib="${osdir}/libOCTypes.a"
+            zipfile="packages/libOCTypes-${os}.zip"
 
-            # Copy the .a
-            cp "$src" "$dest"
-
-            # ZIP cross-platform
             if [[ "$os" == windows-latest ]]; then
-              pwsh -Command "Compress-Archive -Path $dest -DestinationPath ${dest%.a}.zip"
+              pwsh -Command "Compress-Archive -Path '${lib}' -DestinationPath '${zipfile}'"
             else
-              zip -j "${dest%.a}.zip" "$dest"
+              zip -j "${zipfile}" "${lib}"
             fi
           done
 
-      - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v1
+      - name: Create or update GitHub Release and upload assets
+        uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ github.ref_name }}
-          release_name: Release ${{ github.ref_name }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload Release Assets
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: packages/*.zip
-          asset_name: |
-            libOCTypes-ubuntu-latest.zip
-            libOCTypes-macos-latest.zip
-            libOCTypes-windows-latest.zip
-          asset_content_type: application/zip
+          name: Release ${{ github.ref_name }}
+          files: packages/*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
