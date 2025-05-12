@@ -92,8 +92,12 @@ jobs:
         run: |
           mkdir -p packages
           for osdir in artifacts/*; do
-            os=$(basename "$osdir")
             lib="${osdir}/libOCTypes.a"
+            if [ ! -f "$lib" ]; then
+              echo "Skipping $osdir (no library to package)"
+              continue
+            fi
+            os=$(basename "$osdir")
             zipfile="packages/libOCTypes-${os}.zip"
 
             if [[ "$os" == windows-latest ]]; then
