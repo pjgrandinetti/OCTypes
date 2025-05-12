@@ -35,11 +35,14 @@ jobs:
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: artifacts/libOCTypes-${{ matrix.os }}.zip
           asset_name: libOCTypes-${{ matrix.os }}.zip
           asset_content_type: application/zip
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Package headers
         run: |
@@ -49,8 +52,11 @@ jobs:
 
       - name: Upload Headers Asset
         uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: artifacts/libOCTypes-headers.zip
           asset_name: libOCTypes-headers.zip
           asset_content_type: application/zip
+          token: ${{ secrets.GITHUB_TOKEN }}
