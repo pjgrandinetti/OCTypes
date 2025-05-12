@@ -1,0 +1,42 @@
+# GitHub Actions workflow to build and publish prebuilt static libraries as release assets
+name: Build & Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # Trigger on version tag pushes, e.g. v1.2.3
+
+jobs:
+  build_and_release:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build library
+        run: make
+
+      - name: Package library
+        run: |
+          mkdir -p artifacts
+          cp libOCTypes.a artifacts/libOCTypes-${{ matrix.os }}.a
+          zip -j artifacts/libOCTypes-${{ matrix.os }}.zip artifacts/libOCTypes-${{ matrix.os }}.a
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Release Asset
+        uses: softprops/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: artifacts/libOCTypes-${{ matrix.os }}.zip
+          asset_name: libOCTypes-${{ matrix.os }}.zip
+          asset_content_type: application/zip
