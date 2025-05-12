@@ -1,0 +1,236 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Background &mdash; OCTypes 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="OCType" href="api/OCType.html" />
+    <link rel="prev" title="OCTypes" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            OCTypes
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Background</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Background</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#part-i-good">Part I: Good</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#c-opaque-type-as-an-object">C Opaque Type as an Object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mutable-vs-immutable-types">Mutable vs Immutable Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#implementation-of-shape">Implementation of Shape</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/OCType.html">OCType</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/OCAutoreleasePool.html">OCAutoreleasePool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/OCNumber.html">OCNumber</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/OCBoolean.html">OCBoolean</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/OCString.html">OCString</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/OCArray.html">OCArray</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/OCDictionary.html">OCDictionary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/OCData.html">OCData</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/OCLibrary.html">OCLibrary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/OCMath.html">OCMath</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">OCTypes</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Background</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/background.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="background">
+<h1>Background<a class="headerlink" href="#background" title="Link to this heading"></a></h1>
+<section id="part-i-good">
+<h2>Part I: Good<a class="headerlink" href="#part-i-good" title="Link to this heading"></a></h2>
+<section id="c-opaque-type-as-an-object">
+<h3>C Opaque Type as an Object<a class="headerlink" href="#c-opaque-type-as-an-object" title="Link to this heading"></a></h3>
+<p>In the C language, object-oriented abstraction can be implemented using structures and functions. In C, a pointer to a structure can be defined without disclosing the elements of the structure. For example, in the header file Shape.h we define opaque type</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">__Shape</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ShapeRef</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>This declares a new type, ShapeRef, which is a pointer to a hidden structure __Shape. While the messages we can send to (or functions we can call with) this structure pointer are defined in a C header file, i.e. Shape.h, we are not allowed to see nor access directly the elements of this structure.</p>
+<p>You can read more about <a class="reference external" href="http://en.wikipedia.org/wiki/Opaque_data_type">Opaque data types</a> and <a class="reference external" href="http://en.wikipedia.org/wiki/Opaque_pointer">Opaque pointers</a> on Wikipedia. You can also learn more about Opaque types at <a class="reference external" href="http://developer.apple.com/library/mac/#documentation/CoreFoundation/Conceptual/CFDesignConcepts/Articles/OpaqueTypes.html#//apple_ref/doc/uid/20001106-CJBEJBHH">Apple</a>.</p>
+</section>
+<section id="mutable-vs-immutable-types">
+<h3>Mutable vs Immutable Types<a class="headerlink" href="#mutable-vs-immutable-types" title="Link to this heading"></a></h3>
+<p>You may have noticed in the example on Opaque Types that the pointer was defined using the <code class="docutils literal notranslate"><span class="pre">const</span></code> keyword. The keyword <code class="docutils literal notranslate"><span class="pre">const</span></code> means that the contents of <code class="docutils literal notranslate"><span class="pre">__Shape</span></code> structure cannot be modified after it is created. This makes Shape an immutable type. This means that while we can define functions that reveal the internal state (i.e., structure elements) of Shape, we cannot define functions that change its internal state. Only by eliminating the keyword <code class="docutils literal notranslate"><span class="pre">const</span></code> in the type definition would we be able to define functions to change the internal state of the type. A type whose internal state can be modified after creation is called a mutable type. Thus, in the header file <code class="docutils literal notranslate"><span class="pre">Shape.h</span></code> we also define the opaque type</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">__Shape</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">MutableShapeRef</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>What are the advantages of an immutable type? Let’s say you want to use an instance of type A as a variable inside type B. You decide to do this by placing a copy of the pointer for the instance of A inside B. Unbeknownst to you, however, another type, let’s call it C, also has a copy of the pointer for the same instance of A. If A was mutable, then type C could change the value of A, and, in turn, change the instance variable A inside B, without B knowing what happened. There are two ways to handle this problem. If A is mutable, then type B has no choice but to make its own personal copy of the A instance. Depending on the size of A, this could be a memory and time consuming process. On the other hand, if A is immutable, then B can safely (and rapidly) copy only the pointer for A. As you might imagine, immutable types are highly useful in concurrent programs. General advice: don’t define an type as mutable unless you really need it.</p>
+<p>Read more about <a class="reference external" href="https://en.wikipedia.org/wiki/Immutable_object">Mutable and Immutable</a> types at Wikipedia.</p>
+</section>
+<section id="implementation-of-shape">
+<h3>Implementation of Shape<a class="headerlink" href="#implementation-of-shape" title="Link to this heading"></a></h3>
+<p>Now, looking inside the source Shape.c, we find the structure</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">__Shape</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Shape Type attributes  - order of declaration is essential</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">xPosition</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">yPosition</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">orientation</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>Creation and Destruction of the Shape Type is handled with these function:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">__Shape</span><span class="w"> </span><span class="o">*</span><span class="n">ShapeAllocate</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">__Shape</span><span class="w"> </span><span class="o">*</span><span class="n">theShape</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">__Shape</span><span class="p">));</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="nb">NULL</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">theShape</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">theShape</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">ShapeRef</span><span class="w"> </span><span class="n">ShapeCreate</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">xPosition</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">yPosition</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">orientation</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">__Shape</span><span class="w"> </span><span class="o">*</span><span class="n">newShape</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ShapeAllocate</span><span class="p">();</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="nb">NULL</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">newShape</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
+<span class="w">    </span><span class="n">newShape</span><span class="o">-&gt;</span><span class="n">xPosition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xPosition</span><span class="p">;</span>
+<span class="w">    </span><span class="n">newShape</span><span class="o">-&gt;</span><span class="n">yPosition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">yPosition</span><span class="p">;</span>
+<span class="w">    </span><span class="n">newShape</span><span class="o">-&gt;</span><span class="n">orientation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">orientation</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">newShape</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">ShapeFinalize</span><span class="p">(</span><span class="n">ShapeRef</span><span class="w"> </span><span class="n">theShape</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="nb">NULL</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">theShape</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="n">free</span><span class="p">((</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">theShape</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Comparison and Accessors are handled with these functions:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">bool</span><span class="w"> </span><span class="nf">ShapeEqual</span><span class="p">(</span><span class="n">ShapeRef</span><span class="w"> </span><span class="n">theShape1</span><span class="p">,</span><span class="w"> </span><span class="n">ShapeRef</span><span class="w"> </span><span class="n">theShape2</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="nb">NULL</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">theShape1</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">NULL</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">theShape2</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">theShape1</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">theShape2</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">theShape1</span><span class="o">-&gt;</span><span class="n">xPosition</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">theShape2</span><span class="o">-&gt;</span><span class="n">xPosition</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">theShape1</span><span class="o">-&gt;</span><span class="n">yPosition</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">theShape2</span><span class="o">-&gt;</span><span class="n">yPosition</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">theShape1</span><span class="o">-&gt;</span><span class="n">orientation</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">theShape2</span><span class="o">-&gt;</span><span class="n">orientation</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">float</span><span class="w"> </span><span class="nf">ShapeGetXPosition</span><span class="p">(</span><span class="n">ShapeRef</span><span class="w"> </span><span class="n">theShape</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="nb">NULL</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">theShape</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">nan</span><span class="p">(</span><span class="nb">NULL</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">theShape</span><span class="o">-&gt;</span><span class="n">xPosition</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">ShapeSetXPosition</span><span class="p">(</span><span class="n">MutableShapeRef</span><span class="w"> </span><span class="n">theShape</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">xPosition</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="nb">NULL</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">theShape</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="n">theShape</span><span class="o">-&gt;</span><span class="n">xPosition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xPosition</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>A shape can be translated and rotated. These methods are handled with these functions:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">ShapeTranslate</span><span class="p">(</span><span class="n">MutableShapeRef</span><span class="w"> </span><span class="n">theShape</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">xTranslation</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">yTranslation</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="nb">NULL</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">theShape</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="n">theShape</span><span class="o">-&gt;</span><span class="n">xPosition</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">xTranslation</span><span class="p">;</span>
+<span class="w">    </span><span class="n">theShape</span><span class="o">-&gt;</span><span class="n">yPosition</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">yTranslation</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">ShapeRotate</span><span class="p">(</span><span class="n">MutableShapeRef</span><span class="w"> </span><span class="n">theShape</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">angle</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="nb">NULL</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">theShape</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="n">theShape</span><span class="o">-&gt;</span><span class="n">orientation</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">angle</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Usage of Shape</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">MutableShapeRef</span><span class="w"> </span><span class="n">shape</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ShapeCreateMutable</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">);</span>
+<span class="n">ShapeShow</span><span class="p">(</span><span class="n">shape</span><span class="p">);</span>
+
+<span class="n">ShapeTranslate</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span><span class="w"> </span><span class="mf">20.0</span><span class="p">);</span>
+<span class="n">ShapeRotate</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span><span class="w"> </span><span class="mf">180.</span><span class="p">);</span>
+<span class="n">ShapeShow</span><span class="p">(</span><span class="n">shape</span><span class="p">);</span>
+<span class="n">ShapeFinalize</span><span class="p">(</span><span class="n">shape</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="OCTypes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api/OCType.html" class="btn btn-neutral float-right" title="OCType" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
