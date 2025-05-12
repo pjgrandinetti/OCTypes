@@ -45,8 +45,8 @@ This produces ``libOCTypes.a``.
    api/OCArray
    api/OCDictionary
    api/OCData
-   api/OCLibrary
    api/OCMath
+   api/OCLibrary
 
 Indices and Tables
 ==================
