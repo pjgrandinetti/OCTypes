@@ -26,9 +26,9 @@ TEST_SRC_DIR = tests
 TEST_FILES = $(wildcard $(TEST_SRC_DIR)/test_*.c) $(TEST_SRC_DIR)/main.c
 TEST_OBJ = $(notdir $(TEST_FILES:.c=.o))
 
-.PHONY: all clean test docs clean-docs
+.PHONY: all clean-objects clean test docs clean-docs
 
-all: libOCTypes.a
+all: libOCTypes.a clean-objects
 
 # Generate scanner
 OCComplexScanner.c: $(LEX_SRC)
@@ -81,8 +81,11 @@ test-asan: libOCTypes.a $(TEST_OBJ)
 	@echo "Running AddressSanitizer build..."
 	@./runTests.asan
 
+clean-objects:
+	rm -f $(OBJ) $(TEST_OBJ)
+
 clean:
-	rm -f $(OBJ) $(TEST_OBJ) libOCTypes.a $(GEN_C) $(GEN_H) runTests runTests.debug runTests.asan *.dSYM -rf
+	rm -f libOCTypes.a $(GEN_C) $(GEN_H) runTests runTests.debug runTests.asan *.dSYM -rf
 
 # Documentation targets
 docs:
