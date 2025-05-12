@@ -62,3 +62,5 @@ python:
 # Sphinx configuration (used by RTD to understand the project)
 sphinx:
   configuration: docs/conf.py
+
+  
