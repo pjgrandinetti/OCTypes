@@ -49,6 +49,12 @@
 <li class="toctree-l3"><a class="reference internal" href="#c-opaque-type-as-an-object">C Opaque Type as an Object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#mutable-vs-immutable-types">Mutable vs Immutable Types</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#implementation-of-shape">Implementation of Shape</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#inheritance">Inheritance</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#part-ii-better">Part II: Better</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#reference-counting">Reference Counting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#implementation">Implementation</a></li>
 </ul>
 </li>
 </ul>
@@ -196,6 +202,181 @@
 <span class="n">ShapeRotate</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span><span class="w"> </span><span class="mf">180.</span><span class="p">);</span>
 <span class="n">ShapeShow</span><span class="p">(</span><span class="n">shape</span><span class="p">);</span>
 <span class="n">ShapeFinalize</span><span class="p">(</span><span class="n">shape</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="inheritance">
+<h3>Inheritance<a class="headerlink" href="#inheritance" title="Link to this heading"></a></h3>
+<p>Let’s examine how we can define a Square type that inherits from Shape. In source code we define the structure</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">__Square</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Shape Type attributes - order of declaration is essential</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">xPosition</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">yPosition</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">orientation</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// Square Type attributes</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">width</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>For this inheritance trick to work it is essential that the order of instance variable declarations be identical to those inside the Shape structure. Any additional instance variables must go after the variables matching Shape’s structure.</p>
+<p>In the header file we define the opaque types</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">__Square</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">SquareRef</span><span class="p">;</span>
+<span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">__Square</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">MutableSquareRef</span><span class="p">;</span>
+<span class="n">Creation</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="n">Destruction</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">Square</span><span class="w"> </span><span class="n">Type</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">handled</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">these</span><span class="w"> </span><span class="n">function</span><span class="o">:</span>
+
+<span class="k">static</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">__Square</span><span class="w"> </span><span class="o">*</span><span class="n">SquareAllocate</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">__Square</span><span class="w"> </span><span class="o">*</span><span class="n">theSquare</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">__Square</span><span class="p">));</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="nb">NULL</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">theSquare</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">theSquare</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">SquareRef</span><span class="w"> </span><span class="n">SquareCreate</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">xPosition</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">yPosition</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">orientation</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">width</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">__Square</span><span class="w"> </span><span class="o">*</span><span class="n">newSquare</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SquareAllocate</span><span class="p">();</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="nb">NULL</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">newSquare</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
+<span class="w">    </span><span class="n">newSquare</span><span class="o">-&gt;</span><span class="n">xPosition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xPosition</span><span class="p">;</span>
+<span class="w">    </span><span class="n">newSquare</span><span class="o">-&gt;</span><span class="n">yPosition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">yPosition</span><span class="p">;</span>
+<span class="w">    </span><span class="n">newSquare</span><span class="o">-&gt;</span><span class="n">orientation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">orientation</span><span class="p">;</span>
+<span class="w">    </span><span class="n">newSquare</span><span class="o">-&gt;</span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">width</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">newSquare</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">SquareFinalize</span><span class="p">(</span><span class="n">SquareRef</span><span class="w"> </span><span class="n">theSquare</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="nb">NULL</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">theSquare</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="n">free</span><span class="p">((</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">theSquare</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="n">Comparison</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="n">Accessors</span><span class="w"> </span><span class="n">are</span><span class="w"> </span><span class="n">handled</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">these</span><span class="w"> </span><span class="n">functions</span><span class="o">:</span>
+
+<span class="kt">bool</span><span class="w"> </span><span class="n">SquareEqual</span><span class="p">(</span><span class="n">SquareRef</span><span class="w"> </span><span class="n">theSquare1</span><span class="p">,</span><span class="w"> </span><span class="n">SquareRef</span><span class="w"> </span><span class="n">theSquare2</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">ShapeEqual</span><span class="p">((</span><span class="n">ShapeRef</span><span class="p">)</span><span class="w"> </span><span class="n">theSquare1</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">ShapeRef</span><span class="p">)</span><span class="w"> </span><span class="n">theSquare2</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">theSquare1</span><span class="o">-&gt;</span><span class="n">width</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">theSquare2</span><span class="o">-&gt;</span><span class="n">width</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">float</span><span class="w"> </span><span class="n">SquareGetXPosition</span><span class="p">(</span><span class="n">SquareRef</span><span class="w"> </span><span class="n">theSquare</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">ShapeGetXPosition</span><span class="p">((</span><span class="n">ShapeRef</span><span class="p">)</span><span class="w"> </span><span class="n">theSquare</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">float</span><span class="w"> </span><span class="n">SquareGetWidth</span><span class="p">(</span><span class="n">SquareRef</span><span class="w"> </span><span class="n">theSquare</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="nb">NULL</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">theSquare</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">nan</span><span class="p">(</span><span class="nb">NULL</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">theSquare</span><span class="o">-&gt;</span><span class="n">width</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">SquareSetXPosition</span><span class="p">(</span><span class="n">MutableSquareRef</span><span class="w"> </span><span class="n">theSquare</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">xPosition</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">ShapeSetXPosition</span><span class="p">((</span><span class="n">MutableShapeRef</span><span class="p">)</span><span class="w"> </span><span class="n">theSquare</span><span class="p">,</span><span class="w"> </span><span class="n">xPosition</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">SquareSetWidth</span><span class="p">(</span><span class="n">MutableSquareRef</span><span class="w"> </span><span class="n">theSquare</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">width</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="nb">NULL</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">theSquare</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="n">theSquare</span><span class="o">-&gt;</span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">width</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Notice how we type cast a Square into a Shape before calling Shape methods.</p>
+<p>Usage of Square</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">MutableSquareRef</span><span class="w"> </span><span class="n">square</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MutableSquareCreate</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">10.0</span><span class="p">);</span>
+<span class="n">ShapeShow</span><span class="p">((</span><span class="n">ShapeRef</span><span class="p">)</span><span class="w"> </span><span class="n">square</span><span class="p">);</span>
+<span class="n">SquareShow</span><span class="p">(</span><span class="n">square</span><span class="p">);</span>
+
+<span class="n">ShapeTranslate</span><span class="p">((</span><span class="n">MutableShapeRef</span><span class="p">)</span><span class="w"> </span><span class="n">square</span><span class="p">,</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span><span class="w"> </span><span class="mf">20.0</span><span class="p">);</span>
+<span class="n">ShapeRotate</span><span class="p">((</span><span class="n">MutableShapeRef</span><span class="p">)</span><span class="w"> </span><span class="n">square</span><span class="p">,</span><span class="w"> </span><span class="mf">180.</span><span class="p">);</span>
+<span class="n">SquareShow</span><span class="p">(</span><span class="n">square</span><span class="p">);</span>
+<span class="n">SquareFinalize</span><span class="p">(</span><span class="n">square</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="part-ii-better">
+<h2>Part II: Better<a class="headerlink" href="#part-ii-better" title="Link to this heading"></a></h2>
+<p>In the last section we examined how Opaque types in C can be adapted to follow some Object Oriented Design Patterns. It is a sensible approach but it still lacks memory management, collections, strings, and many other useful object-oriented design features. To continue on our path towards a more complete approach let’s look how we can introduce retain count memory management.</p>
+<section id="reference-counting">
+<h3>Reference Counting<a class="headerlink" href="#reference-counting" title="Link to this heading"></a></h3>
+<p>When an type is no longer needed it should be deallocated and its memory freed. But how will a type know when it’s no longer needed? Type A may hold a reference (pointer) to type B, but how does type A know that type B still exists? For example, type B could have initially been created to be part of type C. If type C gets destroyed along with all it’s constituent objects and type A doesn’t know, then type A could end up sending a message to (calling a function with) a non-existent type B, and crash the program.</p>
+<p>The solution we adopt to solve this problem is called <em>reference counting</em>. When a type wants to hold a reference to another type it calls that type’s <code class="docutils literal notranslate"><span class="pre">retain</span></code> function. Every time an type’s <code class="docutils literal notranslate"><span class="pre">retain</span></code> function is called, it increments its internal <code class="docutils literal notranslate"><span class="pre">retainCount</span></code> variable. Conversely, when an type no longer needs to hold a reference to a type it calls that type’s <code class="docutils literal notranslate"><span class="pre">release</span></code> function. Every time an type’s release function is called, it decrements its internal retainCount variable. When a type’s <code class="docutils literal notranslate"><span class="pre">retainCount</span></code> hits zero, then the type self destructs. That is, it would call the <code class="docutils literal notranslate"><span class="pre">release</span></code> function of any types it had retained, and then deallocate itself.</p>
+<p>With this in mind, we follow the conventions below.</p>
+<ul class="simple">
+<li><p>if you create an type (either directly or by making a copy of another type—see <em>The Create Rule</em>), you own it. We will explicitly use the word <code class="docutils literal notranslate"><span class="pre">Create</span></code> or <code class="docutils literal notranslate"><span class="pre">Copy</span></code> in the name of any function that creates and returns a type with a retain count of 1.</p></li>
+<li><p>if you get an type from somewhere else, you do not own it. If you want to prevent it being disposed of, you must add yourself as an owner (using a retain method).</p></li>
+<li><p>if you are an owner of an type, you must relinquish ownership when you have finished using it (using a release method).</p></li>
+</ul>
+<p>Read more about Reference counting at Wikipedia and at Apple.</p>
+</section>
+<section id="implementation">
+<h3>Implementation<a class="headerlink" href="#implementation" title="Link to this heading"></a></h3>
+<p>We begin by creating a fundamental opaque type called OCType, from which all other types will inherit. In OCType source code define structure</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">__OCType</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">u_int32_t</span><span class="w"> </span><span class="n">retainCount</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">finalize</span><span class="p">)(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">equal</span><span class="p">)(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">);</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>In OCType header define opaque type</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">__OCType</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">OCTypeRef</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>OCType Methods</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">bool</span><span class="w"> </span><span class="nf">OCTypeEqual</span><span class="p">(</span><span class="n">OCTypeRef</span><span class="w"> </span><span class="n">theType1</span><span class="p">,</span><span class="w"> </span><span class="n">OCTypeRef</span><span class="w"> </span><span class="n">theType2</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="k">return</span><span class="w"> </span><span class="n">theType1</span><span class="o">-&gt;</span><span class="n">equal</span><span class="p">(</span><span class="n">theType1</span><span class="p">,</span><span class="n">theType2</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">OCRelease</span><span class="p">(</span><span class="n">OCTypeRef</span><span class="w"> </span><span class="n">theType</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="nb">NULL</span><span class="o">==</span><span class="n">theType</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">theType</span><span class="o">-&gt;</span><span class="n">retainCount</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">theType</span><span class="o">-&gt;</span><span class="n">finalize</span><span class="p">(</span><span class="n">theType</span><span class="p">);</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">theType</span><span class="o">-&gt;</span><span class="n">retainCount</span><span class="o">--</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">OCTypeRef</span><span class="w"> </span><span class="nf">OCRetain</span><span class="p">(</span><span class="n">OCTypeRef</span><span class="w"> </span><span class="n">theType</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="nb">NULL</span><span class="o">==</span><span class="n">theType</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
+<span class="w">    </span><span class="n">theType</span><span class="o">-&gt;</span><span class="n">retainCount</span><span class="o">++</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">theType</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Now we can define OCShape to inherit from OCType</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">__OCShape</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">u_int32_t</span><span class="w"> </span><span class="n">retainCount</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">finalize</span><span class="p">)(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">equal</span><span class="p">)(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// Shape Type attributes</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">xPosition</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">yPosition</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">orientation</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">static</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">__OCShape</span><span class="w"> </span><span class="o">*</span><span class="n">OCShapeAllocate</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">__OCShape</span><span class="w"> </span><span class="o">*</span><span class="n">theShape</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">__OCShape</span><span class="p">));</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="nb">NULL</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">theShape</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
+<span class="w">    </span><span class="n">theShape</span><span class="o">-&gt;</span><span class="n">retainCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">    </span><span class="n">theShape</span><span class="o">-&gt;</span><span class="n">finalize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">KTShapeFinalize</span><span class="p">;</span>
+<span class="w">    </span><span class="n">theShape</span><span class="o">-&gt;</span><span class="n">equal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">KFShapeEqual</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">theShape</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Usage of OCShape</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">OCMutableShapeRef</span><span class="w"> </span><span class="n">shape</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">OCShapeCreateMutable</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">);</span>
+<span class="n">OCShapeShow</span><span class="p">(</span><span class="n">shape</span><span class="p">);</span>
+
+<span class="n">OCShapeTranslate</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span><span class="w"> </span><span class="mf">20.0</span><span class="p">);</span>
+<span class="n">OCShapeRotate</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span><span class="w"> </span><span class="mf">180.</span><span class="p">);</span>
+<span class="n">OCShapeShow</span><span class="p">(</span><span class="n">shape</span><span class="p">);</span>
+
+<span class="n">OCRelease</span><span class="p">((</span><span class="n">OCTypeRef</span><span class="p">)</span><span class="w"> </span><span class="n">shape</span><span class="p">);</span>
 </pre></div>
 </div>
 </section>

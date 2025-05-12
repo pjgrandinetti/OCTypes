@@ -125,3 +125,202 @@ Usage of Shape
     ShapeShow(shape);
     ShapeFinalize(shape);
 
+Inheritance
+~~~~~~~~~~~~~~~~~~~~~~
+
+Let's examine how we can define a Square type that inherits from Shape. In source code we define the structure
+
+.. code-block:: c
+
+    struct __Square {
+        // Shape Type attributes - order of declaration is essential 
+        float xPosition;
+        float yPosition;
+        float orientation;
+        // Square Type attributes
+        float width; 
+    };
+
+For this inheritance trick to work it is essential that the order of instance variable declarations be identical to those inside the Shape structure. Any additional instance variables must go after the variables matching Shape's structure.
+
+In the header file we define the opaque types
+
+.. code-block:: c
+
+    typedef const struct __Square * SquareRef;
+    typedef struct __Square * MutableSquareRef;
+    Creation and Destruction of the Square Type is handled with these function:
+
+    static struct __Square *SquareAllocate() 
+    {
+        struct __Square *theSquare = malloc(sizeof(struct __Square)); if(NULL == theSquare) return NULL;
+        return theSquare;
+    }
+
+    SquareRef SquareCreate(float xPosition, float yPosition, float orientation, float width) 
+    {
+        struct __Square *newSquare = SquareAllocate();
+        if(NULL == newSquare) return NULL; 
+        newSquare->xPosition = xPosition; 
+        newSquare->yPosition = yPosition; 
+        newSquare->orientation = orientation; 
+        newSquare->width = width;
+        return newSquare; 
+    }
+
+    void SquareFinalize(SquareRef theSquare) 
+    {
+        if(NULL == theSquare) return;
+        free((void *)theSquare); 
+    }
+    Comparison and Accessors are handled with these functions:
+
+    bool SquareEqual(SquareRef theSquare1, SquareRef theSquare2) 
+    {
+        if(!ShapeEqual((ShapeRef) theSquare1, (ShapeRef) theSquare2)) return false;
+        if(theSquare1->width != theSquare2->width) return false;
+        return true;
+    }
+
+    float SquareGetXPosition(SquareRef theSquare) 
+    {
+        return ShapeGetXPosition((ShapeRef) theSquare); 
+    }
+
+    float SquareGetWidth(SquareRef theSquare) 
+    {
+        if(NULL == theSquare) return nan(NULL);
+        return theSquare->width;
+    }
+
+    void SquareSetXPosition(MutableSquareRef theSquare, float xPosition) 
+    {
+        ShapeSetXPosition((MutableShapeRef) theSquare, xPosition); 
+    }
+
+    void SquareSetWidth(MutableSquareRef theSquare, float width) 
+    {
+        if(NULL == theSquare) return;
+        theSquare->width = width; 
+    }
+
+Notice how we type cast a Square into a Shape before calling Shape methods.
+
+Usage of Square
+
+.. code-block:: c
+
+    MutableSquareRef square = MutableSquareCreate(0.0, 0.0, 0.0, 10.0);
+    ShapeShow((ShapeRef) square);
+    SquareShow(square);
+  
+    ShapeTranslate((MutableShapeRef) square, 10.0, 20.0);
+    ShapeRotate((MutableShapeRef) square, 180.);
+    SquareShow(square);
+    SquareFinalize(square);
+
+
+Part II: Better
+-----------------
+
+In the last section we examined how Opaque types in C can be adapted to follow some Object Oriented Design Patterns. It is a sensible approach but it still lacks memory management, collections, strings, and many other useful object-oriented design features. To continue on our path towards a more complete approach let's look how we can introduce retain count memory management.
+
+Reference Counting
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When an type is no longer needed it should be deallocated and its memory freed. But how will a type know when it's no longer needed? Type A may hold a reference (pointer) to type B, but how does type A know that type B still exists? For example, type B could have initially been created to be part of type C. If type C gets destroyed along with all it's constituent objects and type A doesn't know, then type A could end up sending a message to (calling a function with) a non-existent type B, and crash the program.
+
+The solution we adopt to solve this problem is called *reference counting*. When a type wants to hold a reference to another type it calls that type's ``retain`` function. Every time an type's ``retain`` function is called, it increments its internal ``retainCount`` variable. Conversely, when an type no longer needs to hold a reference to a type it calls that type's ``release`` function. Every time an type's release function is called, it decrements its internal retainCount variable. When a type's ``retainCount`` hits zero, then the type self destructs. That is, it would call the ``release`` function of any types it had retained, and then deallocate itself.
+
+With this in mind, we follow the conventions below.
+
+* if you create an type (either directly or by making a copy of another type—see *The Create Rule*), you own it. We will explicitly use the word ``Create`` or ``Copy`` in the name of any function that creates and returns a type with a retain count of 1.
+
+* if you get an type from somewhere else, you do not own it. If you want to prevent it being disposed of, you must add yourself as an owner (using a retain method).
+
+* if you are an owner of an type, you must relinquish ownership when you have finished using it (using a release method).
+
+Read more about Reference counting at Wikipedia and at Apple.
+
+Implementation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+We begin by creating a fundamental opaque type called OCType, from which all other types will inherit. In OCType source code define structure
+
+.. code-block:: c
+
+    struct __OCType {
+        u_int32_t retainCount;
+        void (*finalize)(void *); 
+        bool (*equal)(void *, void *);
+    };
+
+In OCType header define opaque type
+
+.. code-block:: c
+
+    typedef struct __OCType * OCTypeRef;
+
+OCType Methods
+
+.. code-block:: c
+
+    bool OCTypeEqual(OCTypeRef theType1, OCTypeRef theType2)
+    {
+    return theType1->equal(theType1,theType2);
+    }
+
+    void OCRelease(OCTypeRef theType)
+    {
+        if(NULL==theType) return;
+        if(theType->retainCount == 1) {
+            theType->finalize(theType); return; 
+        }
+        theType->retainCount--;
+        return;
+    }
+
+    OCTypeRef OCRetain(OCTypeRef theType)
+    {
+        if(NULL==theType) return NULL;
+        theType->retainCount++;
+        return theType;
+    }
+
+Now we can define OCShape to inherit from OCType
+
+.. code-block:: c
+
+    struct __OCShape {
+        u_int32_t retainCount;
+        void (*finalize)(void *); 
+        bool (*equal)(void *, void *);
+
+        // Shape Type attributes
+        float xPosition; 
+        float yPosition; 
+        float orientation;
+    };
+
+    static struct __OCShape *OCShapeAllocate()
+    {
+        struct __OCShape *theShape = malloc(sizeof(struct __OCShape)); 
+        if(NULL == theShape) return NULL;
+        theShape->retainCount = 1;
+        theShape->finalize = KTShapeFinalize;
+        theShape->equal = KFShapeEqual;
+        return theShape;
+    }
+
+Usage of OCShape
+
+.. code-block:: c
+
+    OCMutableShapeRef shape = OCShapeCreateMutable(0.0, 0.0, 0.0);
+    OCShapeShow(shape);
+    
+    OCShapeTranslate(shape, 10.0, 20.0);
+    OCShapeRotate(shape, 180.);
+    OCShapeShow(shape);
+    
+    OCRelease((OCTypeRef) shape);
