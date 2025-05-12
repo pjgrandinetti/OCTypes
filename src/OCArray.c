@@ -48,7 +48,7 @@ struct __OCArray {
     const OCArrayCallBacks *callBacks;
     uint64_t count; // Changed from u_int64_t
     uint64_t capacity; // Changed from u_int64_t
-    void **data;
+    const void **data;
 };
 
 static bool __OCArrayEqual(const void *theType1, const void *theType2)
@@ -162,12 +162,12 @@ OCArrayRef OCArrayCreate(const void **values, uint64_t numValues, const OCArrayC
     if(NULL == newArray) return NULL;
 
     if (numValues > 0) {
-        newArray->data = (void **) malloc(numValues * sizeof(void *));
+        newArray->data = (const void **) malloc(numValues * sizeof(const void *));
         if (NULL == newArray->data) {
             free(newArray); // Clean up allocated array shell
             return NULL;
         }
-        memcpy((void *) newArray->data, (const void *) values, numValues * sizeof(void *));
+        memcpy((void *) newArray->data, (const void *) values, numValues * sizeof(const void *));
     } else {
         newArray->data = NULL; // Explicitly NULL for 0 elements, though OCArrayAllocate might do this.
     }
@@ -193,7 +193,7 @@ OCMutableArrayRef OCArrayCreateMutable(uint64_t capacity, const OCArrayCallBacks
     if(NULL == newArray) return NULL;
 
     if (capacity > 0) {
-        newArray->data = (void **) malloc(capacity * sizeof(void *));
+        newArray->data = (const void **) malloc(capacity * sizeof(const void *));
         if (NULL == newArray->data) {
             free(newArray);
             return NULL;
@@ -219,7 +219,7 @@ OCMutableArrayRef OCArrayCreateMutableCopy(OCArrayRef theArray)
     if (NULL == newMutableArray) return NULL;
 
     if (theArray->count > 0) {
-        memcpy(newMutableArray->data, theArray->data, theArray->count * sizeof(void *));
+        memcpy(newMutableArray->data, theArray->data, theArray->count * sizeof(const void *));
         newMutableArray->count = theArray->count;
         _OCArrayRetainValues(newMutableArray); // Retain values copied into the new mutable array
     }
@@ -280,7 +280,7 @@ void OCArrayAppendValue(OCMutableArrayRef theArray, const void * value)
 
     if(theArray->count == theArray->capacity) {
         uint64_t newCapacity = (theArray->capacity == 0) ? 1 : theArray->capacity * 2; // Grow by doubling, or start at 1
-        void **newData = (void **) realloc(theArray->data, newCapacity * sizeof(void *));
+        const void **newData = (const void **) realloc(theArray->data, newCapacity * sizeof(const void *));
         if (NULL == newData) {
             return;
         }
@@ -288,7 +288,7 @@ void OCArrayAppendValue(OCMutableArrayRef theArray, const void * value)
         theArray->capacity = newCapacity;
     }
 
-    theArray->data[theArray->count] = type;
+    theArray->data[theArray->count] = value; // assign original pointer without dropping qualifiers
     
     if(theArray->callBacks && theArray->callBacks->retain) {
         theArray->callBacks->retain(type);
@@ -315,12 +315,12 @@ void OCArrayAppendArray(OCMutableArrayRef theArray, OCArrayRef otherArray, OCRan
 void OCArrayInsertValueAtIndex(OCMutableArrayRef theArray, uint64_t index, const void * value)
 {
     if(NULL == theArray || NULL == value || index > theArray->count) return; // Added NULL checks, ensure index is valid
-    
+
     OCTypeRef type = (OCTypeRef) value;
 
     if(theArray->count == theArray->capacity) {
         uint64_t newCapacity = (theArray->capacity == 0) ? 1 : theArray->capacity * 2;
-        void **newData = (void **) realloc(theArray->data, newCapacity * sizeof(void *));
+        const void **newData = (const void **) realloc(theArray->data, newCapacity * sizeof(const void *));
         if (NULL == newData) {
             return;
         }
@@ -332,7 +332,7 @@ void OCArrayInsertValueAtIndex(OCMutableArrayRef theArray, uint64_t index, const
         theArray->data[i] = theArray->data[i-1];
     }
     
-    theArray->data[index] = type;
+    theArray->data[index] = value;
 
     if(theArray->callBacks && theArray->callBacks->retain) {
         theArray->callBacks->retain(type);
@@ -414,7 +414,7 @@ void OCArraySortValues(OCMutableArrayRef theArray, OCRange range, OCComparatorFu
 
     struct qsortContext myContext = {comparator, context};
     
-    void **base_ptr = theArray->data + range.location;
+    void **base_ptr = (void **) (theArray->data + range.location);
     size_t nmemb = range.length;
     size_t element_size = sizeof(void *);
 

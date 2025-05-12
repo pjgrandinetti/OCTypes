@@ -45,13 +45,7 @@
               <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="OCType.html">OCType</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">OCAutoreleasePool</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#c.OCAutoreleasePoolCreate"><code class="docutils literal notranslate"><span class="pre">OCAutoreleasePoolCreate()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#c.OCAutoreleasePoolRelease"><code class="docutils literal notranslate"><span class="pre">OCAutoreleasePoolRelease()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#c.OCAutorelease"><code class="docutils literal notranslate"><span class="pre">OCAutorelease()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#c.OCAutoreleasePoolDrain"><code class="docutils literal notranslate"><span class="pre">OCAutoreleasePoolDrain()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">OCAutoreleasePool</a></li>
 <li class="toctree-l1"><a class="reference internal" href="OCNumber.html">OCNumber</a></li>
 <li class="toctree-l1"><a class="reference internal" href="OCBoolean.html">OCBoolean</a></li>
 <li class="toctree-l1"><a class="reference internal" href="OCString.html">OCString</a></li>
@@ -98,72 +92,6 @@
 </div>
 </p>
 <p>Nesting Pools: Pools can be nested. Releasing a nested pool only drains that pool. </p>
-<dl>
-<dt class="sig sig-object cpp">
-<span class="target" id="db/d24/group___o_c_autorelease_pool"></span><em><span class="pre">group</span></em> <span class="sig-name descname"><span class="pre">OCAutoreleasePool</span></span></dt>
-<dd><p>Implements an autorelease pool for OCTypes. </p>
-<div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
-<dl class="c function">
-<dt class="sig sig-object c" id="c.OCAutoreleasePoolCreate">
-<span class="target" id="db/d24/group___o_c_autorelease_pool_1ga5cfc8e5cd0e12238e896c8ab4e21e731"></span><span class="n"><span class="pre">OCAutoreleasePoolRef</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCAutoreleasePoolCreate</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCAutoreleasePoolCreate" title="Link to this definition"></a><br /></dt>
-<dd><p>Creates a new autorelease pool. </p>
-<p>The caller must release it when done. </p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A reference to the newly created autorelease pool. </p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="c function">
-<dt class="sig sig-object c" id="c.OCAutoreleasePoolRelease">
-<span class="target" id="db/d24/group___o_c_autorelease_pool_1ga3dbf0752793d4f3390e1787fa8b424f1"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCAutoreleasePoolRelease</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">OCAutoreleasePoolRef</span></span><span class="w"> </span><span class="n"><span class="pre">pool</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCAutoreleasePoolRelease" title="Link to this definition"></a><br /></dt>
-<dd><p>Releases an autorelease pool and all objects it contains. </p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>pool</strong> – The autorelease pool to release. Must not be NULL. Releasing a non-topmost pool also drains nested pools. </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>true if the pool was successfully released, false otherwise. </p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="c function">
-<dt class="sig sig-object c" id="c.OCAutorelease">
-<span class="target" id="db/d24/group___o_c_autorelease_pool_1ga7606cbde5db540d59e0daa4d73ac0c6f"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">OCAutorelease</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ptr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCAutorelease" title="Link to this definition"></a><br /></dt>
-<dd><p>Adds an object to the current (topmost) autorelease pool. </p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ptr</strong> – Pointer to the OCType object to autorelease. Must be non-NULL. </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The same pointer passed in, allowing for chained calls. </p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="c function">
-<dt class="sig sig-object c" id="c.OCAutoreleasePoolDrain">
-<span class="target" id="db/d24/group___o_c_autorelease_pool_1gaf9330fb686ee111745e0d8731e26f3c2"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCAutoreleasePoolDrain</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">OCAutoreleasePoolRef</span></span><span class="w"> </span><span class="n"><span class="pre">pool</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCAutoreleasePoolDrain" title="Link to this definition"></a><br /></dt>
-<dd><p>Drains an autorelease pool, releasing all objects it contains without deallocating the pool itself. </p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>pool</strong> – The autorelease pool to drain. Must not be NULL. </p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-</div>
-</dd></dl>
-
 </section>
 
 
