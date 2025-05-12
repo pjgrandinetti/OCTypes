@@ -57,6 +57,20 @@ jobs:
           name: libOCTypes-${{ matrix.os }}
           path: libOCTypes.a
 
+      # Package & upload public headers on Ubuntu only
+      - name: Package public headers
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          mkdir -p header-pkg/include
+          cp src/*.h header-pkg/include/
+          zip -j header-pkg/libOCTypes-headers.zip header-pkg/include/*.h
+      - name: Upload headers artifact
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: libOCTypes-headers
+          path: header-pkg/libOCTypes-headers.zip
+
   release:
     name: Package & Release
     needs: build
@@ -67,6 +81,12 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: artifacts
+
+      # Copy the header bundle into the packages folder
+      - name: Copy header bundle
+        run: |
+          mkdir -p packages
+          cp artifacts/libOCTypes-headers/libOCTypes-headers.zip packages/
 
       - name: Package libraries into ZIPs
         run: |
