@@ -1,4 +1,4 @@
 OCArray
 =======
 
-.. doxygengroup:: OCArray
+.. doxygenfile:: OCArray.h

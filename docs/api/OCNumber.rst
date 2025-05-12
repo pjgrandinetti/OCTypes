@@ -1,4 +1,5 @@
 OCNumber
 ========
 
-.. doxygengroup:: OCNumber
+.. doxygenfile:: OCNumber.h
+   :no-link:

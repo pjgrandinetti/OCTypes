@@ -88,6 +88,8 @@
              
   <section id="ocboolean">
 <h1>OCBoolean<a class="headerlink" href="#ocboolean" title="Link to this heading"></a></h1>
+<p>Defines the OCBooleanRef type and associated functions. </p>
+<p>OCBoolean provides a way to work with Boolean logic using OCType objects. It defines two singleton instances—kOCBooleanTrue and kOCBooleanFalse— representing the logical values <code class="docutils literal notranslate"><span class="pre">true</span></code> and <code class="docutils literal notranslate"><span class="pre">false</span></code>, respectively. </p>
 <dl>
 <dt class="sig sig-object cpp">
 <span class="target" id="de/d82/group___o_c_boolean"></span><em><span class="pre">group</span></em> <span class="sig-name descname"><span class="pre">OCBoolean</span></span></dt>
@@ -107,12 +109,12 @@
 
 <dl class="c function">
 <dt class="sig sig-object c" id="c.OCBooleanGetValue">
-<span class="target" id="de/d82/group___o_c_boolean_1ga890cb16c748073108e829dad87322553"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCBooleanGetValue</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="OCLibrary.html#c.OCBooleanRef" title="OCBooleanRef"><span class="n"><span class="pre">OCBooleanRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">boolean</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCBooleanGetValue" title="Link to this definition"></a><br /></dt>
-<dd><p>Retrieves the primitive Boolean value (<code class="docutils literal notranslate"><span class="pre">true</span></code> or <code class="docutils literal notranslate"><span class="pre">false</span></code>) from an <a class="reference internal" href="OCLibrary.html#d6/d5e/group___o_c_library_1ga333efd08bfea7a6d27702fac3afab9be"><span class="std std-ref">OCBooleanRef</span></a>. </p>
+<span class="target" id="de/d82/group___o_c_boolean_1ga890cb16c748073108e829dad87322553"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCBooleanGetValue</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">OCBooleanRef</span></span><span class="w"> </span><span class="n"><span class="pre">boolean</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCBooleanGetValue" title="Link to this definition"></a><br /></dt>
+<dd><p>Retrieves the primitive Boolean value (<code class="docutils literal notranslate"><span class="pre">true</span></code> or <code class="docutils literal notranslate"><span class="pre">false</span></code>) from an OCBooleanRef. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>boolean</strong> – The <a class="reference internal" href="OCLibrary.html#d6/d5e/group___o_c_library_1ga333efd08bfea7a6d27702fac3afab9be"><span class="std std-ref">OCBooleanRef</span></a> to query. Must be either kOCBooleanTrue or kOCBooleanFalse. </p></li>
+<li><p><strong>boolean</strong> – The OCBooleanRef to query. Must be either kOCBooleanTrue or kOCBooleanFalse. </p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -126,15 +128,15 @@
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-variables">Variables</p>
 <dl class="c var">
 <dt class="sig sig-object c" id="c.kOCBooleanTrue">
-<span class="target" id="de/d82/group___o_c_boolean_1ga3bffcc9a1c9d1db81d6b3763f69f1a50"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="OCLibrary.html#c.OCBooleanRef" title="OCBooleanRef"><span class="n"><span class="pre">OCBooleanRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">kOCBooleanTrue</span></span></span><a class="headerlink" href="#c.kOCBooleanTrue" title="Link to this definition"></a><br /></dt>
-<dd><p>The immutable singleton <a class="reference internal" href="OCLibrary.html#d6/d5e/group___o_c_library_1ga333efd08bfea7a6d27702fac3afab9be"><span class="std std-ref">OCBooleanRef</span></a> representing Boolean true. </p>
+<span class="target" id="de/d82/group___o_c_boolean_1ga3bffcc9a1c9d1db81d6b3763f69f1a50"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">OCBooleanRef</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">kOCBooleanTrue</span></span></span><a class="headerlink" href="#c.kOCBooleanTrue" title="Link to this definition"></a><br /></dt>
+<dd><p>The immutable singleton OCBooleanRef representing Boolean true. </p>
 <p>Use this whenever a true Boolean value is required in the OCType system. Do not manually allocate or deallocate this object. </p>
 </dd></dl>
 
 <dl class="c var">
 <dt class="sig sig-object c" id="c.kOCBooleanFalse">
-<span class="target" id="de/d82/group___o_c_boolean_1gad90327bf96dae0736bc14c3d6cfbbc22"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="OCLibrary.html#c.OCBooleanRef" title="OCBooleanRef"><span class="n"><span class="pre">OCBooleanRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">kOCBooleanFalse</span></span></span><a class="headerlink" href="#c.kOCBooleanFalse" title="Link to this definition"></a><br /></dt>
-<dd><p>The immutable singleton <a class="reference internal" href="OCLibrary.html#d6/d5e/group___o_c_library_1ga333efd08bfea7a6d27702fac3afab9be"><span class="std std-ref">OCBooleanRef</span></a> representing Boolean false. </p>
+<span class="target" id="de/d82/group___o_c_boolean_1gad90327bf96dae0736bc14c3d6cfbbc22"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">OCBooleanRef</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">kOCBooleanFalse</span></span></span><a class="headerlink" href="#c.kOCBooleanFalse" title="Link to this definition"></a><br /></dt>
+<dd><p>The immutable singleton OCBooleanRef representing Boolean false. </p>
 <p>Use this whenever a false Boolean value is required in the OCType system. Do not manually allocate or deallocate this object. </p>
 </dd></dl>
 

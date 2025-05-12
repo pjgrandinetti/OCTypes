@@ -101,6 +101,8 @@
              
   <section id="octype">
 <h1>OCType<a class="headerlink" href="#octype" title="Link to this heading"></a></h1>
+<p>Defines the core types and functions for the OCTypes library. </p>
+<p>This file contains the fundamental type definitions, including <a class="reference internal" href="#d9/d0a/group___o_c_type_1gae4fcca725e41e7af4659ba4902223981"><span class="std std-ref">OCTypeID</span></a>, <a class="reference internal" href="#d9/d0a/group___o_c_type_1ga6ccf3c82bdf9278bdbac738cce5b1487"><span class="std std-ref">OCIndex</span></a>, and the base OCTypeRef, as well as functions for type registration, memory management (retain/release), and basic type introspection. </p>
 <dl>
 <dt class="sig sig-object cpp">
 <span class="target" id="d9/d0a/group___o_c_type"></span><em><span class="pre">group</span></em> <span class="sig-name descname"><span class="pre">OCType</span></span></dt>
@@ -225,7 +227,7 @@ Defines an identifier for an OCType. </p>
 
 <dl class="c function">
 <dt class="sig sig-object c" id="c.OCTypeCopyFormattingDesc">
-<span class="target" id="d9/d0a/group___o_c_type_1ga59cd1c60d2487296ea3032c4de8adc0e"></span><a class="reference internal" href="OCLibrary.html#c.OCStringRef" title="OCStringRef"><span class="n"><span class="pre">OCStringRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCTypeCopyFormattingDesc</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ptr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCTypeCopyFormattingDesc" title="Link to this definition"></a><br /></dt>
+<span class="target" id="d9/d0a/group___o_c_type_1ga59cd1c60d2487296ea3032c4de8adc0e"></span><span class="n"><span class="pre">OCStringRef</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCTypeCopyFormattingDesc</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ptr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCTypeCopyFormattingDesc" title="Link to this definition"></a><br /></dt>
 <dd><p>Generates a formatted string description of an OCType. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -234,14 +236,14 @@ Defines an identifier for an OCType. </p>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A new <a class="reference internal" href="OCLibrary.html#d6/d5e/group___o_c_library_1ga34a97bf2ed10637e698c2cd3faa193d4"><span class="std std-ref">OCStringRef</span></a> describing the object, or NULL. </p>
+<dd class="field-even"><p>A new OCStringRef describing the object, or NULL. </p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="c function">
 <dt class="sig sig-object c" id="c.OCCopyDescription">
-<span class="target" id="d9/d0a/group___o_c_type_1ga1935a8db7fe65f4b4801431a6bc4138b"></span><a class="reference internal" href="OCLibrary.html#c.OCStringRef" title="OCStringRef"><span class="n"><span class="pre">OCStringRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCCopyDescription</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ptr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCCopyDescription" title="Link to this definition"></a><br /></dt>
+<span class="target" id="d9/d0a/group___o_c_type_1ga1935a8db7fe65f4b4801431a6bc4138b"></span><span class="n"><span class="pre">OCStringRef</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCCopyDescription</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ptr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCCopyDescription" title="Link to this definition"></a><br /></dt>
 <dd><p>Creates a descriptive string representation of an OCType instance. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -250,7 +252,7 @@ Defines an identifier for an OCType. </p>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A descriptive <a class="reference internal" href="OCLibrary.html#d6/d5e/group___o_c_library_1ga34a97bf2ed10637e698c2cd3faa193d4"><span class="std std-ref">OCStringRef</span></a>, or NULL. </p>
+<dd class="field-even"><p>A descriptive OCStringRef, or NULL. </p>
 </dd>
 </dl>
 </dd></dl>

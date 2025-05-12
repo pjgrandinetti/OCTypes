@@ -95,6 +95,8 @@
              
   <section id="ocmath">
 <h1>OCMath<a class="headerlink" href="#ocmath" title="Link to this heading"></a></h1>
+<p>Extended math utilities for real and complex number operations in OCTypes. </p>
+<p>This header declares functions for working with complex numbers and performing numeric comparisons with precision tolerance, along with basic floor/ceil operations. </p>
 <dl>
 <dt class="sig sig-object cpp">
 <span class="target" id="dc/d69/group___o_c_math"></span><em><span class="pre">group</span></em> <span class="sig-name descname"><span class="pre">OCMath</span></span></dt>
@@ -151,7 +153,7 @@
 
 <dl class="c function">
 <dt class="sig sig-object c" id="c.OCCompareFloatValues">
-<span class="target" id="dc/d69/group___o_c_math_1ga8b4a87c560fee7b0c00a009f8b16b0f6"></span><a class="reference internal" href="OCLibrary.html#c.OCComparisonResult" title="OCComparisonResult"><span class="n"><span class="pre">OCComparisonResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCCompareFloatValues</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span>, <span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="n"><span class="pre">otherValue</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCCompareFloatValues" title="Link to this definition"></a><br /></dt>
+<span class="target" id="dc/d69/group___o_c_math_1ga8b4a87c560fee7b0c00a009f8b16b0f6"></span><span class="n"><span class="pre">OCComparisonResult</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCCompareFloatValues</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span>, <span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="n"><span class="pre">otherValue</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCCompareFloatValues" title="Link to this definition"></a><br /></dt>
 <dd><p>Compares two float values using strict equality. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -168,7 +170,7 @@
 
 <dl class="c function">
 <dt class="sig sig-object c" id="c.OCCompareDoubleValues">
-<span class="target" id="dc/d69/group___o_c_math_1ga3c1134855335dd65c652b8a6420f28e2"></span><a class="reference internal" href="OCLibrary.html#c.OCComparisonResult" title="OCComparisonResult"><span class="n"><span class="pre">OCComparisonResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCCompareDoubleValues</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n"><span class="pre">otherValue</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCCompareDoubleValues" title="Link to this definition"></a><br /></dt>
+<span class="target" id="dc/d69/group___o_c_math_1ga3c1134855335dd65c652b8a6420f28e2"></span><span class="n"><span class="pre">OCComparisonResult</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCCompareDoubleValues</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n"><span class="pre">otherValue</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCCompareDoubleValues" title="Link to this definition"></a><br /></dt>
 <dd><p>Compares two double values using strict equality. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -185,7 +187,7 @@
 
 <dl class="c function">
 <dt class="sig sig-object c" id="c.OCCompareDoubleValuesLoose">
-<span class="target" id="dc/d69/group___o_c_math_1ga162ecc592aadc86283648b2d47257e78"></span><a class="reference internal" href="OCLibrary.html#c.OCComparisonResult" title="OCComparisonResult"><span class="n"><span class="pre">OCComparisonResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCCompareDoubleValuesLoose</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n"><span class="pre">otherValue</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCCompareDoubleValuesLoose" title="Link to this definition"></a><br /></dt>
+<span class="target" id="dc/d69/group___o_c_math_1ga162ecc592aadc86283648b2d47257e78"></span><span class="n"><span class="pre">OCComparisonResult</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCCompareDoubleValuesLoose</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n"><span class="pre">otherValue</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCCompareDoubleValuesLoose" title="Link to this definition"></a><br /></dt>
 <dd><p>Loosely compares two double values using a precision threshold. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -202,7 +204,7 @@
 
 <dl class="c function">
 <dt class="sig sig-object c" id="c.OCCompareFloatValuesLoose">
-<span class="target" id="dc/d69/group___o_c_math_1gaec5e5a945fb850212494ccf77b1291c0"></span><a class="reference internal" href="OCLibrary.html#c.OCComparisonResult" title="OCComparisonResult"><span class="n"><span class="pre">OCComparisonResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCCompareFloatValuesLoose</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span>, <span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="n"><span class="pre">otherValue</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCCompareFloatValuesLoose" title="Link to this definition"></a><br /></dt>
+<span class="target" id="dc/d69/group___o_c_math_1gaec5e5a945fb850212494ccf77b1291c0"></span><span class="n"><span class="pre">OCComparisonResult</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCCompareFloatValuesLoose</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span>, <span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="n"><span class="pre">otherValue</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCCompareFloatValuesLoose" title="Link to this definition"></a><br /></dt>
 <dd><p>Loosely compares two float values using a precision threshold. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

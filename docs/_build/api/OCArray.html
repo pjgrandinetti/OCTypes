@@ -50,28 +50,14 @@
 <li class="toctree-l1"><a class="reference internal" href="OCBoolean.html">OCBoolean</a></li>
 <li class="toctree-l1"><a class="reference internal" href="OCString.html">OCString</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">OCArray</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#c.OCArrayRetainCallBack"><code class="docutils literal notranslate"><span class="pre">OCArrayRetainCallBack</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#c.OCArrayReleaseCallBack"><code class="docutils literal notranslate"><span class="pre">OCArrayReleaseCallBack</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#c.OCArrayCopyDescriptionCallBack"><code class="docutils literal notranslate"><span class="pre">OCArrayCopyDescriptionCallBack</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#c.OCArrayEqualCallBack"><code class="docutils literal notranslate"><span class="pre">OCArrayEqualCallBack</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#c.OCArrayGetTypeID"><code class="docutils literal notranslate"><span class="pre">OCArrayGetTypeID()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#c.OCArrayGetCount"><code class="docutils literal notranslate"><span class="pre">OCArrayGetCount()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#c.OCArrayCreate"><code class="docutils literal notranslate"><span class="pre">OCArrayCreate()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#c.OCArrayCreateCopy"><code class="docutils literal notranslate"><span class="pre">OCArrayCreateCopy()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#c.OCArrayCreateMutable"><code class="docutils literal notranslate"><span class="pre">OCArrayCreateMutable()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#c.OCArrayCreateMutableCopy"><code class="docutils literal notranslate"><span class="pre">OCArrayCreateMutableCopy()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#c.OCArrayGetValueAtIndex"><code class="docutils literal notranslate"><span class="pre">OCArrayGetValueAtIndex()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#c.OCArrayAppendValue"><code class="docutils literal notranslate"><span class="pre">OCArrayAppendValue()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#c.OCArrayAppendArray"><code class="docutils literal notranslate"><span class="pre">OCArrayAppendArray()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#c.OCArrayGetFirstIndexOfValue"><code class="docutils literal notranslate"><span class="pre">OCArrayGetFirstIndexOfValue()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#c.OCArrayContainsValue"><code class="docutils literal notranslate"><span class="pre">OCArrayContainsValue()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#c.OCArrayRemoveValueAtIndex"><code class="docutils literal notranslate"><span class="pre">OCArrayRemoveValueAtIndex()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#c.OCArrayInsertValueAtIndex"><code class="docutils literal notranslate"><span class="pre">OCArrayInsertValueAtIndex()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#c.OCArraySortValues"><code class="docutils literal notranslate"><span class="pre">OCArraySortValues()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#c.OCArrayBSearchValues"><code class="docutils literal notranslate"><span class="pre">OCArrayBSearchValues()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#c.OCArrayCreateWithArray"><code class="docutils literal notranslate"><span class="pre">OCArrayCreateWithArray()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#c.kOCTypeArrayCallBacks"><code class="docutils literal notranslate"><span class="pre">kOCTypeArrayCallBacks</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#c.OCArrayCallBacks"><code class="docutils literal notranslate"><span class="pre">OCArrayCallBacks</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c.OCArrayCallBacks"><code class="docutils literal notranslate"><span class="pre">OCArrayCallBacks</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#c.OCArrayCallBacks.version"><code class="docutils literal notranslate"><span class="pre">version</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#c.OCArrayCallBacks.retain"><code class="docutils literal notranslate"><span class="pre">retain</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#c.OCArrayCallBacks.release"><code class="docutils literal notranslate"><span class="pre">release</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#c.OCArrayCallBacks.copyDescription"><code class="docutils literal notranslate"><span class="pre">copyDescription</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#c.OCArrayCallBacks.equal"><code class="docutils literal notranslate"><span class="pre">equal</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="OCDictionary.html">OCDictionary</a></li>
@@ -106,344 +92,47 @@
              
   <section id="ocarray">
 <h1>OCArray<a class="headerlink" href="#ocarray" title="Link to this heading"></a></h1>
-<dl>
-<dt class="sig sig-object cpp">
-<span class="target" id="d5/dc3/group___o_c_array"></span><em><span class="pre">group</span></em> <span class="sig-name descname"><span class="pre">OCArray</span></span></dt>
-<dd><p>Array types and operations in OCTypes. </p>
-<div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric" id="breathe-section-title-typedefs">Typedefs</p>
-<dl class="c type">
-<dt class="sig sig-object c" id="c.OCArrayRetainCallBack">
-<span class="target" id="d5/dc3/group___o_c_array_1ga9a0e720375d55e2b4bca97de78020714"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">OCArrayRetainCallBack</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.OCArrayRetainCallBack" title="Link to this definition"></a><br /></dt>
-<dd><p>Callback to retain a value in the array. </p>
-<dl class="field-list simple">
-<dt class="field-odd">Param value<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The value to be retained. </p>
-</dd>
-<dt class="field-even">Return<span class="colon">:</span></dt>
-<dd class="field-even"><p>The retained value. </p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="c type">
-<dt class="sig sig-object c" id="c.OCArrayReleaseCallBack">
-<span class="target" id="d5/dc3/group___o_c_array_1gabcdb9b85e7c4ddf2b2580607b7924dec"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">OCArrayReleaseCallBack</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.OCArrayReleaseCallBack" title="Link to this definition"></a><br /></dt>
-<dd><p>Callback to release a value from the array. </p>
-<dl class="field-list simple">
-<dt class="field-odd">Param value<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The value to be released. </p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="c type">
-<dt class="sig sig-object c" id="c.OCArrayCopyDescriptionCallBack">
-<span class="target" id="d5/dc3/group___o_c_array_1ga3a4906659651a3bc7ee289eb01b99b69"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><a class="reference internal" href="OCLibrary.html#c.OCStringRef" title="OCStringRef"><span class="n"><span class="pre">OCStringRef</span></span></a><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">OCArrayCopyDescriptionCallBack</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.OCArrayCopyDescriptionCallBack" title="Link to this definition"></a><br /></dt>
-<dd><p>Callback to copy a description string of a value. </p>
-<dl class="field-list simple">
-<dt class="field-odd">Param value<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The value to describe. </p>
-</dd>
-<dt class="field-even">Return<span class="colon">:</span></dt>
-<dd class="field-even"><p>An <a class="reference internal" href="OCLibrary.html#d6/d5e/group___o_c_library_1ga34a97bf2ed10637e698c2cd3faa193d4"><span class="std std-ref">OCStringRef</span></a> describing the value. </p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="c type">
-<dt class="sig sig-object c" id="c.OCArrayEqualCallBack">
-<span class="target" id="d5/dc3/group___o_c_array_1ga9ae83ba398624e3959f3086004b51bf8"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">OCArrayEqualCallBack</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value1</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value2</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#c.OCArrayEqualCallBack" title="Link to this definition"></a><br /></dt>
-<dd><p>Callback to compare two values for equality. </p>
-<dl class="field-list simple">
-<dt class="field-odd">Param value1<span class="colon">:</span></dt>
-<dd class="field-odd"><p>First value. </p>
-</dd>
-<dt class="field-even">Param value2<span class="colon">:</span></dt>
-<dd class="field-even"><p>Second value. </p>
-</dd>
-<dt class="field-odd">Return<span class="colon">:</span></dt>
-<dd class="field-odd"><p>true if equal, false otherwise. </p>
-</dd>
-</dl>
-</dd></dl>
-
-</div>
-<div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
-<dl class="c function">
-<dt class="sig sig-object c" id="c.OCArrayGetTypeID">
-<span class="target" id="d5/dc3/group___o_c_array_1ga5cf2742d8c7fa86e142fe2180881adf8"></span><a class="reference internal" href="OCType.html#c.OCTypeID" title="OCTypeID"><span class="n"><span class="pre">OCTypeID</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCArrayGetTypeID</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCArrayGetTypeID" title="Link to this definition"></a><br /></dt>
-<dd><p>Gets the <a class="reference internal" href="OCType.html#d9/d0a/group___o_c_type_1gae4fcca725e41e7af4659ba4902223981"><span class="std std-ref">OCTypeID</span></a> for OCArray. </p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="OCType.html#d9/d0a/group___o_c_type_1gae4fcca725e41e7af4659ba4902223981"><span class="std std-ref">OCTypeID</span></a> value. </p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="c function">
-<dt class="sig sig-object c" id="c.OCArrayGetCount">
-<span class="target" id="d5/dc3/group___o_c_array_1gab211609b6c6a616ebdd666612c4eef98"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCArrayGetCount</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="OCLibrary.html#c.OCArrayRef" title="OCArrayRef"><span class="n"><span class="pre">OCArrayRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">theArray</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCArrayGetCount" title="Link to this definition"></a><br /></dt>
-<dd><p>Returns the number of elements in an array. </p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>theArray</strong> – The array to query. </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Element count, or 0 if NULL. </p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="c function">
-<dt class="sig sig-object c" id="c.OCArrayCreate">
-<span class="target" id="d5/dc3/group___o_c_array_1gaebb5f8fa913d5f2ab52058b863f7f504"></span><a class="reference internal" href="OCLibrary.html#c.OCArrayRef" title="OCArrayRef"><span class="n"><span class="pre">OCArrayRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCArrayCreate</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n"><span class="pre">numValues</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#c.OCArrayCallBacks" title="OCArrayCallBacks"><span class="n"><span class="pre">OCArrayCallBacks</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">callBacks</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCArrayCreate" title="Link to this definition"></a><br /></dt>
-<dd><p>Creates a new immutable array. </p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>values</strong> – Pointer to value array. </p></li>
-<li><p><strong>numValues</strong> – Number of values. </p></li>
-<li><p><strong>callBacks</strong> – Pointer to value management callbacks. </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>New <a class="reference internal" href="OCLibrary.html#d6/d5e/group___o_c_library_1ga258ada3c18aefb7cd00f9fae05441cc9"><span class="std std-ref">OCArrayRef</span></a> or NULL. </p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="c function">
-<dt class="sig sig-object c" id="c.OCArrayCreateCopy">
-<span class="target" id="d5/dc3/group___o_c_array_1ga4624c972ebdb139df9d868197fd3ed84"></span><a class="reference internal" href="OCLibrary.html#c.OCArrayRef" title="OCArrayRef"><span class="n"><span class="pre">OCArrayRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCArrayCreateCopy</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="OCLibrary.html#c.OCArrayRef" title="OCArrayRef"><span class="n"><span class="pre">OCArrayRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">theArray</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCArrayCreateCopy" title="Link to this definition"></a><br /></dt>
-<dd><p>Creates an immutable array copy. </p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>theArray</strong> – Array to copy. </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>New <a class="reference internal" href="OCLibrary.html#d6/d5e/group___o_c_library_1ga258ada3c18aefb7cd00f9fae05441cc9"><span class="std std-ref">OCArrayRef</span></a> or NULL. </p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="c function">
-<dt class="sig sig-object c" id="c.OCArrayCreateMutable">
-<span class="target" id="d5/dc3/group___o_c_array_1gab35d251ea460416894dfefc8d602d925"></span><a class="reference internal" href="OCLibrary.html#c.OCMutableArrayRef" title="OCMutableArrayRef"><span class="n"><span class="pre">OCMutableArrayRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCArrayCreateMutable</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n"><span class="pre">capacity</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#c.OCArrayCallBacks" title="OCArrayCallBacks"><span class="n"><span class="pre">OCArrayCallBacks</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">callBacks</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCArrayCreateMutable" title="Link to this definition"></a><br /></dt>
-<dd><p>Creates a mutable array. </p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>capacity</strong> – Initial capacity. </p></li>
-<li><p><strong>callBacks</strong> – Pointer to callbacks. </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>New <a class="reference internal" href="OCLibrary.html#d6/d5e/group___o_c_library_1ga24c04bc73e1c423b53a48ea599e81dec"><span class="std std-ref">OCMutableArrayRef</span></a> or NULL. </p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="c function">
-<dt class="sig sig-object c" id="c.OCArrayCreateMutableCopy">
-<span class="target" id="d5/dc3/group___o_c_array_1gaff447aa2a559bf1d1b08701d3b3701a1"></span><a class="reference internal" href="OCLibrary.html#c.OCMutableArrayRef" title="OCMutableArrayRef"><span class="n"><span class="pre">OCMutableArrayRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCArrayCreateMutableCopy</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="OCLibrary.html#c.OCArrayRef" title="OCArrayRef"><span class="n"><span class="pre">OCArrayRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">theArray</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCArrayCreateMutableCopy" title="Link to this definition"></a><br /></dt>
-<dd><p>Creates a mutable copy of an array. </p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>theArray</strong> – The array to copy. </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>New <a class="reference internal" href="OCLibrary.html#d6/d5e/group___o_c_library_1ga24c04bc73e1c423b53a48ea599e81dec"><span class="std std-ref">OCMutableArrayRef</span></a> or NULL. </p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="c function">
-<dt class="sig sig-object c" id="c.OCArrayGetValueAtIndex">
-<span class="target" id="d5/dc3/group___o_c_array_1ga9f3748edc03e1624767022b51e58c21d"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">OCArrayGetValueAtIndex</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="OCLibrary.html#c.OCArrayRef" title="OCArrayRef"><span class="n"><span class="pre">OCArrayRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">theArray</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCArrayGetValueAtIndex" title="Link to this definition"></a><br /></dt>
-<dd><p>Gets a value at a given index. </p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>theArray</strong> – The array. </p></li>
-<li><p><strong>index</strong> – Zero-based index. </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Pointer to value or NULL. </p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="c function">
-<dt class="sig sig-object c" id="c.OCArrayAppendValue">
-<span class="target" id="d5/dc3/group___o_c_array_1gae67e86401e7c2c6f383a8a733308c7b6"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCArrayAppendValue</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="OCLibrary.html#c.OCMutableArrayRef" title="OCMutableArrayRef"><span class="n"><span class="pre">OCMutableArrayRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">theArray</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCArrayAppendValue" title="Link to this definition"></a><br /></dt>
-<dd><p>Appends a value to a mutable array. </p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>theArray</strong> – Mutable array. </p></li>
-<li><p><strong>value</strong> – Value to append. </p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="c function">
-<dt class="sig sig-object c" id="c.OCArrayAppendArray">
-<span class="target" id="d5/dc3/group___o_c_array_1ga877e4edac656b414855a61b601326899"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCArrayAppendArray</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="OCLibrary.html#c.OCMutableArrayRef" title="OCMutableArrayRef"><span class="n"><span class="pre">OCMutableArrayRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">theArray</span></span>, <a class="reference internal" href="OCLibrary.html#c.OCArrayRef" title="OCArrayRef"><span class="n"><span class="pre">OCArrayRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">otherArray</span></span>, <a class="reference internal" href="OCLibrary.html#c.OCRange" title="OCRange"><span class="n"><span class="pre">OCRange</span></span></a><span class="w"> </span><span class="n"><span class="pre">range</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCArrayAppendArray" title="Link to this definition"></a><br /></dt>
-<dd><p>Appends a range of values from another array. </p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>theArray</strong> – Destination array. </p></li>
-<li><p><strong>otherArray</strong> – Source array. </p></li>
-<li><p><strong>range</strong> – Range of values to append. </p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="c function">
-<dt class="sig sig-object c" id="c.OCArrayGetFirstIndexOfValue">
-<span class="target" id="d5/dc3/group___o_c_array_1ga8296e17b6dd537e7f2f189247ae3db3c"></span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCArrayGetFirstIndexOfValue</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="OCLibrary.html#c.OCArrayRef" title="OCArrayRef"><span class="n"><span class="pre">OCArrayRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">theArray</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCArrayGetFirstIndexOfValue" title="Link to this definition"></a><br /></dt>
-<dd><p>Finds the first index of a value. </p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>theArray</strong> – The array. </p></li>
-<li><p><strong>value</strong> – The value to search for. </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Index or kOCNotFound. </p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="c function">
-<dt class="sig sig-object c" id="c.OCArrayContainsValue">
-<span class="target" id="d5/dc3/group___o_c_array_1gad496aefefecf2a53cc0b9e57cf3d7090"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCArrayContainsValue</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="OCLibrary.html#c.OCArrayRef" title="OCArrayRef"><span class="n"><span class="pre">OCArrayRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">theArray</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCArrayContainsValue" title="Link to this definition"></a><br /></dt>
-<dd><p>Checks if the array contains a value. </p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>theArray</strong> – The array. </p></li>
-<li><p><strong>value</strong> – The value to check. </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>true if found, false otherwise. </p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="c function">
-<dt class="sig sig-object c" id="c.OCArrayRemoveValueAtIndex">
-<span class="target" id="d5/dc3/group___o_c_array_1ga83fabca84f4f91facaa96d68febddcd6"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCArrayRemoveValueAtIndex</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="OCLibrary.html#c.OCMutableArrayRef" title="OCMutableArrayRef"><span class="n"><span class="pre">OCMutableArrayRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">theArray</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCArrayRemoveValueAtIndex" title="Link to this definition"></a><br /></dt>
-<dd><p>Removes a value at a given index. </p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>theArray</strong> – The array. </p></li>
-<li><p><strong>index</strong> – Index to remove. </p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="c function">
-<dt class="sig sig-object c" id="c.OCArrayInsertValueAtIndex">
-<span class="target" id="d5/dc3/group___o_c_array_1ga81f1411e20e671c3580b487b3ded4d45"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCArrayInsertValueAtIndex</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="OCLibrary.html#c.OCMutableArrayRef" title="OCMutableArrayRef"><span class="n"><span class="pre">OCMutableArrayRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">theArray</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n"><span class="pre">index</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCArrayInsertValueAtIndex" title="Link to this definition"></a><br /></dt>
-<dd><p>Inserts a value at a given index. </p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>theArray</strong> – The array. </p></li>
-<li><p><strong>index</strong> – Index for insertion. </p></li>
-<li><p><strong>value</strong> – The value to insert. </p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="c function">
-<dt class="sig sig-object c" id="c.OCArraySortValues">
-<span class="target" id="d5/dc3/group___o_c_array_1ga91c1a9a20ece30bf0c336406ecfe710d"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCArraySortValues</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="OCLibrary.html#c.OCMutableArrayRef" title="OCMutableArrayRef"><span class="n"><span class="pre">OCMutableArrayRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">theArray</span></span>, <a class="reference internal" href="OCLibrary.html#c.OCRange" title="OCRange"><span class="n"><span class="pre">OCRange</span></span></a><span class="w"> </span><span class="n"><span class="pre">range</span></span>, <a class="reference internal" href="OCLibrary.html#c.OCComparatorFunction" title="OCComparatorFunction"><span class="n"><span class="pre">OCComparatorFunction</span></span></a><span class="w"> </span><span class="n"><span class="pre">comparator</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">context</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCArraySortValues" title="Link to this definition"></a><br /></dt>
-<dd><p>Sorts values in an array. </p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>theArray</strong> – The array to sort. </p></li>
-<li><p><strong>range</strong> – Range of values to sort. </p></li>
-<li><p><strong>comparator</strong> – Comparison function. </p></li>
-<li><p><strong>context</strong> – User-defined data. </p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="c function">
-<dt class="sig sig-object c" id="c.OCArrayBSearchValues">
-<span class="target" id="d5/dc3/group___o_c_array_1ga8e866069c1012ba9c9b501ce3300449e"></span><span class="n"><span class="pre">int64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCArrayBSearchValues</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="OCLibrary.html#c.OCArrayRef" title="OCArrayRef"><span class="n"><span class="pre">OCArrayRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">array</span></span>, <a class="reference internal" href="OCLibrary.html#c.OCRange" title="OCRange"><span class="n"><span class="pre">OCRange</span></span></a><span class="w"> </span><span class="n"><span class="pre">range</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">value</span></span>, <a class="reference internal" href="OCLibrary.html#c.OCComparatorFunction" title="OCComparatorFunction"><span class="n"><span class="pre">OCComparatorFunction</span></span></a><span class="w"> </span><span class="n"><span class="pre">comparator</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">context</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCArrayBSearchValues" title="Link to this definition"></a><br /></dt>
-<dd><p>Performs a binary search on a sorted array. </p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>array</strong> – The array to search. </p></li>
-<li><p><strong>range</strong> – Range to search. </p></li>
-<li><p><strong>value</strong> – The value to find. </p></li>
-<li><p><strong>comparator</strong> – Comparison function. </p></li>
-<li><p><strong>context</strong> – User-defined context. </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Index or kOCNotFound. </p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="c function">
-<dt class="sig sig-object c" id="c.OCArrayCreateWithArray">
-<span class="target" id="d5/dc3/group___o_c_array_1ga985d4e7be07422a3748ed3b394f1cbc5"></span><a class="reference internal" href="OCLibrary.html#c.OCArrayRef" title="OCArrayRef"><span class="n"><span class="pre">OCArrayRef</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCArrayCreateWithArray</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="OCLibrary.html#c.OCArrayRef" title="OCArrayRef"><span class="n"><span class="pre">OCArrayRef</span></span></a><span class="w"> </span><span class="n"><span class="pre">array</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OCArrayCreateWithArray" title="Link to this definition"></a><br /></dt>
-<dd><p>Creates a new immutable array from an existing one. </p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>array</strong> – The source array. </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>New <a class="reference internal" href="OCLibrary.html#d6/d5e/group___o_c_library_1ga258ada3c18aefb7cd00f9fae05441cc9"><span class="std std-ref">OCArrayRef</span></a> or NULL. </p>
-</dd>
-</dl>
-</dd></dl>
-
-</div>
-<div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric" id="breathe-section-title-variables">Variables</p>
-<dl class="c var">
-<dt class="sig sig-object c" id="c.kOCTypeArrayCallBacks">
-<span class="target" id="d5/dc3/group___o_c_array_1ga182ff67a03e309f74629c2efe8a2e6e5"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#c.OCArrayCallBacks" title="OCArrayCallBacks"><span class="n"><span class="pre">OCArrayCallBacks</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">kOCTypeArrayCallBacks</span></span></span><a class="headerlink" href="#c.kOCTypeArrayCallBacks" title="Link to this definition"></a><br /></dt>
-<dd><p>Predefined callbacks for arrays of <a class="reference internal" href="OCLibrary.html#d6/d5e/group___o_c_library_1gafe57bf2cd551bfd5d3ced9b5d18e50a0"><span class="std std-ref">OCTypeRef</span></a> objects. </p>
-</dd></dl>
-
-</div>
+<p>Declares the OCArray and OCMutableArray interfaces. </p>
+<p>OCArray provides immutable and mutable array data structures with customizable memory management and equality semantics. </p>
 <dl class="c struct">
 <dt class="sig sig-object c" id="c.OCArrayCallBacks">
 <span class="target" id="d4/dc7/struct_o_c_array_call_backs"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">OCArrayCallBacks</span></span></span><a class="headerlink" href="#c.OCArrayCallBacks" title="Link to this definition"></a><br /></dt>
 <dd><div class="docutils container">
 <em>#include &lt;OCArray.h&gt;</em></div>
 <p>Struct defining callbacks for array value management. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt class="sig sig-object c" id="c.OCArrayCallBacks.version">
+<span class="target" id="d4/dc7/struct_o_c_array_call_backs_1abcf2eb3328d58b01f1eb1aad1ed47697"></span><span class="n"><span class="pre">int64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">version</span></span></span><a class="headerlink" href="#c.OCArrayCallBacks.version" title="Link to this definition"></a><br /></dt>
+<dd><p>Structure version (should be 0). </p>
 </dd></dl>
 
+<dl class="c var">
+<dt class="sig sig-object c" id="c.OCArrayCallBacks.retain">
+<span class="target" id="d4/dc7/struct_o_c_array_call_backs_1afda5a289f62d4d7f05705df5b9cecddf"></span><span class="n"><span class="pre">OCArrayRetainCallBack</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">retain</span></span></span><a class="headerlink" href="#c.OCArrayCallBacks.retain" title="Link to this definition"></a><br /></dt>
+<dd><p>Retain callback. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.OCArrayCallBacks.release">
+<span class="target" id="d4/dc7/struct_o_c_array_call_backs_1a6ed8c4aa7ae8433ac1dce8d86f588455"></span><span class="n"><span class="pre">OCArrayReleaseCallBack</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">release</span></span></span><a class="headerlink" href="#c.OCArrayCallBacks.release" title="Link to this definition"></a><br /></dt>
+<dd><p>Release callback. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.OCArrayCallBacks.copyDescription">
+<span class="target" id="d4/dc7/struct_o_c_array_call_backs_1a47393ffa10c6b548fd3f56a782952d11"></span><span class="n"><span class="pre">OCArrayCopyDescriptionCallBack</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">copyDescription</span></span></span><a class="headerlink" href="#c.OCArrayCallBacks.copyDescription" title="Link to this definition"></a><br /></dt>
+<dd><p>Description callback. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt class="sig sig-object c" id="c.OCArrayCallBacks.equal">
+<span class="target" id="d4/dc7/struct_o_c_array_call_backs_1a392c1ca60f56d3f6d1f1ce44b8bda865"></span><span class="n"><span class="pre">OCArrayEqualCallBack</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">equal</span></span></span><a class="headerlink" href="#c.OCArrayCallBacks.equal" title="Link to this definition"></a><br /></dt>
+<dd><p>Equality comparison callback. </p>
+</dd></dl>
+
+</div>
 </dd></dl>
 
 </section>
