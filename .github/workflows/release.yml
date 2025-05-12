@@ -34,9 +34,23 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Release Asset
-        uses: softprops/upload-release-asset@v1
+        uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: artifacts/libOCTypes-${{ matrix.os }}.zip
           asset_name: libOCTypes-${{ matrix.os }}.zip
+          asset_content_type: application/zip
+
+      - name: Package headers
+        run: |
+          mkdir -p artifacts/include
+          cp src/*.h artifacts/include/
+          zip -j artifacts/libOCTypes-headers.zip artifacts/include/*.h
+
+      - name: Upload Headers Asset
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: artifacts/libOCTypes-headers.zip
+          asset_name: libOCTypes-headers.zip
           asset_content_type: application/zip
