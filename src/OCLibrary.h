@@ -182,12 +182,6 @@ OC_INLINE OCRange OCRangeMake(uint64_t loc, uint64_t len) {
 #include "OCDictionary.h"
 #include "OCArray.h"
 
-/**
- * @brief Tears down the OCTypes library and releases any global resources.
- * @ingroup OCLibrary
- */
-void OCLibraryTeardown(void);
-
 /** @} */ // end of OCLibrary group
 
 #endif /* OCLibrary_h */
