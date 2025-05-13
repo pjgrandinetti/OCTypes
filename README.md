@@ -1,6 +1,6 @@
 # libOCTypes
 
-![CI Status](https://github.com/YourUsername/OCTypes/actions/workflows/ci.yml/badge.svg)
+![CI Status](https://github.com/pjgrandinetti/OCTypes/actions/workflows/ci.yml/badge.svg)
 [![Documentation Status](https://readthedocs.org/projects/OCTypes/badge/?version=latest)](https://OCTypes.readthedocs.io/en/latest/?badge=latest)
 
 A lightweight library for doing object oriented programming in C.

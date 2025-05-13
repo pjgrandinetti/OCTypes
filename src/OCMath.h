@@ -1,10 +1,9 @@
-/**
- * @file OCMath.h
- * @brief Extended math utilities for real and complex number operations in OCTypes.
- *
- * This header declares functions for working with complex numbers and performing
- * numeric comparisons with precision tolerance, along with basic floor/ceil operations.
- */
+//
+//  OCMath.h
+//  OCTypes
+//
+//  Created by philip on 6/7/17.
+//
 
 #ifndef OCMath_h
 #define OCMath_h
@@ -12,111 +11,126 @@
 #include <complex.h>
 #include "OCLibrary.h"
 
-/**
- * @defgroup OCMath OCMath
- * @brief Mathematical utilities, including complex arithmetic and tolerant comparisons.
- * @{
+/** @defgroup OCMath OCMath */
+/** @addtogroup OCMath
+ *  @{
  */
 
 /**
- * @brief Calculates the argument (phase angle) of a complex number.
- * @param z Complex number.
- * @return Argument of `z` in radians.
- * @ingroup OCMath
+ * :func: cargument
+ * :brief: Calculates the argument (or phase) of a complex number.
+ * :param z: The complex number.
+ * :return: The argument of z in radians.
  */
 double cargument(double complex z);
 
 /**
- * @brief Calculates the principal cube root of a complex number.
- * @param z Complex number.
- * @return Principal complex cube root of `z`.
- * @ingroup OCMath
+ * :func: ccbrt
+ * :brief: Calculates the principal complex cube root of a complex number.
+ * :param z: The complex number.
+ * :return: The principal complex cube root of z.
  */
 double complex ccbrt(double complex z);
 
 /**
- * @brief Calculates the principal fourth root of a complex number.
- * @param z Complex number.
- * @return Principal complex fourth root of `z`.
- * @ingroup OCMath
+ * :func: cqtrt
+ * :brief: Calculates the principal complex fourth root of a complex number.
+ * :param z: The complex number.
+ * :return: The principal complex fourth root of z.
  */
 double complex cqtrt(double complex z);
 
 /**
- * @brief Compares two float values using strict equality.
- * @param value First float value.
- * @param otherValue Second float value.
- * @return Comparison result.
- * @ingroup OCMath
+ * :func: OCCompareFloatValues
+ * :brief: Compares two float values.
+ * :param value: The first float value.
+ * :param otherValue: The second float value.
+ * :return: kOCCompareLessThan if value < otherValue,
+ *          kOCCompareEqualTo if value == otherValue,
+ *          kOCCompareGreaterThan if value > otherValue.
  */
 OCComparisonResult OCCompareFloatValues(float value, float otherValue);
 
 /**
- * @brief Compares two double values using strict equality.
- * @param value First double value.
- * @param otherValue Second double value.
- * @return Comparison result.
- * @ingroup OCMath
+ * :func: OCCompareDoubleValues
+ * :brief: Compares two double values.
+ * :param value: The first double value.
+ * :param otherValue: The second double value.
+ * :return: kOCCompareLessThan if value < otherValue,
+ *          kOCCompareEqualTo if value == otherValue,
+ *          kOCCompareGreaterThan if value > otherValue.
  */
 OCComparisonResult OCCompareDoubleValues(double value, double otherValue);
 
 /**
- * @brief Loosely compares two double values using a precision threshold.
- * @param value First double value.
- * @param otherValue Second double value.
- * @return kOCCompareEqualTo if within epsilon; otherwise, result of strict comparison.
- * @ingroup OCMath
+ * :func: OCCompareDoubleValuesLoose
+ * :brief: Compares two double values with a tolerance (loose comparison).
+ * :param value: The first double value.
+ * :param otherValue: The second double value.
+ * :return: kOCCompareEqualTo if the absolute difference is within a small epsilon,
+ *          otherwise the result of a direct comparison.
  */
 OCComparisonResult OCCompareDoubleValuesLoose(double value, double otherValue);
 
 /**
- * @brief Loosely compares two float values using a precision threshold.
- * @param value First float value.
- * @param otherValue Second float value.
- * @return kOCCompareEqualTo if within epsilon; otherwise, result of strict comparison.
- * @ingroup OCMath
+ * :func: OCCompareFloatValuesLoose
+ * :brief: Compares two float values with a tolerance (loose comparison).
+ * :param value: The first float value.
+ * :param otherValue: The second float value.
+ * :return: kOCCompareEqualTo if the absolute difference is within a small epsilon,
+ *          otherwise the result of a direct comparison.
  */
 OCComparisonResult OCCompareFloatValuesLoose(float value, float otherValue);
 
 /**
- * @brief Returns the largest integer not greater than the given double value.
- * @param value A double-precision value.
- * @return The floor of `value`.
- * @ingroup OCMath
+ * :func: OCDoubleFloor
+ * :brief: Computes the floor of a double value.
+ * :param value: The double value.
+ * :return: The largest integer value not greater than value.
  */
 double OCDoubleFloor(double value);
 
 /**
- * @brief Returns the smallest integer not less than the given double value.
- * @param value A double-precision value.
- * @return The ceiling of `value`.
- * @ingroup OCMath
+ * :func: OCDoubleCeil
+ * :brief: Computes the ceiling of a double value.
+ * :param value: The double value.
+ * :return: The smallest integer value not less than value.
  */
 double OCDoubleCeil(double value);
 
 /**
- * @brief Computes the complex sine of a complex number.
- * @param angle A complex angle in radians.
- * @return Complex sine of `angle`.
- * @ingroup OCMath
+ * :func: complex_sine
+ * :brief: Calculates the complex sine of a complex angle.
+ * :param angle: The complex angle in radians.
+ * :return: The complex sine of the angle.
  */
 double complex complex_sine(double complex angle);
 
 /**
- * @brief Computes the complex cosine of a complex number.
- * @param angle A complex angle in radians.
- * @return Complex cosine of `angle`.
- * @ingroup OCMath
+ * :func: complex_cosine
+ * :brief: Calculates the complex cosine of a complex angle.
+ * :param angle: The complex angle in radians.
+ * :return: The complex cosine of the angle.
  */
 double complex complex_cosine(double complex angle);
 
 /**
- * @brief Computes the complex tangent of a complex number.
- * @param angle A complex angle in radians.
- * @return Complex tangent of `angle`.
- * @ingroup OCMath
+ * :func: complex_tangent
+ * :brief: Calculates the complex tangent of a complex angle.
+ * :param angle: The complex angle in radians.
+ * :return: The complex tangent of the angle.
  */
 double complex complex_tangent(double complex angle);
+
+/**
+ * :func: raise_to_integer_power
+ * :brief: Raises a complex number to an integer power.
+ * :param x: The complex base.
+ * :param power: The integer exponent.
+ * :return: The complex number x raised to the power of power.
+ */
+double complex raise_to_integer_power(double complex x, long power);
+
 
 /** @} */ // end of OCMath group
 

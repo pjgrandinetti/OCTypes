@@ -1,56 +1,117 @@
-name: C/C++ Library CI
+name: CI & Release
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
+    tags:
+      - 'v*.*.*'
   pull_request:
-    branches: [ master ]
+    branches:
+      - master
 
 jobs:
   build:
+    name: Build & Test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Build and test on Linux/macOS
+      - name: Build & test on Linux/macOS
         if: runner.os != 'Windows'
         run: |
           make clean
           make test-asan
 
-      # Windows specific steps using MinGW
-      - name: Set up MSYS2 and MinGW
+      - name: Set up MSYS2 & MinGW (Windows)
         if: runner.os == 'Windows'
         uses: msys2/setup-msys2@v2
         with:
           msystem: MINGW64
           update: true
-          install: >-
+          install: |
             mingw-w64-x86_64-toolchain
             make
             flex
             bison
 
-      - name: Build on Windows with MinGW
+      - name: Build on Windows
         if: runner.os == 'Windows'
         shell: msys2 {0}
         run: |
           make clean
-          make CC=gcc CFLAGS="-std=c99 -I . -I src -O3 -Wall -Wextra -Wno-sign-compare -Wno-unused-parameter -Wno-missing-field-initializers" LEX=flex YACC="bison -y"
+          make CC=gcc \
+               CFLAGS="-std=c99 -I. -Isrc -O3 -Wall -Wextra \
+                       -Wno-sign-compare -Wno-unused-parameter \
+                       -Wno-missing-field-initializers" \
+               LEX=flex YACC="bison -y"
 
-      - name: Verify library (Windows)
-        if: runner.os == 'Windows'
-        shell: msys2 {0} # Use msys2 shell for ls consistency
+      - name: Upload library artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: libOCTypes-${{ matrix.os }}
+          path: libOCTypes.a
+
+      # Package & upload public headers on Ubuntu only
+      - name: Package public headers
+        if: matrix.os == 'ubuntu-latest'
         run: |
-          echo "Built library (Windows):"
-          ls -l libOCTypes.a
-      - name: Verify library (Linux/macOS)
-        if: runner.os != 'Windows'
+          mkdir -p header-pkg/include
+          cp src/*.h header-pkg/include/
+          zip -j header-pkg/libOCTypes-headers.zip header-pkg/include/*.h
+      - name: Upload headers artifact
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: libOCTypes-headers
+          path: header-pkg/libOCTypes-headers.zip
+
+  release:
+    name: Package & Release
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      # Copy the header bundle into the packages folder
+      - name: Copy header bundle
         run: |
-          echo "Built library (Linux/macOS):"
-          ls -l libOCTypes.a
+          mkdir -p packages
+          cp artifacts/libOCTypes-headers/libOCTypes-headers.zip packages/
+
+      - name: Package libraries into ZIPs
+        run: |
+          mkdir -p packages
+          for osdir in artifacts/*; do
+            lib="${osdir}/libOCTypes.a"
+            if [ ! -f "$lib" ]; then
+              echo "Skipping $osdir (no library to package)"
+              continue
+            fi
+            os=$(basename "$osdir")
+            zipfile="packages/libOCTypes-${os}.zip"
+
+            if [[ "$os" == windows-latest ]]; then
+              pwsh -Command "Compress-Archive -Path '${lib}' -DestinationPath '${zipfile}'"
+            else
+              zip -j "${zipfile}" "${lib}"
+            fi
+          done
+
+      - name: Create or update GitHub Release and upload assets
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          files: packages/*.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

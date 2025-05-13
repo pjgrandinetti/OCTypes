@@ -1666,5 +1666,9 @@ bool characterIsDigitOrDecimalPointOrSpace(char character)
     return false;
 }
 
+void _OCStringInitialize(void) {
+    kOCStringID = OCRegisterType("OCString");
+}
+
 
 
