@@ -39,8 +39,8 @@ static void __OCBooleanFinalize(const void *unused) {
     (void)unused;
 }
 
-// Runs before main(): register type and patch the singletons
-static void __attribute__((constructor)) _OCBooleanInitialize(void) {
+// Made _OCBooleanInitialize externally visible
+void _OCBooleanInitialize(void) {
     kOCBooleanTypeID = OCRegisterType("OCBoolean");
     // patch up each base:
     __kOCBooleanTrue._base.typeID   = kOCBooleanTypeID;

@@ -136,6 +136,10 @@ OCTypeID OCArrayGetTypeID(void)
     return kOCArrayID;
 }
 
+void _OCArrayInitialize(void) {
+    kOCArrayID = OCRegisterType("OCArray");
+}
+
 static struct __OCArray *OCArrayAllocate()
 {
     struct __OCArray *theArray = malloc(sizeof(struct __OCArray));

@@ -171,6 +171,15 @@ OC_INLINE OCRange OCRangeMake(uint64_t loc, uint64_t len) {
 #define OCRangeMake(LOC, LEN) __OCRangeMake(LOC, LEN)
 #endif
 
+/**
+ * @brief Initializes the OCTypes library.
+ *
+ * This function must be called before using any functionality provided by the
+ * OCTypes library. It ensures that all necessary types and modules are properly
+ * registered and initialized.
+ */
+void OCLibraryInitialize(void);
+
 /* Now pull in the rest of the public OCTypes APIs: */
 #include "OCMath.h"
 #include "OCAutoreleasePool.h"

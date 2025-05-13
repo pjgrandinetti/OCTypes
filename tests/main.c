@@ -9,6 +9,7 @@
 // Common utilities, includes, and PRINTERROR macro
 #include "test_utils.h"
 #include "../src/OCAutoreleasePool.h"
+#include "../src/OCLibrary.h"
 
 // Include headers for all test modules
 #include "test_string.h"
@@ -28,6 +29,9 @@ int main(int argc, const char * argv[]) {
     // Suppress unused parameter warnings
     (void)argc;
     (void)argv;
+
+    // Initialize the OCTypes library
+    OCLibraryInitialize();
 
     // Create an autorelease pool for tests
     OCAutoreleasePoolRef pool = OCAutoreleasePoolCreate();
