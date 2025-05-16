@@ -1373,28 +1373,30 @@ extern bool OCDictionaryContainsKey(OCDictionaryRef theDictionary, OCStringRef k
 extern void OCDictionaryAddValue(OCMutableDictionaryRef theDictionary, OCStringRef key, const void * value);
 extern const void * OCDictionaryGetValue(OCDictionaryRef theDictionary, OCStringRef key);
 
-static OCMutableDictionaryRef constantStringTable = NULL;
+OCMutableDictionaryRef getConstantStringTable(void) {
+    static OCMutableDictionaryRef table = NULL;
+    if (table == NULL) {
+        table = OCDictionaryCreateMutable(0);
+    }
+    return table;
+}
 
 OCStringRef __OCStringMakeConstantString(const char *cStr)
 {
     OCStringRef result = OCStringCreateWithCString(cStr);
-    
-    if (constantStringTable == NULL) {
-        constantStringTable = OCDictionaryCreateMutable(0);
-    }
-    if(OCDictionaryContainsKey(constantStringTable, result)) {
-        OCStringRef existingResult = (OCStringRef) OCDictionaryGetValue(constantStringTable, result);
+    OCMutableDictionaryRef table = getConstantStringTable();
+
+    if(OCDictionaryContainsKey(table, result)) {
+        OCStringRef existingResult = (OCStringRef) OCDictionaryGetValue(table, result);
         OCRelease(result);
         return existingResult;
-    }
-    else {
-        OCDictionaryAddValue(constantStringTable, result, result);
+    } else {
+        OCDictionaryAddValue(table, result, result);
         OCMutableStringRef temp = (OCMutableStringRef) result;
         temp->_base.retainCount = 0;
+        return result;
     }
-    return result;
 }
-
 
 OC_INLINE bool __OCIsWhitespace(char theChar) {
     return ((theChar < 0x21)) ? true : false;
