@@ -17,12 +17,18 @@
 #include <stdint.h>  // For uint64_t, etc.
 #include <string.h>  // For memcpy
 #include <stdbool.h> // For bool
+#include <stdio.h>
+#if defined(__APPLE__)
+#include <malloc/malloc.h> // For malloc_zone_t
+#else
 
 // Handle Nullability qualifiers for non-Clang compilers (like GCC)
 #if !defined(__clang__)
 #define _Nullable
 #define _Nonnull
 #endif
+
+#endif // end of #if defined(__APPLE__)
 
 //
 //  OCArray.c
@@ -123,10 +129,26 @@ uint64_t OCArrayGetCount(OCArrayRef theArray)
 
 static void __OCArrayFinalize(const void * theType)
 {
-    if(NULL == theType) return;
-    OCArrayRef theArray = (OCArrayRef) theType;
+    if (NULL == theType) return;
+    struct __OCArray *theArray = (struct __OCArray *)theType;
     _OCArrayReleaseValues(theArray);
-    free((void **) theArray->data);
+
+    // only free non-NULL data
+    if (theArray->data) {
+        // debug‐only: verify it really came from malloc()
+    #if defined(__APPLE__)
+        malloc_zone_t *zone = malloc_zone_from_ptr(theArray->data);
+        if (zone) {
+            free((void *)theArray->data);
+        } else {
+            fprintf(stderr, "OCArrayFinalize: invalid free of %p\n", theArray->data);
+        }
+    #else
+        free((void *)theArray->data);
+    #endif
+        theArray->data = NULL;
+    }
+
     free((void *)theArray);
 }
 
