@@ -67,3 +67,6 @@ environment.pickle
 docs/_build/
 doxygen/xml/
 doxygen/html/
+
+# Ignore Sphinx doctree files
+docs/_build/.doctrees/

@@ -36,7 +36,7 @@ CREATE_SUBDIRS         = NO
 # documented source files. You may enter file names like "myfile.cpp" or
 # directories like "/usr/src/myproject". Separate the files or directories
 # with spaces.
-INPUT                  = src
+INPUT                  = ../src
 
 # If the value of the RECURSIVE tag is set to YES, doxygen will recurse into
 # subdirectories searching for input files to process.
@@ -54,7 +54,7 @@ FULL_PATH_NAMES        = NO
 # The STRIP_FROM_PATH tag can be used to strip a user-specified part of the
 # path. Stripping is only done if one of the specified strings matches the
 # left-hand part of the path.
-STRIP_FROM_PATH        = ../src
+STRIP_FROM_PATH        = 
 
 #---------------------------------------------------------------------------
 # Configuration options related to source browsing
