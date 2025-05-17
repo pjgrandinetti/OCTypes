@@ -11,15 +11,7 @@
 #include <complex.h>      // Needed for complex number types
 #include "OCLibrary.h"    // Ensures OCNumberRef and other types are available
 
-/**
- * @union __Number
- * @brief A union to hold various numeric types.
- *
- * This union is part of the internal representation of OCNumber objects.
- * It allows an OCNumber to store data for any of its supported numeric types
- * in a memory-efficient way. The specific active member is determined by the
- * OCNumber's OCNumberType.
- */
+/** @cond INTERNAL */
 typedef union __Number {
     /** @brief Signed 8-bit integer value. */
     int8_t  int8Value;
@@ -46,8 +38,10 @@ typedef union __Number {
     /** @brief Complex double value (double _Complex). */
     double complex doubleComplexValue;
 } __Number;
+/** @endcond */
 
-/** @defgroup OCNumber OCNumber
+/**
+ * @defgroup OCNumber OCNumber
  *  @brief Numerical value representation using OCType-compatible objects.
  *  @{
  */

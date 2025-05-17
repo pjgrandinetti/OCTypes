@@ -79,11 +79,15 @@ bool stringTest2(void) {
     OCStringRef fmt1 = STR("Ix(%@)");
     OCStringRef out1 = OCStringCreateWithFormat(fmt1, STR("H2"));
     OCStringRef chk1 = STR("Ix(H2)");
+    
+    // Initialize out2 to NULL before potentially jumping to cleanup
+    OCStringRef out2 = NULL;
+    
     if (!OCStringEqual(out1, chk1)) goto cleanup;
 
     // Test OCStringCreateWithFormat with C-string %s
     OCStringRef fmt2 = STR("Ix(%s)");
-    OCStringRef out2 = OCStringCreateWithFormat(fmt2, "H2");
+    out2 = OCStringCreateWithFormat(fmt2, "H2");
     OCStringRef chk2 = STR("Ix(H2)");
     if (!OCStringEqual(out2, chk2)) goto cleanup;
 

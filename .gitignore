@@ -62,3 +62,8 @@ docs/doxygen/
 
 # Ignore environment pickle files
 environment.pickle
+
+# Ignore Sphinx documentation build output
+docs/_build/
+doxygen/xml/
+doxygen/html/
