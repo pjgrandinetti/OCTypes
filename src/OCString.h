@@ -193,7 +193,7 @@ void OCStringReplaceAll(OCMutableStringRef str, OCStringRef replacement);
  * @return Character at index.
  * @ingroup OCString
  */
-char OCStringGetCharacterAtIndex(OCStringRef theString, uint64_t index);
+uint32_t OCStringGetCharacterAtIndex(OCStringRef theString, uint64_t index);
 
 /**
  * @brief Parses and returns the float complex value represented by the OCString.

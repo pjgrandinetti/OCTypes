@@ -15,6 +15,7 @@ static OCTypeID kOCBooleanTypeID = _kOCNotATypeID;
 struct __OCBoolean {
     OCBase _base;
 };
+
 static struct __OCBoolean __kOCBooleanTrue = {
     ._base = {
         _kOCNotATypeID, 0, NULL, NULL, NULL
@@ -58,4 +59,10 @@ OCTypeID OCBooleanGetTypeID(void) {
 
 bool OCBooleanGetValue(OCBooleanRef b) {
     return (b == kOCBooleanTrue);
+}
+
+// Automatically initialize boolean type at load time
+__attribute__((constructor))
+static void OCBooleanModuleInitialize(void) {
+    _OCBooleanInitialize();
 }
