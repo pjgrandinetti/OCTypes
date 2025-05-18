@@ -13,6 +13,7 @@
 
 // Include headers for all test modules
 #include "test_string.h"
+#include "test_complex_parser.h"
 #include "test_array.h"
 #include "test_math.h"
 #include "test_autoreleasepool.h"
@@ -60,7 +61,7 @@ int main(int argc, const char * argv[]) {
     if (!arrayTest3_modification()) failures++;
     if (!arrayTest4_search_sort()) failures++;
 
-    if (!stringTest0())          failures++;
+    if (!complex_parser_Test0())          failures++;
     if (!stringTest1())          failures++;
     if (!stringTest2())          failures++;
     if (!stringTest3())          failures++;

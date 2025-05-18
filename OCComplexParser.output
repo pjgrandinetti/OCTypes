@@ -1,0 +1,419 @@
+State 8 conflicts: 1 shift/reduce
+
+
+Grammar
+
+    0 $accept: calclist $end
+
+    1 calclist: /* empty */
+    2         | calclist exp
+
+    3 exp: exp '+' exp
+    4    | exp '-' exp
+    5    | exp '*' exp
+    6    | exp '/' exp
+    7    | exp '^' exp
+    8    | '|' exp '|'
+    9    | '(' exp ')'
+   10    | '-' exp
+   11    | NUMBER
+   12    | FUNC '(' explist ')'
+
+   13 explist: exp
+   14        | exp ',' explist
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+'(' (40) 9 12
+')' (41) 9 12
+'*' (42) 5
+'+' (43) 3
+',' (44) 14
+'-' (45) 4 10
+'/' (47) 6
+'^' (94) 7
+'|' (124) 8
+error (256)
+NUMBER (258) 11
+FUNC (259) 12
+UMINUS (260)
+
+
+Nonterminals, with rules where they appear
+
+$accept (15)
+    on left: 0
+calclist (16)
+    on left: 1 2, on right: 0 2
+exp (17)
+    on left: 3 4 5 6 7 8 9 10 11 12, on right: 2 3 4 5 6 7 8 9 10 13
+    14
+explist (18)
+    on left: 13 14, on right: 12 14
+
+
+state 0
+
+    0 $accept: . calclist $end
+
+    $default  reduce using rule 1 (calclist)
+
+    calclist  go to state 1
+
+
+state 1
+
+    0 $accept: calclist . $end
+    2 calclist: calclist . exp
+
+    $end    shift, and go to state 2
+    NUMBER  shift, and go to state 3
+    FUNC    shift, and go to state 4
+    '-'     shift, and go to state 5
+    '|'     shift, and go to state 6
+    '('     shift, and go to state 7
+
+    exp  go to state 8
+
+
+state 2
+
+    0 $accept: calclist $end .
+
+    $default  accept
+
+
+state 3
+
+   11 exp: NUMBER .
+
+    $default  reduce using rule 11 (exp)
+
+
+state 4
+
+   12 exp: FUNC . '(' explist ')'
+
+    '('  shift, and go to state 9
+
+
+state 5
+
+   10 exp: '-' . exp
+
+    NUMBER  shift, and go to state 3
+    FUNC    shift, and go to state 4
+    '-'     shift, and go to state 5
+    '|'     shift, and go to state 6
+    '('     shift, and go to state 7
+
+    exp  go to state 10
+
+
+state 6
+
+    8 exp: '|' . exp '|'
+
+    NUMBER  shift, and go to state 3
+    FUNC    shift, and go to state 4
+    '-'     shift, and go to state 5
+    '|'     shift, and go to state 6
+    '('     shift, and go to state 7
+
+    exp  go to state 11
+
+
+state 7
+
+    9 exp: '(' . exp ')'
+
+    NUMBER  shift, and go to state 3
+    FUNC    shift, and go to state 4
+    '-'     shift, and go to state 5
+    '|'     shift, and go to state 6
+    '('     shift, and go to state 7
+
+    exp  go to state 12
+
+
+state 8
+
+    2 calclist: calclist exp .
+    3 exp: exp . '+' exp
+    4    | exp . '-' exp
+    5    | exp . '*' exp
+    6    | exp . '/' exp
+    7    | exp . '^' exp
+
+    '+'  shift, and go to state 13
+    '-'  shift, and go to state 14
+    '*'  shift, and go to state 15
+    '/'  shift, and go to state 16
+    '^'  shift, and go to state 17
+
+    '-'       [reduce using rule 2 (calclist)]
+    $default  reduce using rule 2 (calclist)
+
+
+state 9
+
+   12 exp: FUNC '(' . explist ')'
+
+    NUMBER  shift, and go to state 3
+    FUNC    shift, and go to state 4
+    '-'     shift, and go to state 5
+    '|'     shift, and go to state 6
+    '('     shift, and go to state 7
+
+    exp      go to state 18
+    explist  go to state 19
+
+
+state 10
+
+    3 exp: exp . '+' exp
+    4    | exp . '-' exp
+    5    | exp . '*' exp
+    6    | exp . '/' exp
+    7    | exp . '^' exp
+   10    | '-' exp .
+
+    $default  reduce using rule 10 (exp)
+
+
+state 11
+
+    3 exp: exp . '+' exp
+    4    | exp . '-' exp
+    5    | exp . '*' exp
+    6    | exp . '/' exp
+    7    | exp . '^' exp
+    8    | '|' exp . '|'
+
+    '+'  shift, and go to state 13
+    '-'  shift, and go to state 14
+    '*'  shift, and go to state 15
+    '/'  shift, and go to state 16
+    '^'  shift, and go to state 17
+    '|'  shift, and go to state 20
+
+
+state 12
+
+    3 exp: exp . '+' exp
+    4    | exp . '-' exp
+    5    | exp . '*' exp
+    6    | exp . '/' exp
+    7    | exp . '^' exp
+    9    | '(' exp . ')'
+
+    '+'  shift, and go to state 13
+    '-'  shift, and go to state 14
+    '*'  shift, and go to state 15
+    '/'  shift, and go to state 16
+    '^'  shift, and go to state 17
+    ')'  shift, and go to state 21
+
+
+state 13
+
+    3 exp: exp '+' . exp
+
+    NUMBER  shift, and go to state 3
+    FUNC    shift, and go to state 4
+    '-'     shift, and go to state 5
+    '|'     shift, and go to state 6
+    '('     shift, and go to state 7
+
+    exp  go to state 22
+
+
+state 14
+
+    4 exp: exp '-' . exp
+
+    NUMBER  shift, and go to state 3
+    FUNC    shift, and go to state 4
+    '-'     shift, and go to state 5
+    '|'     shift, and go to state 6
+    '('     shift, and go to state 7
+
+    exp  go to state 23
+
+
+state 15
+
+    5 exp: exp '*' . exp
+
+    NUMBER  shift, and go to state 3
+    FUNC    shift, and go to state 4
+    '-'     shift, and go to state 5
+    '|'     shift, and go to state 6
+    '('     shift, and go to state 7
+
+    exp  go to state 24
+
+
+state 16
+
+    6 exp: exp '/' . exp
+
+    NUMBER  shift, and go to state 3
+    FUNC    shift, and go to state 4
+    '-'     shift, and go to state 5
+    '|'     shift, and go to state 6
+    '('     shift, and go to state 7
+
+    exp  go to state 25
+
+
+state 17
+
+    7 exp: exp '^' . exp
+
+    NUMBER  shift, and go to state 3
+    FUNC    shift, and go to state 4
+    '-'     shift, and go to state 5
+    '|'     shift, and go to state 6
+    '('     shift, and go to state 7
+
+    exp  go to state 26
+
+
+state 18
+
+    3 exp: exp . '+' exp
+    4    | exp . '-' exp
+    5    | exp . '*' exp
+    6    | exp . '/' exp
+    7    | exp . '^' exp
+   13 explist: exp .
+   14        | exp . ',' explist
+
+    '+'  shift, and go to state 13
+    '-'  shift, and go to state 14
+    '*'  shift, and go to state 15
+    '/'  shift, and go to state 16
+    '^'  shift, and go to state 17
+    ','  shift, and go to state 27
+
+    $default  reduce using rule 13 (explist)
+
+
+state 19
+
+   12 exp: FUNC '(' explist . ')'
+
+    ')'  shift, and go to state 28
+
+
+state 20
+
+    8 exp: '|' exp '|' .
+
+    $default  reduce using rule 8 (exp)
+
+
+state 21
+
+    9 exp: '(' exp ')' .
+
+    $default  reduce using rule 9 (exp)
+
+
+state 22
+
+    3 exp: exp . '+' exp
+    3    | exp '+' exp .
+    4    | exp . '-' exp
+    5    | exp . '*' exp
+    6    | exp . '/' exp
+    7    | exp . '^' exp
+
+    '*'  shift, and go to state 15
+    '/'  shift, and go to state 16
+    '^'  shift, and go to state 17
+
+    $default  reduce using rule 3 (exp)
+
+
+state 23
+
+    3 exp: exp . '+' exp
+    4    | exp . '-' exp
+    4    | exp '-' exp .
+    5    | exp . '*' exp
+    6    | exp . '/' exp
+    7    | exp . '^' exp
+
+    '*'  shift, and go to state 15
+    '/'  shift, and go to state 16
+    '^'  shift, and go to state 17
+
+    $default  reduce using rule 4 (exp)
+
+
+state 24
+
+    3 exp: exp . '+' exp
+    4    | exp . '-' exp
+    5    | exp . '*' exp
+    5    | exp '*' exp .
+    6    | exp . '/' exp
+    7    | exp . '^' exp
+
+    $default  reduce using rule 5 (exp)
+
+
+state 25
+
+    3 exp: exp . '+' exp
+    4    | exp . '-' exp
+    5    | exp . '*' exp
+    6    | exp . '/' exp
+    6    | exp '/' exp .
+    7    | exp . '^' exp
+
+    $default  reduce using rule 6 (exp)
+
+
+state 26
+
+    3 exp: exp . '+' exp
+    4    | exp . '-' exp
+    5    | exp . '*' exp
+    6    | exp . '/' exp
+    7    | exp . '^' exp
+    7    | exp '^' exp .
+
+    $default  reduce using rule 7 (exp)
+
+
+state 27
+
+   14 explist: exp ',' . explist
+
+    NUMBER  shift, and go to state 3
+    FUNC    shift, and go to state 4
+    '-'     shift, and go to state 5
+    '|'     shift, and go to state 6
+    '('     shift, and go to state 7
+
+    exp      go to state 18
+    explist  go to state 29
+
+
+state 28
+
+   12 exp: FUNC '(' explist ')' .
+
+    $default  reduce using rule 12 (exp)
+
+
+state 29
+
+   14 explist: exp ',' explist .
+
+    $default  reduce using rule 14 (explist)
