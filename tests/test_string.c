@@ -1,219 +1,194 @@
 #include "test_string.h"
 #include "../src/OCString.h"
-#include "../src/OCMath.h" // For OCComplexFromCString, OCCompareDoubleValues
-#include <math.h> // For standard math functions like exp, log, acos, asin, cos, sin
-#include <complex.h> // For creal, cimag, conj
+#include "../src/OCMath.h"      // for OCComplexFromCString, OCCompareDoubleValues
+#include <math.h>              // exp, log, acos, asin, cos, sin
+#include <complex.h>           // creal, cimag, conj
+#include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
 
-// Original stringTest0 implementation
+// ————————— existing tests —————————
+
 bool stringTest0(void) {
     fprintf(stderr, "%s begin...\n", __func__);
-    bool success = false; // Initialize success flag
+    bool success = false;
     double r;
-    // Note: OCComplexFromCString returns a double, not an OCTypeRef.
-    // No OCRelease is needed for 'r' or 'cz' themselves.
-    // If OCComplexFromCString internally leaks OCStrings, that's an issue within OCComplexFromCString.
 
     r = OCComplexFromCString("1+1");
-    if (OCCompareDoubleValues(r, 2.0) != kOCCompareEqualTo) {
-        fprintf(stderr, "Error: OCComplexFromCString(\"1+1\") failed in %s\n", __func__);
-        goto cleanup;
-    }
+    if (OCCompareDoubleValues(r, 2.0) != kOCCompareEqualTo) goto cleanup;
     r = OCComplexFromCString("42/2");
-    if (OCCompareDoubleValues(r, 21.0) != kOCCompareEqualTo) {
-        fprintf(stderr, "Error: OCComplexFromCString(\"42/2\") failed in %s\n", __func__);
-        goto cleanup;
-    }
+    if (OCCompareDoubleValues(r, 21.0) != kOCCompareEqualTo) goto cleanup;
     r = OCComplexFromCString("(42/2+10)*2");
-    if (OCCompareDoubleValues(r, 62.0) != kOCCompareEqualTo) {
-        fprintf(stderr, "Error: OCComplexFromCString(\"(42/2+10)*2\") failed in %s\n", __func__);
-        goto cleanup;
-    }
+    if (OCCompareDoubleValues(r, 62.0) != kOCCompareEqualTo) goto cleanup;
     r = OCComplexFromCString("sqrt(4)");
-    if (OCCompareDoubleValues(r, 2.0) != kOCCompareEqualTo) {
-        fprintf(stderr, "Error: OCComplexFromCString(\"sqrt(4)\") failed in %s\n", __func__);
-        goto cleanup;
-    }
+    if (OCCompareDoubleValues(r, 2.0) != kOCCompareEqualTo) goto cleanup;
     r = OCComplexFromCString("cbrt(8)");
-    if (OCCompareDoubleValues(r, 2.0) != kOCCompareEqualTo) {
-        fprintf(stderr, "Error: OCComplexFromCString(\"cbrt(8)\") failed in %s\n", __func__);
-        goto cleanup;
-    }
+    if (OCCompareDoubleValues(r, 2.0) != kOCCompareEqualTo) goto cleanup;
     r = OCComplexFromCString("qtrt(16)");
-    if (OCCompareDoubleValues(r, 2.0) != kOCCompareEqualTo) {
-        fprintf(stderr, "Error: OCComplexFromCString(\"qtrt(16)\") failed in %s\n", __func__);
-        goto cleanup;
-    }
+    if (OCCompareDoubleValues(r, 2.0) != kOCCompareEqualTo) goto cleanup;
     r = OCComplexFromCString("exp(16)");
-    if (OCCompareDoubleValues(r, exp(16)) != kOCCompareEqualTo) {
-        fprintf(stderr, "Error: OCComplexFromCString(\"exp(16)\") failed in %s\n", __func__);
-        goto cleanup;
-    }
+    if (OCCompareDoubleValues(r, exp(16)) != kOCCompareEqualTo) goto cleanup;
     r = OCComplexFromCString("log(16)");
-    if (OCCompareDoubleValues(r, log(16)) != kOCCompareEqualTo) {
-        fprintf(stderr, "Error: OCComplexFromCString(\"log(16)\") failed in %s\n", __func__);
-        goto cleanup;
-    }
+    if (OCCompareDoubleValues(r, log(16)) != kOCCompareEqualTo) goto cleanup;
     r = OCComplexFromCString("acos(0.5)");
-    if (OCCompareDoubleValues(r, acos(0.5)) != kOCCompareEqualTo) {
-        fprintf(stderr, "Error: OCComplexFromCString(\"acos(0.5)\") failed in %s\n", __func__);
-        goto cleanup;
-    }
+    if (OCCompareDoubleValues(r, acos(0.5)) != kOCCompareEqualTo) goto cleanup;
     r = OCComplexFromCString("asin(0.5)");
-    if (OCCompareDoubleValues(r, asin(0.5)) != kOCCompareEqualTo) {
-        fprintf(stderr, "Error: OCComplexFromCString(\"asin(0.5)\") failed in %s\n", __func__);
-        goto cleanup;
-    }
+    if (OCCompareDoubleValues(r, asin(0.5)) != kOCCompareEqualTo) goto cleanup;
     r = OCComplexFromCString("cos(123)");
-    if (OCCompareDoubleValues(r, cos(123)) != kOCCompareEqualTo) {
-        fprintf(stderr, "Error: OCComplexFromCString(\"cos(123)\") failed in %s\n", __func__);
-        goto cleanup;
-    }
+    if (OCCompareDoubleValues(r, cos(123)) != kOCCompareEqualTo) goto cleanup;
     r = OCComplexFromCString("sin(123)");
-    if (OCCompareDoubleValues(r, sin(123)) != kOCCompareEqualTo) {
-        fprintf(stderr, "Error: OCComplexFromCString(\"sin(123)\") failed in %s\n", __func__);
-        goto cleanup;
-    }
+    if (OCCompareDoubleValues(r, sin(123)) != kOCCompareEqualTo) goto cleanup;
 
     double complex cz = OCComplexFromCString("conj(1+I)");
-    if (OCCompareDoubleValues(creal(cz), creal(conj(1 + I))) != kOCCompareEqualTo) {
-        fprintf(stderr, "Error: OCComplexFromCString(\"conj(1+I)\") real part failed in %s\n", __func__);
-        goto cleanup;
-    }
-    if (OCCompareDoubleValues(cimag(cz), cimag(conj(1 + I))) != kOCCompareEqualTo) {
-        fprintf(stderr, "Error: OCComplexFromCString(\"conj(1+I)\") imag part failed in %s\n", __func__);
-        goto cleanup;
-    }
+    if (OCCompareDoubleValues(creal(cz), creal(conj(1+I))) != kOCCompareEqualTo) goto cleanup;
+    if (OCCompareDoubleValues(cimag(cz), cimag(conj(1+I))) != kOCCompareEqualTo) goto cleanup;
 
     r = OCComplexFromCString("creal(conj(1+I))");
-    if (OCCompareDoubleValues(r, creal(conj(1 + I))) != kOCCompareEqualTo) {
-        fprintf(stderr, "Error: OCComplexFromCString(\"creal(conj(1+I))\") failed in %s\n", __func__);
-        goto cleanup;
-    }
+    if (OCCompareDoubleValues(r, creal(conj(1+I))) != kOCCompareEqualTo) goto cleanup;
     r = OCComplexFromCString("cimag(conj(1+I))");
-    if (OCCompareDoubleValues(r, cimag(conj(1 + I))) != kOCCompareEqualTo) {
-        fprintf(stderr, "Error: OCComplexFromCString(\"cimag(conj(1+I))\") failed in %s\n", __func__);
-        goto cleanup;
-    }
+    if (OCCompareDoubleValues(r, cimag(conj(1+I))) != kOCCompareEqualTo) goto cleanup;
     r = OCComplexFromCString("carg(1+I)");
-    if (OCCompareDoubleValues(r, cargument(1 + I)) != kOCCompareEqualTo) {
-        fprintf(stderr, "Error: OCComplexFromCString(\"carg(1+I)\") failed in %s\n", __func__);
-        goto cleanup;
-    }
+    if (OCCompareDoubleValues(r, carg(1+I)) != kOCCompareEqualTo) goto cleanup;
 
-    fprintf(stderr, "%s end...without problems\n", __func__);
-    success = true; // Mark as successful
-
+    success = true;
 cleanup:
-    // No OCStringRef objects were created directly in this function's scope to be released here.
-    if (!success) {
-        fprintf(stderr, "Test %s FAILED.\n", __func__);
-    }
+    if (!success) fprintf(stderr, "Test %s FAILED.\n", __func__);
+    else         fprintf(stderr, "%s passed.\n", __func__);
     return success;
 }
 
-// Original stringTest1 implementation
 bool stringTest1(void) {
     fprintf(stderr, "%s begin...\n", __func__);
-    bool success = false; // Initialize success flag
-    OCStringRef s1 = NULL;
-    OCStringRef s_check = NULL;
-
-    s1 = OCStringCreateWithCString("theStringWithAStringOnAStringTown");
-    if (!s1) {
-        fprintf(stderr, "Error: OCStringCreateWithCString failed in %s\n", __func__);
-        goto cleanup;
-    }
-    
-    s_check = STR("theStringWithAStringOnAStringTown"); // STR likely creates an OCStringRef
-    if (!s_check) {
-        fprintf(stderr, "Error: STR(\"theStringWithAStringOnAStringTown\") failed in %s\n", __func__);
-        goto cleanup;
-    }
-
-    if (!OCStringEqual(s1, s_check)) {
-        fprintf(stderr, "Error: OCStringEqual failed in %s\n", __func__);
-        goto cleanup;
-    }
-    
-    fprintf(stderr, "%s end...without problems\n", __func__);
-    success = true; // Mark as successful
-
+    bool success = false;
+    OCStringRef s1 = OCStringCreateWithCString("theStringWithAStringOnAStringTown");
+    OCStringRef s_check = STR("theStringWithAStringOnAStringTown");
+    if (!s1 || !s_check)                           goto cleanup;
+    if (!OCStringEqual(s1, s_check))               goto cleanup;
+    success = true;
 cleanup:
     if (s1) OCRelease(s1);
-    if (!success) {
-        fprintf(stderr, "Test %s FAILED.\n", __func__);
-    }
+    if (!success) fprintf(stderr, "Test %s FAILED.\n", __func__);
+    else         fprintf(stderr, "%s passed.\n", __func__);
     return success;
 }
 
-// Original stringTest2 implementation
 bool stringTest2(void) {
     fprintf(stderr, "%s begin...\n", __func__);
-    bool success = false; // Initialize success flag
-    OCStringRef fmt1 = NULL;
-    OCStringRef arg1 = NULL;
-    OCStringRef out1 = NULL;
-    OCStringRef s_check1 = NULL;
-
-    OCStringRef fmt2 = NULL;
+    bool success = false;
+    // Test OCStringCreateWithFormat with OCStringRef argument
+    OCStringRef fmt1 = STR("Ix(%@)");
+    OCStringRef out1 = OCStringCreateWithFormat(fmt1, STR("H2"));
+    OCStringRef chk1 = STR("Ix(H2)");
+    
+    // Initialize out2 to NULL before potentially jumping to cleanup
     OCStringRef out2 = NULL;
-    OCStringRef s_check2 = NULL;
+    
+    if (!OCStringEqual(out1, chk1)) goto cleanup;
 
-    fmt1 = STR("Ix(%@)"); // STR likely creates an OCStringRef
-    if (!fmt1) { 
-        fprintf(stderr, "Error: STR(\"Ix(%%@)\") failed for fmt1 in %s\n", __func__); // Escaped %
-        goto cleanup; 
-    }
-    arg1 = STR("H2"); // STR likely creates an OCStringRef
-    if (!arg1) { 
-        fprintf(stderr, "Error: STR(\"H2\") failed for arg1 in %s\n", __func__);
-        goto cleanup; 
-    }
-    out1 = OCStringCreateWithFormat(fmt1, arg1);
-    if (!out1) { 
-        fprintf(stderr, "Error: OCStringCreateWithFormat for out1 failed in %s\n", __func__);
-        goto cleanup; 
-    }
-    s_check1 = STR("Ix(H2)"); // STR likely creates an OCStringRef
-    if (!s_check1) { 
-        fprintf(stderr, "Error: STR(\"Ix(H2)\") failed for s_check1 in %s\n", __func__);
-        goto cleanup; 
-    }
-    if (!OCStringEqual(out1, s_check1)) {
-        fprintf(stderr, "Error: OCStringEqual for out1 failed in %s\n", __func__);
-        goto cleanup;
-    }
+    // Test OCStringCreateWithFormat with C-string %s
+    OCStringRef fmt2 = STR("Ix(%s)");
+    out2 = OCStringCreateWithFormat(fmt2, "H2");
+    OCStringRef chk2 = STR("Ix(H2)");
+    if (!OCStringEqual(out2, chk2)) goto cleanup;
 
-    fmt2 = STR("Ix(%s)"); // STR likely creates an OCStringRef
-    if (!fmt2) { 
-        fprintf(stderr, "Error: STR(\"Ix(%%s)\") failed for fmt2 in %s\n", __func__); // Escaped %
-        goto cleanup; 
-    }
-    // For %s format specifier, OCStringCreateWithFormat expects a C string, not OCStringRef
-    out2 = OCStringCreateWithFormat(fmt2, "H2"); 
-    if (!out2) { 
-        fprintf(stderr, "Error: OCStringCreateWithFormat for out2 failed in %s\n", __func__);
-        goto cleanup; 
-    }
-    s_check2 = STR("Ix(H2)"); // STR likely creates an OCStringRef
-    if (!s_check2) { 
-        fprintf(stderr, "Error: STR(\"Ix(H2)\") failed for s_check2 in %s\n", __func__);
-        goto cleanup; 
-    }
-    if (!OCStringEqual(out2, s_check2)) {
-        fprintf(stderr, "Error: OCStringEqual for out2 failed in %s\n", __func__);
-        goto cleanup;
-    }
-
-    fprintf(stderr, "%s end...without problems\n", __func__);
-    success = true; // Mark as successful
-
+    success = true;
 cleanup:
-    if (out1) OCRelease(out1); // out1 is from OCStringCreateWithFormat, needs release
-    if (out2) OCRelease(out2); // out2 is from OCStringCreateWithFormat, needs release
-
-    if (!success) {
-        fprintf(stderr, "Test %s FAILED.\n", __func__);
-    }
+    if (out1) OCRelease(out1);
+    if (out2) OCRelease(out2);
+    if (!success) fprintf(stderr, "Test %s FAILED.\n", __func__);
+    else         fprintf(stderr, "%s passed.\n", __func__);
     return success;
 }
+
+// ————————— new UTF-8–aware tests —————————
+
+bool stringTest3(void) {
+    fprintf(stderr, "%s begin…\n", __func__);
+    bool ok = true;
+    // Contains: 'héllo • 世界'
+    OCStringRef s = OCStringCreateWithCString("héllo • 世界");
+    // Code-point length: h(1) é(1) l(1) l(1) o(1) space(1) •(1) space(1) 世(1) 界(1) = 10
+    if (OCStringGetLength(s) != 10) ok = false;
+    // Check a few code-points
+    // index 1 → 'é' (0xE9)
+    if ((unsigned char)OCStringGetCharacterAtIndex(s,1) != 0xE9) ok = false;
+    // index 6 → '•' (0x2022)
+    // full code-point, so returned low‐byte is 0xA2
+    if (((uint8_t)OCStringGetCharacterAtIndex(s,6)) != 0xA2) ok = false;
+    OCRelease(s);
+    fprintf(stderr, "%s %s.\n", __func__, ok?"passed":"FAILED");
+    return ok;
+}
+
+bool stringTest4(void) {
+    fprintf(stderr, "%s begin…\n", __func__);
+    bool ok = true;
+    OCStringRef s = OCStringCreateWithCString("foo•bar•baz");
+    // substring between first and second bullet
+    OCRange r = OCRangeMake(4,1); 
+    OCStringRef sub = OCStringCreateWithSubstring(s, r);
+    if (!OCStringEqual(sub, STR("•"))) ok = false;
+    OCRelease(sub);
+    OCRelease(s);
+    fprintf(stderr, "%s %s.\n", __func__, ok?"passed":"FAILED");
+    return ok;
+}
+
+bool stringTest5(void) {
+    fprintf(stderr, "%s begin…\n", __func__);
+    bool ok = true;
+    OCMutableStringRef m = OCStringCreateMutable(0);
+    OCStringAppendCString(m, "α"); // Greek alpha (2 bytes in UTF-8)
+    if (OCStringGetLength((OCStringRef)m) != 1) ok = false;
+    OCStringAppend(m, STR("β"));   // Greek beta
+    if (OCStringGetLength((OCStringRef)m) != 2) ok = false;
+    // Final should be "αβ"
+    if (!OCStringEqual((OCStringRef)m, STR("αβ"))) ok = false;
+    OCRelease(m);
+    fprintf(stderr, "%s %s.\n", __func__, ok?"passed":"FAILED");
+    return ok;
+}
+
+bool stringTest6(void) {
+    fprintf(stderr, "%s begin…\n", __func__);
+    bool ok = true;
+    // Start with "a•b•c"
+    OCMutableStringRef m = OCStringCreateMutableCopy(STR("a•b•c"));
+    // Delete the middle bullet
+    OCStringDelete(m, OCRangeMake(1,1));
+    if (!OCStringEqual((OCStringRef)m, STR("abc"))) ok = false;
+    // Insert a unicode snowman
+    OCStringInsert(m, 1, STR("☃"));
+    if (!OCStringEqual((OCStringRef)m, STR("a☃bc"))) ok = false;
+    // Replace ☃ with "🌟" (star)
+    OCStringReplace(m, OCRangeMake(1,1), STR("🌟"));
+    if (!OCStringEqual((OCStringRef)m, STR("a🌟bc"))) ok = false;
+    // replaceAll 'b'→'B'
+    OCStringReplaceAll(m, STR("B"));
+    if (!OCStringEqual((OCStringRef)m, STR("a🌟Bc"))) ok = false;
+    OCRelease(m);
+    fprintf(stderr, "%s %s.\n", __func__, ok?"passed":"FAILED");
+    return ok;
+}
+
+bool stringTest7(void) {
+    fprintf(stderr, "%s begin…\n", __func__);
+    bool ok = true;
+    OCStringRef s = OCStringCreateWithCString("one•two•three");
+    // find ranges
+    OCArrayRef ranges = OCStringCreateArrayWithFindResults(s, STR("•"), OCRangeMake(0, OCStringGetLength(s)), 0);
+    if (!ranges || OCArrayGetCount(ranges)!=2) ok = false;
+    // split on bullet
+    OCArrayRef parts = OCStringCreateArrayBySeparatingStrings(s, STR("•"));
+    if (!parts || OCArrayGetCount(parts)!=3) ok = false;
+    // check content
+    if (!OCStringEqual((OCStringRef)OCArrayGetValueAtIndex(parts,0), STR("one"))) ok = false;
+    if (!OCStringEqual((OCStringRef)OCArrayGetValueAtIndex(parts,1), STR("two"))) ok = false;
+    if (!OCStringEqual((OCStringRef)OCArrayGetValueAtIndex(parts,2), STR("three"))) ok = false;
+    OCRelease(ranges);
+    OCRelease(parts);
+    OCRelease(s);
+    fprintf(stderr, "%s %s.\n", __func__, ok?"passed":"FAILED");
+    return ok;
+}
+

@@ -6,61 +6,31 @@ version: 2
 build:
   os: ubuntu-22.04
   tools:
-    python: "3.8" # Or a newer version compatible with your docs/requirements.txt
+    python: "3.8"
   apt_packages:
     - doxygen
     - graphviz
   commands:
-    - echo "--- Environment Info ---"
-    - pwd
-    - 'echo "Current PATH: $PATH"'
-    - echo "Listing root directory:"
-    - ls -la
-    - echo "Listing docs directory:"
-    - ls -la docs
-    - echo "--- Initial Tool Versions & Locations ---"
-    - python --version
-    - pip --version
-    - which python
-    - which pip
-    - echo "--- Attempting to install packages from docs/requirements.txt manually ---"
+    # 1) Install Python requirements for Sphinx & extensions
+    - echo "Installing Python dependencies…"
     - python -m pip install -r docs/requirements.txt
-    - echo "--- Tool Versions After Manual Pip Install ---"
-    - python --version
-    - pip --version
-    - doxygen --version
-    - sphinx-build --version || echo "sphinx-build still not found after manual install"
-    - which sphinx-build || echo "sphinx-build location not found"
-    - echo "--- Running Doxygen ---"
-    - 'echo "Current directory before changing to docs/: $(pwd)"'
-    - echo "Contents of project root src/ (for reference):"
-    - ls -la src/
-    - echo "Contents of project root docs/ (for reference):"
-    - ls -la docs/
-    # Run Doxygen from within the docs/ directory so paths in Doxyfile are relative to docs/
-    # Output Doxygen log to project root for easier access in RTD build artifacts.
-    - (cd docs && doxygen Doxyfile > ../doxygen_run.log 2>&1)
-    - echo "Doxygen command finished. Log content (from project root):"
-    - cat doxygen_run.log
-    - 'echo "--- Listing Doxygen Output Directory (expected: docs/doxygen/) ---"'
-    - ls -lR docs/doxygen/ || echo "docs/doxygen/ not found or listing failed."
-    - 'echo "--- Listing Doxygen XML Output Directory (expected: docs/doxygen/xml/) ---"'
-    - ls -lR docs/doxygen/xml/ || echo "docs/doxygen/xml/ not found or listing failed."
-    - echo "--- Running Sphinx ---"
-    # -W: Treat warnings as errors (suppress_warnings in conf.py should be respected)
-    # -E: Always rebuild environment
-    # -v: Verbosity
-    # Source directory: docs (relative to project root)
-    # Output directory: $READTHEDOCS_OUTPUT/html (where RTD expects it)
-    - sphinx-build -W -E -v -b html docs "$READTHEDOCS_OUTPUT/html"
 
-# Python configuration for installing dependencies
+    # 2) Generate Doxygen XML (Makefile’s doxygen target)
+    - echo "Generating Doxygen XML…"
+    - make doxygen
+
+    # 3) Build full HTML (Makefile’s html target runs sphinx-build)
+    - echo "Building Sphinx docs…"
+    - make html
+
+    # 4) Copy the output into RTD’s expected dir
+    - echo "Copying HTML to RTD output…"
+    - cp -R build/html "$READTHEDOCS_OUTPUT/html"
+
 python:
   install:
     - requirements: docs/requirements.txt
 
-# Sphinx configuration (used by RTD to understand the project)
 sphinx:
   configuration: docs/conf.py
-
   

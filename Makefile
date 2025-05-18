@@ -26,7 +26,7 @@ TEST_SRC_DIR = tests
 TEST_FILES = $(wildcard $(TEST_SRC_DIR)/test_*.c) $(TEST_SRC_DIR)/main.c
 TEST_OBJ = $(notdir $(TEST_FILES:.c=.o))
 
-.PHONY: all clean-objects clean test docs clean-docs
+.PHONY: all clean-objects clean test test-debug test-asan docs clean-docs doxygen html
 
 all: libOCTypes.a clean-objects
 
@@ -88,13 +88,20 @@ clean:
 	rm -f libOCTypes.a $(GEN_C) $(GEN_H) runTests runTests.debug runTests.asan *.dSYM -rf
 
 # Documentation targets
-docs:
-	@echo "Generating Doxygen XML output…"
-	@mkdir -p docs/doxygen/xml
-	@cd docs && doxygen Doxyfile
-	@echo "Building Sphinx documentation…"
-	@cd docs && sphinx-build -E -v -b html . _build
+
+# Generate Doxygen XML for Breathe
+doxygen:
+	@echo "Generating Doxygen XML…"
+	cd docs && doxygen Doxyfile
+
+# Build HTML docs (depends on doxygen)
+html: doxygen
+	@echo "Building Sphinx HTML…"
+	sphinx-build -W -E -b html docs build/html
+
+# Alias “make docs” to build HTML
+docs: html
 
 clean-docs:
 	@echo "Cleaning documentation…"
-	@rm -rf docs/doxygen docs/_build
+	rm -rf docs/doxygen build/html

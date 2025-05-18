@@ -1,5 +1,9 @@
 OCData
 ======
 
-.. doxygenfile:: OCData.h
+.. toctree::
+   :maxdepth: 1
 
+.. doxygengroup:: OCData
+   :project: OCTypes
+   :members:

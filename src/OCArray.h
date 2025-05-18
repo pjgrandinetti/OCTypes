@@ -79,7 +79,6 @@ extern const OCArrayCallBacks kOCTypeArrayCallBacks;
 /**
  * @brief Gets the OCTypeID for OCArray.
  * @return OCTypeID value.
- * @ingroup OCArray
  */
 OCTypeID OCArrayGetTypeID(void);
 

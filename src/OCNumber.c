@@ -140,10 +140,6 @@ OCTypeID OCNumberGetTypeID(void)
     return kOCNumberID;
 }
 
-void _OCNumberInitialize(void) {
-    kOCNumberID = OCRegisterType("OCNumber");
-}
-
 static struct __OCNumber *OCNumberAllocate(void)
 {
     struct __OCNumber *n = malloc(sizeof(*n));
