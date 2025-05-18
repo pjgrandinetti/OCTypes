@@ -329,6 +329,25 @@ bool OCAutoreleasePoolRelease(OCAutoreleasePoolRef thePool)
     return OCAutoreleasePoolsManagerRemovePool(thePool);
 }
 
+// Drains the pool without deallocating it: releases all queued objects
+void OCAutoreleasePoolDrain(OCAutoreleasePoolRef thePool)
+{
+    IF_NO_OBJECT_EXISTS_RETURN(thePool, );
+    // Release each object and deallocate its wrapper
+    for(int i = 0; i < thePool->number_of_pool_objects; i++) {
+        OCAutoreleasePoolObjectRef pool_object = thePool->pool_objects[i];
+        void (*release_function)(const void *) = OCAutoreleasePoolObjectGetReleaseFunction(pool_object);
+        (*release_function)(OCAutoreleasePoolObjectGetObject(pool_object));
+        OCAutoreleasePoolObjectDeallocate(pool_object);
+    }
+    // Free the pool_objects array and reset count
+    if(thePool->pool_objects) {
+        free(thePool->pool_objects);
+        thePool->pool_objects = NULL;
+    }
+    thePool->number_of_pool_objects = 0;
+}
+
 /*
  @function OCAutoreleasePoolGetNumberOfPoolObjects
  @abstract Returns the number of objects in the autorelease pool

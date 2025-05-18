@@ -24,3 +24,41 @@ bool mathTest0(void) {
     fprintf(stderr, "%s end...without problems\n", __func__);
     return true;
 }
+
+// Consolidated mathTest1 from test_math_extra.c
+bool mathTest1(void) {
+    fprintf(stderr, "%s begin...\n", __func__);
+
+    // Test cargument
+    double complex z = 1.0 + 1.0*I;
+    double arg = cargument(z);
+    if (OCCompareDoubleValuesLoose(arg, M_PI_4) != kOCCompareEqualTo) PRINTERROR;
+
+    // Test ccbrt
+    double complex cbrtRes = ccbrt(8.0 + 0.0*I);
+    if (OCCompareDoubleValuesLoose(creal(cbrtRes), 2.0) != kOCCompareEqualTo ||
+        OCCompareDoubleValuesLoose(cimag(cbrtRes), 0.0) != kOCCompareEqualTo) PRINTERROR;
+
+    // Test cqtrt
+    double complex qtrtRes = cqtrt(16.0 + 0.0*I);
+    if (OCCompareDoubleValuesLoose(creal(qtrtRes), 2.0) != kOCCompareEqualTo ||
+        OCCompareDoubleValuesLoose(cimag(qtrtRes), 0.0) != kOCCompareEqualTo) PRINTERROR;
+
+    // Test compare values
+    if (OCCompareFloatValues(1.0f, 1.0f) != kOCCompareEqualTo) PRINTERROR;
+    if (OCCompareDoubleValues(2.0, 3.0) != kOCCompareLessThan) PRINTERROR;
+    if (OCCompareDoubleValuesLoose(0.10000001, 0.10000002) != kOCCompareEqualTo) PRINTERROR;
+
+    // Test floor/ceil
+    if (OCDoubleFloor(3.7) != 3.0) PRINTERROR;
+    if (OCDoubleCeil(3.1) != 4.0) PRINTERROR;
+
+    // Test trig
+    double complex angle = M_PI_4 + 0.0*I;
+    if (OCCompareDoubleValuesLoose(creal(complex_sine(angle)), sin(M_PI_4)) != kOCCompareEqualTo) PRINTERROR;
+    if (OCCompareDoubleValuesLoose(creal(complex_cosine(angle)), cos(M_PI_4)) != kOCCompareEqualTo) PRINTERROR;
+    if (OCCompareDoubleValuesLoose(creal(complex_tangent(angle)), tan(M_PI_4)) != kOCCompareEqualTo) PRINTERROR;
+
+    fprintf(stderr, "%s end...without problems\n", __func__);
+    return true;
+}

@@ -5,6 +5,8 @@
 
 // Test prototype for math tests
 bool mathTest0(void);
+// New: tests for additional math functions
+bool mathTest1(void);
 
 // If raise_to_integer_power isn't in OCMath.h, declare it (though it should be)
 // This declaration might be specific to how tests were originally structured.

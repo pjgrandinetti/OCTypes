@@ -131,28 +131,26 @@ void OCDataGetBytes(OCDataRef theData, OCRange range, uint8_t *buffer)
 
 void OCDataSetLength(OCMutableDataRef theData, uint64_t length)
 {
-    if(length<theData->length) {
+    uint64_t oldLength = theData->length;
+    // Shrink
+    if (length < oldLength) {
         theData->length = length;
         return;
     }
-    if(theData->capacity==0) {
-        if(NULL==theData->bytes) {
-            theData->bytes = (uint8_t *) malloc(length*sizeof(uint8_t));
+    // Expand: ensure capacity
+    if (length > theData->capacity) {
+        if (theData->bytes == NULL) {
+            theData->bytes = malloc(length * sizeof(uint8_t));
+        } else {
+            theData->bytes = realloc(theData->bytes, length * sizeof(uint8_t));
         }
-        else theData->bytes = (uint8_t *) realloc(theData->bytes, length * sizeof(uint8_t));
-        for(uint64_t index=theData->length;index<length;index++) {
-            theData->bytes[index] = 0;
-        }
-        theData->length = length;
-        return;
+        theData->capacity = length;
     }
-    if(length>theData->length && length<theData->capacity) {
-        for(uint64_t index=theData->length;index<length;index++) {
-            theData->bytes[index] = 0;
-        }
-        theData->length = length;
-        return;
+    // Zero-fill new bytes
+    for (uint64_t i = oldLength; i < length; i++) {
+        theData->bytes[i] = 0;
     }
+    theData->length = length;
 }
 
 void OCDataIncreaseLength(OCMutableDataRef theData, uint64_t extraLength)
@@ -163,11 +161,10 @@ void OCDataIncreaseLength(OCMutableDataRef theData, uint64_t extraLength)
 void OCDataAppendBytes(OCMutableDataRef theData, const uint8_t *bytes, uint64_t length)
 {
     uint64_t oldLength = theData->length;
-    OCDataIncreaseLength(theData, length);
-    
-    for(uint64_t index=0;index<length;index++) {
-        theData->bytes[oldLength+index] = bytes[index];
-    }
+    // Ensure enough capacity and update length
+    OCDataSetLength(theData, oldLength + length);
+    // Copy new bytes into place
+    memcpy(theData->bytes + oldLength, bytes, length);
 }
 
 

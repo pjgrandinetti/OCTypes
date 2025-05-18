@@ -56,8 +56,10 @@ static void __OCDictionaryReleaseValues(OCDictionaryRef theDictionary)
 
 static void __OCDictionaryRetainValues(OCDictionaryRef theDictionary)
 {
-    for(size_t index = 0;index< theDictionary->count; index++) {
-        OCRetain( theDictionary->values[index]);
+    for(size_t index = 0; index < theDictionary->count; index++) {
+        // Retain both values and keys for copied dictionaries
+        OCRetain(theDictionary->values[index]);
+        OCRetain(theDictionary->keys[index]);
     }
 }
 
@@ -173,6 +175,19 @@ void OCDictionaryAddValue(OCMutableDictionaryRef theDictionary, OCStringRef key,
     if(NULL==theDictionary) return;
     if(NULL==key) return;
     if(NULL==value) return;
+    
+    // Check if the key already exists
+    int64_t existingKeyIndex = OCDictionaryIndexOfKey(theDictionary, key);
+    if (existingKeyIndex >= 0) {
+        // Key exists, replace the value
+        OCRelease(theDictionary->values[existingKeyIndex]);
+        OCTypeRef type = (OCTypeRef)value;
+        theDictionary->values[existingKeyIndex] = type;
+        OCRetain(type);
+        return;
+    }
+    
+    // Key doesn't exist, add a new entry
     OCTypeRef type = (OCTypeRef) value;
     if(theDictionary->capacity==0 || theDictionary->count==theDictionary->capacity) {
         if(NULL==theDictionary->values) theDictionary->values = (OCTypeRef*) malloc(sizeof(OCTypeRef));
@@ -189,11 +204,10 @@ void OCDictionaryAddValue(OCMutableDictionaryRef theDictionary, OCStringRef key,
     }
     else {
         theDictionary->values[theDictionary->count] = type;
-        OCRetain( type);
+        OCRetain(type);
         theDictionary->keys[theDictionary->count] = OCStringCreateCopy(key);
         theDictionary->count++;
     }
-
 }
 
 void OCDictionaryGetKeysAndValues(OCDictionaryRef theDictionary, const void **keys, const void **values)
@@ -251,7 +265,7 @@ uint64_t OCDictionaryGetCountOfValue(OCMutableDictionaryRef theDictionary, const
 {
     uint64_t count = 0;
     for(uint64_t index = 0;index<theDictionary->count;index++) {
-        if(OCTypeEqual(theDictionary->values[index],value)==kOCCompareEqualTo) count++;
+        if(OCTypeEqual(theDictionary->values[index],value)) count++;
     }
     return count;
 }

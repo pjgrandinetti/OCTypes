@@ -59,3 +59,28 @@ bool dataTest0(void) {
     fprintf(stderr, "%s end...without problems\n", __func__);
     return true;
 }
+
+// Consolidated dataTest1 from test_data_mutable.c
+bool dataTest1(void) {
+    fprintf(stderr, "%s begin...\n", __func__);
+    OCMutableDataRef mdata = OCDataCreateMutable(5);
+    ASSERT_NOT_NULL(mdata, "Test 1.1: OCDataCreateMutable should not return NULL");
+    ASSERT_EQUAL(OCDataGetLength(mdata), 0, "Test 1.2: New mutable data length should be 0");
+    OCDataSetLength(mdata, 3);
+    ASSERT_EQUAL(OCDataGetLength(mdata), 3, "Test 1.3: Length after OCDataSetLength should be correct");
+    OCDataIncreaseLength(mdata, 2);
+    ASSERT_EQUAL(OCDataGetLength(mdata), 5, "Test 1.4: Length after OCDataIncreaseLength should be correct");
+    uint8_t extra[] = {10, 20, 30};
+    OCDataAppendBytes(mdata, extra, sizeof(extra));
+    ASSERT_EQUAL(OCDataGetLength(mdata), 8, "Test 1.5: Length after OCDataAppendBytes should be correct");
+    uint8_t buffer[8] = {0};
+    OCDataGetBytes((OCDataRef)mdata, OCRangeMake(0, OCDataGetLength(mdata)), buffer);
+    ASSERT_TRUE(buffer[5] == 10 && buffer[6] == 20 && buffer[7] == 30, "Test 1.6: OCDataGetBytes should return appended data");
+    uint8_t *mutPtr = OCDataGetMutableBytePtr(mdata);
+    ASSERT_NOT_NULL(mutPtr, "Test 1.7: OCDataGetMutableBytePtr should not return NULL");
+    mutPtr[0] = 55;
+    ASSERT_EQUAL(OCDataGetBytePtr((OCDataRef)mdata)[0], 55, "Test 1.8: OCDataGetMutableBytePtr should allow writing data");
+    OCRelease(mdata);
+    fprintf(stderr, "%s end...without problems\n", __func__);
+    return true;
+}

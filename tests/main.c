@@ -39,12 +39,21 @@ int main(int argc, const char * argv[]) {
 
     // Call test functions from their respective modules
     if (!autoreleasePoolTest0()) failures++;
+    if (!autoreleasePoolTest1()) failures++;  // New: test Oak jon pool drain
     if (!typeTest0())            failures++;
+    if (!typeTest1())            failures++;  // New: type description tests
     if (!mathTest0())            failures++;
+    if (!mathTest1())            failures++;  // New: extra math API tests
     if (!dataTest0())            failures++;
+    if (!dataTest1())            failures++;  // New: mutable-data API tests
     if (!booleanTest0())         failures++;
     if (!numberTest0())          failures++;  // ← New: Invoke OCNumber tests
-    if (!dictionaryTest0())      failures++;  // ← New: Invoke OCDictionary tests
+    if (!dictionaryTest0())      failures++;  // ← Invoke OCDictionary tests
+    if (!dictionaryTest1())      failures++;  // ← Invoke OCDictionary edge case tests
+    if (!dictionaryTest2())      failures++;  // ← Invoke OCDictionary array operations tests
+    if (!dictionaryTest3())      failures++;  // ← Invoke OCDictionary mixed type tests
+    if (!dictionaryTest4())      failures++;  // ← New: Invoke OCDictionary extreme cases tests
+    if (!dictionaryTest5())      failures++;  // ← New: Invoke OCDictionary deep nesting tests
     if (!arrayTest0())           failures++;
     if (!arrayTest1_creation())  failures++;
     if (!arrayTest2_access())    failures++;
