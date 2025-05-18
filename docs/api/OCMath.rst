@@ -1,5 +1,9 @@
 OCMath
 ======
 
-.. doxygenfile:: OCMath.h
+.. toctree::
+   :maxdepth: 1
 
+.. doxygengroup:: OCMath
+   :project: OCTypes
+   :members:

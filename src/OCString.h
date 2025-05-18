@@ -22,6 +22,13 @@
  * @param cStr C string literal.
  * @return A compile-time constant OCStringRef; do not release.
  * @ingroup OCString
+ * 
+ * @code
+ * OCStringRef hello = STR("Hello, world!");
+ * // Use hello as a constant string
+ * OCStringShow(hello);
+ * // Do NOT release STR strings
+ * @endcode
  */
 #define STR(cStr)  __OCStringMakeConstantString("" cStr "")
 
@@ -29,6 +36,13 @@
  * @brief Returns the unique type identifier for OCString objects.
  * @return The OCTypeID for OCString.
  * @ingroup OCString
+ * 
+ * @code
+ * OCTypeID stringTypeID = OCStringGetTypeID();
+ * if (OCGetTypeID(someObject) == stringTypeID) {
+ *     // The object is an OCString
+ * }
+ * @endcode
  */
 OCTypeID OCStringGetTypeID(void);
 
@@ -37,6 +51,16 @@ OCTypeID OCStringGetTypeID(void);
  * @param string Null-terminated UTF-8 C string.
  * @return New OCStringRef, or NULL on failure.
  * @ingroup OCString
+ * 
+ * @code
+ * const char *cString = "Hello, world!";
+ * OCStringRef myString = OCStringCreateWithCString(cString);
+ * 
+ * // Do operations with myString
+ * 
+ * // Release when done
+ * OCRelease(myString);
+ * @endcode
  */
 OCStringRef OCStringCreateWithCString(const char *string);
 
@@ -45,6 +69,18 @@ OCStringRef OCStringCreateWithCString(const char *string);
  * @param theString Immutable OCString to copy.
  * @return New OCMutableStringRef (ownership transferred to caller).
  * @ingroup OCString
+ * 
+ * @code
+ * OCStringRef immutableString = OCStringCreateWithCString("Hello");
+ * OCMutableStringRef mutableString = OCStringCreateMutableCopy(immutableString);
+ * 
+ * // Now we can modify mutableString
+ * OCStringAppendCString(mutableString, ", world!");
+ * 
+ * // Release when done
+ * OCRelease(immutableString);
+ * OCRelease(mutableString);
+ * @endcode
  */
 OCMutableStringRef OCStringCreateMutableCopy(OCStringRef theString);
 
@@ -54,6 +90,17 @@ OCMutableStringRef OCStringCreateMutableCopy(OCStringRef theString);
  * @param range Range of substring to extract.
  * @return New OCStringRef, or NULL on failure.
  * @ingroup OCString
+ * 
+ * @code
+ * OCStringRef fullString = OCStringCreateWithCString("Hello, world!");
+ * OCRange range = {7, 5}; // Start at index 7, length 5 characters
+ * OCStringRef substring = OCStringCreateWithSubstring(fullString, range);
+ * // substring now contains "world"
+ * 
+ * // Release when done
+ * OCRelease(fullString);
+ * OCRelease(substring);
+ * @endcode
  */
 OCStringRef OCStringCreateWithSubstring(OCStringRef str, OCRange range);
 
@@ -62,6 +109,21 @@ OCStringRef OCStringCreateWithSubstring(OCStringRef str, OCRange range);
  * @param theString Mutable OCString to append to.
  * @param appendedString Immutable OCString to append.
  * @ingroup OCString
+ * 
+ * @code
+ * OCMutableStringRef mutableString = OCStringCreateMutable(10);
+ * OCStringRef hello = OCStringCreateWithCString("Hello");
+ * OCStringRef world = OCStringCreateWithCString(" World");
+ * 
+ * OCStringAppend(mutableString, hello);
+ * OCStringAppend(mutableString, world);
+ * // mutableString now contains "Hello World"
+ * 
+ * // Release when done
+ * OCRelease(hello);
+ * OCRelease(world);
+ * OCRelease(mutableString);
+ * @endcode
  */
 void OCStringAppend(OCMutableStringRef theString, OCStringRef appendedString);
 
@@ -70,6 +132,16 @@ void OCStringAppend(OCMutableStringRef theString, OCStringRef appendedString);
  * @param theString Mutable OCString to append to.
  * @param cString Null-terminated UTF-8 C string to append.
  * @ingroup OCString
+ * 
+ * @code
+ * OCMutableStringRef mutableString = OCStringCreateMutable(10);
+ * OCStringAppendCString(mutableString, "Hello");
+ * OCStringAppendCString(mutableString, " World");
+ * // mutableString now contains "Hello World"
+ * 
+ * // Release when done
+ * OCRelease(mutableString);
+ * @endcode
  */
 void OCStringAppendCString(OCMutableStringRef theString, const char *cString);
 
@@ -78,6 +150,17 @@ void OCStringAppendCString(OCMutableStringRef theString, const char *cString);
  * @param capacity Initial capacity for the mutable string.
  * @return New OCMutableStringRef (ownership transferred to caller).
  * @ingroup OCString
+ * 
+ * @code
+ * // Create a mutable string with initial capacity of 50 characters
+ * OCMutableStringRef mutableString = OCStringCreateMutable(50);
+ * 
+ * // Append content to the string
+ * OCStringAppendCString(mutableString, "Initial content");
+ * 
+ * // Release when done
+ * OCRelease(mutableString);
+ * @endcode
  */
 OCMutableStringRef OCStringCreateMutable(uint64_t capacity);
 
@@ -86,6 +169,18 @@ OCMutableStringRef OCStringCreateMutable(uint64_t capacity);
  * @param cString Null-terminated UTF-8 C string.
  * @return New OCMutableStringRef (ownership transferred to caller).
  * @ingroup OCString
+ * 
+ * @code
+ * OCMutableStringRef mutableString = OCMutableStringCreateWithCString("Hello");
+ * 
+ * // Modify the string
+ * OCStringAppendCString(mutableString, ", world!");
+ * OCStringUppercase(mutableString);
+ * // mutableString now contains "HELLO, WORLD!"
+ * 
+ * // Release when done
+ * OCRelease(mutableString);
+ * @endcode
  */
 OCMutableStringRef OCMutableStringCreateWithCString(const char *cString);
 
@@ -94,6 +189,20 @@ OCMutableStringRef OCMutableStringCreateWithCString(const char *cString);
  * @param theString Immutable OCString.
  * @return Null-terminated UTF-8 C string.
  * @ingroup OCString
+ * 
+ * @code
+ * OCStringRef myString = OCStringCreateWithCString("Hello, world!");
+ * 
+ * // Get the C string representation
+ * const char *cString = OCStringGetCString(myString);
+ * 
+ * // Use the C string with standard C functions
+ * printf("%s\n", cString);  // Outputs: Hello, world!
+ * 
+ * // Release when done
+ * OCRelease(myString);
+ * // Note: Do not free the C string returned by OCStringGetCString
+ * @endcode
  */
 const char *OCStringGetCString(OCStringRef theString);
 
@@ -102,6 +211,20 @@ const char *OCStringGetCString(OCStringRef theString);
  * @param theString Source OCString.
  * @return New OCStringRef (ownership transferred to caller).
  * @ingroup OCString
+ * 
+ * @code
+ * OCStringRef original = OCStringCreateWithCString("Hello, world!");
+ * 
+ * // Create a copy
+ * OCStringRef copy = OCStringCreateCopy(original);
+ * 
+ * // Both strings have the same content but are separate objects
+ * bool areEqual = OCStringEqual(original, copy);  // Returns true
+ * 
+ * // Release both strings when done
+ * OCRelease(original);
+ * OCRelease(copy);
+ * @endcode
  */
 OCStringRef OCStringCreateCopy(OCStringRef theString);
 
@@ -112,6 +235,23 @@ OCStringRef OCStringCreateCopy(OCStringRef theString);
  * @param compareOptions Comparison options flags.
  * @return Comparison result indicating order or equality.
  * @ingroup OCString
+ * 
+ * @code
+ * OCStringRef string1 = OCStringCreateWithCString("Apple");
+ * OCStringRef string2 = OCStringCreateWithCString("APPLE");
+ * 
+ * // Case-sensitive comparison
+ * OCComparisonResult result1 = OCStringCompare(string1, string2, 0);
+ * // result1 will be kOCCompareGreaterThan because 'a' > 'A'
+ * 
+ * // Case-insensitive comparison
+ * OCComparisonResult result2 = OCStringCompare(string1, string2, kOCCompareCaseInsensitive);
+ * // result2 will be kOCCompareEqualTo
+ * 
+ * // Release when done
+ * OCRelease(string1);
+ * OCRelease(string2);
+ * @endcode
  */
 OCComparisonResult OCStringCompare(OCStringRef theString1, OCStringRef theString2, OCStringCompareFlags compareOptions);
 
@@ -120,6 +260,16 @@ OCComparisonResult OCStringCompare(OCStringRef theString1, OCStringRef theString
  * @param theString OCString.
  * @return Length of the string.
  * @ingroup OCString
+ * 
+ * @code
+ * OCStringRef myString = OCStringCreateWithCString("Hello, world!");
+ * 
+ * uint64_t length = OCStringGetLength(myString);
+ * // length will be 13
+ * 
+ * // Release when done
+ * OCRelease(myString);
+ * @endcode
  */
 uint64_t OCStringGetLength(OCStringRef theString);
 
@@ -127,6 +277,16 @@ uint64_t OCStringGetLength(OCStringRef theString);
  * @brief Converts a mutable OCString to lowercase.
  * @param theString Mutable OCString.
  * @ingroup OCString
+ * 
+ * @code
+ * OCMutableStringRef myString = OCMutableStringCreateWithCString("Hello, WORLD!");
+ * 
+ * OCStringLowercase(myString);
+ * // myString now contains "hello, world!"
+ * 
+ * // Release when done
+ * OCRelease(myString);
+ * @endcode
  */
 void OCStringLowercase(OCMutableStringRef theString);
 
@@ -134,6 +294,16 @@ void OCStringLowercase(OCMutableStringRef theString);
  * @brief Converts a mutable OCString to uppercase.
  * @param theString Mutable OCString.
  * @ingroup OCString
+ * 
+ * @code
+ * OCMutableStringRef myString = OCMutableStringCreateWithCString("Hello, world!");
+ * 
+ * OCStringUppercase(myString);
+ * // myString now contains "HELLO, WORLD!"
+ * 
+ * // Release when done
+ * OCRelease(myString);
+ * @endcode
  */
 void OCStringUppercase(OCMutableStringRef theString);
 
@@ -141,6 +311,16 @@ void OCStringUppercase(OCMutableStringRef theString);
  * @brief Trims whitespace characters from both ends of a mutable OCString.
  * @param theString Mutable OCString.
  * @ingroup OCString
+ * 
+ * @code
+ * OCMutableStringRef myString = OCMutableStringCreateWithCString("  Hello, world!   ");
+ * 
+ * OCStringTrimWhitespace(myString);
+ * // myString now contains "Hello, world!"
+ * 
+ * // Release when done
+ * OCRelease(myString);
+ * @endcode
  */
 void OCStringTrimWhitespace(OCMutableStringRef theString);
 
@@ -149,6 +329,23 @@ void OCStringTrimWhitespace(OCMutableStringRef theString);
  * @param theString Mutable OCString.
  * @return true if parentheses were trimmed, false otherwise.
  * @ingroup OCString
+ * 
+ * @code
+ * OCMutableStringRef string1 = OCMutableStringCreateWithCString("(Hello, world!)");
+ * OCMutableStringRef string2 = OCMutableStringCreateWithCString("No parentheses");
+ * 
+ * bool trimmed1 = OCStringTrimMatchingParentheses(string1);
+ * // trimmed1 will be true
+ * // string1 now contains "Hello, world!"
+ * 
+ * bool trimmed2 = OCStringTrimMatchingParentheses(string2);
+ * // trimmed2 will be false
+ * // string2 remains unchanged
+ * 
+ * // Release when done
+ * OCRelease(string1);
+ * OCRelease(string2);
+ * @endcode
  */
 bool OCStringTrimMatchingParentheses(OCMutableStringRef theString);
 
@@ -157,6 +354,18 @@ bool OCStringTrimMatchingParentheses(OCMutableStringRef theString);
  * @param theString Mutable OCString.
  * @param range Range of characters to delete.
  * @ingroup OCString
+ * 
+ * @code
+ * OCMutableStringRef myString = OCMutableStringCreateWithCString("Hello, world!");
+ * 
+ * // Delete ", world" (characters 5-11)
+ * OCRange deleteRange = {5, 7};
+ * OCStringDelete(myString, deleteRange);
+ * // myString now contains "Hello!"
+ * 
+ * // Release when done
+ * OCRelease(myString);
+ * @endcode
  */
 void OCStringDelete(OCMutableStringRef theString, OCRange range);
 
@@ -166,6 +375,19 @@ void OCStringDelete(OCMutableStringRef theString, OCRange range);
  * @param idx Index at which to insert.
  * @param insertedStr OCString to insert.
  * @ingroup OCString
+ * 
+ * @code
+ * OCMutableStringRef myString = OCMutableStringCreateWithCString("Hello world!");
+ * OCStringRef insertStr = OCStringCreateWithCString("beautiful ");
+ * 
+ * // Insert at position 6 (after "Hello ")
+ * OCStringInsert(myString, 6, insertStr);
+ * // myString now contains "Hello beautiful world!"
+ * 
+ * // Release when done
+ * OCRelease(myString);
+ * OCRelease(insertStr);
+ * @endcode
  */
 void OCStringInsert(OCMutableStringRef str, int64_t idx, OCStringRef insertedStr);
 
@@ -175,6 +397,20 @@ void OCStringInsert(OCMutableStringRef str, int64_t idx, OCStringRef insertedStr
  * @param range Range to replace.
  * @param replacement OCString to insert.
  * @ingroup OCString
+ * 
+ * @code
+ * OCMutableStringRef myString = OCMutableStringCreateWithCString("Hello world!");
+ * OCStringRef replacement = OCStringCreateWithCString("everyone");
+ * 
+ * // Replace "world" (characters 6-11) with "everyone"
+ * OCRange replaceRange = {6, 5};
+ * OCStringReplace(myString, replaceRange, replacement);
+ * // myString now contains "Hello everyone!"
+ * 
+ * // Release when done
+ * OCRelease(myString);
+ * OCRelease(replacement);
+ * @endcode
  */
 void OCStringReplace(OCMutableStringRef str, OCRange range, OCStringRef replacement);
 
@@ -183,6 +419,18 @@ void OCStringReplace(OCMutableStringRef str, OCRange range, OCStringRef replacem
  * @param str Mutable OCString.
  * @param replacement OCString to set.
  * @ingroup OCString
+ * 
+ * @code
+ * OCMutableStringRef myString = OCMutableStringCreateWithCString("Hello world!");
+ * OCStringRef replacement = OCStringCreateWithCString("Greetings, everyone!");
+ * 
+ * OCStringReplaceAll(myString, replacement);
+ * // myString now contains "Greetings, everyone!"
+ * 
+ * // Release when done
+ * OCRelease(myString);
+ * OCRelease(replacement);
+ * @endcode
  */
 void OCStringReplaceAll(OCMutableStringRef str, OCStringRef replacement);
 
@@ -192,6 +440,16 @@ void OCStringReplaceAll(OCMutableStringRef str, OCStringRef replacement);
  * @param index Index of character.
  * @return Character at index.
  * @ingroup OCString
+ * 
+ * @code
+ * OCStringRef myString = OCStringCreateWithCString("Hello, world!");
+ * 
+ * uint32_t char0 = OCStringGetCharacterAtIndex(myString, 0);  // 'H'
+ * uint32_t char7 = OCStringGetCharacterAtIndex(myString, 7);  // 'w'
+ * 
+ * // Release when done
+ * OCRelease(myString);
+ * @endcode
  */
 uint32_t OCStringGetCharacterAtIndex(OCStringRef theString, uint64_t index);
 
@@ -200,6 +458,19 @@ uint32_t OCStringGetCharacterAtIndex(OCStringRef theString, uint64_t index);
  * @param string OCString containing complex arithmetic expression.
  * @return Parsed float complex value.
  * @ingroup OCString
+ * 
+ * @code
+ * OCStringRef complexStr = OCStringCreateWithCString("3+4i");
+ * 
+ * float complex value = OCStringGetFloatComplexValue(complexStr);
+ * // value is equal to 3.0f + 4.0fi
+ * 
+ * float real = crealf(value);      // 3.0f
+ * float imag = cimagf(value);      // 4.0f
+ * 
+ * // Release when done
+ * OCRelease(complexStr);
+ * @endcode
  */
 float complex OCStringGetFloatComplexValue(OCStringRef string);
 
@@ -208,6 +479,19 @@ float complex OCStringGetFloatComplexValue(OCStringRef string);
  * @param string OCString containing complex arithmetic expression.
  * @return Parsed double complex value.
  * @ingroup OCString
+ * 
+ * @code
+ * OCStringRef complexStr = OCStringCreateWithCString("2.5 * (3-2i) + 1.5i");
+ * 
+ * double complex value = OCStringGetDoubleComplexValue(complexStr);
+ * // value is equal to 7.5 - 5.0i + 1.5i = 7.5 - 3.5i
+ * 
+ * double real = creal(value);      // 7.5
+ * double imag = cimag(value);      // -3.5
+ * 
+ * // Release when done
+ * OCRelease(complexStr);
+ * @endcode
  */
 double complex OCStringGetDoubleComplexValue(OCStringRef string);
 
@@ -218,6 +502,28 @@ double complex OCStringGetDoubleComplexValue(OCStringRef string);
  * @param compareOptions Comparison options flags.
  * @return Range of found substring or {0,0} if not found.
  * @ingroup OCString
+ * 
+ * @code
+ * OCStringRef haystack = OCStringCreateWithCString("Hello, World! Hello again.");
+ * OCStringRef needle = OCStringCreateWithCString("hello");
+ * 
+ * // Case-sensitive search (won't find it)
+ * OCRange range1 = OCStringFind(haystack, needle, 0);
+ * // range1 will be {0, 0} indicating not found
+ * 
+ * // Case-insensitive search
+ * OCRange range2 = OCStringFind(haystack, needle, kOCCompareCaseInsensitive);
+ * // range2 will be {0, 5} indicating found at position 0 with length 5
+ * 
+ * // Search for second occurrence
+ * OCRange searchRange = {7, OCStringGetLength(haystack) - 7};
+ * OCRange range3 = OCStringFind(haystack, needle, kOCCompareCaseInsensitive);
+ * // range3 will be {14, 5} indicating found at position 14 with length 5
+ * 
+ * // Release when done
+ * OCRelease(haystack);
+ * OCRelease(needle);
+ * @endcode
  */
 OCRange OCStringFind(OCStringRef string, OCStringRef stringToFind, OCOptionFlags compareOptions);
 
@@ -228,6 +534,22 @@ OCRange OCStringFind(OCStringRef string, OCStringRef stringToFind, OCOptionFlags
  * @param replacementString Replacement OCString.
  * @return Number of replacements made.
  * @ingroup OCString
+ * 
+ * @code
+ * OCMutableStringRef text = OCMutableStringCreateWithCString("Hello world! Hello again, world!");
+ * OCStringRef find = OCStringCreateWithCString("Hello");
+ * OCStringRef replace = OCStringCreateWithCString("Greetings");
+ * 
+ * // Replace all occurrences of "Hello" with "Greetings"
+ * int64_t replacements = OCStringFindAndReplace2(text, find, replace);
+ * // replacements will be 2
+ * // text now contains "Greetings world! Greetings again, world!"
+ * 
+ * // Release when done
+ * OCRelease(text);
+ * OCRelease(find);
+ * OCRelease(replace);
+ * @endcode
  */
 int64_t OCStringFindAndReplace2(OCMutableStringRef string,
                                OCStringRef stringToFind,
@@ -242,6 +564,31 @@ int64_t OCStringFindAndReplace2(OCMutableStringRef string,
  * @param compareOptions Comparison options flags.
  * @return Number of replacements made.
  * @ingroup OCString
+ * 
+ * @code
+ * OCMutableStringRef text = OCMutableStringCreateWithCString("Hello world! Hello again, world!");
+ * OCStringRef find = OCStringCreateWithCString("world");
+ * OCStringRef replace = OCStringCreateWithCString("everybody");
+ * 
+ * // Replace only the first occurrence of "world" (within first 15 characters)
+ * OCRange searchRange = {0, 15};
+ * int64_t replacements = OCStringFindAndReplace(text, find, replace, searchRange, 0);
+ * // replacements will be 1
+ * // text now contains "Hello everybody! Hello again, world!"
+ * 
+ * // Replace with case-insensitive search (rest of string)
+ * OCRange searchRange2 = {15, OCStringGetLength(text) - 15};
+ * OCStringRef findWorld = OCStringCreateWithCString("WORLD");
+ * replacements = OCStringFindAndReplace(text, findWorld, replace, searchRange2, kOCCompareCaseInsensitive);
+ * // replacements will be 1
+ * // text now contains "Hello everybody! Hello again, everybody!"
+ * 
+ * // Release when done
+ * OCRelease(text);
+ * OCRelease(find);
+ * OCRelease(findWorld);
+ * OCRelease(replace);
+ * @endcode
  */
 int64_t OCStringFindAndReplace(OCMutableStringRef string,
                                OCStringRef stringToFind,
@@ -257,6 +604,31 @@ int64_t OCStringFindAndReplace(OCMutableStringRef string,
  * @param compareOptions Comparison options flags.
  * @return OCArrayRef containing ranges of found substrings.
  * @ingroup OCString
+ * 
+ * @code
+ * OCStringRef text = OCStringCreateWithCString("Hello world! Hello again, world!");
+ * OCStringRef find = OCStringCreateWithCString("world");
+ * 
+ * // Find all occurrences of "world" in the entire string
+ * OCRange searchRange = {0, OCStringGetLength(text)};
+ * OCArrayRef results = OCStringCreateArrayWithFindResults(text, find, searchRange, 0);
+ * 
+ * // results will contain 2 OCRange objects:
+ * // range at index 0 = {6, 5} (first "world")
+ * // range at index 1 = {26, 5} (second "world")
+ * uint64_t count = OCArrayGetCount(results);  // 2
+ * 
+ * // Extract and use the ranges
+ * for (int i = 0; i < count; i++) {
+ *     OCRange *range = (OCRange *)OCArrayGetValueAtIndex(results, i);
+ *     // Use range->location and range->length as needed
+ * }
+ * 
+ * // Release when done
+ * OCRelease(text);
+ * OCRelease(find);
+ * OCRelease(results);
+ * @endcode
  */
 OCArrayRef OCStringCreateArrayWithFindResults(OCStringRef string, OCStringRef stringToFind, OCRange rangeToSearch, OCOptionFlags compareOptions);
 
@@ -266,6 +638,32 @@ OCArrayRef OCStringCreateArrayWithFindResults(OCStringRef string, OCStringRef st
  * @param separatorString Separator OCString.
  * @return OCArrayRef containing separated OCStrings.
  * @ingroup OCString
+ * 
+ * @code
+ * OCStringRef csv = OCStringCreateWithCString("apple,banana,orange,grape");
+ * OCStringRef separator = OCStringCreateWithCString(",");
+ * 
+ * // Split string by comma
+ * OCArrayRef fruits = OCStringCreateArrayBySeparatingStrings(csv, separator);
+ * 
+ * // fruits will contain 4 OCString objects:
+ * // OCString at index 0 = "apple"
+ * // OCString at index 1 = "banana"
+ * // OCString at index 2 = "orange"
+ * // OCString at index 3 = "grape"
+ * uint64_t count = OCArrayGetCount(fruits);  // 4
+ * 
+ * // Access individual strings from the array
+ * for (int i = 0; i < count; i++) {
+ *     OCStringRef fruit = (OCStringRef)OCArrayGetValueAtIndex(fruits, i);
+ *     OCStringShow(fruit);  // Print each fruit name
+ * }
+ * 
+ * // Release when done
+ * OCRelease(csv);
+ * OCRelease(separator);
+ * OCRelease(fruits);  // This releases the array, but not its contents
+ * @endcode
  */
 OCArrayRef OCStringCreateArrayBySeparatingStrings(OCStringRef string, OCStringRef separatorString);
 
@@ -273,6 +671,16 @@ OCArrayRef OCStringCreateArrayBySeparatingStrings(OCStringRef string, OCStringRe
  * @brief Prints the OCString to standard output.
  * @param theString OCString to display.
  * @ingroup OCString
+ * 
+ * @code
+ * OCStringRef myString = OCStringCreateWithCString("Hello, world!");
+ * 
+ * // Print the string to standard output
+ * OCStringShow(myString);  // Outputs: Hello, world!
+ * 
+ * // Release when done
+ * OCRelease(myString);
+ * @endcode
  */
 void OCStringShow(OCStringRef theString);
 
@@ -282,6 +690,27 @@ void OCStringShow(OCStringRef theString);
  * @param theString2 Second OCString.
  * @return true if equal, false otherwise.
  * @ingroup OCString
+ * 
+ * @code
+ * OCStringRef string1 = OCStringCreateWithCString("Hello");
+ * OCStringRef string2 = OCStringCreateWithCString("Hello");
+ * OCStringRef string3 = OCStringCreateWithCString("World");
+ * 
+ * bool equal1 = OCStringEqual(string1, string2);  // true
+ * bool equal2 = OCStringEqual(string1, string3);  // false
+ * 
+ * // Note: This is a case-sensitive comparison
+ * OCStringRef string4 = OCStringCreateWithCString("HELLO");
+ * bool equal3 = OCStringEqual(string1, string4);  // false
+ * 
+ * // For case-insensitive comparison, use OCStringCompare with kOCCompareCaseInsensitive
+ * 
+ * // Release when done
+ * OCRelease(string1);
+ * OCRelease(string2);
+ * OCRelease(string3);
+ * OCRelease(string4);
+ * @endcode
  */
 bool OCStringEqual(OCStringRef theString1, OCStringRef theString2);
 
@@ -291,8 +720,22 @@ bool OCStringEqual(OCStringRef theString1, OCStringRef theString2);
  * @param ... Variable arguments for the format string.
  * @return New OCStringRef (ownership transferred to caller).
  * @ingroup OCString
+ * 
+ * @code
+ * OCStringRef formatStr = STR("%s %d %f");
+ * const char* name = "John";
+ * int age = 30;
+ * float height = 1.85f;
+ * 
+ * OCStringRef result = OCStringCreateWithFormat(formatStr, name, age, height);
+ * // result now contains "John 30 1.850000"
+ * 
+ * // Release when done
+ * OCRelease(result);
+ * // No need to release formatStr as it's created with STR macro
+ * @endcode
  */
-OCStringRef  OCStringCreateWithFormat(OCStringRef format, ...);
+OCStringRef OCStringCreateWithFormat(OCStringRef format, ...);
 
 /**
  * @brief Appends formatted text to a mutable OCString.
@@ -300,6 +743,20 @@ OCStringRef  OCStringCreateWithFormat(OCStringRef format, ...);
  * @param format Format OCString.
  * @param ... Variable arguments for the format string.
  * @ingroup OCString
+ * 
+ * @code
+ * OCMutableStringRef mutableStr = OCMutableStringCreateWithCString("User: ");
+ * OCStringRef formatStr = STR("%s, Age: %d");
+ * const char* name = "John";
+ * int age = 30;
+ * 
+ * OCStringAppendFormat(mutableStr, formatStr, name, age);
+ * // mutableStr now contains "User: John, Age: 30"
+ * 
+ * // Release when done
+ * OCRelease(mutableStr);
+ * // No need to release formatStr as it's created with STR macro
+ * @endcode
  */
 void OCStringAppendFormat(OCMutableStringRef theString, OCStringRef format, ...);
 
@@ -317,6 +774,19 @@ OCStringRef __OCStringMakeConstantString(const char *cStr);
  * @param string A string that contains a complex arithmetic expression.
  * @return The double complex value represented by string, or `nan("")` or `nan(NULL)` if there is a scanning error.
  * @ingroup OCString
+ * 
+ * @code
+ * // Parse a simple complex number
+ * double complex value1 = OCComplexFromCString("3+4i");
+ * // value1 is equal to 3.0 + 4.0i
+ * 
+ * // Parse a complex expression
+ * double complex value2 = OCComplexFromCString("(2-3i) * (4+2i)");
+ * // value2 is equal to (2-3i) * (4+2i) = 8 + 4i - 12i - 6i² = 8 - 8i + 6 = 14 - 8i
+ * 
+ * double real = creal(value2);    // 14.0
+ * double imag = cimag(value2);    // -8.0
+ * @endcode
  */
 double complex OCComplexFromCString(const char *string);
 
@@ -325,6 +795,17 @@ double complex OCComplexFromCString(const char *string);
  * @param value Float value.
  * @return New OCStringRef representing the float.
  * @ingroup OCString
+ * 
+ * @code
+ * float pi = 3.14159f;
+ * OCStringRef piString = OCFloatCreateStringValue(pi);
+ * // piString now contains "3.14159"
+ * 
+ * OCStringShow(piString);  // Output: 3.14159
+ * 
+ * // Release when done
+ * OCRelease(piString);
+ * @endcode
  */
 OCStringRef OCFloatCreateStringValue(float value);
 
@@ -333,6 +814,17 @@ OCStringRef OCFloatCreateStringValue(float value);
  * @param value Double value.
  * @return New OCStringRef representing the double.
  * @ingroup OCString
+ * 
+ * @code
+ * double e = 2.71828182845904;
+ * OCStringRef eString = OCDoubleCreateStringValue(e);
+ * // eString now contains "2.71828182845904"
+ * 
+ * OCStringShow(eString);  // Output: 2.71828182845904
+ * 
+ * // Release when done
+ * OCRelease(eString);
+ * @endcode
  */
 OCStringRef OCDoubleCreateStringValue(double value);
 
@@ -342,6 +834,25 @@ OCStringRef OCDoubleCreateStringValue(double value);
  * @param format Format OCString.
  * @return New OCStringRef representing the complex value.
  * @ingroup OCString
+ * 
+ * @code
+ * float complex z = 2.5f + 3.7fi;
+ * 
+ * // Format with default precision
+ * OCStringRef format1 = STR("%.1f%+.1fi");
+ * OCStringRef zString1 = OCFloatComplexCreateStringValue(z, format1);
+ * // zString1 now contains "2.5+3.7i"
+ * 
+ * // Format with different precision
+ * OCStringRef format2 = STR("%.2f%+.2fi");
+ * OCStringRef zString2 = OCFloatComplexCreateStringValue(z, format2);
+ * // zString2 now contains "2.50+3.70i"
+ * 
+ * // Release when done
+ * OCRelease(zString1);
+ * OCRelease(zString2);
+ * // No need to release format strings created with STR macro
+ * @endcode
  */
 OCStringRef OCFloatComplexCreateStringValue(float complex value, OCStringRef format);
 
@@ -351,6 +862,25 @@ OCStringRef OCFloatComplexCreateStringValue(float complex value, OCStringRef for
  * @param format Format OCString.
  * @return New OCStringRef representing the complex value.
  * @ingroup OCString
+ * 
+ * @code
+ * double complex z = 1.234 - 5.678i;
+ * 
+ * // Format with default notation
+ * OCStringRef format1 = STR("%.3f%+.3fi");
+ * OCStringRef zString1 = OCDoubleComplexCreateStringValue(z, format1);
+ * // zString1 now contains "1.234-5.678i"
+ * 
+ * // Format with scientific notation
+ * OCStringRef format2 = STR("%e%+ei");
+ * OCStringRef zString2 = OCDoubleComplexCreateStringValue(z, format2);
+ * // zString2 now contains something like "1.234000e+00-5.678000e+00i"
+ * 
+ * // Release when done
+ * OCRelease(zString1);
+ * OCRelease(zString2);
+ * // No need to release format strings created with STR macro
+ * @endcode
  */
 OCStringRef OCDoubleComplexCreateStringValue(double complex value,OCStringRef format);
 
@@ -359,6 +889,14 @@ OCStringRef OCDoubleComplexCreateStringValue(double complex value,OCStringRef fo
  * @param character Character to check.
  * @return true if uppercase letter, false otherwise.
  * @ingroup OCString
+ * 
+ * @code
+ * bool isUpper1 = characterIsUpperCaseLetter('A');  // true
+ * bool isUpper2 = characterIsUpperCaseLetter('a');  // false
+ * bool isUpper3 = characterIsUpperCaseLetter('Z');  // true
+ * bool isUpper4 = characterIsUpperCaseLetter('5');  // false
+ * bool isUpper5 = characterIsUpperCaseLetter(' ');  // false
+ * @endcode
  */
 bool characterIsUpperCaseLetter(char character);
 
@@ -367,6 +905,14 @@ bool characterIsUpperCaseLetter(char character);
  * @param character Character to check.
  * @return true if lowercase letter, false otherwise.
  * @ingroup OCString
+ * 
+ * @code
+ * bool isLower1 = characterIsLowerCaseLetter('a');  // true
+ * bool isLower2 = characterIsLowerCaseLetter('A');  // false
+ * bool isLower3 = characterIsLowerCaseLetter('z');  // true
+ * bool isLower4 = characterIsLowerCaseLetter('5');  // false
+ * bool isLower5 = characterIsLowerCaseLetter('.');  // false
+ * @endcode
  */
 bool characterIsLowerCaseLetter(char character);
 
@@ -375,6 +921,14 @@ bool characterIsLowerCaseLetter(char character);
  * @param character Character to check.
  * @return true if digit or decimal point, false otherwise.
  * @ingroup OCString
+ * 
+ * @code
+ * bool isDigitOrPoint1 = characterIsDigitOrDecimalPoint('0');  // true
+ * bool isDigitOrPoint2 = characterIsDigitOrDecimalPoint('9');  // true
+ * bool isDigitOrPoint3 = characterIsDigitOrDecimalPoint('.');  // true
+ * bool isDigitOrPoint4 = characterIsDigitOrDecimalPoint('a');  // false
+ * bool isDigitOrPoint5 = characterIsDigitOrDecimalPoint('-');  // false
+ * @endcode
  */
 bool characterIsDigitOrDecimalPoint(char character);
 
@@ -383,6 +937,14 @@ bool characterIsDigitOrDecimalPoint(char character);
  * @param character Character to check.
  * @return true if digit, decimal point, or space, false otherwise.
  * @ingroup OCString
+ * 
+ * @code
+ * bool isDigitPointSpace1 = characterIsDigitOrDecimalPointOrSpace('5');  // true
+ * bool isDigitPointSpace2 = characterIsDigitOrDecimalPointOrSpace('.');  // true
+ * bool isDigitPointSpace3 = characterIsDigitOrDecimalPointOrSpace(' ');  // true
+ * bool isDigitPointSpace4 = characterIsDigitOrDecimalPointOrSpace('\t'); // false (tab is not a space)
+ * bool isDigitPointSpace5 = characterIsDigitOrDecimalPointOrSpace('a');  // false
+ * @endcode
  */
 bool characterIsDigitOrDecimalPointOrSpace(char character);
 

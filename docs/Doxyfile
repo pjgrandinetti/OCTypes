@@ -20,7 +20,7 @@ PROJECT_BRIEF          = "A lightweight library for object-oriented programming 
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) path 
 # into which the generated documentation will be written. If non-existent, it
-# will be created.
+# will be created (relative to docs/).
 OUTPUT_DIRECTORY       = doxygen
 
 # The CREATE_SUBDIRS tag can be used to have doxygen generate 
@@ -98,8 +98,8 @@ GENERATE_LATEX         = NO
 # that can be used as input for other tools (e.g. Sphinx via Breathe).
 GENERATE_XML           = YES
 
-# The XML_OUTPUT tag is used to specify the directory where the XML files
-# will be written. 
+# The XML_OUTPUT tag is used to specify the directory (inside OUTPUT_DIRECTORY)
+# where the XML files will be written.
 XML_OUTPUT             = xml
 
 # If the XML_PROGRAMLISTING tag is set to YES, doxygen will include program
@@ -156,8 +156,8 @@ WARN_AS_ERROR          = NO
 HAVE_DOT               = NO
 
 # Enable extraction of all documentation
-EXTRACT_ALL             = YES
+EXTRACT_ALL            = YES
 
 # Include private and static functions in the documentation
-EXTRACT_PRIVATE         = YES
-EXTRACT_STATIC          = YES
+EXTRACT_PRIVATE        = YES
+EXTRACT_STATIC         = YES

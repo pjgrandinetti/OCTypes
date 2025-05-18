@@ -1,5 +1,9 @@
 OCString
 ========
 
-.. doxygenfile:: OCString.h
+.. toctree::
+   :maxdepth: 1
 
+.. doxygengroup:: OCString
+   :project: OCTypes
+   :members:

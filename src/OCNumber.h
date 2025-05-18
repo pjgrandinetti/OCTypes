@@ -46,6 +46,7 @@ typedef union __Number {
  *  @{
  */
 
+/** @cond INTERNAL */
 /**
  * @name Legacy Numeric Type Codes
  * @brief Internal codes for OCNumberType. Prefer using the OCNumberType enum.
@@ -64,6 +65,7 @@ typedef union __Number {
 #define Float32ComplexType 24
 #define Float64ComplexType 26
 /** @} */
+/** @endcond */
 
 /**
  * @enum OCNumberType
@@ -86,20 +88,9 @@ typedef enum { // Anonymous enum
 } OCNumberType;
 
 /**
- * @enum numberType
- * @brief Legacy enum alias. Prefer using OCNumberType.
- * @deprecated Provided for backward compatibility.
- * @ingroup OCNumber
- */
-typedef enum { // Anonymous enum
-    kPSNumberFloat32Type = Float32Type,
-    kPSNumberFloat64Type = Float64Type,
-    kPSNumberFloat32ComplexType = Float32ComplexType,
-    kPSNumberFloat64ComplexType = Float64ComplexType
-} numberType;
-
-/**
  * @brief Returns the unique OCTypeID for OCNumber.
+ * @return The OCTypeID for the OCNumber type.
+ * @ingroup OCNumber
  */
 OCTypeID OCNumberGetTypeID(void);
 
@@ -113,28 +104,107 @@ OCNumberRef OCNumberCreate(OCNumberType type, void *value);
 
 /* --- Convenience Constructors --- */
 
-/* Unsigned integers */
+/**
+ * @brief Creates an OCNumber from an unsigned 8-bit integer.
+ * @param value The uint8_t value to store.
+ * @return An OCNumberRef or NULL on error.
+ * @ingroup OCNumber
+ */
 OCNumberRef OCNumberCreateWithUInt8(uint8_t value);
+
+/**
+ * @brief Creates an OCNumber from an unsigned 16-bit integer.
+ * @param value The uint16_t value to store.
+ * @return An OCNumberRef or NULL on error.
+ * @ingroup OCNumber
+ */
 OCNumberRef OCNumberCreateWithUInt16(uint16_t value);
+
+/**
+ * @brief Creates an OCNumber from an unsigned 32-bit integer.
+ * @param value The uint32_t value to store.
+ * @return An OCNumberRef or NULL on error.
+ * @ingroup OCNumber
+ */
 OCNumberRef OCNumberCreateWithUInt32(uint32_t value);
+
+/**
+ * @brief Creates an OCNumber from an unsigned 64-bit integer.
+ * @param value The uint64_t value to store.
+ * @return An OCNumberRef or NULL on error.
+ * @ingroup OCNumber
+ */
 OCNumberRef OCNumberCreateWithUInt64(uint64_t value);
 
-/* Signed integers */
+/**
+ * @brief Creates an OCNumber from a signed 8-bit integer.
+ * @param value The int8_t value to store.
+ * @return An OCNumberRef or NULL on error.
+ * @ingroup OCNumber
+ */
 OCNumberRef OCNumberCreateWithSInt8(int8_t value);
+
+/**
+ * @brief Creates an OCNumber from a signed 16-bit integer.
+ * @param value The int16_t value to store.
+ * @return An OCNumberRef or NULL on error.
+ * @ingroup OCNumber
+ */
 OCNumberRef OCNumberCreateWithSInt16(int16_t value);
+
+/**
+ * @brief Creates an OCNumber from a signed 32-bit integer.
+ * @param value The int32_t value to store.
+ * @return An OCNumberRef or NULL on error.
+ * @ingroup OCNumber
+ */
 OCNumberRef OCNumberCreateWithSInt32(int32_t value);
+
+/**
+ * @brief Creates an OCNumber from a signed 64-bit integer.
+ * @param value The int64_t value to store.
+ * @return An OCNumberRef or NULL on error.
+ * @ingroup OCNumber
+ */
 OCNumberRef OCNumberCreateWithSInt64(int64_t value);
 
-/* Floating-point */
+/**
+ * @brief Creates an OCNumber from a 32-bit floating-point value.
+ * @param value The float value to store.
+ * @return An OCNumberRef or NULL on error.
+ * @ingroup OCNumber
+ */
 OCNumberRef OCNumberCreateWithFloat(float value);
+
+/**
+ * @brief Creates an OCNumber from a 64-bit floating-point value.
+ * @param value The double value to store.
+ * @return An OCNumberRef or NULL on error.
+ * @ingroup OCNumber
+ */
 OCNumberRef OCNumberCreateWithDouble(double value);
 
-/* Complex numbers */
+/**
+ * @brief Creates an OCNumber from a complex float value.
+ * @param value The float complex value to store.
+ * @return An OCNumberRef or NULL on error.
+ * @ingroup OCNumber
+ */
 OCNumberRef OCNumberCreateWithFloatComplex(float complex value);
+
+/**
+ * @brief Creates an OCNumber from a complex double value.
+ * @param value The double complex value to store.
+ * @return An OCNumberRef or NULL on error.
+ * @ingroup OCNumber
+ */
 OCNumberRef OCNumberCreateWithDoubleComplex(double complex value);
 
 /**
  * @brief Returns the size in bytes of the C type corresponding to the given OCNumberType.
+ * @param type The OCNumberType to query.
+ * @return The size in bytes of the specified type, or 0 if invalid.
+ * @ingroup OCNumber
  */
 int OCNumberTypeSize(OCNumberType type);
 
@@ -150,6 +220,8 @@ OCStringRef OCNumberCreateStringValue(OCNumberRef theNumber);
  * @param number The OCNumberRef to query.
  * @param type Expected OCNumberType.
  * @param outValue Destination buffer (must match type).
+ * @return None. The value is written to outValue.
+ * @ingroup OCNumber
  */
 void OCNumberGetValue(OCNumberRef number, OCNumberType type, void *outValue);
 
