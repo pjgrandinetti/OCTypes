@@ -435,7 +435,15 @@ void OCStringReplace(OCMutableStringRef s, OCRange range, OCStringRef rep) {
     if (off1 < 0 || off2 < 0 || off2 < off1) return;
 
     size_t origBytes  = strlen(s->string);
-    size_t repBytes   = strlen(rep->string);
+    size_t repBytes   = 0;
+    // Ensure rep->string is not NULL before calling strlen and accessing capacity
+    if (rep->string) {
+        repBytes = strnlen(rep->string, rep->capacity); // Use strnlen for safety
+    } else {
+        // rep->string is NULL. repBytes remains 0.
+        // This handles OCStrings with rep->length == 0 or invalid OCStrings (length > 0 but string is NULL).
+    }
+    
     size_t tailBytes  = origBytes - off2;
     size_t newBytes   = off1 + repBytes + tailBytes;
 
@@ -480,26 +488,82 @@ void OCStringUppercase(OCMutableStringRef s) {
 }
 
 void OCStringTrimWhitespace(OCMutableStringRef s) {
-    if (!s || s->length == 0) return;
-    uint64_t start = 0;
-    while (start < s->length) {
-        uint32_t cp = utf8_next((const char **)&s->string + oc_utf8_offset_for_index(s->string, start));
-        if (cp != ' ') break;
-        start++;
+    if (!s || !s->string || s->length == 0) return;
+
+    uint64_t start_cp_idx = 0; // code-point index
+    size_t current_byte_len = strlen(s->string); // Get initial byte length for boundary checks
+
+    // Find the first non-space character from the beginning (code-point wise)
+    while (start_cp_idx < s->length) {
+        ptrdiff_t byte_offset = oc_utf8_offset_for_index(s->string, start_cp_idx);
+        if (byte_offset < 0 || (size_t)byte_offset >= current_byte_len) {
+            // Invalid offset or past end of actual C-string, stop.
+            break;
+        }
+        const char *p_char_for_cp = s->string + byte_offset;
+        uint32_t cp = utf8_next(&p_char_for_cp); // p_char_for_cp is advanced
+
+        if (cp != ' ') break; // Found non-space
+        start_cp_idx++; // Move to next code-point index
     }
-    uint64_t end = s->length;
-    while (end > start) {
-        uint32_t cp = OCStringGetCharacterAtIndex(s, end - 1);
+
+    uint64_t end_cp_idx = s->length; // code-point index (exclusive)
+    // Find the first non-space character from the end (code-point wise)
+    while (end_cp_idx > start_cp_idx) {
+        uint32_t cp = OCStringGetCharacterAtIndex(s, end_cp_idx - 1);
         if (cp != ' ') break;
-        end--;
+        end_cp_idx--;
     }
-    // extract substring and replace
-    OCStringRef sub = OCStringCreateWithSubstring(s, OCRangeMake(start, end - start));
-    free(s->string);
-    s->string   = strdup(sub->string);
-    s->capacity = strlen(s->string);
-    s->length   = sub->length;
-    OCRelease(sub);
+
+    // If start_cp_idx >= end_cp_idx, the resulting string is empty
+    if (start_cp_idx >= end_cp_idx) {
+        free(s->string);
+        s->string = strdup("");
+        if (!s->string) { 
+            // Allocation failure for empty string
+            s->capacity = 0; s->length = 0; 
+            // OCRelease(s); // This would lead to double free if s is used after this. Let caller handle.
+            return; 
+        }
+        s->length = 0;
+        s->capacity = 0; // strlen("") is 0
+        return;
+    }
+
+    // Create substring from the trimmed range
+    OCStringRef sub = OCStringCreateWithSubstring(s, OCRangeMake(start_cp_idx, end_cp_idx - start_cp_idx));
+    
+    if (!sub) { 
+        // OCStringCreateWithSubstring failed (e.g., memory allocation).
+        // It's safer to leave 's' in its original state or an empty state if original is too risky.
+        // For now, let's try to set 's' to empty as a fallback.
+        free(s->string);
+        s->string = strdup("");
+        if (!s->string) { 
+            s->capacity = 0; s->length = 0; 
+            return; 
+        }
+        s->length = 0;
+        s->capacity = 0;
+        return;
+    }
+
+    // Replace the content of 's' with the content of 'sub'
+    free(s->string); // Free the old string buffer of 's'
+    s->string = strdup(sub->string ? sub->string : ""); // Duplicate content from 'sub'
+    
+    if (!s->string) { // strdup failed
+        s->capacity = 0;
+        s->length = 0;
+        // 'sub' was successfully created, so it needs to be released.
+        OCRelease(sub);
+        // 's' is now in a bad state (original buffer freed, new one failed to alloc).
+        return;
+    }
+    
+    s->capacity = strlen(s->string); // Byte capacity from the new string
+    s->length = sub->length;         // Code-point length from 'sub'
+    OCRelease(sub); // Release the temporary substring 'sub'
 }
 
 bool OCStringTrimMatchingParentheses(OCMutableStringRef s) {
@@ -932,7 +996,8 @@ OCArrayRef OCStringCreateArrayBySeparatingStrings(OCStringRef string,
 {
     if (!string || !separatorString) return NULL;
 
-    OCMutableArrayRef result = OCArrayCreateMutable(0, &kOCRangeArrayCallBacks);
+    // Use default OCType callbacks for an array of OCStringRef objects
+    OCMutableArrayRef result = OCArrayCreateMutable(0, NULL);
     if (!result) return NULL;
 
     uint64_t totalLen = string->length;
