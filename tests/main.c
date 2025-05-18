@@ -40,9 +40,6 @@ int main(int argc, const char * argv[]) {
     // Call test functions from their respective modules
     if (!autoreleasePoolTest0()) failures++;
     if (!typeTest0())            failures++;
-    if (!stringTest0())          failures++;
-    if (!stringTest1())          failures++;
-    if (!stringTest2())          failures++;
     if (!mathTest0())            failures++;
     if (!dataTest0())            failures++;
     if (!booleanTest0())         failures++;
@@ -53,6 +50,17 @@ int main(int argc, const char * argv[]) {
     if (!arrayTest2_access())    failures++;
     if (!arrayTest3_modification()) failures++;
     if (!arrayTest4_search_sort()) failures++;
+
+    if (!stringTest0())          failures++;
+    if (!stringTest1())          failures++;
+    if (!stringTest2())          failures++;
+    if (!stringTest3())          failures++;
+    if (!stringTest4())          failures++;
+    if (!stringTest5())          failures++;
+    if (!stringTest6())          failures++;
+    if (!stringTest7())          failures++;
+    if (!stringTest8())          failures++;
+    if (!stringTest9())          failures++;
 
     if (failures) {
         fprintf(stderr, "\n%d test(s) failed.\n", failures);

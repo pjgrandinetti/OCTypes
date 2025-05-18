@@ -898,7 +898,7 @@ OCStringRef OCDoubleComplexCreateStringValue(double complex value,OCStringRef fo
  * bool isUpper5 = characterIsUpperCaseLetter(' ');  // false
  * @endcode
  */
-bool characterIsUpperCaseLetter(char character);
+bool characterIsUpperCaseLetter(uint32_t character);
 
 /**
  * @brief Checks if a character is a lowercase letter.
@@ -914,7 +914,7 @@ bool characterIsUpperCaseLetter(char character);
  * bool isLower5 = characterIsLowerCaseLetter('.');  // false
  * @endcode
  */
-bool characterIsLowerCaseLetter(char character);
+bool characterIsLowerCaseLetter(uint32_t character);
 
 /**
  * @brief Checks if a character is a digit or decimal point.
@@ -930,7 +930,7 @@ bool characterIsLowerCaseLetter(char character);
  * bool isDigitOrPoint5 = characterIsDigitOrDecimalPoint('-');  // false
  * @endcode
  */
-bool characterIsDigitOrDecimalPoint(char character);
+bool characterIsDigitOrDecimalPoint(uint32_t character);
 
 /**
  * @brief Checks if a character is a digit, decimal point, or space.
@@ -942,11 +942,11 @@ bool characterIsDigitOrDecimalPoint(char character);
  * bool isDigitPointSpace1 = characterIsDigitOrDecimalPointOrSpace('5');  // true
  * bool isDigitPointSpace2 = characterIsDigitOrDecimalPointOrSpace('.');  // true
  * bool isDigitPointSpace3 = characterIsDigitOrDecimalPointOrSpace(' ');  // true
- * bool isDigitPointSpace4 = characterIsDigitOrDecimalPointOrSpace('\t'); // false (tab is not a space)
+ * bool isDigitPointSpace4 = characterIsDigitOrDecimalPointOrSpace('\\t'); // false (tab is not a space)
  * bool isDigitPointSpace5 = characterIsDigitOrDecimalPointOrSpace('a');  // false
  * @endcode
  */
-bool characterIsDigitOrDecimalPointOrSpace(char character);
+bool characterIsDigitOrDecimalPointOrSpace(uint32_t character);
 
 /** @} */ // end of OCString group
 

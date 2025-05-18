@@ -8,6 +8,9 @@
 #include "OCString.h"
 #include "OCDictionary.h"   // for OCMutableDictionaryRef, OCDictionaryCreateMutable, etc.
 
+// Forward declaration for OCStringFindWithOptions
+bool OCStringFindWithOptions(OCStringRef string, OCStringRef stringToFind, OCRange rangeToSearch, OCOptionFlags compareOptions, OCRange *result);
+
 // Callbacks for OCArray containing OCRange structs
 static void __OCRangeReleaseCallBack(const void *value) {
     if (value) {
@@ -88,10 +91,59 @@ static ptrdiff_t oc_utf8_offset_for_index(const char *s, size_t idx) {
 static size_t oc_utf8_strlen(const char *s) {
     const char *p = s;
     size_t len = 0;
+    uint32_t prev_cp = 0;
+    uint32_t cp = 0;
+    bool in_emoji_sequence = false;
+    
+    // Enhanced UTF-8 code point counter that handles:
+    // 1. Combining characters (e.g., é̀́)
+    // 2. Emoji ZWJ sequences (e.g., 👨‍👩‍👧‍👦)
+    // 3. Regional indicators for flag emojis (e.g., 🇺🇸)
+    
     while (*p) {
-        utf8_next(&p);
+        prev_cp = cp;
+        cp = utf8_next(&p);
+        
+        // Skip counting if this is a combining character (0x0300-0x036F, 0x1AB0-0x1AFF, 0x1DC0-0x1DFF, 0x20D0-0x20FF, 0xFE20-0xFE2F)
+        if ((cp >= 0x0300 && cp <= 0x036F) || 
+            (cp >= 0x1AB0 && cp <= 0x1AFF) ||
+            (cp >= 0x1DC0 && cp <= 0x1DFF) ||
+            (cp >= 0x20D0 && cp <= 0x20FF) ||
+            (cp >= 0xFE20 && cp <= 0xFE2F)) {
+            continue; // Skip combining character
+        }
+        
+        // Handle Zero Width Joiner sequences (ZWJ is U+200D)
+        if (cp == 0x200D) {
+            in_emoji_sequence = true;
+            continue; // Skip ZWJ
+        }
+        
+        // Handle regional indicators for flag emojis (e.g., 🇺🇸)
+        // Regional indicators are in range U+1F1E6 to U+1F1FF
+        if (prev_cp >= 0x1F1E6 && prev_cp <= 0x1F1FF && 
+            cp >= 0x1F1E6 && cp <= 0x1F1FF) {
+            continue; // Skip second part of flag emoji
+        }
+        
+        // Handle emoji variation selectors (VS15 U+FE0E and VS16 U+FE0F)
+        if (cp == 0xFE0E || cp == 0xFE0F) {
+            continue; // Skip variation selector
+        }
+        
+        // If we were in emoji sequence and this isn't a continuation,
+        // count it as one emoji
+        if (in_emoji_sequence) {
+            if (*p && utf8_next(&p) != 0x200D) {
+                // End of sequence
+                in_emoji_sequence = false;
+            }
+            continue; // Skip the character that follows the ZWJ
+        }
+        
         len++;
     }
+    
     return len;
 }
 
@@ -376,29 +428,60 @@ bool OCStringEqual(OCStringRef a, OCStringRef b) {
 // Note: header declares `char OCStringGetCharacterAtIndex(...)`, 
 // but to return a full code-point you’d need to change it to uint32_t.
 // Here we return the Unicode code-point cast to char (low byte).
+// MODIFIED: Now returns the full uint32_t Unicode code-point.
 uint32_t OCStringGetCharacterAtIndex(OCStringRef s, uint64_t idx) {
     if (!s) return 0;
     ptrdiff_t off = oc_utf8_offset_for_index(s->string, idx);
     if (off < 0) return 0;
     const char *p = s->string + off;
     uint32_t cp = utf8_next(&p);
-    return (char)cp;
+    return cp;
 }
 
 // ——— Mutators ———
 
 void OCStringAppendCString(OCMutableStringRef s, const char *cString) {
-    if (!s || !cString) return;
-    size_t addBytes = strlen(cString);
-    size_t oldBytes = s->capacity;
-    size_t newBytes = oldBytes + addBytes;
+    if (!s || !cString || !s->string) return; // Ensure s and s->string are valid
+    size_t append_cString_byte_len = strlen(cString);
+    if (append_cString_byte_len == 0) return; // Nothing to append
 
-    char *buf = realloc(s->string, newBytes + 1);
-    if (!buf) return;
-    memcpy(buf + oldBytes, cString, addBytes + 1);
-    s->string   = buf;
-    s->capacity = newBytes;
-    s->length  += oc_utf8_strlen(cString);
+    size_t current_content_byte_len = strlen(s->string);
+    size_t required_total_content_byte_len = current_content_byte_len + append_cString_byte_len;
+
+    // Check if current capacity is enough for the new total content length
+    // s->capacity is the max content bytes, s->string is allocated for s->capacity + 1 bytes
+    if (required_total_content_byte_len > s->capacity) {
+        // Need to reallocate.
+        uint64_t new_capacity = s->capacity;
+        // Standard growth strategy: double capacity until it's sufficient, or go to required.
+        // Start with a reasonable base if current capacity is 0.
+        if (new_capacity == 0) {
+            new_capacity = 16; // Default initial capacity if appending to an empty string from OCStringCreateMutable(0)
+        }
+        while (required_total_content_byte_len > new_capacity) {
+            new_capacity *= 2;
+        }
+        // Ensure new_capacity is at least required_total_content_byte_len if doubling wasn't enough or started too small.
+        if (new_capacity < required_total_content_byte_len) {
+            new_capacity = required_total_content_byte_len;
+        }
+
+        char *new_s_string_buffer = realloc(s->string, new_capacity + 1); // +1 for NUL
+        if (!new_s_string_buffer) {
+            // Allocation failure. Cannot append.
+            // Consider error handling strategy. For now, return without changing string.
+            return;
+        }
+        s->string = new_s_string_buffer;
+        s->capacity = new_capacity;
+    }
+
+    // Append cString to the end of the current content in s->string
+    // memcpy is safe here because we've ensured s->string has enough space.
+    memcpy(s->string + current_content_byte_len, cString, append_cString_byte_len + 1); // +1 to copy NUL from cString
+
+    // Update the code-point length
+    s->length += oc_utf8_strlen(cString); // oc_utf8_strlen calculates codepoints from a C-string
 }
 
 void OCStringAppend(OCMutableStringRef s, OCStringRef app) {
@@ -567,18 +650,14 @@ void OCStringTrimWhitespace(OCMutableStringRef s) {
 }
 
 bool OCStringTrimMatchingParentheses(OCMutableStringRef s) {
-    if (!s || s->length < 2) return false;
-    uint32_t first = OCStringGetCharacterAtIndex(s, 0);
-    uint32_t last  = OCStringGetCharacterAtIndex(s, s->length - 1);
-    if (first != '(' || last != ')') return false;
-    // peel layers
+    if (!s || !s->string || s->length < 2) return false; // Added s->string check
     bool trimmed = false;
-    while (s->length >= 2 &&
-           OCStringGetCharacterAtIndex(s, 0) == '(' &&
-           OCStringGetCharacterAtIndex(s, s->length - 1) == ')') {
-        OCStringDelete(s, OCRangeMake(s->length - 1, 1));
-        OCStringDelete(s, OCRangeMake(0, 1));
-        OCStringTrimWhitespace(s);
+    // Trim only one layer of parentheses as per test expectation for ((double)) -> (double)
+    if (OCStringGetCharacterAtIndex(s, 0) == '(' &&
+        OCStringGetCharacterAtIndex(s, s->length - 1) == ')') {
+        OCStringDelete(s, OCRangeMake(s->length - 1, 1)); // Delete last parenthesis
+        OCStringDelete(s, OCRangeMake(0, 1));             // Delete first parenthesis
+        OCStringTrimWhitespace(s); // Trim whitespace after removing parentheses
         trimmed = true;
     }
     return trimmed;
@@ -660,29 +739,20 @@ OCRange OCStringFind(OCStringRef string,
                      OCStringRef stringToFind,
                      OCOptionFlags compareOptions)
 {
-    if (!string || !stringToFind) {
+    if (!string || !stringToFind || !string->string || !stringToFind->string) {
         return OCRangeMake(kOCNotFound, 0);
     }
 
-    const char *hay    = string->string;
-    const char *needle = stringToFind->string;
-    const char *found  = strstr(hay, needle);
-    if (!found) {
+    OCRange result_range;
+    if (OCStringFindWithOptions(string,
+                                stringToFind,
+                                OCRangeMake(0, string->length), // Search the entire string
+                                compareOptions,
+                                &result_range)) {
+        return result_range;
+    } else {
         return OCRangeMake(kOCNotFound, 0);
     }
-
-    // Compute byte-offset → code-point index
-    ptrdiff_t byteOff = found - hay;
-    size_t   idx     = 0;
-    const char *p    = hay;
-    while ((p - hay) < byteOff) {
-        utf8_next(&p);
-        idx++;
-    }
-
-    // The length in code-points of the match
-    size_t cpLen = oc_utf8_strlen(needle);
-    return OCRangeMake(idx, cpLen);
 }
 
 // ——— Replace all literal occurrences in the entire string ———
@@ -713,43 +783,96 @@ int64_t OCStringFindAndReplace(OCMutableStringRef s,
                                OCRange rangeToSearch,
                                OCOptionFlags compareOptions)
 {
-    if (!s || !findStr || !replaceStr) return 0;
-    if (rangeToSearch.location > s->length) return 0;
+    if (!s || !s->string || !findStr || !replaceStr || !findStr->string || !replaceStr->string) {
+        // Ensure all string objects and their internal C-strings are valid
+        return 0;
+    }
+    if (findStr->length == 0) {
+        // Replacing an empty string is often ill-defined or can lead to infinite loops.
+        // For simplicity, we'll say no replacements are made if findStr is empty.
+        return 0;
+    }
+
+    // Validate and clip rangeToSearch to be within the bounds of the current string 's'
+    if (rangeToSearch.location >= s->length) {
+        return 0; // Start of search range is already past the end of the string
+    }
     if (rangeToSearch.location + rangeToSearch.length > s->length) {
         rangeToSearch.length = s->length - rangeToSearch.location;
     }
 
-    // Extract just that segment
-    OCStringRef subImmutable = OCStringCreateWithSubstring(s, rangeToSearch);
-    OCMutableStringRef sub     = OCStringCreateMutableCopy(subImmutable);
-    OCRelease(subImmutable);
+    // If the effective search range is empty and we're looking for a non-empty string, no match is possible.
+    if (rangeToSearch.length == 0 && findStr->length > 0) {
+        return 0;
+    }
+    // If search range is shorter than findStr, no match is possible.
+    if (rangeToSearch.length < findStr->length) {
+        return 0;
+    }
 
-    // Perform replace on the segment
-    int64_t count = OCStringFindAndReplace2(sub, findStr, replaceStr);
+    int64_t count = 0;
+    uint64_t scan_start_location_in_s = rangeToSearch.location;
+    
+    // This is the end boundary of the original search area, relative to the original string 's'.
+    // We need to track this because 's' will change length.
+    uint64_t original_search_area_end_location_in_s = rangeToSearch.location + rangeToSearch.length;
+    
+    int64_t cumulative_length_change = 0; // Tracks total change in s->length due to replacements
 
-    // Splice it back into the original
-    OCStringReplace(s, rangeToSearch, (OCStringRef)sub);
-    OCRelease(sub);
+    while (true) {
+        // Calculate the current effective end of the search area in 's', accounting for length changes
+        uint64_t current_effective_search_area_end_in_s = original_search_area_end_location_in_s + cumulative_length_change;
 
+        // Stop if scan_start_location_in_s has reached or passed the end of 's' or the effective search area
+        if (scan_start_location_in_s >= s->length || scan_start_location_in_s >= current_effective_search_area_end_in_s) {
+            break;
+        }
+
+        OCRange current_look_in_range;
+        current_look_in_range.location = scan_start_location_in_s;
+        current_look_in_range.length = current_effective_search_area_end_in_s - scan_start_location_in_s;
+
+        // If remaining search length is less than findStr's length, no more matches are possible
+        if (current_look_in_range.length < findStr->length) {
+            break;
+        }
+
+        OCRange found_at_range_in_s; // Will store the range of the found substring in the current state of 's'
+        if (OCStringFindWithOptions(s, findStr, current_look_in_range, compareOptions, &found_at_range_in_s)) {
+            OCStringReplace(s, found_at_range_in_s, replaceStr);
+            count++;
+            
+            // Update the cumulative length change
+            cumulative_length_change += ((int64_t)replaceStr->length - (int64_t)findStr->length);
+            
+            // Advance the scan_start_location_in_s to the position immediately after the inserted replaceStr
+            scan_start_location_in_s = found_at_range_in_s.location + replaceStr->length;
+        } else {
+            // No more occurrences of findStr in the remaining search range
+            break;
+        }
+    }
     return count;
 }
 
 // ——— Character-type helper functions (ASCII only) ———
 
-bool characterIsUpperCaseLetter(char c) {
-    return (c >= 'A' && c <= 'Z');
+bool characterIsUpperCaseLetter(uint32_t character) {
+    // Basic ASCII check, expand for Unicode if necessary
+    return (character >= 'A' && character <= 'Z');
 }
 
-bool characterIsLowerCaseLetter(char c) {
-    return (c >= 'a' && c <= 'z');
+bool characterIsLowerCaseLetter(uint32_t character) {
+    // Basic ASCII check, expand for Unicode if necessary
+    return (character >= 'a' && character <= 'z');
 }
 
-bool characterIsDigitOrDecimalPoint(char c) {
-    return ((c >= '0' && c <= '9') || c == '.');
+bool characterIsDigitOrDecimalPoint(uint32_t character) {
+    return (character >= '0' && character <= '9') || character == '.';
 }
 
-bool characterIsDigitOrDecimalPointOrSpace(char c) {
-    return ((c >= '0' && c <= '9') || c == '.' || c == ' ');
+bool characterIsDigitOrDecimalPointOrSpace(uint32_t character) {
+    return (character >= '0' && character <= '9') || character == '.' || character == ' ';
 }
 
 // UTF-8 helpers must already be in scope:
@@ -994,46 +1117,92 @@ OCArrayRef OCStringCreateArrayWithFindResults(OCStringRef string,
 OCArrayRef OCStringCreateArrayBySeparatingStrings(OCStringRef string,
                                                   OCStringRef separatorString)
 {
-    if (!string || !separatorString) return NULL;
+    if (!string || !string->string || !separatorString || !separatorString->string) return NULL;
 
-    // Use default OCType callbacks for an array of OCStringRef objects
-    OCMutableArrayRef result = OCArrayCreateMutable(0, NULL);
+    OCMutableArrayRef result = OCArrayCreateMutable(0, &kOCTypeArrayCallBacks); // Use OCType callbacks for OCStringRef
     if (!result) return NULL;
 
-    uint64_t totalLen = string->length;
-    uint64_t sepLen   = separatorString->length;
+    uint64_t current_pos = 0;
+    uint64_t string_len = string->length;
+    uint64_t sep_len = separatorString->length;
 
-    // Special case: empty sep → return [ string ]
-    if (sepLen == 0) {
-        OCStringRef copy = OCStringCreateCopy(string);
-        OCArrayAppendValue(result, copy);
-        OCRelease(copy);
+    // Handle empty string: return array with one empty element
+    if (string_len == 0) {
+        OCStringRef empty = OCStringCreateWithCString("");
+        if (empty) {
+            OCArrayAppendValue(result, empty);
+            OCRelease(empty); // OCArray retains it
+        }
         return result;
     }
 
-    uint64_t idx = 0;
-    while (idx <= totalLen) {
-        // Search in the remaining slice
-        OCRange remaining = OCRangeMake(idx, totalLen - idx);
-        OCRange found;
-        bool hit = OCStringFindWithOptions(string, separatorString, remaining, 0, &found);
-        if (hit) {
-            // Add substring [idx .. found.location)
-            OCStringRef token = OCStringCreateWithSubstring(string,
-                                        OCRangeMake(idx, found.location - idx));
-            OCArrayAppendValue(result, token);
-            OCRelease(token);
+    // Handle empty separator string: return array with one element (copy of original string)
+    if (sep_len == 0) {
+        OCStringRef copy = OCStringCreateCopy(string);
+        if (copy) {
+            OCArrayAppendValue(result, copy);
+            OCRelease(copy); // OCArray retains it
+        }
+        return result;
+    }
+
+    // Check if string begins with separator, if so add empty string first
+    OCRange prefix_check = OCRangeMake(0, sep_len);
+    if (OCStringFind(string, separatorString, 0).location == 0) {
+        OCStringRef empty = OCStringCreateWithCString("");
+        if (empty) {
+            OCArrayAppendValue(result, empty);
+            OCRelease(empty);
+        }
+        // Skip past the initial separator
+        current_pos = sep_len;
+    }
+
+    // Simple iterative approach to avoid memory management issues with ranges
+    while (current_pos <= string_len) {
+        OCRange search_range = OCRangeMake(current_pos, string_len - current_pos);
+        OCRange found_range;
+        
+        bool found = OCStringFindWithOptions(string, separatorString, search_range, 0, &found_range);
+        
+        if (found) {
+            // Create substring from current_pos to the start of the separator
+            uint64_t part_len = found_range.location - current_pos;
+            OCRange part_range = OCRangeMake(current_pos, part_len);
+            
+            OCStringRef part = OCStringCreateWithSubstring(string, part_range);
+            
+            if (part) {
+                OCArrayAppendValue(result, part);
+                OCRelease(part); // Array retains it
+            }
+            
             // Move past the separator
-            idx = found.location + found.length;
+            current_pos = found_range.location + found_range.length;
+            
+            // If we're at the end and found a separator at the end,
+            // add an empty string for the trailing separator
+            if (current_pos == string_len) {
+                OCStringRef empty = OCStringCreateWithCString("");
+                if (empty) {
+                    OCArrayAppendValue(result, empty);
+                    OCRelease(empty);
+                }
+                break;
+            }
         } else {
-            // Last token: [idx .. end)
-            OCStringRef token = OCStringCreateWithSubstring(string,
-                                        OCRangeMake(idx, totalLen - idx));
-            OCArrayAppendValue(result, token);
-            OCRelease(token);
+            // No more separators - add the final part and break
+            OCRange final_range = OCRangeMake(current_pos, string_len - current_pos);
+            
+            OCStringRef final_part = OCStringCreateWithSubstring(string, final_range);
+            
+            if (final_part) {
+                OCArrayAppendValue(result, final_part);
+                OCRelease(final_part); // Array retains it
+            }
             break;
         }
     }
-
+    
     return result;
 }
