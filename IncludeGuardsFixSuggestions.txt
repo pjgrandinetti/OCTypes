@@ -1,0 +1,84 @@
+Fixing Multiple Definition Errors in OCComplexParser.h and OCMath.h
+
+Issue:
+------
+You’re seeing redefinition errors because `OCComplexParser.h` is being included multiple times (directly in your Bison file and indirectly via `OCMath.h`), without any include guards. This causes the `builtInMathFunctions` enum and related structures to be defined multiple times.
+
+Solution:
+---------
+1. **Add include guards** to `OCComplexParser.h`. At the very top of the file, insert:
+
+    ```c
+    #ifndef OC_COMPLEX_PARSER_H
+    #define OC_COMPLEX_PARSER_H
+    ```
+
+   And at the very end of the file, insert:
+
+    ```c
+    #endif // OC_COMPLEX_PARSER_H
+    ```
+
+   This prevents the contents of `OCComplexParser.h` from being processed more than once per translation unit.
+
+2. **Optionally** use `#pragma once` (supported by most compilers) as a simpler alternative at the top of the file:
+
+    ```c
+    #pragma once
+    ```
+
+   If you choose this, you can omit the traditional guard macros.
+
+3. **Review includes in `OCMath.h`**:
+   - If `OCMath.h` needs definitions from `OCComplexParser.h`, keep the `#include "OCComplexParser.h"`. Otherwise, remove unnecessary includes to reduce coupling.
+   - Ensure `OCMath.h` itself also has include guards or `#pragma once`:
+
+     ```c
+     #ifndef OC_MATH_H
+     #define OC_MATH_H
+     // ... existing content ...
+     #endif // OC_MATH_H
+     ```
+
+4. **Ensure consistent include paths**:
+   - In `OCComplexParser.y`, instead of `#include "OCComplexParser.h"`, you can rely on Bison’s `%{ ... %}` block to include the header once. Confirm that you aren’t including the header in both the definitions and prologue sections.
+
+Example Patch for `OCComplexParser.h`:
+```diff
++ #ifndef OC_COMPLEX_PARSER_H
++ #define OC_COMPLEX_PARSER_H
+
+  /* existing content... */
+  typedef enum builtInMathFunctions {
+      BM_sqrt = 1,
+      /* other entries... */
+  } builtInMathFunctions;
+
+  struct __complexNodeFunction {
+      int nodeType;
+      builtInMathFunctions funcType;
+      struct __complexNode* left;
+  };
+
++ #endif // OC_COMPLEX_PARSER_H
+```
+
+Example Patch for `OCMath.h`:
+```diff
++ #ifndef OC_MATH_H
++ #define OC_MATH_H
+
+  #include <complex.h>
+  #include "OCComplexParser.h"
+  // ... rest of OCMath.h ...
+
++ #endif // OC_MATH_H
+```
+
+Validation Steps:
+-----------------
+1. Add the include guards to both headers (or `#pragma once`).
+2. Run `make clean && make test`.
+3. Confirm the redefinition errors are resolved and the test suite compiles successfully.
+
+By adding proper include guards, you prevent multiple definitions and ensure headers can be included safely from anywhere without conflicts.

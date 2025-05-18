@@ -1,0 +1,113 @@
+Comprehensive Fix for Nested Function and Include Guard Issues
+=======================================================================
+
+1. Add Include Guards to Headers
+--------------------------------
+**OCComplexParser.h**
+```diff
++ #ifndef OC_COMPLEX_PARSER_H
++ #define OC_COMPLEX_PARSER_H
+
+  /* existing content... */
+  typedef enum builtInMathFunctions {
+      BM_sqrt = 1,
+      BM_cbrt,
+      BM_qtrt,
+      BM_exp,
+      BM_log,
+      BM_acos,
+      BM_asin,
+      BM_cos,
+      BM_sin,
+      BM_conj,
+      BM_creal,
+      BM_cimag,
+      BM_carg
+  } builtInMathFunctions;
+
+  struct __complexNodeFunction {
+      int nodeType;
+      builtInMathFunctions funcType;
+      struct __complexNode* left;
+  };
+
++ #endif // OC_COMPLEX_PARSER_H
+```
+
+**OCMath.h**
+```diff
++ #ifndef OC_MATH_H
++ #define OC_MATH_H
+
+  #include <complex.h>
+  #include "OCComplexParser.h"
+  // ... rest of OCMath.h ...
+
++ #endif // OC_MATH_H
+```
+
+2. Update Parser Grammar for Single-Argument Functions
+------------------------------------------------------
+**OCComplexParser.y**
+```diff
+%%
+
+ /* function calls */
+-exp:
+-    /* ... other rules ... */
+-  | FUNC '(' explist ')'  { $$ = ComplexNodeCreateFunction($1, $3); }
+-  ;
++exp:
++    /* ... other rules ... */
++  | FUNC '(' explist ')'  { $$ = ComplexNodeCreateFunction($1, $3); }
++  ;
+
+ /* single-argument list passes through expression */
+-explist
+-    : exp
+-    | exp ',' explist   { $$ = ComplexNodeCreateInnerNode('L', $1, $3); }
+-    ;
++explist
++    : exp { $$ = $1; }
++    ;
+
+%%
+```
+
+3. Implement Missing Function Cases in Evaluator
+------------------------------------------------
+**OCMath.c** (inside `ComplexNodeEvaluate` or `builtInMathFunction`)
+```diff
+#include <complex.h>  /* ensure complex routines are available */
+
+/* ... inside function-evaluation switch ... */
+ double complex arg = ComplexNodeEvaluate(func->left);
+ switch (func->funcType) {
+     case BM_sqrt:   return csqrt(arg);
+     case BM_cbrt:   return cpow(arg, 1.0/3.0);
+     case BM_qtrt:   return cpow(arg, 1.0/4.0);
+     case BM_exp:    return cexp(arg);
+     case BM_log:    return clog(arg);
+     case BM_asin:   return casin(arg);
+     case BM_acos:   return cacos(arg);
+     case BM_sin:    return csin(arg);
+     case BM_cos:    return ccos(arg);
+     case BM_conj:   return conj(arg);
+     case BM_creal:  return creal(arg) + 0.0*I;
+     case BM_cimag:  return cimag(arg) * I;
+     case BM_carg:   return cargument(arg) + 0.0*I;
+     default:
+         /* unreachable if grammar is correct */
+         return NAN + NAN*I;
+ }
+```
+
+4. Validate Fix
+---------------
+- Run `make clean && make test`.
+- Ensure no redefinition errors occur.
+- Confirm `conj(sqrt(9+16*I))` passes in `testComplexParser`.
+- Verify other nested functions (`sin(cos(0))`, `exp(log(5+2*I))`, `conj(conj(3+4*I))`) evaluate correctly.
+- Check arithmetic tests (unary minus, exponentiation, absolute) still pass.
+
+This combined patch addresses include guards, correct AST propagation for function arguments, and complete evaluator support for complex functions, resolving the remaining test failures.

@@ -1,0 +1,87 @@
+# Fixing Precedence of Unary Minus and Exponentiation in the Parser
+
+## Problem: Incorrect Evaluation of `-2^2`
+
+The current lex/yacc grammar is evaluating the expression `-2^2` as `(-2)^2 = 4` instead of the mathematically expected `-(2^2) = -4`. This indicates that in the parser, the unary minus is binding **tighter** than the exponentiation operator. In standard arithmetic, exponentiation has higher precedence than a leading negation. For example, most languages (and mathematics) interpret `-2^2` as -*(2^2)* (i.e. -4). Our goal is to modify the grammar so that the `^` operator binds more tightly than unary minus, producing the correct parse and result.
+
+## Diagnosis: Grammar Precedence Issue
+
+Inspecting the grammar in **OCComplexParser.y**, we see the precedence and associativity declarations and the relevant rules. The (simplified) excerpt is:
+
+```yacc
+%left '+' '-'
+%left '*' '/'
+%right '^'
+%nonassoc UMINUS
+%nonassoc '|'
+%%
+exp: exp '+' exp      { ... }
+   | exp '-' exp      { ... }
+   | exp '*' exp      { ... }
+   | exp '/' exp      { ... }
+   | exp '^' exp      { ... }
+   | '(' exp ')'      { $$ = $2; }
+   | '|' exp '|'      { ... }
+   | '-' exp %prec UMINUS  { ... }
+   | NUMBER           { ... }
+   | FUNC '(' explist ')' { ... } 
+;
+```
+
+The issue lies in the precedence definitions. Bison/Yacc determine operator precedence by the order of these declarations – **later lines have higher precedence**. In the original grammar, `UMINUS` (the precedence for unary minus) is declared *after* `'^'`. This means the unary minus is given a higher precedence than exponentiation, causing the parser to interpret `-2^2` as if the `-` applies before `^`. In other words, the parse tree formed is `(^ (UMinus 2) 2)`, i.e. `(-2) ^ 2`, which yields +4.
+
+The **desired** behavior is to have exponentiation take priority over unary minus. We want the parse of `-2^2` to form a tree like `(UMinus (^ 2 2))`, meaning the `^` node is evaluated first (2^2) and then the unary minus negates the result.
+
+## Solution: Adjust Grammar Precedence and Associativity
+
+To fix this, we need to reorder or change the precedence declarations so that `^` has higher precedence than the unary minus. We also must ensure `^` remains right-associative. Here are the precise changes and recommendations:
+
+- **Declare exponentiation after unary minus in the precedence list:** By moving the `'^'` token to a later line (or moving `UMINUS` to an earlier line), we ensure `^` has higher precedence. For example:
+
+  ```yacc
+  %left '+' '-'
+  %left '*' '/'
+  %nonassoc UMINUS          /* unary minus precedence */
+  %right '^'                /* exponentiation, higher than UMINUS */
+  %nonassoc '|'             /* absolute value grouping, highest */
+  ```
+
+  In Bison, the **later a token is declared, the higher its precedence**. After this change, `^` comes after `UMINUS`, so `^` will bind tighter.
+
+- **Keep `^` right-associative:** Use `%right '^'` (not `%left`) so that an expression like `2^3^2` is parsed as `2^(3^2)` (right-associative). This yields 512, as expected, rather than `(2^3)^2 = 64`.
+
+- **Use `%prec` for unary minus rule:** Continue to use `%prec UMINUS` on the unary minus grammar rule. This assigns the `UMINUS` precedence level to the production `'-' exp`, distinguishing it from binary subtraction.
+
+- **Double-check absolute value `'|'` precedence:** Keep `'|'` as non-associative with the highest precedence (after `^`) to ensure grouping, so expressions like `-|x|` parse as `-(|x|)`.
+
+After making these changes, **`^` will bind tighter than unary minus**, producing the correct parse tree for `-2^2`. 
+
+## Preserving Right-Associativity of `^`
+
+- Keep the `exp '^' exp` rule, and ensure `'^'` is declared with `%right`.  
+- This ensures that `2^3^2` is parsed as `2^(3^2)`, yielding 512.
+
+## Evaluation Implications
+
+These grammar changes do not require changes to the evaluation logic (`ComplexNodeEvaluate`). They simply correct the parse tree shape so that `^` nodes are evaluated before unary minus (`M`) nodes.
+
+## Testing the Corrected Precedence
+
+After applying the grammar changes, test the following expressions and confirm their results:
+
+1. `-2^2` → **-4**  
+2. `(-2)^2` → **4**  
+3. `-2^3^2` → **-512**  
+4. `2^3^2` → **512**  
+5. `-2 * 3` → **-6**  
+6. `-2^2 * 3` → **-12**  
+7. `2^-2` → **0.25**  
+8. `-2^-2` → **-0.25**  
+9. `| -2^2 |` → **4**  
+10. `- |2|^2` → **-4**
+
+Running these will verify that unary minus now has lower precedence than exponentiation, and that `^` remains right-associative.
+
+**References**  
+- Bison Manual: Operator precedence determined by declaration order (later = higher); using `%prec` for unary minus.  
+- Standard math convention: Exponentiation highest, unary minus next, then `*`/`+`.  

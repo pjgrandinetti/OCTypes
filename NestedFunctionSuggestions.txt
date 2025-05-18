@@ -1,0 +1,53 @@
+Simplifying the Grammar and Evaluation for Single-Argument Functions
+============================================================================
+
+1. Remove Multiple-Argument Support
+-----------------------------------
+- In **OCComplexParser.y**, simplify the `explist` rule to only allow a single expression argument. For example:
+  ```yacc
+  /* Before: explist allows comma-separated args producing 'L' nodes */
+  explist
+      : exp
+      | exp ',' explist   { $$ = ComplexNodeCreateInnerNode('L', $1, $3); }
+      ;
+  ```
+  Change to:
+  ```yacc
+  explist
+      : exp               { /* just one argument; no 'L' nodes */ }
+      ;
+  ```
+- Eliminate the `%token ','` declaration if only single-arg calls are used.
+- Remove or comment out any `%token 'L'` handling since comma-linked lists are no longer needed.
+
+2. Update AST Freeing Logic
+----------------------------
+- In **ComplexNodeFree** (OCComplexParser.y or OCMath.c), remove the case for `'L'` nodes (if present) and ensure only function nodes (`'F'`), binary operators, and number leaves are freed.
+- If any `'L'` handling remains, delete it to avoid unused code paths.
+
+3. Verify Nested Function Parsing
+---------------------------------
+- Confirm grammar still accepts nested calls like:
+  ```
+  conj(sqrt(9+16*I))
+  sin(cos(0))
+  exp(log(5))
+  ```
+- Since `exp` and `log` are single-argument, no commas are involved, and nesting continues to work via the `FUNC '(' explist ')'` rule.
+
+4. Confirm Evaluation Logic
+---------------------------
+- No changes required to **ComplexNodeEvaluate** for single-arg functions: it already recurses into `func->left`, computes the inner call, then applies the appropriate `c…` library function (e.g. `csqrt`, `conj`, etc.).
+- Remove any references to list-node evaluation (case `'L'`) in the evaluator to simplify the switch.
+
+5. Additional Nested Function Test Cases
+----------------------------------------
+Add or extend tests for deeper nesting and function compositions:
+- `conj(conj(3+4*I))`      // double conjugation
+- `exp(log(5+2*I))`       // inverse functions
+- `cos(sin(1))`           // trig composition
+- `sin(cos(sin(0)))`      // three levels deep
+- `sqrt(conj(16-30*I))`   // root-of-conj
+- `creal(exp(I))`         // real component of a complex-valued function
+
+By removing multi-argument syntax and cleaning up list-node support, the grammar and evaluator become simpler and easier to maintain, while preserving full support for nested, single-argument function calls.

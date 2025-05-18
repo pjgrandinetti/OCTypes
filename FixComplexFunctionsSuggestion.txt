@@ -1,0 +1,61 @@
+Fixing Complex Function Evaluation in ComplexNodeEvaluate
+============================================================
+
+## Problem
+The test `conj(sqrt(9+16*I))` failed because the parser's evaluator used real versions of math functions (e.g., `sqrt(double)`) on complex inputs, leading to incorrect results. Instead, the evaluator must dispatch to C99 complex versions (e.g., `csqrt(double complex)`).
+
+## Proposed Patch in `ComplexNodeEvaluate` (OCMath.c)
+
+1. **Include the complex header** at the top of the file:
+   ```c
+   #include <complex.h>  // for csqrt, cexp, clog, csin, ccos, casin, cacos, etc.
+   ```
+
+2. **Replace** the existing function dispatch logic under the `'F'` (function) node case:
+
+   ```diff
+   --- a/src/OCMath.c
+   +++ b/src/OCMath.c
+   @@ -200,15 +200,35 @@ double complex ComplexNodeEvaluate(struct __complexNode *node) {
+           /* existing cases for '+', '-', '*', '/', '^', etc. */
+
+       case 'F': {
+   -        /* old: real-only functions */
+   -        double x = creal(ComplexNodeEvaluate(node->left));
+   -        return FUNCTION(x) + 0.0*I;
+   +        /* new: complex-aware functions */
+   +        double complex arg = ComplexNodeEvaluate(node->left);
+   +        if      (FUNCTION == sqrt)   return csqrt(arg);
+   +        else if (FUNCTION == exp)    return cexp(arg);
+   +        else if (FUNCTION == log)    return clog(arg);
+   +        else if (FUNCTION == sin)    return csin(arg);
+   +        else if (FUNCTION == cos)    return ccos(arg);
+   +        else if (FUNCTION == tan)    return ctan(arg);
+   +        else if (FUNCTION == asin)   return casin(arg);
+   +        else if (FUNCTION == acos)   return cacos(arg);
+   +        else if (FUNCTION == atan)   return catan(arg);
+   +        else if (FUNCTION == sinh)   return csinh(arg);
+   +        else if (FUNCTION == cosh)   return ccosh(arg);
+   +        else if (FUNCTION == tanh)   return ctanh(arg);
+   +        else {
+   +            /* fall back for real-only functions */
+   +            double x = creal(arg);
+   +            return FUNCTION(x) + 0.0*I;
+   +        }
+       }
+
+       /* absolute-value already handled via cabs */
+       case '|': return cabs(ComplexNodeEvaluate(node->left)) + 0.0*I;
+   ```
+
+3. **Rebuild** and test:
+   ```bash
+   make clean && make test
+   ```
+   All tests, including `conj(sqrt(9+16*I))`, should now pass.
+
+## Rationale
+- `csqrt`, `cexp`, `clog`, etc., correctly handle complex inputs.
+- Falls back to real functions if an unknown function pointer is encountered.
+- Ensures nested and complex-valued function calls evaluate properly.
+
