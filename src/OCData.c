@@ -42,10 +42,6 @@ static void __OCDataFinalize(const void * theType)
     free((void *)theData);
 }
 
-void _OCDataInitialize(void) {
-    kOCDataID = OCRegisterType("OCData");
-}
-
 OCTypeID OCDataGetTypeID(void)
 {
     if(kOCDataID == _kOCNotATypeID) kOCDataID = OCRegisterType("OCData");

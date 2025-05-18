@@ -42,12 +42,6 @@
 typedef uint32_t OCTypeID;
 
 /**
- * @brief Defines an index type, typically used for array or collection indexing.
- * @ingroup OCType
- */
-typedef int32_t OCIndex;
-
-/**
  * @brief Defines common constant values.
  * @ingroup OCType
  */

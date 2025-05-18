@@ -378,13 +378,3 @@ const void * OCAutorelease(const void *ptr)
     OCAutoreleasePoolsManagerAddObject(ptr, OCRelease);
     return ptr;
 }
-
-/**************************************************************************
- Initialization method
- *************************************************************************/
-
-void _OCAutoreleasePoolInitialize(void) {
-    // Placeholder for any future initialization logic for OCAutoreleasePool
-}
-
-

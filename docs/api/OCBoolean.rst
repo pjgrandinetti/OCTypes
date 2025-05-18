@@ -1,5 +1,9 @@
 OCBoolean
 =========
 
-.. doxygenfile:: OCBoolean.h
+.. toctree::
+   :maxdepth: 1
 
+.. doxygengroup:: OCBoolean
+   :project: OCTypes
+   :members:

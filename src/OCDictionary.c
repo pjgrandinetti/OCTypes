@@ -79,10 +79,6 @@ OCTypeID OCDictionaryGetTypeID(void)
     return kOCDictionaryID;
 }
 
-void _OCDictionaryInitialize(void) {
-    kOCDictionaryID = OCRegisterType("OCDictionary");
-}
-
 static struct __OCDictionary *OCDictionaryAllocate()
 {
     struct __OCDictionary *theDictionary = malloc(sizeof(struct __OCDictionary));

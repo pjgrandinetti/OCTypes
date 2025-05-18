@@ -28,13 +28,13 @@ This produces ``libOCTypes.a``.
 
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: Background
 
    background
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: API Reference
 
    api/OCType

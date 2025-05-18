@@ -50,24 +50,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="OCType.html">OCType</a></li>
 <li class="toctree-l1"><a class="reference internal" href="OCAutoreleasePool.html">OCAutoreleasePool</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">OCNumber</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#c.__Number"><code class="docutils literal notranslate"><span class="pre">__Number</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#c.__Number.int8Value"><code class="docutils literal notranslate"><span class="pre">int8Value</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#c.__Number.int16Value"><code class="docutils literal notranslate"><span class="pre">int16Value</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#c.__Number.int32Value"><code class="docutils literal notranslate"><span class="pre">int32Value</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#c.__Number.int64Value"><code class="docutils literal notranslate"><span class="pre">int64Value</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#c.__Number.uint8Value"><code class="docutils literal notranslate"><span class="pre">uint8Value</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#c.__Number.uint16Value"><code class="docutils literal notranslate"><span class="pre">uint16Value</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#c.__Number.uint32Value"><code class="docutils literal notranslate"><span class="pre">uint32Value</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#c.__Number.uint64Value"><code class="docutils literal notranslate"><span class="pre">uint64Value</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#c.__Number.floatValue"><code class="docutils literal notranslate"><span class="pre">floatValue</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#c.__Number.doubleValue"><code class="docutils literal notranslate"><span class="pre">doubleValue</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#c.__Number.floatComplexValue"><code class="docutils literal notranslate"><span class="pre">floatComplexValue</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#c.__Number.doubleComplexValue"><code class="docutils literal notranslate"><span class="pre">doubleComplexValue</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">OCNumber</a></li>
 <li class="toctree-l1"><a class="reference internal" href="OCBoolean.html">OCBoolean</a></li>
 <li class="toctree-l1"><a class="reference internal" href="OCString.html">OCString</a></li>
 <li class="toctree-l1"><a class="reference internal" href="OCArray.html">OCArray</a></li>
@@ -105,93 +88,8 @@
 <h1>OCNumber<a class="headerlink" href="#ocnumber" title="Link to this heading"></a></h1>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-legacy-numeric-type-codes">Legacy Numeric Type Codes</p>
-<p>Internal codes for OCNumberType.</p>
-<p>Prefer using the OCNumberType enum. </p>
+<p>Internal codes for OCNumberType. Prefer using the OCNumberType enum. </p>
 </div>
-<dl class="c union">
-<dt class="sig sig-object c" id="c.__Number">
-<span class="target" id="d6/db1/union_____number"></span><span class="k"><span class="pre">union</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">__Number</span></span></span><a class="headerlink" href="#c.__Number" title="Link to this definition"></a><br /></dt>
-<dd><div class="docutils container">
-<em>#include &lt;OCNumber.h&gt;</em></div>
-<p>A union to hold various numeric types. </p>
-<p>This union is part of the internal representation of OCNumber objects. It allows an OCNumber to store data for any of its supported numeric types in a memory-efficient way. The specific active member is determined by the OCNumber’s OCNumberType. </p>
-<div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
-<dl class="c var">
-<dt class="sig sig-object c" id="c.__Number.int8Value">
-<span class="target" id="d6/db1/union_____number_1ab5075cb9a00c16fbd3754c5c75aceadd"></span><span class="n"><span class="pre">int8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">int8Value</span></span></span><a class="headerlink" href="#c.__Number.int8Value" title="Link to this definition"></a><br /></dt>
-<dd><p>Signed 8-bit integer value. </p>
-</dd></dl>
-
-<dl class="c var">
-<dt class="sig sig-object c" id="c.__Number.int16Value">
-<span class="target" id="d6/db1/union_____number_1a929e0bc74548b848b9783ac078944c0a"></span><span class="n"><span class="pre">int16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">int16Value</span></span></span><a class="headerlink" href="#c.__Number.int16Value" title="Link to this definition"></a><br /></dt>
-<dd><p>Signed 16-bit integer value. </p>
-</dd></dl>
-
-<dl class="c var">
-<dt class="sig sig-object c" id="c.__Number.int32Value">
-<span class="target" id="d6/db1/union_____number_1ad73f9668caba282ea02a274a4b986049"></span><span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">int32Value</span></span></span><a class="headerlink" href="#c.__Number.int32Value" title="Link to this definition"></a><br /></dt>
-<dd><p>Signed 32-bit integer value. </p>
-</dd></dl>
-
-<dl class="c var">
-<dt class="sig sig-object c" id="c.__Number.int64Value">
-<span class="target" id="d6/db1/union_____number_1ae09604a41bb73b0200a2da821817a315"></span><span class="n"><span class="pre">int64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">int64Value</span></span></span><a class="headerlink" href="#c.__Number.int64Value" title="Link to this definition"></a><br /></dt>
-<dd><p>Signed 64-bit integer value. </p>
-</dd></dl>
-
-<dl class="c var">
-<dt class="sig sig-object c" id="c.__Number.uint8Value">
-<span class="target" id="d6/db1/union_____number_1a0dde6a53a7af4933b9f0dadfd5e53cc6"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">uint8Value</span></span></span><a class="headerlink" href="#c.__Number.uint8Value" title="Link to this definition"></a><br /></dt>
-<dd><p>Unsigned 8-bit integer value. </p>
-</dd></dl>
-
-<dl class="c var">
-<dt class="sig sig-object c" id="c.__Number.uint16Value">
-<span class="target" id="d6/db1/union_____number_1a5acaf58f90afef9bc9af64ef1671bfdf"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">uint16Value</span></span></span><a class="headerlink" href="#c.__Number.uint16Value" title="Link to this definition"></a><br /></dt>
-<dd><p>Unsigned 16-bit integer value. </p>
-</dd></dl>
-
-<dl class="c var">
-<dt class="sig sig-object c" id="c.__Number.uint32Value">
-<span class="target" id="d6/db1/union_____number_1adcab64a9287dabda58a3003b4f00e770"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">uint32Value</span></span></span><a class="headerlink" href="#c.__Number.uint32Value" title="Link to this definition"></a><br /></dt>
-<dd><p>Unsigned 32-bit integer value. </p>
-</dd></dl>
-
-<dl class="c var">
-<dt class="sig sig-object c" id="c.__Number.uint64Value">
-<span class="target" id="d6/db1/union_____number_1a7f351278a34078cf329778ee6f399607"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">uint64Value</span></span></span><a class="headerlink" href="#c.__Number.uint64Value" title="Link to this definition"></a><br /></dt>
-<dd><p>Unsigned 64-bit integer value. </p>
-</dd></dl>
-
-<dl class="c var">
-<dt class="sig sig-object c" id="c.__Number.floatValue">
-<span class="target" id="d6/db1/union_____number_1a2d092c062cdd40b94612350c294c483c"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">floatValue</span></span></span><a class="headerlink" href="#c.__Number.floatValue" title="Link to this definition"></a><br /></dt>
-<dd><p>32-bit floating-point value. </p>
-</dd></dl>
-
-<dl class="c var">
-<dt class="sig sig-object c" id="c.__Number.doubleValue">
-<span class="target" id="d6/db1/union_____number_1a73515bd8d69d4dab26c9b97070adb126"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">doubleValue</span></span></span><a class="headerlink" href="#c.__Number.doubleValue" title="Link to this definition"></a><br /></dt>
-<dd><p>64-bit floating-point value (double). </p>
-</dd></dl>
-
-<dl class="c var">
-<dt class="sig sig-object c" id="c.__Number.floatComplexValue">
-<span class="target" id="d6/db1/union_____number_1ac2c1d9fc103f4d85ddd8fcfc2d4a2d93"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="kt"><span class="pre">complex</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">floatComplexValue</span></span></span><a class="headerlink" href="#c.__Number.floatComplexValue" title="Link to this definition"></a><br /></dt>
-<dd><p>Complex float value (float _Complex). </p>
-</dd></dl>
-
-<dl class="c var">
-<dt class="sig sig-object c" id="c.__Number.doubleComplexValue">
-<span class="target" id="d6/db1/union_____number_1ab6d174d7a1868c5a66250ee360c962f7"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="kt"><span class="pre">complex</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">doubleComplexValue</span></span></span><a class="headerlink" href="#c.__Number.doubleComplexValue" title="Link to this definition"></a><br /></dt>
-<dd><p>Complex double value (double _Complex). </p>
-</dd></dl>
-
-</div>
-</dd></dl>
-
 </section>
 
 

@@ -30,9 +30,6 @@ int main(int argc, const char * argv[]) {
     (void)argc;
     (void)argv;
 
-    // Initialize the OCTypes library
-    OCLibraryInitialize();
-
     // Create an autorelease pool for tests
     OCAutoreleasePoolRef pool = OCAutoreleasePoolCreate();
 
