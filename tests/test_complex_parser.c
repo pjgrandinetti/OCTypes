@@ -7,14 +7,14 @@
 #include <stdlib.h>
 
 #define PRINTFAILURE(msg) \
-    do { fprintf(stderr, "Test failed: %s\n", msg); goto cleanup; } while (0)
+    do { fprintf(stderr, "TEST FAILED: %s\n", msg); success = false; } while (0)
 
 #define PRINTFAILURE_WITH_VALUES(msg, actual, expected) \
-    do { fprintf(stderr, "Test failed: %s\nActual: %f\nExpected: %f\n", msg, actual, expected); goto cleanup; } while (0)
+    do { fprintf(stderr, "TEST FAILED: %s\nActual: %f\nExpected: %f\n", msg, actual, expected); success = false; } while (0)
 
 bool complex_parser_Test0(void) {
     fprintf(stderr, "%s begin...\n", __func__);
-    bool success = false;
+    bool success = true; // Initialize success to true
     double complex z;
 
     // ——— Simple real and imaginary constants ———
@@ -47,9 +47,6 @@ bool complex_parser_Test0(void) {
     z = OCComplexFromCString("1+2");
     if (OCCompareDoubleValuesLoose(creal(z), 3.0) != kOCCompareEqualTo) PRINTFAILURE("1+2");
 
-    z = OCComplexFromCString("5-7");
-    if (OCCompareDoubleValuesLoose(creal(z), -2.0) != kOCCompareEqualTo) PRINTFAILURE("5-7");
-
     z = OCComplexFromCString("6*7");
     if (OCCompareDoubleValuesLoose(creal(z), 42.0) != kOCCompareEqualTo) PRINTFAILURE("6*7");
 
@@ -69,11 +66,8 @@ bool complex_parser_Test0(void) {
         fprintf(stderr, "Test failed: -3+4*I\n");
         fprintf(stderr, "Actual: creal=%f, cimag=%f\n", creal(z), cimag(z));
         fprintf(stderr, "Expected: creal=-3.0, cimag=4.0\n");
-        goto cleanup;
+        success = false; // Record failure and continue
     }
-
-    z = OCComplexFromCString("-3+4*I");
-    printf("z: creal=%.6f, cimag=%.6f, |z|=%.6f\n", creal(z), cimag(z), cabs(z));
 
     // ——— Absolute value ———
     z = OCComplexFromCString("|(-3+4*I)|");
@@ -82,8 +76,11 @@ bool complex_parser_Test0(void) {
         fprintf(stderr, "Test failed: |(-3+4*I)|\n");
         fprintf(stderr, "Actual: creal=%f, cimag=%f\n", creal(z), cimag(z));
         fprintf(stderr, "Expected: creal=5.0, cimag=0.0\n");
-        goto cleanup;
+        success = false; // Record failure and continue
     }
+
+    z = OCComplexFromCString("5-7");
+    if (OCCompareDoubleValuesLoose(creal(z), -2.0) != kOCCompareEqualTo) PRINTFAILURE("5-7");
 
     z = OCComplexFromCString("||-3+4*I| - 5|");
     if (OCCompareDoubleValuesLoose(creal(z), 0.0) != kOCCompareEqualTo) PRINTFAILURE("||-3+4*I| - 5|");
@@ -188,11 +185,75 @@ bool complex_parser_Test0(void) {
           * ((45.0/4.0) + log(3.0))         /* second group */
           - cexp(-34.0);                    /* subtraction of exp */
         if (OCCompareDoubleValuesLoose(creal(z), creal(expected)) != kOCCompareEqualTo ||
-            OCCompareDoubleValuesLoose(cimag(z), cimag(expected)) != kOCCompareEqualTo)
-            PRINTFAILURE("(54.8+cos(3.1))(45/4+log(3))-exp(-34)");
+            OCCompareDoubleValuesLoose(cimag(z), cimag(expected)) != kOCCompareEqualTo) {
+            fprintf(stderr, "Test failed: (54.8+cos(3.1))(45/4+log(3))-exp(-34)\n");
+            fprintf(stderr, "Actual: creal=%f, cimag=%f\n", creal(z), cimag(z));
+            fprintf(stderr, "Expected: creal=%f, cimag=%f\n", creal(expected), cimag(expected));
+            success = false; // Record failure and continue
+        }
     }
 
-    success = true;
+    z = OCComplexFromCString("|-5|");
+    if (OCCompareDoubleValuesLoose(creal(z), 5.0) != kOCCompareEqualTo) PRINTFAILURE("|-5|");
+
+    z = OCComplexFromCString("||3-4*I||");
+    if (OCCompareDoubleValuesLoose(creal(z), 5.0) != kOCCompareEqualTo) PRINTFAILURE("||3-4*I||");
+
+    z = OCComplexFromCString("2-3-4");
+    if (OCCompareDoubleValuesLoose(creal(z), -5.0) != kOCCompareEqualTo) PRINTFAILURE("2-3-4");
+
+    z = OCComplexFromCString("2(3+4)");
+    if (OCCompareDoubleValuesLoose(creal(z), 14.0) != kOCCompareEqualTo) PRINTFAILURE("2(3+4)");
+
+    z = OCComplexFromCString("|sin(pi)|");
+    if (OCCompareDoubleValuesLoose(creal(z), fabs(sin(M_PI))) != kOCCompareEqualTo) PRINTFAILURE("|sin(pi)|");
+
+    z = OCComplexFromCString("sin(cos(sin(1)))");
+    if (OCCompareDoubleValuesLoose(creal(z), sin(cos(sin(1.0)))) != kOCCompareEqualTo) PRINTFAILURE("sin(cos(sin(1)))");
+        
+
+    z = OCComplexFromCString("creal(3+4*I)");
+    if (OCCompareDoubleValuesLoose(creal(z), 3.0) != kOCCompareEqualTo) PRINTFAILURE("creal(3+4*I)");
+
+    z = OCComplexFromCString("cimag(3+4*I)");
+    if (OCCompareDoubleValuesLoose(creal(z), 4.0) != kOCCompareEqualTo) PRINTFAILURE("cimag(3+4*I)");
+
+    z = OCComplexFromCString("-2^2");
+    if (OCCompareDoubleValuesLoose(creal(z), -4.0) != kOCCompareEqualTo) PRINTFAILURE("-2^2");
+    // (This is already included, but test with whitespace.)
+    z = OCComplexFromCString("- (2^2)");
+    if (OCCompareDoubleValuesLoose(creal(z), -4.0) != kOCCompareEqualTo) PRINTFAILURE("- (2^2)");
+
+    z = OCComplexFromCString("exp(I*pi)+1");
+    if (OCCompareDoubleValuesLoose(creal(z), 0.0) != kOCCompareEqualTo) PRINTFAILURE("exp(I*pi)+1");
+    // Euler's identity
+
+    z = OCComplexFromCString("conj(|3+4*I|+I)");
+    double complex expected = conj(5.0 + I);
+    if (OCCompareDoubleValuesLoose(creal(z), creal(expected)) != kOCCompareEqualTo ||
+        OCCompareDoubleValuesLoose(cimag(z), cimag(expected)) != kOCCompareEqualTo)
+        PRINTFAILURE("conj(|3+4*I|+I)");
+
+    z = OCComplexFromCString("(1+2*I)*(3+4*I)");
+    if (OCCompareDoubleValuesLoose(creal(z), -5.0) != kOCCompareEqualTo ||
+        OCCompareDoubleValuesLoose(cimag(z), 10.0) != kOCCompareEqualTo)
+        PRINTFAILURE("(1+2*I)*(3+4*I)");
+
+    z = OCComplexFromCString("(1+2)(3+4)");
+    if (OCCompareDoubleValuesLoose(creal(z), 21.0) != kOCCompareEqualTo ||
+        OCCompareDoubleValuesLoose(cimag(z), 0.0) != kOCCompareEqualTo)
+        PRINTFAILURE("(1+2)(3+4)");
+
+    z = OCComplexFromCString("log(-1)");
+    if (OCCompareDoubleValuesLoose(creal(z), 0.0) != kOCCompareEqualTo ||
+        OCCompareDoubleValuesLoose(cimag(z), M_PI) != kOCCompareEqualTo)
+        PRINTFAILURE("log(-1)");
+
+    z = OCComplexFromCString("sqrt(-1)");
+    if (OCCompareDoubleValuesLoose(creal(z), 0.0) != kOCCompareEqualTo ||
+        OCCompareDoubleValuesLoose(cimag(z), 1.0) != kOCCompareEqualTo)
+        PRINTFAILURE("sqrt(-1)");
+
 cleanup:
     if (!success)
         fprintf(stderr, "%s FAILED.\n", __func__);
