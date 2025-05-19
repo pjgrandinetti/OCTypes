@@ -1,0 +1,90 @@
+Solution: Handling Implicit Multiplication in OCComplexParser.y
+
+**Issue**  
+Expressions like `(54.8+cos(3.1))(45/4+log(3))-exp(-34)` fail because the grammar does not recognize implicit multiplication when two parenthesized expressions or a number/function and a parenthesis appear adjacent.
+
+**Proposed Fix**  
+Introduce an explicit grammar rule to treat adjacent “primary” expressions as multiplication.
+
+1. **Modify Grammar Productions**
+
+   Update the **factor** nonterminal in `OCComplexParser.y` to include implicit multiplication:
+
+   ```yacc
+   factor:
+       '-' factor
+         { $$ = ComplexNodeCreateInnerNode('M', $2, NULL); }
+     | factor '^' factor
+         { $$ = ComplexNodeCreateInnerNode('^', $1, $3); }
+     | factor primary    /* existing rule */
+         { $$ = $2; }
+     ;
+   ```
+
+   And add a new rule under **term** or **factor** to catch adjacency:
+
+   ```yacc
+   term:
+       term '*' factor
+         { $$ = ComplexNodeCreateInnerNode('*', $1, $3); }
+     | term '/' factor
+         { $$ = ComplexNodeCreateInnerNode('/', $1, $3); }
+     | term factor       /* implicit multiplication */
+         { $$ = ComplexNodeCreateInnerNode('*', $1, $2); }
+     | factor
+         { $$ = $1; }
+     ;
+   ```
+
+   This way, when the parser sees `term factor` with no operator, it inserts a multiplication AST node.
+
+2. **Ensure Correct Precedence**
+
+   - The new `term factor` rule must appear **before** the `term '*' factor` and `term '/' factor` rules to correctly parse sequences of implicit multiplication at the same precedence level.
+   - Confirm that `%left '*' '/'` remains above `%right '^'` so exponentiation binds tighter.
+
+3. **Example Updated Sections**
+
+   ```yacc
+   /* operator precedence */
+   %left '+' '-'
+   %left '*' '/'
+   %right '^'
+   %nonassoc UMINUS
+   %nonassoc '|'
+
+   /* grammar */
+   exp:
+       exp '+' term  { $$ = ...; }
+     | exp '-' term  { $$ = ...; }
+     | term          { $$ = $1; }
+   ;
+
+   term:
+       term '*' factor              { $$ = ...; }
+     | term '/' factor              { $$ = ...; }
+     | term factor                  /* implicit multiplication */
+                                      { $$ = ComplexNodeCreateInnerNode('*', $1, $2); }
+     | factor
+     ;
+
+   factor:
+       '-' factor                   { $$ = ...; }
+     | primary '^' factor           { $$ = ...; }
+     | primary
+     ;
+
+   primary:
+       NUMBER
+     | '|' exp '|'
+     | '(' exp ')'
+     | FUNC '(' explist ')'
+     ;
+   ```
+
+4. **Rebuild and Test**
+
+   - Re-run `make clean && make test`
+   - Confirm that `(54.8+cos(3.1))(45/4+log(3))-exp(-34)` now parses and evaluates correctly.
+
+This change will allow the parser to handle adjacent parentheses and numbers as multiplication, fixing the failure in the complex expression test.

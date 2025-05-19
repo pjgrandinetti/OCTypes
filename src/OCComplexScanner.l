@@ -56,7 +56,7 @@ REALNUMBER      [0-9]+"."[0-9]*{EXP}?|"."?[0-9]+{EXP}?
 "creal"         {ocpclval.fn = BM_creal; return FUNC;}
 "cimag"         {ocpclval.fn = BM_cimag; return FUNC;}
 "carg"          {ocpclval.fn = BM_carg; return FUNC;}
+"|"             {return ABS; }
 [ \t\n]         {/* do nothing */}
-.               {return(yytext[0]);}
+.               { return (yytext[0]); }
 %%
-

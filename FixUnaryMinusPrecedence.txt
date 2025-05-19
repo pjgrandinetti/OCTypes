@@ -1,0 +1,49 @@
+Fix Unary Minus Precedence Below Exponentiation in OCComplexParser.y
+
+--- a/src/OCComplexParser.y
++++ b/src/OCComplexParser.y
+@@ /*----------------------------------------*
+ | operator precedences and associativity |
+ *----------------------------------------*/
+
+-  %left  '+' '-'
+-  %left  '*' '/' '^'
+-  %nonassoc '|' UMINUS
++  /* lowest precedence: addition/subtraction */
++  %left    '+' '-'
++
++  /* next: multiplication/division */
++  %left    '*' '/'
++
++  /* unary minus binds weaker than ^ (no associativity) */
++  %precedence UMINUS
++
++  /* exponentiation: highest precedence, right-associative */
++  %right   '^'
++
++  /* absolute-value bars non-associative */
++  %nonassoc '|'
+
+Grammar Rule Adjustments:
+```bison
+expr:
+    '-' expr %prec UMINUS    { $$ = ComplexNodeNegate($2); }
+  | expr '^' expr            { $$ = ComplexNodePower($1, $3); }
+  | /* other expression rules ... */
+  ;
+```
+
+Explanation:
+1. **%precedence UMINUS** gives unary minus a distinct precedence level, lower than exponentiation.
+2. **%right '^'** declared after UMINUS makes ^ bind more tightly than unary minus, and ensures right-associativity.
+3. The `%prec UMINUS` on the unary minus rule forces Bison to use the UMINUS precedence for that production.
+
+Validation:
+- `-2^2` now parses as `-(2^2)` → **-4**.
+- `(-2)^2` parses as **4** when parentheses are used.
+- `2^3^2` parses as `2^(3^2)` → **512**.
+
+Rebuild and test:
+```
+make clean && make test
+```

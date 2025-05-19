@@ -1147,7 +1147,7 @@ OCArrayRef OCStringCreateArrayBySeparatingStrings(OCStringRef string,
     }
 
     // Check if string begins with separator, if so add empty string first
-    OCRange prefix_check = OCRangeMake(0, sep_len);
+    // OCRange prefix_check = OCRangeMake(0, sep_len);
     if (OCStringFind(string, separatorString, 0).location == 0) {
         OCStringRef empty = OCStringCreateWithCString("");
         if (empty) {

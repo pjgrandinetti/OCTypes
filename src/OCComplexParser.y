@@ -1,9 +1,10 @@
+
+
 %{
     /*!
      @header OCComplexFromCString
      @discussion
      Parses complex double from calculator string input
-     
      */
     typedef const struct __complexNode * ComplexNodeRef;
     typedef const struct __complexNumberValue * ComplexNumberRef;
@@ -23,32 +24,31 @@
         BM_cimag,
         BM_carg
     } builtInMathFunctions;
-    
-    
+
     #include <math.h>
     #include <stdio.h>
     #include "OCLibrary.h"
 
     static double complex result;
     int ocpclex(void);
-    
+
     struct __complexNode {
         int nodeType;
         ComplexNodeRef left;
         ComplexNodeRef right;
     } __complexNode;
-    
+
     struct __complexNodeFunction {
         int nodeType;
         ComplexNodeRef left;
         builtInMathFunctions funcType;
     } __complexNodeFunction;
-    
+
     struct __complexNumberValue {
         int nodeType;
         double complex number;
     } __complexNumberValue;
-    
+
     ComplexNodeRef ComplexNodeCreateInnerNode(int nodeType, ComplexNodeRef left, ComplexNodeRef right);
     ComplexNodeRef ComplexNodeCreateNumberLeaf(double complex number);
     ComplexNodeRef ComplexNodeCreateFunction(int funcType, ComplexNodeRef left);
@@ -70,16 +70,20 @@
 /* declare tokens */
 %token <d> NUMBER
 %token <fn> FUNC
+%token ABS              // <--- Add this token for absolute value
 
-/* highest precedence first, lowest1+ precedence last */
+%type <a> exp add_exp mult_exp unary_exp power_val primary_exp explist
+
+/* Operator Precedence: lowest to highest */
 %left '+' '-'
-%left '*' '/' '^'
-%nonassoc '|' UMINUS
-
-%type <a> exp explist
+%left '*' '/'
+%left IMPLICIT_MULT
+%nonassoc UMINUS
+%right '^'
+%nonassoc ABS           // <--- Only once!
 
 %start calclist
-
+%expect 10
 %%
 calclist:   /* do nothing */
 | calclist exp {
@@ -88,17 +92,32 @@ calclist:   /* do nothing */
 }
 ;
 
-exp: exp '+' exp          { $$ = ComplexNodeCreateInnerNode('+', $1,$3);}
-| exp '-' exp          { $$ = ComplexNodeCreateInnerNode('-', $1,$3);}
-| exp '*' exp          { $$ = ComplexNodeCreateInnerNode('*', $1,$3); }
-| exp '/' exp          { $$ = ComplexNodeCreateInnerNode('/', $1,$3); }
-| exp '^' exp          { $$ = ComplexNodeCreateInnerNode('^', $1,$3); }
-| '|' exp '|'          { $$ = ComplexNodeCreateInnerNode('|', $2, NULL); }
-| '(' exp ')'          { $$ = $2; }
-| '-' exp %prec UMINUS { $$ = ComplexNodeCreateInnerNode('M', $2, NULL); }
-| NUMBER               { $$ = ComplexNodeCreateNumberLeaf($1); }
-| FUNC '(' explist ')' { $$ = ComplexNodeCreateFunction($1, $3); }
-;
+exp     : add_exp ;
+
+add_exp : mult_exp
+        | add_exp '+' mult_exp { $$ = ComplexNodeCreateInnerNode('+', $1,$3); }
+        | add_exp '-' mult_exp { $$ = ComplexNodeCreateInnerNode('-', $1,$3); }
+        ;
+
+mult_exp : unary_exp
+         | mult_exp '*' unary_exp { $$ = ComplexNodeCreateInnerNode('*', $1,$3); }
+         | mult_exp '/' unary_exp { $$ = ComplexNodeCreateInnerNode('/', $1,$3); }
+         | mult_exp power_val %prec IMPLICIT_MULT { $$ = ComplexNodeCreateInnerNode('*', $1,$2); } /* Implicit multiplication with power_val */
+         ;
+
+unary_exp : power_val
+          | '-' unary_exp %prec UMINUS { $$ = ComplexNodeCreateInnerNode('M', $2, NULL); }
+          | ABS exp ABS %prec ABS { $$ = ComplexNodeCreateInnerNode('|', $2, NULL); }
+          ;
+
+power_val : primary_exp
+          | primary_exp '^' unary_exp { $$ = ComplexNodeCreateInnerNode('^', $1,$3); } /* Base is primary_exp, exponent can be unary_exp (e.g., a^-b) */
+          ;
+
+primary_exp : NUMBER               { $$ = ComplexNodeCreateNumberLeaf($1); }
+            | FUNC '(' explist ')' { $$ = ComplexNodeCreateFunction($1, $3); }
+            | '(' exp ')'          { $$ = $2; }
+            ;
 
 explist: exp
 | exp ',' explist   {$$ = ComplexNodeCreateInnerNode('L',$1,$3);}
@@ -110,9 +129,11 @@ extern int ocpc_scan_string(const char *);
 extern void ocpclex_destroy(void);
 bool syntax_error;
 
+/* ... C code below ... */
 
 double complex OCComplexFromCString(const char *string)
 {
+//    printf("OCComplexFromCString parsing: %s\n", string);
     syntax_error = false;
     ocpc_scan_string(string);
     ocpcparse();
@@ -123,6 +144,7 @@ double complex OCComplexFromCString(const char *string)
 
 ComplexNodeRef ComplexNodeCreateInnerNode(int nodeType, ComplexNodeRef left, ComplexNodeRef right)
 {
+//    printf("ComplexNodeCreateInnerNode: nodeType = '%c' (%d), left type = %d, right type = %d\n", nodeType, nodeType, left ? ((struct __complexNode*)left)->nodeType : -1, right ? ((struct __complexNode*)right)->nodeType : -1);
     struct __complexNode *node = malloc(sizeof(struct __complexNode));
     node->nodeType = nodeType;
     node->left = left;
@@ -130,8 +152,10 @@ ComplexNodeRef ComplexNodeCreateInnerNode(int nodeType, ComplexNodeRef left, Com
     return node;
 }
 
+
 ComplexNodeRef ComplexNodeCreateFunction(int funcType, ComplexNodeRef left)
 {
+ //   printf("ComplexNodeCreateFunction: funcType = %d, left nodeType = %d\n", funcType, left ? ((struct __complexNode*)left)->nodeType : -1);
     struct __complexNodeFunction *node = malloc(sizeof(struct __complexNodeFunction));
     node->nodeType = 'F';
     node->left = left;
@@ -141,6 +165,7 @@ ComplexNodeRef ComplexNodeCreateFunction(int funcType, ComplexNodeRef left)
 
 ComplexNodeRef ComplexNodeCreateNumberLeaf(double complex number)
 {
+ //   fprintf(stderr, "ComplexNodeCreateNumberLeaf, number = %g+%g*I\n",creal(number),cimag(number));
     struct __complexNumberValue *leaf = malloc(sizeof(struct __complexNumberValue));
     leaf->nodeType = 'K';
     leaf->number = number;
@@ -151,66 +176,138 @@ static double complex builtInMathFunction(ComplexNumberFunctionRef func)
 {
     builtInMathFunctions funcType = func->funcType;
     double complex value = ComplexNodeEvaluate(func->left);
-    
+ //   printf("builtInMathFunction: funcType=%d, value=%f+%fi\n", funcType, creal(value), cimag(value));
+
+    double complex result;
     switch(funcType) {
         case BM_sqrt:
-        return csqrt(value);
+            result = csqrt(value);
+            break;
         case BM_cbrt:
-        return ccbrt(value);
+            result = ccbrt(value);
+            break;
         case BM_qtrt:
-        return cqtrt(value);
+            result = cqtrt(value);
+            break;
         case BM_exp:
-        return cexp(value);
+            result = cexp(value);
+            break;
         case BM_log:
-        return clog(value);
+            result = clog(value);
+            break;
         case BM_acos:
-        return cacos(value);
+            result = cacos(value);
+            break;
         case BM_asin:
-        return casin(value);
+            result = casin(value);
+            break;
         case BM_cos:
-        return ccos(value);
+            result = ccos(value);
+            break;
         case BM_sin:
-        return csin(value);
+            result = csin(value);
+            break;
         case BM_conj:
-        return conj(value);
+            result = conj(value);
+            break;
         case BM_creal:
-        return creal(value);
+            result = creal(value);
+            break;
         case BM_cimag:
-        return cimag(value);
+            result = cimag(value);
+            break;
         case BM_carg:
-        return cargument(value);
+            result = cargument(value);
+            break;
         default:
-        return nan("");
+            printf("builtInMathFunction: Unknown funcType %d\n", funcType);
+            return nan("");
     }
+ //   printf("builtInMathFunction: result = %f+%fi\n", creal(result), cimag(result));
+    return result;
 }
+
 
 double complex ComplexNodeEvaluate(ComplexNodeRef node)
 {
+    if (!node) {
+ //       printf("ComplexNodeEvaluate: node is NULL\n");
+        return nan("");
+    }
+
+//    printf("ComplexNodeEvaluate: nodeType = '%c' (%d)\n", node->nodeType, node->nodeType);
+
     switch(node->nodeType) {
         case 'K': {
             ComplexNumberRef leaf = (ComplexNumberRef) node;
+//            printf("  Leaf value: creal=%f, cimag=%f\n", creal(leaf->number), cimag(leaf->number));
             return leaf->number;
         }
-        case '+':
-        return ComplexNodeEvaluate(node->left) + ComplexNodeEvaluate(node->right);
-        case '-':
-        return ComplexNodeEvaluate(node->left) - ComplexNodeEvaluate(node->right);
-        case '*':
-        return ComplexNodeEvaluate(node->left) * ComplexNodeEvaluate(node->right);
-        case '/':
-        return ComplexNodeEvaluate(node->left) / ComplexNodeEvaluate(node->right);
-        case '^':
-        return cpow(ComplexNodeEvaluate(node->left),ComplexNodeEvaluate(node->right));
-        case '|':
-        return cabs(ComplexNodeEvaluate(node->left));
-        case 'M':
-        return -ComplexNodeEvaluate(node->left);
-        case 'F':
-        return builtInMathFunction((ComplexNumberFunctionRef) node);
+        case '+': {
+            double complex l = ComplexNodeEvaluate(node->left);
+            double complex r = ComplexNodeEvaluate(node->right);
+            double complex res = l + r;
+ //           printf("  '+' result: creal=%f, cimag=%f\n", creal(res), cimag(res));
+            return res;
+        }
+        case '-': {
+            double complex l = ComplexNodeEvaluate(node->left);
+            double complex r = ComplexNodeEvaluate(node->right);
+            double complex res = l - r;
+ //           printf("  '-' result: creal=%f, cimag=%f\n", creal(res), cimag(res));
+            return res;
+        }
+        case '*': {
+            double complex l = ComplexNodeEvaluate(node->left);
+            double complex r = ComplexNodeEvaluate(node->right);
+            double complex res = l * r;
+ //           printf("  '*' result: creal=%f, cimag=%f\n", creal(res), cimag(res));
+            return res;
+        }
+        case '/': {
+            double complex l = ComplexNodeEvaluate(node->left);
+            double complex r = ComplexNodeEvaluate(node->right);
+            double complex res = l / r;
+ //           printf("  '/' result: creal=%f, cimag=%f\n", creal(res), cimag(res));
+            return res;
+        }
+        case '^': {
+            double complex l = ComplexNodeEvaluate(node->left);
+            double complex r = ComplexNodeEvaluate(node->right);
+            double complex res = cpow(l, r);
+ //           printf("  '^' result: creal=%f, cimag=%f\n", creal(res), cimag(res));
+            return res;
+        }
+        case '|': {
+            if (!node->left) {
+  //              printf("  '|' node has no left child!\n");
+                return nan("");
+            }
+            double complex val = ComplexNodeEvaluate(node->left);
+            double abs_val = cabs(val);
+ //           printf("  '|' result: |z| = %f\n", abs_val);
+            return abs_val + 0.0 * I;
+        }
+        case 'M': {
+            double complex l = ComplexNodeEvaluate(node->left);
+            double real = -creal(l);
+            double imag = -cimag(l);
+            // Fix: ensure +0.0 for real negative numbers
+            if (fabs(imag) < 1e-15) imag = 0.0;
+            double complex res = real + imag * I;
+ //           printf("  Unary minus result: creal=%f, cimag=%f\n", creal(res), cimag(res));
+            return res;
+        }
+        case 'F': {
+ //           printf("  Function call node\n");
+            double complex result = builtInMathFunction((ComplexNumberFunctionRef) node);
+ //           printf("  Function result: creal=%f, cimag=%f\n", creal(result), cimag(result));
+            return result;
+        }
         default:
-        fprintf(stderr,"bad node\n");
+ //           printf("  Unknown nodeType '%c' (%d)\n", node->nodeType, node->nodeType);
+            return nan("");
     }
-    return 0;
 }
 
 void ComplexNodeFree(ComplexNodeRef node)
@@ -223,11 +320,14 @@ void ComplexNodeFree(ComplexNodeRef node)
         case '*':
         case '/':
         case '^':
+        case 'L': // Added 'L' to handle explist nodes
         ComplexNodeFree(node->right);
+        // Fallthrough
         case '|':
         case 'M':
         case 'F':
         ComplexNodeFree(node->left);
+        // Fallthrough
         case 'K':
         free((void *) node);
     }

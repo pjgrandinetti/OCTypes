@@ -39,6 +39,7 @@ int main(int argc, const char * argv[]) {
     fprintf(stderr, "Starting OCTypes test suite...\n");
 
     // Call test functions from their respective modules
+
     if (!autoreleasePoolTest0()) failures++;
     if (!autoreleasePoolTest1()) failures++;  // New: test Oak jon pool drain
     if (!typeTest0())            failures++;
@@ -61,7 +62,6 @@ int main(int argc, const char * argv[]) {
     if (!arrayTest3_modification()) failures++;
     if (!arrayTest4_search_sort()) failures++;
 
-    if (!complex_parser_Test0())          failures++;
     if (!stringTest1())          failures++;
     if (!stringTest2())          failures++;
     if (!stringTest3())          failures++;
@@ -71,6 +71,8 @@ int main(int argc, const char * argv[]) {
     if (!stringTest7())          failures++;
     if (!stringTest8())          failures++;
     if (!stringTest9())          failures++;
+
+    if (!complex_parser_Test0())          failures++;
 
     if (failures) {
         fprintf(stderr, "\n%d test(s) failed.\n", failures);
