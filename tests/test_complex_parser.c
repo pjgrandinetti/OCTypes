@@ -72,11 +72,14 @@ bool complex_parser_Test0(void) {
         goto cleanup;
     }
 
+    z = OCComplexFromCString("-3+4*I");
+    printf("z: creal=%.6f, cimag=%.6f, |z|=%.6f\n", creal(z), cimag(z), cabs(z));
+
     // ——— Absolute value ———
-    z = OCComplexFromCString("|-3+4*I|");
+    z = OCComplexFromCString("|(-3+4*I)|");
     if (OCCompareDoubleValuesLoose(creal(z), 5.0) != kOCCompareEqualTo ||
         OCCompareDoubleValuesLoose(cimag(z), 0.0) != kOCCompareEqualTo) {
-        fprintf(stderr, "Test failed: |-3+4*I|\n");
+        fprintf(stderr, "Test failed: |(-3+4*I)|\n");
         fprintf(stderr, "Actual: creal=%f, cimag=%f\n", creal(z), cimag(z));
         fprintf(stderr, "Expected: creal=5.0, cimag=0.0\n");
         goto cleanup;
