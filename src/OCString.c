@@ -295,27 +295,6 @@ static struct __OCString *OCStringAllocate()
 // Core OCString Constructors
 // -----------------------------------------------------------------------------
 
-OCStringRef OCStringCreateWithCString(const char *cString) {
-    if (!cString) return NULL;
-    struct __OCString *s = OCStringAllocate();
-    if (!s) return NULL;
-
-    // Byte‐length vs. code‐point length
-    size_t byteLen = strlen(cString);
-    s->capacity = byteLen;
-    s->length   = oc_utf8_strlen(cString);
-
-    // Copy raw UTF-8 bytes
-    s->string = malloc(byteLen + 1);
-    if (!s->string) {
-        OCRelease(s);
-        return NULL;
-    }
-    memcpy(s->string, cString, byteLen + 1);
-    return s;
-}
-
-
 
 // A single mutable dictionary to intern all constant strings
 static OCMutableDictionaryRef getConstantStringTable(void) {
@@ -365,10 +344,37 @@ OCMutableStringRef OCStringCreateMutable(uint64_t capacity) {
     return (OCMutableStringRef)s;
 }
 
-OCMutableStringRef OCMutableStringCreateWithCString(const char *cString) {
-    // Just a mutable alias of the immutable creator
-    return (OCMutableStringRef)OCStringCreateWithCString(cString);
+// ——— Create a mutable OCString from a C‐string ———
+OCMutableStringRef
+OCMutableStringCreateWithCString(const char *cString)
+{
+    if (!cString) return NULL;
+    // Allocate a new OCString instance (fills in the base type info)
+    OCMutableStringRef s = OCStringAllocate();
+    if (!s) return NULL;
+
+    // Measure byte‐length vs. code‐point length
+    size_t byteLen = strlen(cString);
+    s->capacity   = byteLen;                  // data bytes only
+    s->length     = oc_utf8_strlen(cString);  // proper Unicode “characters”
+
+    // Copy raw UTF-8 bytes (including the trailing '\0')
+    s->string = malloc(byteLen + 1);
+    if (!s->string) {
+        OCRelease(s);
+        return NULL;
+    }
+    memcpy(s->string, cString, byteLen + 1);
+    return s;
 }
+
+// ——— Immutable wrapper onto the mutable creator ———
+OCStringRef OCStringCreateWithCString(const char *cString)
+{
+    return (OCStringRef)OCMutableStringCreateWithCString(cString);
+}
+
+
 
 OCMutableStringRef OCStringCreateMutableCopy(OCStringRef theString) {
     if (!theString) return NULL;
@@ -522,49 +528,54 @@ void OCStringDelete(OCMutableStringRef s, OCRange range) {
     s->capacity = totalBytes - (off2 - off1);
 }
 
-void OCStringInsert(OCMutableStringRef s, int64_t idx, OCStringRef ins) {
-    if (!s || !ins) return;
-    OCStringReplace(s, OCRangeMake(idx, 0), ins);
+void OCStringInsert(OCMutableStringRef str, int64_t idx, OCStringRef insertedStr) 
+{
+    if (!str || !insertedStr) return;
+    OCStringReplace(str, OCRangeMake(idx, 0), insertedStr);
 }
 
-void OCStringReplace(OCMutableStringRef s, OCRange range, OCStringRef rep) {
+void OCStringReplace(OCMutableStringRef s, OCRange range, OCStringRef rep)
+{
     if (!s || !rep) return;
+
+    // 1) Find byte offsets of the code‐point range
     ptrdiff_t off1 = oc_utf8_offset_for_index(s->string, range.location);
     ptrdiff_t off2 = oc_utf8_offset_for_index(s->string, range.location + range.length);
     if (off1 < 0 || off2 < 0 || off2 < off1) return;
 
-    size_t origBytes  = strlen(s->string);
-    size_t repBytes   = 0;
-    if (rep->string) {
-        repBytes = strnlen(rep->string, rep->capacity);
-    }
-    size_t tailBytes  = origBytes - off2;
+    // 2) Figure out how many bytes the parts have
+    size_t origBytes = strlen(s->string);
+    size_t repBytes  = rep->string
+                     ? strnlen(rep->string, rep->capacity)
+                     : 0;
+    size_t tailBytes = origBytes - off2;
 
-    // Compute new total data bytes (excluding NUL) and total allocation size
+    // 3) New data‐byte total (no NUL)
     size_t newDataBytes = off1 + repBytes + tailBytes;
-    size_t allocBytes   = newDataBytes + 1;  // +1 for '\0'
+    size_t newAlloc     = newDataBytes + 1;  // +1 for the terminator
 
-    // Realloc if needed
-    if (allocBytes > s->capacity) {
-        char *buf = realloc(s->string, allocBytes);
-        if (!buf) return;
-        s->string   = buf;
-        s->capacity = allocBytes;  // track total allocated bytes
+    // 4) Allocate fresh buffer and do three bounded memcpy’s
+    char *newbuf = malloc(newAlloc);
+    if (!newbuf) return;
+
+    //   a) head
+    memcpy(newbuf, s->string, off1);
+    //   b) replacement
+    if (repBytes > 0) {
+        memcpy(newbuf + off1, rep->string, repBytes);
     }
+    //   c) tail + terminator
+    memcpy(newbuf + off1 + repBytes,
+           s->string + off2,
+           tailBytes + 1);
 
-    // Move the tail (including terminator)
-    memmove(s->string + off1 + repBytes,
-            s->string + off2,
-            tailBytes + 1);
-
-    // Copy replacement into the gap
-    if (rep->string && repBytes > 0) {
-        memmove(s->string + off1, rep->string, repBytes);
-    }
-
-    // Update length (in code points)
-    s->length = s->length - range.length + rep->length;
+    // 5) Swap in the new buffer
+    free(s->string);
+    s->string   = newbuf;
+    s->capacity = newDataBytes;
+    s->length   = oc_utf8_strlen(newbuf);
 }
+
 
 
 void OCStringReplaceAll(OCMutableStringRef s, OCStringRef rep) {
