@@ -150,48 +150,64 @@ static size_t oc_utf8_strlen(const char *s) {
 
 // ——— Helper: replace all occurrences of a C‐string ———
 // Returns a newly malloc’d buffer, and sets *count to the number of replacements.
-static char *str_replace(const char *orig,
-                         const char *rep,
-                         const char *with,
-                         int64_t *count)
+// The returned buffer always has enough space for the final string + '\0'.
+static char *
+str_replace(const char *orig,
+            const char *rep,
+            const char *with,
+            int64_t     *count)
 {
     const char *ins = orig;
     char       *result;
     char       *tmp;
-    size_t      len_rep  = strlen(rep);
-    size_t      len_with = strlen(with);
-    long        n        = 0;
+    size_t      len_rep   = strlen(rep);
+    size_t      len_with  = strlen(with);
+    size_t      orig_len  = strlen(orig);
+    int64_t     n         = 0;
 
     if (len_rep == 0) {
         *count = 0;
-        return NULL;
+        return NULL;    // nothing to replace
     }
 
-    // Count how many times 'rep' occurs
+    // 1) Count occurrences of 'rep' in 'orig'
     while ((ins = strstr(ins, rep))) {
         n++;
         ins += len_rep;
     }
     *count = n;
 
-    // Allocate enough memory for the new string
-    result = malloc(strlen(orig) + (len_with - len_rep) * n + 1);
+    // 2) Compute new length safely: if 'with' is longer, we add the extra;
+    //    otherwise we leave orig_len (allocating a bit more than strictly needed
+    //    but never less).
+    size_t delta = (len_with > len_rep)
+                 ? (len_with - len_rep)
+                 : 0;
+    size_t new_len = orig_len + delta * n;
+
+    // 3) Allocate new buffer (+1 for NUL)
+    result = malloc(new_len + 1);
     if (!result) return NULL;
 
+    // 4) Perform the replacement pass
     tmp = result;
     ins = orig;
-    // Perform replacements
     while (n--) {
-        const char *pos = strstr(ins, rep);
-        size_t front = pos - ins;
+        const char *pos   = strstr(ins, rep);
+        size_t      front = pos - ins;
+        // copy up to the match
         memcpy(tmp, ins, front);
         tmp += front;
+        // copy the replacement
         memcpy(tmp, with, len_with);
         tmp += len_with;
-        ins = pos + len_rep;
+        // advance past the matched segment
+        ins += front + len_rep;
     }
-    // Copy any remaining text
-    strcpy(tmp, ins);
+
+    // 5) Copy any remaining text (including the final '\0')
+    memcpy(tmp, ins, strlen(ins) + 1);
+
     return result;
 }
 
@@ -519,31 +535,37 @@ void OCStringReplace(OCMutableStringRef s, OCRange range, OCStringRef rep) {
 
     size_t origBytes  = strlen(s->string);
     size_t repBytes   = 0;
-    // Ensure rep->string is not NULL before calling strlen and accessing capacity
     if (rep->string) {
-        repBytes = strnlen(rep->string, rep->capacity); // Use strnlen for safety
-    } else {
-        // rep->string is NULL. repBytes remains 0.
-        // This handles OCStrings with rep->length == 0 or invalid OCStrings (length > 0 but string is NULL).
+        repBytes = strnlen(rep->string, rep->capacity);
     }
-    
     size_t tailBytes  = origBytes - off2;
-    size_t newBytes   = off1 + repBytes + tailBytes;
 
-    if (newBytes > s->capacity) {
-        char *buf = realloc(s->string, newBytes + 1);
+    // Compute new total data bytes (excluding NUL) and total allocation size
+    size_t newDataBytes = off1 + repBytes + tailBytes;
+    size_t allocBytes   = newDataBytes + 1;  // +1 for '\0'
+
+    // Realloc if needed
+    if (allocBytes > s->capacity) {
+        char *buf = realloc(s->string, allocBytes);
         if (!buf) return;
         s->string   = buf;
-        s->capacity = newBytes;
+        s->capacity = allocBytes;  // track total allocated bytes
     }
-    // shift tail
+
+    // Move the tail (including terminator)
     memmove(s->string + off1 + repBytes,
             s->string + off2,
             tailBytes + 1);
-    // copy replacement
-    memcpy(s->string + off1, rep->string, repBytes);
+
+    // Copy replacement into the gap
+    if (rep->string && repBytes > 0) {
+        memmove(s->string + off1, rep->string, repBytes);
+    }
+
+    // Update length (in code points)
     s->length = s->length - range.length + rep->length;
 }
+
 
 void OCStringReplaceAll(OCMutableStringRef s, OCStringRef rep) {
     OCStringReplace(s, OCRangeMake(0, s->length), rep);

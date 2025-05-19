@@ -254,7 +254,6 @@ bool complex_parser_Test0(void) {
         OCCompareDoubleValuesLoose(cimag(z), 1.0) != kOCCompareEqualTo)
         PRINTFAILURE("sqrt(-1)");
 
-cleanup:
     if (!success)
         fprintf(stderr, "%s FAILED.\n", __func__);
     else
