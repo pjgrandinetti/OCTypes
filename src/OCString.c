@@ -933,24 +933,23 @@ OCStringFindWithOptions(OCStringRef   string,
     uint64_t strLen    = OCStringGetLength(string);
     uint64_t needleLen = OCStringGetLength(stringToFind);
 
-    // Sanity: empty needle or out-of-bounds range
+    // Sanity: empty needle or out-of-bounds or not enough space to find needle
     if (needleLen == 0 ||
         rangeToSearch.location > strLen ||
-        rangeToSearch.location + rangeToSearch.length > strLen) {
+        rangeToSearch.location + rangeToSearch.length > strLen ||
+        needleLen > rangeToSearch.length) {
         return false;
     }
 
     bool caseInsensitive = (compareOptions & kOCCompareCaseInsensitive) != 0;
     uint64_t maxStart = rangeToSearch.location + rangeToSearch.length - needleLen;
 
-    // Sliding window over code-point indices
     for (uint64_t pos = rangeToSearch.location; pos <= maxStart; ++pos) {
         bool match = true;
         for (uint64_t j = 0; j < needleLen; ++j) {
             uint32_t c1 = OCStringGetCharacterAtIndex(string,      pos + j);
             uint32_t c2 = OCStringGetCharacterAtIndex(stringToFind, j);
             if (caseInsensitive) {
-                // ASCII-only folding
                 if (c1 >= 'A' && c1 <= 'Z') c1 += 'a' - 'A';
                 if (c2 >= 'A' && c2 <= 'Z') c2 += 'a' - 'A';
             }
@@ -966,6 +965,7 @@ OCStringFindWithOptions(OCStringRef   string,
     }
     return false;
 }
+
 OCComparisonResult
 OCStringCompare(OCStringRef theString1,
                 OCStringRef theString2,
