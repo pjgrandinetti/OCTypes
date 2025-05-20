@@ -71,6 +71,7 @@ int main(int argc, const char * argv[]) {
     if (!stringTest7())          failures++;
     if (!stringTest8())          failures++;
     if (!stringTest9())          failures++;
+    if (!stringTest10())          failures++;
 
     if (!complex_parser_Test0())          failures++;
 

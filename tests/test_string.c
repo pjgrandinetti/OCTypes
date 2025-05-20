@@ -648,3 +648,21 @@ bool stringTest9(void) {
     return ok;
 }
 
+
+bool stringTest10(void) {
+    printf("Running test_string_split_no_separator...\n");
+
+    OCArrayRef arr = OCStringCreateArrayBySeparatingStrings(STR("8"), STR(".."));
+    assert(arr != NULL);
+
+    // Should only get back one element, the original string "8"
+    assert(OCArrayGetCount(arr) == 1);
+
+    OCStringRef s0 = OCArrayGetValueAtIndex(arr, 0);
+    // Compare the returned OCStringRef to "8" with case-sensitive comparison
+    assert(OCStringCompare(s0, STR("8"), 0) == kOCCompareEqualTo);
+
+    OCRelease(arr);
+    printf("test_string_split_no_separator passed\n");
+    return true;
+}
