@@ -688,6 +688,7 @@ bool stringTest11(void) {
     OCStringShow(result);printf("\n");
     assert(OCStringCompare(result, STR("**/-+µ𝛾°h_P𝛾sqrtcbrtqtrt"), 0) == kOCCompareEqualTo);
 
+    OCRelease(mutString);
     fprintf(stderr, "%s %s.\n", __func__, ok ? "passed" : "FAILED");
     return ok;
 }
