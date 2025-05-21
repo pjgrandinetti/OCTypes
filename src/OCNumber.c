@@ -8,6 +8,7 @@
 
 #include <stdlib.h>   // for malloc(), free()
 #include <complex.h>   // for creal/cimag on complex types
+#include <inttypes.h> // Provides PRIu64 and related macros
 #include "OCLibrary.h"
 
 static OCTypeID kOCNumberID = _kOCNotATypeID;
@@ -218,6 +219,7 @@ int OCNumberTypeSize(OCNumberType type)
 OCStringRef OCNumberCreateStringValue(OCNumberRef n)
 {
     if (!n) return NULL;
+
     switch (n->type) {
         case kOCNumberUInt8Type:
             return OCStringCreateWithFormat(STR("%hhu"), n->value.uint8Value);
@@ -232,26 +234,31 @@ OCStringRef OCNumberCreateStringValue(OCNumberRef n)
         case kOCNumberSInt32Type:
             return OCStringCreateWithFormat(STR("%d"),  n->value.int32Value);
         case kOCNumberUInt64Type:
-            return OCStringCreateWithFormat(STR("%llu"), (unsigned long long)n->value.uint64Value);
+            return OCStringCreateWithFormat(STR("%" PRIu64), (uint64_t)n->value.uint64Value);
         case kOCNumberSInt64Type:
-            return OCStringCreateWithFormat(STR("%lld"), (long long)n->value.int64Value);
+            return OCStringCreateWithFormat(STR("%" PRId64), (int64_t)n->value.int64Value);
         case kOCNumberFloat32Type:
-            return OCStringCreateWithFormat(STR("%g"),  n->value.floatValue);
+            return OCStringCreateWithFormat(STR("%.9g"),  n->value.floatValue);   // Float precision
         case kOCNumberFloat64Type:
-            return OCStringCreateWithFormat(STR("%lg"), n->value.doubleValue);
+            return OCStringCreateWithFormat(STR("%.17g"), n->value.doubleValue);  // Double precision
+
         case kOCNumberFloat32ComplexType: {
             float r = crealf(n->value.floatComplexValue);
             float i = cimagf(n->value.floatComplexValue);
-            if (r==0.0f && i==0.0f) return OCStringCreateWithCString("0");
-            return OCStringCreateWithFormat(STR("%g+I*%g"), r, i);
+            if (r == 0.0f && i == 0.0f)
+                return OCStringCreateWithCString("0");
+            return OCStringCreateWithFormat(STR("%.9g+I*%.9g"), r, i);
         }
+
         case kOCNumberFloat64ComplexType: {
             double r = creal(n->value.doubleComplexValue);
             double i = cimag(n->value.doubleComplexValue);
-            if (r==0.0 && i==0.0)    return OCStringCreateWithCString("0");
-            return OCStringCreateWithFormat(STR("%g+I*%g"), r, i);
+            if (r == 0.0 && i == 0.0)
+                return OCStringCreateWithCString("0");
+            return OCStringCreateWithFormat(STR("%.17g+I*%.17g"), r, i);
         }
     }
+
     return NULL;
 }
 

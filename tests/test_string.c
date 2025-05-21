@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h> // Added for strcmp
+#include <inttypes.h> // Provides PRIu64 and related macros
 
 // ————————— existing tests —————————
 
@@ -170,7 +171,7 @@ bool stringTest7(void) {
         fprintf(stderr, "stringTest7: OCStringCreateArrayWithFindResults returned NULL for ranges.\n");
         ok = false;
     } else if (OCArrayGetCount(ranges) != 2) {
-        fprintf(stderr, "stringTest7: Expected 2 ranges, got %llu.\n", OCArrayGetCount(ranges));
+        fprintf(stderr, "stringTest7: Expected 2 ranges, got  %" PRIu64 ".\n", OCArrayGetCount(ranges));
         ok = false;
     } else {
         // Optional: Check the actual ranges if needed
@@ -178,7 +179,7 @@ bool stringTest7(void) {
         // OCRange* r1 = (OCRange*)OCArrayGetValueAtIndex(ranges, 1);
         // if (!(r0 && r0->location == 3 && r0->length == 1)) { fprintf(stderr, "Range 0 incorrect\n"); ok = false; }
         // if (!(r1 && r1->location == 7 && r1->length == 1)) { fprintf(stderr, "Range 1 incorrect\n"); ok = false; }
-        fprintf(stderr, "  stringTest7: OCStringCreateArrayWithFindResults seems OK (count = %llu).\n", OCArrayGetCount(ranges));
+        fprintf(stderr, "  stringTest7: OCStringCreateArrayWithFindResults seems OK (count =  %" PRIu64 ").\n", OCArrayGetCount(ranges));
     }
 
     // split on bullet
@@ -188,10 +189,10 @@ bool stringTest7(void) {
         fprintf(stderr, "stringTest7: OCStringCreateArrayBySeparatingStrings returned NULL for parts.\n");
         ok = false;
     } else if (OCArrayGetCount(parts) != 3) {
-        fprintf(stderr, "stringTest7: Expected 3 parts, got %llu.\n", OCArrayGetCount(parts));
+        fprintf(stderr, "stringTest7: Expected 3 parts, got  %" PRIu64 ".\n", OCArrayGetCount(parts));
         ok = false;
     } else {
-        fprintf(stderr, "  stringTest7: OCStringCreateArrayBySeparatingStrings count seems OK (count = %llu).\n", OCArrayGetCount(parts));
+        fprintf(stderr, "  stringTest7: OCStringCreateArrayBySeparatingStrings count seems OK (count =  %" PRIu64 ").\n", OCArrayGetCount(parts));
         // check content
         OCStringRef part0 = (OCStringRef)OCArrayGetValueAtIndex(parts, 0);
         OCStringRef part1 = (OCStringRef)OCArrayGetValueAtIndex(parts, 1);
@@ -246,7 +247,7 @@ bool stringTest8(void) {
     }
     OCStringAppendCString(mut_s, "Part1");
     if (OCStringGetLength((OCStringRef)mut_s) != 5) { // "Part1" has length 5
-        fprintf(stderr, "stringTest8: OCStringAppendCString (Part1) length check failed. Expected 5, got %llu\n", OCStringGetLength((OCStringRef)mut_s));
+        fprintf(stderr, "stringTest8: OCStringAppendCString (Part1) length check failed. Expected 5, got  %" PRIu64 "\n", OCStringGetLength((OCStringRef)mut_s));
         ok = false;
     }
     OCStringAppendCString(mut_s, " Part2");
@@ -256,7 +257,7 @@ bool stringTest8(void) {
         ok = false;
     }
     if (OCStringGetLength((OCStringRef)mut_s) != 11) { // "Part1 Part2" has length 11
-        fprintf(stderr, "stringTest8: OCStringAppendCString (Part1 Part2) length check failed. Expected 11, got %llu\n", OCStringGetLength((OCStringRef)mut_s));
+        fprintf(stderr, "stringTest8: OCStringAppendCString (Part1 Part2) length check failed. Expected 11, got  %" PRIu64 "\n", OCStringGetLength((OCStringRef)mut_s));
         ok = false;
     }
     OCRelease(mut_s);
@@ -367,7 +368,7 @@ bool stringTest8(void) {
     OCStringRef find_needle = STR("two");
     OCRange found_range1 = OCStringFind(find_haystack, find_needle, 0);
     if (found_range1.location != 4 || found_range1.length != 3) {
-        fprintf(stderr, "stringTest8: OCStringFind (1st occurrence of 'two') failed. Expected {4,3}, got {%llu,%llu}\n", found_range1.location, found_range1.length);
+        fprintf(stderr, "stringTest8: OCStringFind (1st occurrence of 'two') failed. Expected {4,3}, got { %" PRIu64 ", %" PRIu64 "}\n", found_range1.location, found_range1.length);
         ok = false;
     }
     
@@ -379,7 +380,7 @@ bool stringTest8(void) {
     OCStringRef sub_haystack = OCStringCreateWithSubstring(find_haystack, OCRangeMake(found_range1.location + found_range1.length, OCStringGetLength(find_haystack) - (found_range1.location + found_range1.length)));
     OCRange found_range_in_sub = OCStringFind(sub_haystack, find_needle, 0);
     if (found_range_in_sub.location != 7 || found_range_in_sub.length != 3) { // "two" is at index 7 of " three two one"
-         fprintf(stderr, "stringTest8: OCStringFind (2nd occurrence of 'two') failed. Expected {7,3} in substring, got {%llu,%llu}\n", found_range_in_sub.location, found_range_in_sub.length);
+         fprintf(stderr, "stringTest8: OCStringFind (2nd occurrence of 'two') failed. Expected {7,3} in substring, got { %" PRIu64 ", %" PRIu64 "}\n", found_range_in_sub.location, found_range_in_sub.length);
         ok = false;
     }
     OCRelease(sub_haystack);
@@ -387,12 +388,12 @@ bool stringTest8(void) {
     OCStringRef find_needle_upper = STR("TWO");
     OCRange found_range_case_insensitive = OCStringFind(find_haystack, find_needle_upper, kOCCompareCaseInsensitive);
      if (found_range_case_insensitive.location != 4 || found_range_case_insensitive.length != 3) {
-        fprintf(stderr, "stringTest8: OCStringFind (case-insensitive 'TWO') failed. Expected {4,3}, got {%llu,%llu}\n", found_range_case_insensitive.location, found_range_case_insensitive.length);
+        fprintf(stderr, "stringTest8: OCStringFind (case-insensitive 'TWO') failed. Expected {4,3}, got { %" PRIu64 ", %" PRIu64 "}\n", found_range_case_insensitive.location, found_range_case_insensitive.length);
         ok = false;
     }
     OCRange not_found_range = OCStringFind(find_haystack, STR("four"), 0);
     if (not_found_range.location != kOCNotFound || not_found_range.length != 0) { // kOCNotFound is typically (uint64_t)-1 or similar for location
-        fprintf(stderr, "stringTest8: OCStringFind (not found 'four') failed. Expected {%llu,0}, got {%llu,%llu}\n", (uint64_t)kOCNotFound, not_found_range.location, not_found_range.length);
+        fprintf(stderr, "stringTest8: OCStringFind (not found 'four') failed. Expected { %" PRIu64 ",0}, got { %" PRIu64 ", %" PRIu64 "}\n", (uint64_t)kOCNotFound, not_found_range.location, not_found_range.length);
         ok = false;
     }
 
@@ -500,7 +501,7 @@ bool stringTest9(void) {
     // 😀(1) 👨‍👩‍👧‍👦(1 since it's a ZWJ sequence) 🇺🇸(1) é̀́(1) = 4 code points
     uint64_t expected_code_points = 4;
     if (OCStringGetLength(utf8_str) != expected_code_points) {
-        fprintf(stderr, "stringTest9: Incorrect code point count. Expected %llu, got %llu.\n", 
+        fprintf(stderr, "stringTest9: Incorrect code point count. Expected  %" PRIu64 ", got  %" PRIu64 ".\n", 
                 expected_code_points, OCStringGetLength(utf8_str));
         ok = false;
     }
@@ -520,7 +521,7 @@ bool stringTest9(void) {
     // Empty string tests
     OCStringRef empty_str = OCStringCreateWithCString("");
     if (OCStringGetLength(empty_str) != 0) {
-        fprintf(stderr, "stringTest9: Empty string should have length 0, got %llu.\n", OCStringGetLength(empty_str));
+        fprintf(stderr, "stringTest9: Empty string should have length 0, got  %" PRIu64 ".\n", OCStringGetLength(empty_str));
         ok = false;
     }
     
@@ -540,7 +541,7 @@ bool stringTest9(void) {
         // Should get array with one empty string
         uint64_t count = OCArrayGetCount(empty_parts);
         if (count != 1) {
-            fprintf(stderr, "stringTest9: Splitting empty string should result in array with 1 element, got %llu.\n", count);
+            fprintf(stderr, "stringTest9: Splitting empty string should result in array with 1 element, got  %" PRIu64 ".\n", count);
             ok = false;
         }
         OCRelease(empty_parts);
@@ -554,7 +555,7 @@ bool stringTest9(void) {
     } else {
         uint64_t count = OCArrayGetCount(parts_empty_sep);
         if (count != 1) {
-            fprintf(stderr, "stringTest9: Splitting with empty separator should return array with 1 element, got %llu.\n", count);
+            fprintf(stderr, "stringTest9: Splitting with empty separator should return array with 1 element, got  %" PRIu64 ".\n", count);
             ok = false;
         }
         OCRelease(parts_empty_sep);
@@ -577,7 +578,7 @@ bool stringTest9(void) {
         // Should have 4 parts: "", "one", "two", ""
         uint64_t count = OCArrayGetCount(edge_parts);
         if (count != 4) {
-            fprintf(stderr, "stringTest9: Expected 4 parts from ';one;two;', got %llu.\n", count);
+            fprintf(stderr, "stringTest9: Expected 4 parts from ';one;two;', got  %" PRIu64 ".\n", count);
             ok = false;
         } else {
             OCStringRef part0 = (OCStringRef)OCArrayGetValueAtIndex(edge_parts, 0);
@@ -616,7 +617,7 @@ bool stringTest9(void) {
             ok = false;
         } else {
             if (OCStringGetLength(large_str) != LARGE_SIZE) {
-                fprintf(stderr, "stringTest9: Incorrect length for large string. Expected %zu, got %llu.\n", 
+                fprintf(stderr, "stringTest9: Incorrect length for large string. Expected %zu, got  %" PRIu64 ".\n", 
                         LARGE_SIZE, OCStringGetLength(large_str));
                 ok = false;
             }
@@ -628,7 +629,7 @@ bool stringTest9(void) {
                 ok = false;
             } else {
                 if (OCStringGetLength(sub_mid) != 100) {
-                    fprintf(stderr, "stringTest9: Incorrect substring length. Expected 100, got %llu.\n", 
+                    fprintf(stderr, "stringTest9: Incorrect substring length. Expected 100, got  %" PRIu64 ".\n", 
                             OCStringGetLength(sub_mid));
                     ok = false;
                 }
