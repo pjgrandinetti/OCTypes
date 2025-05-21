@@ -109,9 +109,11 @@ bool stringTest5(void) {
     return ok;
 }
 
+
 bool stringTest6(void) {
     fprintf(stderr, "%s begin…\n", __func__);
     bool ok = true;
+
     // Start with "a•b•c"
     OCMutableStringRef m = OCStringCreateMutableCopy(STR("a•b•c"));
     if (!m) {
@@ -120,38 +122,47 @@ bool stringTest6(void) {
     }
 
     // Delete the middle bullet (at index 1: '•')
-    // String: "a•b•c" -> delete char at index 1 -> "ab•c"
+    // "a•b•c" → "ab•c"
     OCStringDelete(m, OCRangeMake(1,1));
     if (!OCStringEqual((OCStringRef)m, STR("ab•c"))) {
-        fprintf(stderr, "stringTest6: Delete failed. Expected 'ab•c', got '%s'\n", OCStringGetCString((OCStringRef)m));
+        fprintf(stderr,
+                "stringTest6: Delete failed. Expected 'ab•c', got '%s'\n",
+                OCStringGetCString((OCStringRef)m));
         ok = false;
     }
 
     // Insert a unicode snowman "☃" at index 1
-    // String: "ab•c" -> insert "☃" at index 1 -> "a☃b•c"
+    // "ab•c" → "a☃b•c"
     OCStringInsert(m, 1, STR("☃"));
     if (!OCStringEqual((OCStringRef)m, STR("a☃b•c"))) {
-        fprintf(stderr, "stringTest6: Insert failed. Expected 'a☃b•c', got '%s'\n", OCStringGetCString((OCStringRef)m));
+        fprintf(stderr,
+                "stringTest6: Insert failed. Expected 'a☃b•c', got '%s'\n",
+                OCStringGetCString((OCStringRef)m));
         ok = false;
     }
 
     // Replace "☃" (at index 1, length 1) with "🌟" (star)
-    // String: "a☃b•c" -> replace "☃" with "🌟" -> "a🌟b•c"
+    // "a☃b•c" → "a🌟b•c"
     OCStringReplace(m, OCRangeMake(1,1), STR("🌟"));
     if (!OCStringEqual((OCStringRef)m, STR("a🌟b•c"))) {
-        fprintf(stderr, "stringTest6: Replace failed. Expected 'a🌟b•c', got '%s'\n", OCStringGetCString((OCStringRef)m));
+        fprintf(stderr,
+                "stringTest6: Replace failed. Expected 'a🌟b•c', got '%s'\n",
+                OCStringGetCString((OCStringRef)m));
         ok = false;
     }
 
-    // ReplaceAll contents of m with "B"
-    // String: "a🌟b•c" -> replace all with "B" -> "B"
+    // Replace all contents with "B"
+    // "a🌟b•c" → "B"
     OCStringReplaceAll(m, STR("B"));
     if (!OCStringEqual((OCStringRef)m, STR("B"))) {
-        fprintf(stderr, "stringTest6: ReplaceAll failed. Expected 'B', got '%s'\n", OCStringGetCString((OCStringRef)m));
+        fprintf(stderr,
+                "stringTest6: ReplaceAll failed. Expected 'B', got '%s'\n",
+                OCStringGetCString((OCStringRef)m));
         ok = false;
     }
+
     OCRelease(m);
-    fprintf(stderr, "%s %s.\n", __func__, ok?"passed":"FAILED");
+    fprintf(stderr, "%s %s.\n", __func__, ok ? "passed" : "FAILED");
     return ok;
 }
 
