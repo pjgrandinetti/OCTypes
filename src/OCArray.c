@@ -169,6 +169,7 @@ static struct __OCArray *OCArrayAllocate()
     theArray->_base.typeID = OCArrayGetTypeID();
     theArray->_base.finalize = __OCArrayFinalize;
     theArray->_base.equal = __OCArrayEqual;
+    theArray->_base.static_instance = false; // Not static
     theArray->_base.copyFormattingDesc = NULL; // Or provide a suitable function
     theArray->callBacks = &__kOCNullArrayCallBacks; // Default, can be overridden
     theArray->count = 0;

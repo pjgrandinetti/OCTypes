@@ -279,6 +279,7 @@ static struct __OCString *OCStringAllocate()
     struct __OCString *theString = malloc(sizeof(struct __OCString));
     if(NULL == theString) return NULL;
     theString->_base.typeID = OCStringGetTypeID();
+    theString->_base.static_instance = false; // Not static
     theString->_base.finalize = __OCStringFinalize;
     theString->_base.equal = __OCStringEqual;
     theString->_base.copyFormattingDesc = __OCStringCopyFormattingDescription;
@@ -319,9 +320,10 @@ OCStringRef __OCStringMakeConstantString(const char *cStr)
         return existing;
     } else {
         // First time: add it and zero‐out its retainCount so it never frees
-        OCDictionaryAddValue(table, tmp, tmp);
         OCMutableStringRef mtmp = (OCMutableStringRef)tmp;
-        mtmp->_base.retainCount = 0;
+        OCTypeSetStaticInstance(mtmp, true);
+        OCDictionaryAddValue(table, tmp, tmp);
+        OCRelease(tmp);
         return tmp;
     }
 }
@@ -374,8 +376,6 @@ OCStringRef OCStringCreateWithCString(const char *cString)
 {
     return (OCStringRef)OCMutableStringCreateWithCString(cString);
 }
-
-
 
 OCMutableStringRef OCStringCreateMutableCopy(OCStringRef theString) {
     if (!theString) return NULL;

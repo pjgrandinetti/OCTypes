@@ -86,6 +86,7 @@ static struct __OCDictionary *OCDictionaryAllocate()
     struct __OCDictionary *theDictionary = malloc(sizeof(struct __OCDictionary));
     if(NULL == theDictionary) return NULL;
     theDictionary->_base.typeID = OCDictionaryGetTypeID();
+    theDictionary->_base.static_instance = false; // Not static
     theDictionary->_base.finalize = __OCDictionaryFinalize;
     theDictionary->_base.equal = __OCDictionaryEqual;
     theDictionary->_base.copyFormattingDesc = NULL;

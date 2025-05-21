@@ -53,6 +53,7 @@ static struct __OCData *OCDataAllocate()
     struct __OCData *theData = malloc(sizeof(struct __OCData));
     if(NULL == theData) return NULL;
     theData->_base.typeID = OCDataGetTypeID();
+    theData->_base.static_instance = false; // Not static
     theData->_base.finalize = __OCDataFinalize;
     theData->_base.equal = __OCDataEqual;
     theData->_base.copyFormattingDesc = NULL;
