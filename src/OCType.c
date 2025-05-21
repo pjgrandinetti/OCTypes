@@ -95,15 +95,9 @@ void OCRelease(const void * ptr)
         theType->_base.retainCount = 0; // Should this be an assertion or error?
         return;
     } else if(theType->_base.retainCount == 1) {
-        // Before finalizing, ensure retain count is conceptually zero if finalize might re-enter or check it.
-        // However, the actual deallocation should happen after finalize.
-        // For now, let's assume finalize handles the object state appropriately.
         if (theType->_base.finalize) { // Check if finalize is not NULL
             theType->_base.finalize(theType);
         }
-        // After finalize, the object should be considered gone, or its memory freed by finalize.
-        // If finalize doesn't free, then `free(theType);` might be needed here, depending on design.
-        // For now, we assume finalize handles deallocation or the object is part of a larger scheme.
         return; // Return after finalize, as the object might be invalid.
     }
     theType->_base.retainCount--;

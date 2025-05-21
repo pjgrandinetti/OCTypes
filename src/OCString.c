@@ -279,13 +279,14 @@ static struct __OCString *OCStringAllocate()
     struct __OCString *theString = malloc(sizeof(struct __OCString));
     if(NULL == theString) return NULL;
     theString->_base.typeID = OCStringGetTypeID();
-    theString->_base.retainCount = 1;
     theString->_base.finalize = __OCStringFinalize;
     theString->_base.equal = __OCStringEqual;
     theString->_base.copyFormattingDesc = __OCStringCopyFormattingDescription;
     theString->string = NULL;
     theString->length = 0;
     theString->capacity = 0;
+    theString->_base.retainCount = 0;
+    OCRetain(theString); // Increment retain count for the new object
     return theString;
 }
 

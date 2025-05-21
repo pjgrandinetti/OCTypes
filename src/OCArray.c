@@ -167,7 +167,6 @@ static struct __OCArray *OCArrayAllocate()
     struct __OCArray *theArray = malloc(sizeof(struct __OCArray));
     if(NULL == theArray) return NULL;
     theArray->_base.typeID = OCArrayGetTypeID();
-    theArray->_base.retainCount = 1;
     theArray->_base.finalize = __OCArrayFinalize;
     theArray->_base.equal = __OCArrayEqual;
     theArray->_base.copyFormattingDesc = NULL; // Or provide a suitable function
@@ -175,6 +174,8 @@ static struct __OCArray *OCArrayAllocate()
     theArray->count = 0;
     theArray->capacity = 0;
     theArray->data = NULL; // Initialize data pointer
+    theArray->_base.retainCount = 0;
+    OCRetain(theArray); // Increment retain count for the new object
 
     return theArray;
 }

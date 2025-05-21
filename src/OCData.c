@@ -53,11 +53,12 @@ static struct __OCData *OCDataAllocate()
     struct __OCData *theData = malloc(sizeof(struct __OCData));
     if(NULL == theData) return NULL;
     theData->_base.typeID = OCDataGetTypeID();
-    theData->_base.retainCount = 1;
     theData->_base.finalize = __OCDataFinalize;
     theData->_base.equal = __OCDataEqual;
     theData->_base.copyFormattingDesc = NULL;
-    
+    theData->_base.retainCount = 0;
+    OCRetain(theData);
+
     return theData;
 }
 

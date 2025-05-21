@@ -86,10 +86,15 @@ static struct __OCDictionary *OCDictionaryAllocate()
     struct __OCDictionary *theDictionary = malloc(sizeof(struct __OCDictionary));
     if(NULL == theDictionary) return NULL;
     theDictionary->_base.typeID = OCDictionaryGetTypeID();
-    theDictionary->_base.retainCount = 1;
     theDictionary->_base.finalize = __OCDictionaryFinalize;
     theDictionary->_base.equal = __OCDictionaryEqual;
     theDictionary->_base.copyFormattingDesc = NULL;
+    theDictionary->_base.retainCount =0;
+    theDictionary->count = 0;
+    theDictionary->capacity = 0;
+    theDictionary->keys = NULL; // Initialize keys pointer
+    theDictionary->values = NULL; // Initialize values pointer
+    OCRetain(theDictionary); // Increment retain count for the new object
     return theDictionary;
 }
 

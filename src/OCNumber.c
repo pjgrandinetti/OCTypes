@@ -145,10 +145,12 @@ static struct __OCNumber *OCNumberAllocate(void)
     struct __OCNumber *n = malloc(sizeof(*n));
     if (!n) return NULL;
     n->_base.typeID             = OCNumberGetTypeID();
-    n->_base.retainCount        = 1;
     n->_base.finalize           = __OCNumberFinalize;
     n->_base.equal              = __OCNumberEqual;
     n->_base.copyFormattingDesc = __OCNumberCopyFormattingDescription;
+    n->_base.retainCount        = 0;
+    n->type                    = kOCNumberFloat64Type; // Default type
+    OCRetain(n); // Initial retain count
     return n;
 }
 
