@@ -666,3 +666,50 @@ bool stringTest10(void) {
     printf("test_string_split_no_separator passed\n");
     return true;
 }
+
+bool stringTest11(void) {
+    fprintf(stderr, "%s begin...\n", __func__);
+    bool ok = true;
+    
+    OCMutableStringRef mutString = OCStringCreateMutableCopy(STR("•×÷−\n+μγºh_pɣ√∛∜ "));
+    // Each replacement uses the current full range of the string
+    OCRange range;
+    range.location = 0;
+    range.length = OCStringGetLength((OCStringRef)mutString);
+    OCStringFindAndReplace(mutString, STR("ɣ"), STR("𝛾"), range, 0);
+    range.length = OCStringGetLength((OCStringRef)mutString);
+    OCStringFindAndReplace(mutString, STR("\n"), STR(""), range, 0);
+    range.length = OCStringGetLength((OCStringRef)mutString);
+    OCStringFindAndReplace(mutString, STR("•"), STR("*"), range, 0);
+    range.length = OCStringGetLength((OCStringRef)mutString);
+    OCStringFindAndReplace(mutString, STR("×"), STR("*"), range, 0);
+    range.length = OCStringGetLength((OCStringRef)mutString);
+    OCStringFindAndReplace(mutString, STR("÷"), STR("/"), range, 0);
+    range.length = OCStringGetLength((OCStringRef)mutString);
+    OCStringFindAndReplace(mutString, STR("−"), STR("-"), range, 0);
+    range.length = OCStringGetLength((OCStringRef)mutString);
+    OCStringFindAndReplace(mutString, STR("+"), STR("+"), range, 0);
+    range.length = OCStringGetLength((OCStringRef)mutString);
+    OCStringFindAndReplace(mutString, STR("μ"), STR("µ"), range, 0);
+    range.length = OCStringGetLength((OCStringRef)mutString);
+    OCStringFindAndReplace(mutString, STR("γ"), STR("𝛾"), range, 0);
+    range.length = OCStringGetLength((OCStringRef)mutString);
+    OCStringFindAndReplace(mutString, STR("º"), STR("°"), range, 0);
+    range.length = OCStringGetLength((OCStringRef)mutString);
+    OCStringFindAndReplace(mutString, STR("h_p"), STR("h_P"), range, 0);
+    range.length = OCStringGetLength((OCStringRef)mutString);
+    OCStringFindAndReplace(mutString, STR("√"), STR("sqrt"), range, 0);
+    range.length = OCStringGetLength((OCStringRef)mutString);
+    OCStringFindAndReplace(mutString, STR("∛"), STR("cbrt"), range, 0);
+    range.length = OCStringGetLength((OCStringRef)mutString);
+    OCStringFindAndReplace(mutString, STR("∜"), STR("qtrt"), range, 0);
+    range.length = OCStringGetLength((OCStringRef)mutString);
+    OCStringFindAndReplace(mutString, STR(" "), STR(""), range, 0);
+
+    OCStringRef result = (OCStringRef)mutString;
+    OCStringShow(result);printf("\n");
+    assert(OCStringCompare(result, STR("**/-+µ𝛾°h_P𝛾sqrtcbrtqtrt"), 0) == kOCCompareEqualTo);
+
+    fprintf(stderr, "%s %s.\n", __func__, ok ? "passed" : "FAILED");
+    return ok;
+}

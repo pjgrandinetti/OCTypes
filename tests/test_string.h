@@ -16,5 +16,6 @@ bool stringTest7(void);
 bool stringTest8(void);
 bool stringTest9(void);
 bool stringTest10(void);
+bool stringTest11(void);
 
 #endif // TEST_STRING_H
