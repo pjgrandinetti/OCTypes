@@ -141,8 +141,39 @@ typedef struct __OCBase {
     void (*finalize)(const void *);  /**< Finalizer function. */
     bool (*equal)(const void *, const void *);  /**< Equality comparator. */
     OCStringRef (*copyFormattingDesc)(OCTypeRef cf);  /**< Description formatter. */
+    bool static_instance;  /**< Indicates if the instance is static. */
 } OCBase;
 /** \endcond */
+
+/**
+ * @brief Checks if an OCType instance is marked as static.
+ *
+ * This function determines whether the specified OCType instance is flagged
+ * as a static instance. Static instances are not subject to automatic memory
+ * management and are expected to persist for the lifetime of the program.
+ *
+ * @param ptr Pointer to the OCType instance to check.
+ * @return true if the instance is static, false otherwise.
+ *
+ * @ingroup OCType
+ */
+bool OCTypeGetStaticInstance(const void * ptr);
+
+
+/**
+ * @brief Sets the static instance flag for an OCType instance.
+ *
+ * This function allows marking an OCType instance as static or non-static.
+ * Static instances are not subject to automatic memory management and are
+ * expected to persist for the lifetime of the program.
+ *
+ * @param ptr Pointer to the OCType instance to modify.
+ * @param static_instance Boolean value indicating whether the instance should
+ *        be marked as static (true) or non-static (false).
+ *
+ * @ingroup OCType
+ */
+void OCTypeSetStaticInstance(const void * ptr, bool static_instance);
 
 /** @} */ // end of OCType group
 

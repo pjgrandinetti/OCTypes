@@ -90,6 +90,10 @@ void OCRelease(const void * ptr)
     struct __OCType *theType = (struct __OCType *) ptr;
     if(NULL == theType) return;
 
+    if(theType->_base.static_instance) {
+        // Static instances should not be released.
+        return;
+    }
     // Decrement the retain count and finalize if it reaches zero.
     if(theType->_base.retainCount < 1) {
         theType->_base.retainCount = 0; // Should this be an assertion or error?
@@ -109,6 +113,11 @@ const void *OCRetain(const void * ptr)
     // Cast to non-const internal struct pointer for modification
     struct __OCType *theType = (struct __OCType *) ptr;
     if(NULL == theType) return NULL;
+
+    if(theType->_base.static_instance) {
+        // Static instances should not be retained.
+        return theType;
+    }
 
     // Since retainCount is uint32_t, it cannot be negative.
     // A retainCount of 0 will be incremented to 1.
@@ -167,3 +176,21 @@ OCTypeID OCGetTypeID(const void * ptr)
     }
     return _kOCNotATypeID;
 }
+
+bool OCTypeGetStaticInstance(const void * ptr) {
+    if (NULL == ptr) {
+        return false;
+    }
+    OCTypeRef theType = (OCTypeRef) ptr;
+    return theType->_base.static_instance;
+}
+
+void OCTypeSetStaticInstance(const void * ptr, bool static_instance) {
+    if (NULL == ptr) {
+        return;
+    }
+    struct __OCType *theType = (struct __OCType *) ptr;
+    theType->_base.retainCount = 1;
+    theType->_base.static_instance = static_instance;
+}
+// Returns the retain count of the object.
