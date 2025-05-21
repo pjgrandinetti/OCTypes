@@ -219,17 +219,18 @@ bool stringTest7(void) {
     return ok;
 }
 
+
 bool stringTest8(void) {
     fprintf(stderr, "%s begin...\n", __func__);
     bool ok = true;
 
     fprintf(stderr, "  Testing OCStringCreateWithCString and OCStringGetCString...\n");
-    // Test OCStringCreateWithCString and OCStringGetCString
     const char* cstr_in = "Hello, C-String!";
     OCStringRef s_from_cstr = OCStringCreateWithCString(cstr_in);
     if (!s_from_cstr) {
         fprintf(stderr, "stringTest8: OCStringCreateWithCString failed.\n");
-        return false;
+        ok = false;
+        goto done;
     }
     const char* cstr_out = OCStringGetCString(s_from_cstr);
     if (strcmp(cstr_in, cstr_out) != 0) {
@@ -239,15 +240,16 @@ bool stringTest8(void) {
     OCRelease(s_from_cstr);
 
     fprintf(stderr, "  Testing OCStringCreateMutable and OCStringAppendCString...\n");
-    // Test OCStringCreateMutable and OCStringAppendCString
     OCMutableStringRef mut_s = OCStringCreateMutable(10);
     if (!mut_s) {
         fprintf(stderr, "stringTest8: OCStringCreateMutable failed.\n");
-        return false;
+        ok = false;
+        goto done;
     }
     OCStringAppendCString(mut_s, "Part1");
-    if (OCStringGetLength((OCStringRef)mut_s) != 5) { // "Part1" has length 5
-        fprintf(stderr, "stringTest8: OCStringAppendCString (Part1) length check failed. Expected 5, got  %" PRIu64 "\n", OCStringGetLength((OCStringRef)mut_s));
+    if (OCStringGetLength((OCStringRef)mut_s) != 5) {
+        fprintf(stderr, "stringTest8: OCStringAppendCString (Part1) length check failed. Expected 5, got  %" PRIu64 "\n",
+                OCStringGetLength((OCStringRef)mut_s));
         ok = false;
     }
     OCStringAppendCString(mut_s, " Part2");
@@ -256,20 +258,20 @@ bool stringTest8(void) {
         fprintf(stderr, "stringTest8: OCStringAppendCString failed. Expected 'Part1 Part2', got '%s'\n", appended_cstr);
         ok = false;
     }
-    if (OCStringGetLength((OCStringRef)mut_s) != 11) { // "Part1 Part2" has length 11
-        fprintf(stderr, "stringTest8: OCStringAppendCString (Part1 Part2) length check failed. Expected 11, got  %" PRIu64 "\n", OCStringGetLength((OCStringRef)mut_s));
+    if (OCStringGetLength((OCStringRef)mut_s) != 11) {
+        fprintf(stderr, "stringTest8: OCStringAppendCString (Part1 Part2) length check failed. Expected 11, got  %" PRIu64 "\n",
+                OCStringGetLength((OCStringRef)mut_s));
         ok = false;
     }
     OCRelease(mut_s);
 
     fprintf(stderr, "  Testing OCStringCreateMutableCopy...\n");
-    // Test OCStringCreateMutableCopy
     OCStringRef original_s = STR("Original");
     OCMutableStringRef mutable_copy = OCStringCreateMutableCopy(original_s);
     if (!mutable_copy) {
         fprintf(stderr, "stringTest8: OCStringCreateMutableCopy failed.\n");
-        // No OCRelease(original_s) as STR() creates a constant string
-        return false;
+        ok = false;
+        goto done;
     }
     if (!OCStringEqual((OCStringRef)mutable_copy, original_s)) {
         fprintf(stderr, "stringTest8: Mutable copy is not equal to original.\n");
@@ -281,14 +283,11 @@ bool stringTest8(void) {
         ok = false;
     }
     OCRelease(mutable_copy);
-    // No OCRelease(original_s)
 
     fprintf(stderr, "  Testing OCStringCompare...\n");
-    // Test OCStringCompare
     OCStringRef s_apple_lower = STR("apple");
     OCStringRef s_apple_upper = STR("APPLE");
-    OCStringRef s_banana = STR("banana");
-
+    OCStringRef s_banana      = STR("banana");
     if (OCStringCompare(s_apple_lower, s_apple_upper, 0) == kOCCompareEqualTo) {
         fprintf(stderr, "stringTest8: Case-sensitive compare failed (apple vs APPLE should not be equal).\n");
         ok = false;
@@ -301,14 +300,13 @@ bool stringTest8(void) {
         fprintf(stderr, "stringTest8: Compare failed (apple vs banana).\n");
         ok = false;
     }
-    // No OCRelease for STR() strings
 
     fprintf(stderr, "  Testing OCStringLowercase, OCStringUppercase, OCStringTrimWhitespace...\n");
-    // Test OCStringLowercase, OCStringUppercase, OCStringTrimWhitespace
     OCMutableStringRef mixed_case_str = OCMutableStringCreateWithCString("  MiXeD CaSe & Spaces  ");
     if (!mixed_case_str) {
         fprintf(stderr, "stringTest8: OCMutableStringCreateWithCString for mixed_case_str failed.\n");
-        return false;
+        ok = false;
+        goto done;
     }
     OCStringLowercase(mixed_case_str);
     if (!OCStringEqual((OCStringRef)mixed_case_str, STR("  mixed case & spaces  "))) {
@@ -326,16 +324,13 @@ bool stringTest8(void) {
         ok = false;
     }
     OCRelease(mixed_case_str);
-    
+
     fprintf(stderr, "  Testing OCStringTrimMatchingParentheses...\n");
-    // Test OCStringTrimMatchingParentheses
     OCMutableStringRef paren_str1 = OCMutableStringCreateWithCString("(content)");
     OCMutableStringRef paren_str2 = OCMutableStringCreateWithCString("no parens");
     OCMutableStringRef paren_str3 = OCMutableStringCreateWithCString("(mismatched");
     OCMutableStringRef paren_str4 = OCMutableStringCreateWithCString("mismatched)");
     OCMutableStringRef paren_str5 = OCMutableStringCreateWithCString("((double))");
-
-
     if (!OCStringTrimMatchingParentheses(paren_str1) || !OCStringEqual((OCStringRef)paren_str1, STR("content"))) {
         fprintf(stderr, "stringTest8: OCStringTrimMatchingParentheses failed for '(content)'.\n");
         ok = false;
@@ -344,7 +339,7 @@ bool stringTest8(void) {
         fprintf(stderr, "stringTest8: OCStringTrimMatchingParentheses failed for 'no parens'.\n");
         ok = false;
     }
-     if (OCStringTrimMatchingParentheses(paren_str3) || !OCStringEqual((OCStringRef)paren_str3, STR("(mismatched"))) {
+    if (OCStringTrimMatchingParentheses(paren_str3) || !OCStringEqual((OCStringRef)paren_str3, STR("(mismatched"))) {
         fprintf(stderr, "stringTest8: OCStringTrimMatchingParentheses failed for '(mismatched'.\n");
         ok = false;
     }
@@ -363,46 +358,41 @@ bool stringTest8(void) {
     OCRelease(paren_str5);
 
     fprintf(stderr, "  Testing OCStringFind...\n");
-    // Test OCStringFind
     OCStringRef find_haystack = STR("One two three two one");
-    OCStringRef find_needle = STR("two");
-    OCRange found_range1 = OCStringFind(find_haystack, find_needle, 0);
+    OCStringRef find_needle   = STR("two");
+    OCRange found_range1      = OCStringFind(find_haystack, find_needle, 0);
     if (found_range1.location != 4 || found_range1.length != 3) {
-        fprintf(stderr, "stringTest8: OCStringFind (1st occurrence of 'two') failed. Expected {4,3}, got { %" PRIu64 ", %" PRIu64 "}\n", found_range1.location, found_range1.length);
+        fprintf(stderr, "stringTest8: OCStringFind (1st occurrence of 'two') failed. Expected {4,3}, got { %" PRIu64 ", %" PRIu64 "}\n",
+                found_range1.location, found_range1.length);
         ok = false;
     }
-    
-    // Test finding the second occurrence by searching in a subrange of the original string
-    // This requires creating a temporary substring or adjusting how OCStringFind is used if it supports a search range directly.
-    // The current OCStringFind takes the full string and stringToFind. The example in OCString.h for OCStringFind
-    // actually demonstrates OCStringCreateArrayWithFindResults for multiple occurrences.
-    // For a direct second find, one might do:
-    OCStringRef sub_haystack = OCStringCreateWithSubstring(find_haystack, OCRangeMake(found_range1.location + found_range1.length, OCStringGetLength(find_haystack) - (found_range1.location + found_range1.length)));
+    OCStringRef sub_haystack = OCStringCreateWithSubstring(find_haystack, OCRangeMake(
+        found_range1.location + found_range1.length,
+        OCStringGetLength(find_haystack) - (found_range1.location + found_range1.length)
+    ));
     OCRange found_range_in_sub = OCStringFind(sub_haystack, find_needle, 0);
-    if (found_range_in_sub.location != 7 || found_range_in_sub.length != 3) { // "two" is at index 7 of " three two one"
-         fprintf(stderr, "stringTest8: OCStringFind (2nd occurrence of 'two') failed. Expected {7,3} in substring, got { %" PRIu64 ", %" PRIu64 "}\n", found_range_in_sub.location, found_range_in_sub.length);
+    if (found_range_in_sub.location != 7 || found_range_in_sub.length != 3) {
+        fprintf(stderr, "stringTest8: OCStringFind (2nd occurrence of 'two') failed. Expected {7,3}, got { %" PRIu64 ", %" PRIu64 "}\n",
+                found_range_in_sub.location, found_range_in_sub.length);
         ok = false;
     }
     OCRelease(sub_haystack);
-
-    OCStringRef find_needle_upper = STR("TWO");
-    OCRange found_range_case_insensitive = OCStringFind(find_haystack, find_needle_upper, kOCCompareCaseInsensitive);
-     if (found_range_case_insensitive.location != 4 || found_range_case_insensitive.length != 3) {
-        fprintf(stderr, "stringTest8: OCStringFind (case-insensitive 'TWO') failed. Expected {4,3}, got { %" PRIu64 ", %" PRIu64 "}\n", found_range_case_insensitive.location, found_range_case_insensitive.length);
+    OCRange found_range_ci = OCStringFind(find_haystack, STR("TWO"), kOCCompareCaseInsensitive);
+    if (found_range_ci.location != 4 || found_range_ci.length != 3) {
+        fprintf(stderr, "stringTest8: OCStringFind (case-insensitive 'TWO') failed. Expected {4,3}, got { %" PRIu64 ", %" PRIu64 "}\n",
+                found_range_ci.location, found_range_ci.length);
         ok = false;
     }
     OCRange not_found_range = OCStringFind(find_haystack, STR("four"), 0);
-    if (not_found_range.location != kOCNotFound || not_found_range.length != 0) { // kOCNotFound is typically (uint64_t)-1 or similar for location
-        fprintf(stderr, "stringTest8: OCStringFind (not found 'four') failed. Expected { %" PRIu64 ",0}, got { %" PRIu64 ", %" PRIu64 "}\n", (uint64_t)kOCNotFound, not_found_range.location, not_found_range.length);
+    if (not_found_range.location != kOCNotFound || not_found_range.length != 0) {
+        fprintf(stderr, "stringTest8: OCStringFind (not found 'four') failed. Expected { %" PRIu64 ",0}, got { %" PRIu64 ", %" PRIu64 "}\n",
+                (uint64_t)kOCNotFound, not_found_range.location, not_found_range.length);
         ok = false;
     }
 
     fprintf(stderr, "  Testing OCStringFindAndReplace2...\n");
-    // Test OCStringFindAndReplace2
     OCMutableStringRef replace_str = OCMutableStringCreateWithCString("cat dog cat bird cat");
-    OCStringRef find_cat = STR("cat");
-    OCStringRef replace_mouse = STR("mouse");
-    int64_t replacements = OCStringFindAndReplace2(replace_str, find_cat, replace_mouse);
+    int64_t replacements = OCStringFindAndReplace2(replace_str, STR("cat"), STR("mouse"));
     if (replacements != 3 || !OCStringEqual((OCStringRef)replace_str, STR("mouse dog mouse bird mouse"))) {
         fprintf(stderr, "stringTest8: OCStringFindAndReplace2 failed.\n");
         ok = false;
@@ -410,28 +400,29 @@ bool stringTest8(void) {
     OCRelease(replace_str);
 
     fprintf(stderr, "  Testing OCStringFindAndReplace (with range and options)...\n");
-    // Test OCStringFindAndReplace (with range and options)
     OCMutableStringRef replace_range_str = OCMutableStringCreateWithCString("Alpha Beta Gamma Alpha Delta");
-    OCStringRef find_alpha = STR("Alpha");
-    OCStringRef replace_omega = STR("Omega");
-    OCRange search_r = {0, 15}; // "Alpha Beta Gamm"
-    replacements = OCStringFindAndReplace(replace_range_str, find_alpha, replace_omega, search_r, 0);
+    replacements = OCStringFindAndReplace(replace_range_str, STR("Alpha"), STR("Omega"), (OCRange){0,15}, 0);
     if (replacements != 1 || !OCStringEqual((OCStringRef)replace_range_str, STR("Omega Beta Gamma Alpha Delta"))) {
         fprintf(stderr, "stringTest8: OCStringFindAndReplace (first part) failed.\n");
         ok = false;
     }
-    OCStringRef find_ALPHA_case = STR("ALPHA");
-    search_r.location = OCStringGetLength(STR("Omega Beta Gamma ")); // Start after "Omega Beta Gamma "
-    search_r.length = OCStringGetLength((OCStringRef)replace_range_str) - search_r.location;
-    replacements = OCStringFindAndReplace(replace_range_str, find_ALPHA_case, replace_omega, search_r, kOCCompareCaseInsensitive);
-     if (replacements != 1 || !OCStringEqual((OCStringRef)replace_range_str, STR("Omega Beta Gamma Omega Delta"))) {
+    replacements = OCStringFindAndReplace(
+        replace_range_str,
+        STR("ALPHA"),
+        STR("Omega"),
+        (OCRange){
+            OCStringGetLength(STR("Omega Beta Gamma ")),
+            OCStringGetLength((OCStringRef)replace_range_str) - OCStringGetLength(STR("Omega Beta Gamma "))
+        },
+        kOCCompareCaseInsensitive
+    );
+    if (replacements != 1 || !OCStringEqual((OCStringRef)replace_range_str, STR("Omega Beta Gamma Omega Delta"))) {
         fprintf(stderr, "stringTest8: OCStringFindAndReplace (second part, case-insensitive) failed.\n");
         ok = false;
     }
     OCRelease(replace_range_str);
 
     fprintf(stderr, "  Testing character utility functions...\n");
-    // Test characterIsUpperCaseLetter, characterIsLowerCaseLetter, characterIsDigitOrDecimalPoint, characterIsDigitOrDecimalPointOrSpace
     if (!characterIsUpperCaseLetter('A') || characterIsUpperCaseLetter('a')) { fprintf(stderr, "char test A failed\n"); ok = false; }
     if (!characterIsLowerCaseLetter('z') || characterIsLowerCaseLetter('Z')) { fprintf(stderr, "char test z failed\n"); ok = false; }
     if (!characterIsDigitOrDecimalPoint('5') || !characterIsDigitOrDecimalPoint('.')) { fprintf(stderr, "char test 5 . failed\n"); ok = false; }
@@ -441,43 +432,38 @@ bool stringTest8(void) {
     if (!ok) {
         fprintf(stderr, "stringTest8: Character check functions failed.\n");
     }
-    
+
     fprintf(stderr, "  Testing OCFloatCreateStringValue, OCDoubleCreateStringValue...\n");
-    // Test OCFloatCreateStringValue, OCDoubleCreateStringValue
     OCStringRef float_str = OCFloatCreateStringValue(3.14159f);
-    // Precision might vary, so check for presence of key parts
     if (OCStringFind(float_str, STR("3.14"), 0).length == 0) {
-         fprintf(stderr, "stringTest8: OCFloatCreateStringValue check failed.\n");
+        fprintf(stderr, "stringTest8: OCFloatCreateStringValue check failed.\n");
         ok = false;
     }
     OCRelease(float_str);
 
     OCStringRef double_str = OCDoubleCreateStringValue(2.718281828);
-     if (OCStringFind(double_str, STR("2.71828"), 0).length == 0) {
+    if (OCStringFind(double_str, STR("2.71828"), 0).length == 0) {
         fprintf(stderr, "stringTest8: OCDoubleCreateStringValue check failed.\n");
         ok = false;
     }
     OCRelease(double_str);
 
     fprintf(stderr, "  Testing OCFloatComplexCreateStringValue, OCDoubleComplexCreateStringValue...\n");
-    // Test OCFloatComplexCreateStringValue, OCDoubleComplexCreateStringValue
-    float complex fc = 1.0f + 2.0f * I;
-    OCStringRef fc_str = OCFloatComplexCreateStringValue(fc, STR("%.1f%+.1fi"));
+    OCStringRef fc_str = OCFloatComplexCreateStringValue(1.0f + 2.0f*I, STR("%.1f%+.1fi"));
     if (!OCStringEqual(fc_str, STR("1.0+2.0i"))) {
         fprintf(stderr, "stringTest8: OCFloatComplexCreateStringValue failed. Expected '1.0+2.0i', got '%s'\n", OCStringGetCString(fc_str));
         ok = false;
     }
     OCRelease(fc_str);
 
-    double complex dc = 3.0 - 4.0 * I;
-    OCStringRef dc_str = OCDoubleComplexCreateStringValue(dc, STR("%.1f%+.1fi"));
-     if (!OCStringEqual(dc_str, STR("3.0-4.0i"))) {
+    OCStringRef dc_str = OCDoubleComplexCreateStringValue(3.0 - 4.0*I, STR("%.1f%+.1fi"));
+    if (!OCStringEqual(dc_str, STR("3.0-4.0i"))) {
         fprintf(stderr, "stringTest8: OCDoubleComplexCreateStringValue failed. Expected '3.0-4.0i', got '%s'\n", OCStringGetCString(dc_str));
         ok = false;
     }
     OCRelease(dc_str);
 
-
+done:
     fprintf(stderr, "%s %s.\n", __func__, ok ? "passed" : "FAILED");
     return ok;
 }
