@@ -28,6 +28,10 @@ TEST_OBJ = $(notdir $(TEST_FILES:.c=.o))
 
 .PHONY: all clean-objects clean test test-debug test-asan docs clean-docs doxygen html
 
+# Default target
+.DEFAULT_GOAL := all
+.SUFFIXES:
+
 all: libOCTypes.a clean-objects
 
 # Generate scanner
