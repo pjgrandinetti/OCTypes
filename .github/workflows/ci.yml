@@ -71,6 +71,34 @@ jobs:
           name: libOCTypes-headers
           path: header-pkg/libOCTypes-headers.zip
 
+  # Add an ARM64 Linux build using QEMU in a container
+  build-arm:
+    name: Build & Test (linux/arm64)
+    runs-on: ubuntu-latest
+    needs: build
+    container:
+      image: ubuntu:22.04
+      options: --platform=linux/arm64
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang make flex bison unzip
+
+      - name: Build & test with ASan
+        run: |
+          make clean
+          make test-asan
+
+      - name: Upload ARM64 library artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: libOCTypes-linux-arm64
+          path: lib/libOCTypes.a
+
   release:
     name: Package & Release
     needs: build
