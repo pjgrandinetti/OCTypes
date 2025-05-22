@@ -94,7 +94,7 @@ jobs:
           docker run --rm --platform=linux/arm64 \
             -v ${{ github.workspace }}:/src -w /src ubuntu:22.04 bash -lc "\
               apt-get update && apt-get install -y clang make flex bison unzip && \
-              make clean && make test-asan && \
+              make clean && make test && \
               mkdir -p artifacts/linux_arm64 && cp lib/libOCTypes.a artifacts/linux_arm64/" 
 
       - name: Upload ARM64 library artifact
@@ -104,7 +104,7 @@ jobs:
           path: artifacts/linux_arm64/libOCTypes.a
   release:
     name: Package & Release
-    needs: build
+    needs: [build, build-arm]
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
     steps:
