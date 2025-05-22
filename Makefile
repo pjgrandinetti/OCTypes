@@ -26,13 +26,27 @@ TEST_SRC_DIR = tests
 TEST_FILES = $(wildcard $(TEST_SRC_DIR)/test_*.c) $(TEST_SRC_DIR)/main.c
 TEST_OBJ = $(notdir $(TEST_FILES:.c=.o))
 
+# Define output directories
+RM := rm -f
+MKDIR_P := mkdir -p
+LIBDIR := lib
+INCDIR := include
+.PHONY: dirs headers
+
+dirs:
+	$(MKDIR_P) $(LIBDIR)
+
+headers:
+	$(MKDIR_P) $(INCDIR)/OCTypes
+	cp src/*.h $(INCDIR)/OCTypes/
+
 .PHONY: all clean-objects clean test test-debug test-asan docs clean-docs doxygen html
 
 # Default target
 .DEFAULT_GOAL := all
 .SUFFIXES:
 
-all: libOCTypes.a clean-objects
+all: dirs headers $(LIBDIR)/libOCTypes.a clean-objects
 
 # Generate scanner
 OCComplexScanner.c: $(LEX_SRC)
@@ -68,20 +82,20 @@ OCString.o: CFLAGS += -Wno-unused-but-set-variable
 	$(CC) $(CFLAGS) -Isrc -Itests -c -o $@ $<
 
 # Build static library
-libOCTypes.a: $(OBJ)
+$(LIBDIR)/libOCTypes.a: $(OBJ) | dirs
 	$(AR) rcs $@ $^
 
-test: libOCTypes.a $(TEST_OBJ)
-	$(CC) $(CFLAGS) -Isrc -Itests $(TEST_OBJ) -L. -lOCTypes -lm -o runTests
+test: $(LIBDIR)/libOCTypes.a $(TEST_OBJ)
+	$(CC) $(CFLAGS) -Isrc -Itests $(TEST_OBJ) -L$(LIBDIR) -lOCTypes -lm -o runTests
 	./runTests
 
-test-debug: libOCTypes.a $(TEST_OBJ)
-	$(CC) $(CFLAGS) -g -O0 -Isrc -Itests $(TEST_OBJ) -L. -lOCTypes -lm -o runTests.debug
+test-debug: $(LIBDIR)/libOCTypes.a $(TEST_OBJ)
+	$(CC) $(CFLAGS) -g -O0 -Isrc -Itests $(TEST_OBJ) -L$(LIBDIR) -lOCTypes -lm -o runTests.debug
 	@echo "Launching under LLDB..."
 	@lldb -- ./runTests.debug
 
-test-asan: libOCTypes.a $(TEST_OBJ)
-	$(CC) $(CFLAGS) -g -O1 -fsanitize=address -fno-omit-frame-pointer -Isrc -Itests $(TEST_OBJ) -L. -lOCTypes -lm -o runTests.asan
+test-asan: $(LIBDIR)/libOCTypes.a $(TEST_OBJ)
+	$(CC) $(CFLAGS) -g -O1 -fsanitize=address -fno-omit-frame-pointer -Isrc -Itests $(TEST_OBJ) -L$(LIBDIR) -lOCTypes -lm -o runTests.asan
 	@echo "Running AddressSanitizer build..."
 	@./runTests.asan
 
