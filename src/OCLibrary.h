@@ -394,6 +394,10 @@ OC_INLINE OCRange OCRangeMake(uint64_t loc, uint64_t len) {
 #define OCRangeMake(LOC, LEN) __OCRangeMake(LOC, LEN)
 #endif
 
+// Expose cleanup functions for master cleanup
+void cleanupConstantStringTable(void);
+void cleanupTypeIDTable(void);
+
 /* Now pull in the rest of the public OCTypes APIs: */
 #include "OCMath.h"
 #include "OCAutoreleasePool.h"

@@ -302,13 +302,13 @@ static struct __OCString *OCStringAllocate()
 
 
 // A single mutable dictionary to intern all constant strings
-static void cleanupConstantStringTable(void) {
+void cleanupConstantStringTable(void) {
+    printf("Cleaning up constant string table...\n");
     OCMutableDictionaryRef table = getConstantStringTable();
     if (table) {
         OCArrayRef values = OCDictionaryCreateArrayWithAllValues(table);
         for(long index = 0; index < OCArrayGetCount(values); index++) {
             OCStringRef value = (OCStringRef)OCArrayGetValueAtIndex(values, index);
-            // Print the retain count for debugging
             if(OCTypeGetStaticInstance(value)) { // They should all be static, but check anyway
                 OCTypeSetStaticInstance(value, false); // Reset static instance flag
                 // Increase retain count to 2, since it will be released with values
@@ -325,7 +325,6 @@ static OCMutableDictionaryRef getConstantStringTable(void) {
     static OCMutableDictionaryRef table = NULL;
     if (table == NULL) {
         table = OCDictionaryCreateMutable(0);
-        atexit(cleanupConstantStringTable); // Register cleanup function
     }
     return table;
 }
