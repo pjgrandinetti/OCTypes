@@ -11,6 +11,9 @@
 // Forward declaration for OCStringFindWithOptions
 bool OCStringFindWithOptions(OCStringRef string, OCStringRef stringToFind, OCRange rangeToSearch, OCOptionFlags compareOptions, OCRange *result);
 
+// Forward declaration for getConstantStringTable
+static OCMutableDictionaryRef getConstantStringTable(void);
+
 // Callbacks for OCArray containing OCRange structs
 static void __OCRangeReleaseCallBack(const void *value) {
     if (value) {
@@ -299,10 +302,24 @@ static struct __OCString *OCStringAllocate()
 
 
 // A single mutable dictionary to intern all constant strings
+static void cleanupConstantStringTable(void) {
+    OCMutableDictionaryRef table = getConstantStringTable();
+    if (table) {
+        OCArrayRef values = OCDictionaryCreateArrayWithAllValues(table);
+        for(long index = 0; index < OCArrayGetCount(values); index++) {
+            OCStringRef value = (OCStringRef)OCArrayGetValueAtIndex(values, index);
+            OCTypeSetStaticInstance(value, false); // Reset static instance flag
+        }
+        OCRelease(values);
+        OCRelease(table);
+    }
+}
+
 static OCMutableDictionaryRef getConstantStringTable(void) {
     static OCMutableDictionaryRef table = NULL;
     if (table == NULL) {
         table = OCDictionaryCreateMutable(0);
+        atexit(cleanupConstantStringTable); // Register cleanup function
     }
     return table;
 }
@@ -320,8 +337,7 @@ OCStringRef __OCStringMakeConstantString(const char *cStr)
         return existing;
     } else {
         // First time: add it and zero‐out its retainCount so it never frees
-        OCMutableStringRef mtmp = (OCMutableStringRef)tmp;
-        OCTypeSetStaticInstance(mtmp, true);
+        OCTypeSetStaticInstance(tmp, true);
         OCDictionaryAddValue(table, tmp, tmp);
         OCRelease(tmp);
         return tmp;
@@ -352,21 +368,24 @@ OCMutableStringRef
 OCMutableStringCreateWithCString(const char *cString)
 {
     if (!cString) return NULL;
+
     // Allocate a new OCString instance (fills in the base type info)
     OCMutableStringRef s = OCStringAllocate();
     if (!s) return NULL;
 
     // Measure byte‐length vs. code‐point length
     size_t byteLen = strlen(cString);
-    s->capacity   = byteLen;                  // data bytes only
-    s->length     = oc_utf8_strlen(cString);  // proper Unicode “characters”
+    s->capacity = byteLen;
+    s->length   = oc_utf8_strlen(cString);
 
-    // Copy raw UTF-8 bytes (including the trailing '\0')
+    // Allocate memory for the string content
     s->string = malloc(byteLen + 1);
     if (!s->string) {
-        OCRelease(s);
+        OCRelease(s); // Free the allocated OCString instance
         return NULL;
     }
+
+    // Copy the C string into the allocated memory
     memcpy(s->string, cString, byteLen + 1);
     return s;
 }

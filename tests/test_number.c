@@ -11,8 +11,6 @@
 
 bool numberTest0(void) {
 
-    bool ok = true;
-
     fprintf(stderr, "%s begin...\n", __func__);
 
     // everyone should share the same TypeID

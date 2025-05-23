@@ -7,10 +7,27 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h> // For perror
 #include "OCLibrary.h"
 
 static char **typeIDTable = NULL;
 static OCTypeID typeIDTableCount = 0;
+
+static void cleanupTypeIDTable(void) {
+    if (typeIDTable) {
+        for (OCTypeID i = 0; i < typeIDTableCount; i++) {
+            free(typeIDTable[i]);
+        }
+        free(typeIDTable);
+        typeIDTable = NULL;
+        typeIDTableCount = 0;
+    }
+}
+
+__attribute__((constructor))
+static void initializeTypeIDTable(void) {
+    atexit(cleanupTypeIDTable);
+}
 
 struct __OCType {
     OCBase _base;
@@ -55,10 +72,11 @@ OCTypeID OCRegisterType(char *typeName)
     }
 
     // Initialize the type ID table if it hasn't been created yet.
-    if(NULL == typeIDTable) {
+    if (NULL == typeIDTable) {
         typeIDTable = malloc(256 * sizeof(char *));
         if (NULL == typeIDTable) {
-            return _kOCNotATypeID;
+            perror("Failed to allocate memory for typeIDTable");
+            exit(EXIT_FAILURE); // Exit if memory allocation fails
         }
     }
 
@@ -73,7 +91,8 @@ OCTypeID OCRegisterType(char *typeName)
     if(typeIDTableCount < 256) {
         typeIDTable[typeIDTableCount] = malloc(strlen(typeName) + 1);
         if (NULL == typeIDTable[typeIDTableCount]) {
-            return _kOCNotATypeID;
+            perror("Failed to allocate memory for type name");
+            exit(EXIT_FAILURE); // Exit if memory allocation fails
         }
         strcpy(typeIDTable[typeIDTableCount], typeName);
         typeIDTableCount++;
