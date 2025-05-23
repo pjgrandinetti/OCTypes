@@ -7,6 +7,7 @@
 
 #include <stdlib.h>   // for malloc, free, realloc
 #include <string.h>   // for memcpy
+#include <stdio.h>    // for printf
 #include "OCLibrary.h"
 
 static OCTypeID kOCDictionaryID = _kOCNotATypeID;
@@ -65,16 +66,17 @@ static void __OCDictionaryRetainValues(OCDictionaryRef theDictionary)
 
 void __OCDictionaryFinalize(const void * theType)
 {
-    if(NULL == theType) return;
+    if(NULL == theType) {
+        printf("Finalize called with NULL pointer\n");
+        return;
+    }
     OCDictionaryRef theDictionary = (OCDictionaryRef) theType;
-    __OCDictionaryReleaseValues(theDictionary); // This correctly releases all keys and values
 
-    // Free the arrays for keys and values, and the dictionary structure itself
+    __OCDictionaryReleaseValues(theDictionary);
     free((void *)theDictionary->keys);
     free((void *)theDictionary->values);
-    free((void *)theDictionary); // Cast to (void*) to avoid qualifier discard warning
+    free((void *)theDictionary);
 }
-
 OCTypeID OCDictionaryGetTypeID(void)
 {
     if(kOCDictionaryID == _kOCNotATypeID) kOCDictionaryID = OCRegisterType("OCDictionary");

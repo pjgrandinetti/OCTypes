@@ -80,6 +80,20 @@ bool OCTypeEqual(const void *theType1, const void *theType2);
  */
 OCTypeID OCRegisterType(char *typeName);
 
+
+/**
+ * @brief Retrieves the retain count of an OCType instance.
+ *
+ * This function returns the current retain count of the specified OCType instance.
+ * The retain count indicates how many references to the object exist.
+ *
+ * @param ptr Pointer to the OCType instance.
+ * @return The retain count of the object, or 0 if the pointer is NULL.
+ *
+ * @ingroup OCType
+ */
+int OCTypeGetRetainCount(const void * ptr);
+
 /**
  * @brief Releases an OCType instance by decrementing its retain count.
  *

@@ -103,7 +103,7 @@ clean-objects:
 	rm -f $(OBJ) $(TEST_OBJ)
 
 clean: clean-objects
-	rm -f libOCTypes.a $(GEN_C) $(GEN_H) runTests runTests.debug runTests.asan *.dSYM -rf
+	rm -f lib/libOCTypes.a $(GEN_C) $(GEN_H) runTests runTests.debug runTests.asan *.dSYM -rf
 	rm -f OCComplexParser.output *.tab.* *.yy.*
 
 # Documentation targets

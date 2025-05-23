@@ -308,7 +308,13 @@ static void cleanupConstantStringTable(void) {
         OCArrayRef values = OCDictionaryCreateArrayWithAllValues(table);
         for(long index = 0; index < OCArrayGetCount(values); index++) {
             OCStringRef value = (OCStringRef)OCArrayGetValueAtIndex(values, index);
-            OCTypeSetStaticInstance(value, false); // Reset static instance flag
+            // Print the retain count for debugging
+            if(OCTypeGetStaticInstance(value)) { // They should all be static, but check anyway
+                OCTypeSetStaticInstance(value, false); // Reset static instance flag
+                // Increase retain count to 2, since it will be released with values
+                // and then again when the table is released
+                OCRetain(value); 
+            }
         }
         OCRelease(values);
         OCRelease(table);
@@ -336,7 +342,7 @@ OCStringRef __OCStringMakeConstantString(const char *cStr)
         OCRelease(tmp);
         return existing;
     } else {
-        // First time: add it and zero‐out its retainCount so it never frees
+        // First time: add it and set it as static instance
         OCTypeSetStaticInstance(tmp, true);
         OCDictionaryAddValue(table, tmp, tmp);
         OCRelease(tmp);

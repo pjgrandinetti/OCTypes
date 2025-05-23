@@ -102,6 +102,9 @@ OCTypeID OCRegisterType(char *typeName)
     return _kOCNotATypeID;
 }
 
+
+
+
 // Decrements the reference count of an object and finalizes it if the count reaches zero.
 void OCRelease(const void * ptr)
 {
@@ -196,6 +199,15 @@ OCTypeID OCGetTypeID(const void * ptr)
     return _kOCNotATypeID;
 }
 
+int OCTypeGetRetainCount(const void * ptr) {
+    if (NULL == ptr) {
+        return 0;
+    }
+    OCTypeRef theType = (OCTypeRef) ptr;
+    return theType->_base.retainCount;
+}
+
+// Sets the retain count of the object.
 bool OCTypeGetStaticInstance(const void * ptr) {
     if (NULL == ptr) {
         return false;
