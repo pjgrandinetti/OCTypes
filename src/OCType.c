@@ -13,7 +13,7 @@
 static char **typeIDTable = NULL;
 static OCTypeID typeIDTableCount = 0;
 
-static void cleanupTypeIDTable(void) {
+void cleanupTypeIDTable(void) {
     printf("Cleaning up typeIDTable...\n");
     if (typeIDTable) {
         for (OCTypeID i = 0; i < typeIDTableCount; i++) {
@@ -25,15 +25,12 @@ static void cleanupTypeIDTable(void) {
     }
 }
 
-// lower‐priority destructor (runs after priority=200)
-__attribute__((destructor(100))) // master cleanup order
-static void _OCTypes__shutdown_types(void) {
-    // cleanup constant strings first
-    cleanupConstantStringTable();
-    // then cleanup type ID table
-    cleanupTypeIDTable();
+__attribute__((constructor))
+static void _OCTypes_register_cleanup(void) {
+    // register in “natural” order; they’ll be *called* in reverse
+    atexit(cleanupTypeIDTable);
+    atexit(cleanupConstantStringTable);
 }
-
 
 struct __OCType {
     OCBase _base;
