@@ -25,11 +25,12 @@ void cleanupTypeIDTable(void) {
     }
 }
 
-__attribute__((constructor))
-static void _OCTypes_register_cleanup(void) {
-    // register in “natural” order; they’ll be *called* in reverse
-    atexit(cleanupTypeIDTable);
-    atexit(cleanupConstantStringTable);
+// Run **after** LSAN’s destructors (101–103), so this cleanup
+// happens once leak checking has already run.
+__attribute__((destructor(104)))
+static void _OCTypes_cleanup_after_leak_check(void) {
+    cleanupConstantStringTable();
+    cleanupTypeIDTable();
 }
 
 struct __OCType {

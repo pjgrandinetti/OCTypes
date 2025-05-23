@@ -306,19 +306,17 @@ void cleanupConstantStringTable(void) {
     printf("Cleaning up constant string table...\n");
     OCMutableDictionaryRef table = getConstantStringTable();
     if (table) {
-        OCArrayRef values = OCDictionaryCreateArrayWithAllValues(table);
-        for(long index = 0; index < OCArrayGetCount(values); index++) {
-            OCStringRef value = (OCStringRef)OCArrayGetValueAtIndex(values, index);
-            if(OCTypeGetStaticInstance(value)) { // They should all be static, but check anyway
-                OCTypeSetStaticInstance(value, false); // Reset static instance flag
-                // Increase retain count to 2, since it will be released with values
-                // and then again when the table is released
-                OCRetain(value); 
-            }
-        }
-        OCRelease(values);
+        OCArrayRef keys = OCDictionaryCreateArrayWithAllKeys(table);
+        for(long index = 0; index < OCArrayGetCount(keys); index++) {
+            OCStringRef key = (OCStringRef)OCArrayGetValueAtIndex(keys, index);
+            OCStringRef value = (OCStringRef)OCDictionaryGetValue(table, key);
+            OCDictionaryRemoveValue(table, key);
+            OCTypeSetStaticInstance(value, false);
+            OCRelease(value);
+           }
+        OCRelease(keys);
         OCRelease(table);
-    }
+        }
 }
 
 static OCMutableDictionaryRef getConstantStringTable(void) {
