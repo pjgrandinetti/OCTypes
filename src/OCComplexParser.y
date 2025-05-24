@@ -29,6 +29,7 @@
     #include <stdio.h>
     #include "OCLibrary.h"
 
+    static ComplexNodeRef ocpc_root = NULL;
     static double complex result;
     int ocpclex(void);
 
@@ -87,8 +88,8 @@
 %%
 calclist:   /* do nothing */
 | calclist exp {
-    result = ComplexNodeEvaluate($2);
-    ComplexNodeFree($2);
+    ocpc_root = $2;
+    result    = ComplexNodeEvaluate($2);
 }
 ;
 
@@ -133,13 +134,24 @@ bool syntax_error;
 
 double complex OCComplexFromCString(const char *string)
 {
-//    printf("OCComplexFromCString parsing: %s\n", string);
+
     syntax_error = false;
     ocpc_scan_string(string);
     ocpcparse();
     ocpclex_destroy();
-    if(syntax_error) return nan("");
-    return result;
+
+    double complex out = nan("");
+    if (!syntax_error && ocpc_root) {
+        out = result;
+    }
+
+    /* whether parse succeeded or not, free the tree once here */
+    if (ocpc_root) {
+        ComplexNodeFree(ocpc_root);
+        ocpc_root = NULL;
+    }
+
+    return out;
 }
 
 ComplexNodeRef ComplexNodeCreateInnerNode(int nodeType, ComplexNodeRef left, ComplexNodeRef right)
