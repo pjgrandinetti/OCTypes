@@ -40,7 +40,7 @@ headers:
 	$(MKDIR_P) $(INCDIR)/OCTypes
 	cp src/*.h $(INCDIR)/OCTypes/
 
-.PHONY: all clean-objects clean test test-debug test-asan docs clean-docs doxygen html
+.PHONY: all clean-objects clean test test-debug test-asan docs clean-docs doxygen html xcode
 
 # Default target
 .DEFAULT_GOAL := all
@@ -124,3 +124,9 @@ docs: html
 clean-docs:
 	@echo "Cleaning documentation…"
 	rm -rf docs/doxygen build/html
+
+# Generate an Xcode project using CMake
+xcode:
+	@echo "Generating Xcode project in build-xcode..."
+	@mkdir -p build-xcode
+	@cmake -G "Xcode" -S . -B build-xcode
