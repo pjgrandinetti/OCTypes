@@ -12,10 +12,6 @@
 #define FREE(X) {free(X); X=NULL;}
 #endif
 
-#ifndef IF_SELF_DOESNT_EXISTS_RETURN
-#define IF_SELF_DOESNT_EXISTS_RETURN(X) if(NULL==theUnit) {fprintf(stderr, "*** WARNING - %s %s - object doesn't exist.\n",__FILE__,__func__); return X;}
-#endif
-
 #ifndef IF_NO_OBJECT_EXISTS_RETURN
 #define IF_NO_OBJECT_EXISTS_RETURN(OBJECT,X) if(OBJECT==NULL) {fprintf(stderr, "*** WARNING - %s %s - object doesn't exist.\n",__FILE__,__func__); return X;}
 #endif
@@ -29,6 +25,7 @@ struct _OCAutoreleasePoolObject {
 };
 
 typedef struct _OCAutoreleasePoolObject * OCAutoreleasePoolObjectRef;
+
 
 struct _OCAutoreleasePool
 {
@@ -386,14 +383,24 @@ static bool OCAutoreleasePoolAddObject(OCAutoreleasePoolRef thePool, const void 
 
 
 /**************************************************************************
- Core Foundation convenience method
+ OCTypes convenience method
  *************************************************************************/
 
 
 const void * OCAutorelease(const void *ptr)
 {
     IF_NO_OBJECT_EXISTS_RETURN(ptr,NULL)
-    
+
     OCAutoreleasePoolsManagerAddObject(ptr, OCRelease);
     return ptr;
+}
+
+
+// run before LSAN’s leak check (which uses dtor priorities 101–103)
+__attribute__((destructor(104)))
+static void _OC_cleanup_autorelease_pools_before_leak_check(void) {
+    if (autorelease_pool_manager) {
+        OCAutoreleasePoolsManagerDeallocate(autorelease_pool_manager);
+        autorelease_pool_manager = NULL;
+    }
 }
