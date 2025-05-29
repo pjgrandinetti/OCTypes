@@ -25,6 +25,7 @@ build:
 
     # 4) Copy the output into RTD’s expected dir
     - echo "Copying HTML to RTD output…"
+    - mkdir -p "$READTHEDOCS_OUTPUT/html"
     - cp -R build/html "$READTHEDOCS_OUTPUT/html"
 
 python:
@@ -33,4 +34,3 @@ python:
 
 sphinx:
   configuration: docs/conf.py
-  
