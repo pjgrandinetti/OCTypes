@@ -3,7 +3,7 @@
 CC = clang
 AR = ar
 LEX = flex
-YACC = bison -y
+YACC = bison
 YFLAGS = -d
 
 INCLUDES := -I . -I src
