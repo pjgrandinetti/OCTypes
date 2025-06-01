@@ -9,6 +9,7 @@
 #define OCNumber_h
 
 #include <complex.h>      // Needed for complex number types
+#include <limits.h>
 #include "OCLibrary.h"    // Ensures OCNumberRef and other types are available
 
 /** @cond INTERNAL */
@@ -86,6 +87,27 @@ typedef enum { // Anonymous enum
     kOCNumberFloat32ComplexType = Float32ComplexType, /**< Complex float. */
     kOCNumberFloat64ComplexType = Float64ComplexType  /**< Complex double. */
 } OCNumberType;
+
+/* Platform-independent aliases for native C types */
+#if INT_MAX == 127
+  #define kOCNumberIntType kOCNumberSInt8Type
+#elif INT_MAX == 32767
+  #define kOCNumberIntType kOCNumberSInt16Type
+#elif INT_MAX == 2147483647
+  #define kOCNumberIntType kOCNumberSInt32Type
+#elif INT_MAX == 9223372036854775807
+  #define kOCNumberIntType kOCNumberSInt64Type
+#else
+  #error Unsupported platform: cannot define kOCNumberIntType
+#endif
+
+#if LONG_MAX == 2147483647L
+  #define kOCNumberLongType kOCNumberSInt32Type
+#elif LONG_MAX == 9223372036854775807L
+  #define kOCNumberLongType kOCNumberSInt64Type
+#else
+  #error Unsupported platform: cannot define kOCNumberLongType
+#endif
 
 /**
  * @brief Returns the unique OCTypeID for OCNumber.
