@@ -1,72 +1,78 @@
-# Ignore object files
-*.o
+# === Build Artifacts ===
 
-# Ignore archives and shared libraries
+# Object files
+*.o
+/build/obj/
+
+# Static, shared, and dynamic libraries
 *.a
 *.so
 *.dylib
 *.lib
+/lib/
+build/lib/
 
-# Ignore executables and output binaries
-*.out
+# Executables and test binaries
 *.exe
+*.out
+*.asan
+*.debug
 runTests
+runTests.debug
+runTests.asan
+/build/bin/
 
-# Ignore build directories
+# Generated sources from Flex/Bison
+OCComplexScanner.c
+OCComplexParser.tab.c
+OCComplexParser.tab.h
+/build/gen/
+
+# === Build System ===
+
+# General build directories
 /build/
 /build-*/
-bin/
-lib/
+build-xcode/
 
-# CMake files
+# CMake-generated files
 CMakeCache.txt
 CMakeFiles/
 cmake_install.cmake
 Makefile.cmake
 CTestTestfile.cmake
 
-# Flex/Bison generated files
-OCComplexScanner.c
-OCComplexParser.tab.c
-OCComplexParser.tab.h
+# === IDE and Editor ===
 
-# Xcode project files and workspace settings
+# Xcode
 *.xcworkspace
 *.xcodeproj
-xcuserdata/
 *.xcuserstate
 *.xcscheme
+xcuserdata/
+
+# VSCode / IntelliJ
+.vscode/
+.idea/
 
 # macOS Finder metadata
 *.DS_Store
 
-# IDE directories
-.vscode/
-.idea/
-
-# Logs
-*.log
-
-# Misc
+# Vim / Emacs
 *.swp
 *~
 
-# Ignore debug symbol bundles
-*.dSYM
-*.asan
-*.debug
-runTests
+# === Documentation ===
 
-# Doxygen output
+# Doxygen and Sphinx
 docs/doxygen/
-
-# Ignore environment pickle files
-environment.pickle
-
-# Ignore Sphinx documentation build output
 docs/_build/
+docs/_build/.doctrees/
 doxygen/xml/
 doxygen/html/
 
-# Ignore Sphinx doctree files
-docs/_build/.doctrees/
+# === Logs and Misc ===
+
+*.log
+environment.pickle
+

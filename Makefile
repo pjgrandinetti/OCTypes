@@ -1,131 +1,147 @@
-# Makefile for OCTypes static library
+# Makefile for OCTypes static library (with install packaging support)
 
 CC = clang
 AR = ar
 LEX = flex
 YACC = bison -y
 YFLAGS = -d
-CFLAGS = -I . -I src -O3 -Wall -Wextra \
-         -Wno-sign-compare -Wno-unused-parameter -Wno-missing-field-initializers
 
-SRC_DIR = src
-LEX_SRC = $(SRC_DIR)/OCComplexScanner.l
-YACC_SRC = $(SRC_DIR)/OCComplexParser.y
+INCLUDES := -I . -I src
+WARNINGS := -Wall -Wextra -Wno-sign-compare -Wno-unused-parameter -Wno-missing-field-initializers
+OPT := -O3
+CFLAGS := $(INCLUDES) $(WARNINGS) $(OPT)
 
-# Generated sources
-GEN_C = OCComplexScanner.c OCComplexParser.tab.c
-GEN_H = OCComplexParser.tab.h
+SRC_DIR := src
+BUILD_DIR := build
+OBJ_DIR := $(BUILD_DIR)/obj
+GEN_DIR := $(BUILD_DIR)/gen
+BIN_DIR := $(BUILD_DIR)/bin
 
-# All C sources (include generated, exclude flex/yacc inputs)
-STATIC_SRC = $(filter-out $(YACC_SRC) $(LEX_SRC), $(wildcard $(SRC_DIR)/*.c))
-ALL_C = $(GEN_C) $(notdir $(STATIC_SRC))
-OBJ = $(ALL_C:.c=.o)
+LEX_SRC := $(SRC_DIR)/OCComplexScanner.l
+YACC_SRC := $(SRC_DIR)/OCComplexParser.y
 
-# Test sources and objects
-TEST_SRC_DIR = tests
-TEST_FILES = $(wildcard $(TEST_SRC_DIR)/test_*.c) $(TEST_SRC_DIR)/main.c
-TEST_OBJ = $(notdir $(TEST_FILES:.c=.o))
+# Generated source files
+GEN_C := $(GEN_DIR)/OCComplexScanner.c $(GEN_DIR)/OCComplexParser.tab.c
+GEN_H := $(GEN_DIR)/OCComplexParser.tab.h
+GEN_SRC := $(notdir $(GEN_C))
 
-# Define output directories
+# Static (handwritten) source files
+STATIC_SRC := $(filter-out $(YACC_SRC) $(LEX_SRC), $(wildcard $(SRC_DIR)/*.c))
+SRC_SRC := $(notdir $(STATIC_SRC))
+
+# All source files (for object generation)
+ALL_C := $(SRC_SRC) $(GEN_SRC)
+OBJ := $(addprefix $(OBJ_DIR)/, $(ALL_C:.c=.o))
+
+# Test files
+TEST_SRC_DIR := tests
+TEST_FILES := $(wildcard $(TEST_SRC_DIR)/test_*.c) $(TEST_SRC_DIR)/main.c
+TEST_OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(TEST_FILES:.c=.o)))
+
 RM := rm -f
 MKDIR_P := mkdir -p
 LIBDIR := lib
 INCDIR := include
-.PHONY: dirs headers
 
-dirs:
-	$(MKDIR_P) $(LIBDIR)
+# Install target layout
+INSTALL_DIR := install
+INSTALL_LIB_DIR := $(INSTALL_DIR)/lib
+INSTALL_INC_DIR := $(INSTALL_DIR)/include/OCTypes
 
-headers:
-	$(MKDIR_P) $(INCDIR)/OCTypes
-	cp src/*.h $(INCDIR)/OCTypes/
+.PHONY: all dirs headers install clean-objects clean test test-debug test-asan docs clean-docs doxygen html xcode
 
-.PHONY: all clean-objects clean test test-debug test-asan docs clean-docs doxygen html xcode
-
-# Default target
 .DEFAULT_GOAL := all
 .SUFFIXES:
 
-all: dirs headers $(LIBDIR)/libOCTypes.a clean-objects
+all: dirs headers $(LIBDIR)/libOCTypes.a
+
+dirs:
+	$(MKDIR_P) $(LIBDIR) $(INCDIR)/OCTypes $(BUILD_DIR) $(OBJ_DIR) $(GEN_DIR) $(BIN_DIR)
+
+headers: | dirs
+	cp src/*.h $(INCDIR)/OCTypes/
 
 # Generate scanner
-OCComplexScanner.c: $(LEX_SRC)
+$(GEN_DIR)/OCComplexScanner.c: $(LEX_SRC) | dirs
 	$(LEX) -o $@ $<
 
 # Generate parser
-OCComplexParser.tab.c OCComplexParser.tab.h: $(YACC_SRC)
+$(GEN_DIR)/OCComplexParser.tab.c $(GEN_DIR)/OCComplexParser.tab.h: $(YACC_SRC) | dirs
 	$(YACC) $(YFLAGS) $<
-	mv y.tab.c OCComplexParser.tab.c
-	mv y.tab.h OCComplexParser.tab.h
+	mv y.tab.c $(GEN_DIR)/OCComplexParser.tab.c
+	mv y.tab.h $(GEN_DIR)/OCComplexParser.tab.h
+
+# Object build rules
+
+# For generated source files
+$(OBJ_DIR)/%.o: $(GEN_DIR)/%.c | dirs
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+# For static source files
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | dirs
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+# For test source files
+$(OBJ_DIR)/%.o: $(TEST_SRC_DIR)/%.c | dirs
+	$(CC) $(CFLAGS) -Isrc -Itests -c -o $@ $<
 
 # Ensure scanner object builds after parser header is available
-OCComplexScanner.o: OCComplexParser.tab.h
+$(OBJ_DIR)/OCComplexScanner.o: $(GEN_DIR)/OCComplexParser.tab.h
 
-# Suppress noisy warnings in generated code
-OCComplexScanner.o: CFLAGS += -Wno-sign-compare -Wno-unused-function -Wno-unneeded-internal-declaration
-OCComplexParser.tab.o: CFLAGS += -Wno-unused-parameter
-# Suppress unused-function warning in autorelease pool implementation
-OCAutoreleasePool.o: CFLAGS += -Wno-unused-function
-# Suppress unused-but-set-variable warning in string implementation
-OCString.o: CFLAGS += -Wno-unused-but-set-variable
-
-# Compile C sources located in src/ to objects
-%.o: src/%.c
-	$(CC) $(CFLAGS) -c -o $@ $<
-
-# Compile C sources to objects
-%.o: %.c
-	$(CC) $(CFLAGS) -c -o $@ $<
-
-# Compile C sources located in tests/ to objects
-%.o: tests/%.c
-	$(CC) $(CFLAGS) -Isrc -Itests -c -o $@ $<
+# Suppress warnings for specific files
+$(OBJ_DIR)/OCComplexScanner.o: CFLAGS += -Wno-sign-compare -Wno-unused-function -Wno-unneeded-internal-declaration
+$(OBJ_DIR)/OCComplexParser.tab.o: CFLAGS += -Wno-unused-parameter
+$(OBJ_DIR)/OCAutoreleasePool.o: CFLAGS += -Wno-unused-function
+$(OBJ_DIR)/OCString.o: CFLAGS += -Wno-unused-but-set-variable
 
 # Build static library
 $(LIBDIR)/libOCTypes.a: $(OBJ) | dirs
 	$(AR) rcs $@ $^
 
-test: $(LIBDIR)/libOCTypes.a $(TEST_OBJ)
-	$(CC) $(CFLAGS) -Isrc -Itests $(TEST_OBJ) -L$(LIBDIR) -lOCTypes -lm -o runTests
-	./runTests
+# Test targets
+$(BIN_DIR)/runTests: $(LIBDIR)/libOCTypes.a $(TEST_OBJ)
+	$(CC) $(CFLAGS) -Isrc -Itests $(TEST_OBJ) -L$(LIBDIR) -lOCTypes -lm -o $@
+
+test: $(BIN_DIR)/runTests
+	$<
 
 test-debug: $(LIBDIR)/libOCTypes.a $(TEST_OBJ)
-	$(CC) $(CFLAGS) -g -O0 -Isrc -Itests $(TEST_OBJ) -L$(LIBDIR) -lOCTypes -lm -o runTests.debug
+	$(CC) $(CFLAGS) -g -O0 -Isrc -Itests $(TEST_OBJ) -L$(LIBDIR) -lOCTypes -lm -o $(BIN_DIR)/runTests.debug
 	@echo "Launching under LLDB..."
-	@lldb -- ./runTests.debug
+	@lldb -- $(BIN_DIR)/runTests.debug
 
 test-asan: $(LIBDIR)/libOCTypes.a $(TEST_OBJ)
-	$(CC) $(CFLAGS) -g -O1 -fsanitize=address -fno-omit-frame-pointer -Isrc -Itests $(TEST_OBJ) -L$(LIBDIR) -lOCTypes -lm -o runTests.asan
+	$(CC) $(CFLAGS) -g -O1 -fsanitize=address -fno-omit-frame-pointer -Isrc -Itests $(TEST_OBJ) -L$(LIBDIR) -lOCTypes -lm -o $(BIN_DIR)/runTests.asan
 	@echo "Running AddressSanitizer build..."
-	@./runTests.asan
+	@$(BIN_DIR)/runTests.asan
+
+# Install target: package headers and library
+install: all
+	$(MKDIR_P) $(INSTALL_LIB_DIR) $(INSTALL_INC_DIR)
+	cp $(LIBDIR)/libOCTypes.a $(INSTALL_LIB_DIR)/
+	cp src/*.h $(INSTALL_INC_DIR)/
 
 clean-objects:
-	rm -f $(OBJ) $(TEST_OBJ)
+	$(RM) $(OBJ)
 
-clean: clean-objects
-	rm -f lib/libOCTypes.a $(GEN_C) $(GEN_H) runTests runTests.debug runTests.asan *.dSYM -rf
-	rm -f OCComplexParser.output *.tab.* *.yy.*
+clean:
+	$(RM) -r $(BUILD_DIR) $(LIBDIR) runTests runTests.debug runTests.asan *.dSYM OCComplexParser.output *.tab.* *.yy.* $(INSTALL_DIR)
 
-# Documentation targets
-
-# Generate Doxygen XML for Breathe
+# Documentation
 doxygen:
 	@echo "Generating Doxygen XML…"
 	cd docs && doxygen Doxyfile
 
-# Build HTML docs (depends on doxygen)
 html: doxygen
 	@echo "Building Sphinx HTML…"
 	sphinx-build -W -E -b html docs build/html
 
-# Alias “make docs” to build HTML
 docs: html
 
 clean-docs:
 	@echo "Cleaning documentation…"
 	rm -rf docs/doxygen build/html
 
-# Generate an Xcode project using CMake
 xcode:
 	@echo "Generating Xcode project in build-xcode..."
 	@mkdir -p build-xcode
