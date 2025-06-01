@@ -3,7 +3,7 @@
 CC = clang
 AR = ar
 LEX = flex
-YACC = bison -y
+YACC = bison
 YFLAGS = -d
 
 INCLUDES := -I . -I src
@@ -41,25 +41,19 @@ TEST_OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(TEST_FILES:.c=.o)))
 RM := rm -f
 MKDIR_P := mkdir -p
 LIBDIR := lib
-INCDIR := include
 
 # Install target layout
 INSTALL_DIR := install
 INSTALL_LIB_DIR := $(INSTALL_DIR)/lib
 INSTALL_INC_DIR := $(INSTALL_DIR)/include/OCTypes
 
-.PHONY: all dirs headers install clean-objects clean test test-debug test-asan docs clean-docs doxygen html xcode
+.PHONY: all dirs install clean-objects clean test test-debug test-asan docs clean-docs doxygen html xcode
 
 .DEFAULT_GOAL := all
-.SUFFIXES:
-
-all: dirs headers $(LIBDIR)/libOCTypes.a
+all: dirs $(LIBDIR)/libOCTypes.a
 
 dirs:
-	$(MKDIR_P) $(LIBDIR) $(INCDIR)/OCTypes $(BUILD_DIR) $(OBJ_DIR) $(GEN_DIR) $(BIN_DIR)
-
-headers: | dirs
-	cp src/*.h $(INCDIR)/OCTypes/
+	$(MKDIR_P) $(LIBDIR) $(BUILD_DIR) $(OBJ_DIR) $(GEN_DIR) $(BIN_DIR)
 
 # Generate scanner
 $(GEN_DIR)/OCComplexScanner.c: $(LEX_SRC) | dirs
@@ -68,8 +62,8 @@ $(GEN_DIR)/OCComplexScanner.c: $(LEX_SRC) | dirs
 # Generate parser
 $(GEN_DIR)/OCComplexParser.tab.c $(GEN_DIR)/OCComplexParser.tab.h: $(YACC_SRC) | dirs
 	$(YACC) $(YFLAGS) $<
-	mv y.tab.c $(GEN_DIR)/OCComplexParser.tab.c
-	mv y.tab.h $(GEN_DIR)/OCComplexParser.tab.h
+	mv OCComplexParser.tab.c $(GEN_DIR)/OCComplexParser.tab.c
+	mv OCComplexParser.tab.h $(GEN_DIR)/OCComplexParser.tab.h
 
 # Object build rules
 
