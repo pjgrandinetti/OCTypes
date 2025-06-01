@@ -303,7 +303,6 @@ static struct __OCString *OCStringAllocate()
 
 // A single mutable dictionary to intern all constant strings
 void cleanupConstantStringTable(void) {
-    printf("Cleaning up constant string table...\n");
     OCMutableDictionaryRef table = getConstantStringTable();
     if (table) {
         OCArrayRef keys = OCDictionaryCreateArrayWithAllKeys(table);

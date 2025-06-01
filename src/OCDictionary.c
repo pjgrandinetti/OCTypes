@@ -67,7 +67,7 @@ static void __OCDictionaryRetainValues(OCDictionaryRef theDictionary)
 void __OCDictionaryFinalize(const void * theType)
 {
     if(NULL == theType) {
-        printf("Finalize called with NULL pointer\n");
+        fprintf(stderr, "Finalize called with NULL pointer\n");
         return;
     }
     OCDictionaryRef theDictionary = (OCDictionaryRef) theType;

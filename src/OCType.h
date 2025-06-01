@@ -30,7 +30,7 @@
 /** \cond INTERNAL */
 #define IF_NO_OBJECT_EXISTS_RETURN(OBJECT, X) \
     if (NULL == OBJECT) { \
-        printf("*** WARNING - %s - object doesn't exist.\n", __func__); \
+        fprintf(stderr, "*** WARNING - %s - object doesn't exist.\n", __func__); \
         return X; \
     }
 /** \endcond */

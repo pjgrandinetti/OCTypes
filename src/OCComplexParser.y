@@ -156,7 +156,6 @@ double complex OCComplexFromCString(const char *string)
 
 ComplexNodeRef ComplexNodeCreateInnerNode(int nodeType, ComplexNodeRef left, ComplexNodeRef right)
 {
-//    printf("ComplexNodeCreateInnerNode: nodeType = '%c' (%d), left type = %d, right type = %d\n", nodeType, nodeType, left ? ((struct __complexNode*)left)->nodeType : -1, right ? ((struct __complexNode*)right)->nodeType : -1);
     struct __complexNode *node = malloc(sizeof(struct __complexNode));
     node->nodeType = nodeType;
     node->left = left;
@@ -167,7 +166,6 @@ ComplexNodeRef ComplexNodeCreateInnerNode(int nodeType, ComplexNodeRef left, Com
 
 ComplexNodeRef ComplexNodeCreateFunction(int funcType, ComplexNodeRef left)
 {
- //   printf("ComplexNodeCreateFunction: funcType = %d, left nodeType = %d\n", funcType, left ? ((struct __complexNode*)left)->nodeType : -1);
     struct __complexNodeFunction *node = malloc(sizeof(struct __complexNodeFunction));
     node->nodeType = 'F';
     node->left = left;
@@ -177,7 +175,6 @@ ComplexNodeRef ComplexNodeCreateFunction(int funcType, ComplexNodeRef left)
 
 ComplexNodeRef ComplexNodeCreateNumberLeaf(double complex number)
 {
- //   fprintf(stderr, "ComplexNodeCreateNumberLeaf, number = %g+%g*I\n",creal(number),cimag(number));
     struct __complexNumberValue *leaf = malloc(sizeof(struct __complexNumberValue));
     leaf->nodeType = 'K';
     leaf->number = number;
@@ -188,7 +185,6 @@ static double complex builtInMathFunction(ComplexNumberFunctionRef func)
 {
     builtInMathFunctions funcType = func->funcType;
     double complex value = ComplexNodeEvaluate(func->left);
- //   printf("builtInMathFunction: funcType=%d, value=%f+%fi\n", funcType, creal(value), cimag(value));
 
     double complex result;
     switch(funcType) {
@@ -232,10 +228,9 @@ static double complex builtInMathFunction(ComplexNumberFunctionRef func)
             result = cargument(value);
             break;
         default:
-            printf("builtInMathFunction: Unknown funcType %d\n", funcType);
+            fprintf(stderr,"builtInMathFunction: Unknown funcType %d\n", funcType);
             return nan("");
     }
- //   printf("builtInMathFunction: result = %f+%fi\n", creal(result), cimag(result));
     return result;
 }
 
@@ -243,61 +238,51 @@ static double complex builtInMathFunction(ComplexNumberFunctionRef func)
 double complex ComplexNodeEvaluate(ComplexNodeRef node)
 {
     if (!node) {
- //       printf("ComplexNodeEvaluate: node is NULL\n");
         return nan("");
     }
 
-//    printf("ComplexNodeEvaluate: nodeType = '%c' (%d)\n", node->nodeType, node->nodeType);
 
     switch(node->nodeType) {
         case 'K': {
             ComplexNumberRef leaf = (ComplexNumberRef) node;
-//            printf("  Leaf value: creal=%f, cimag=%f\n", creal(leaf->number), cimag(leaf->number));
             return leaf->number;
         }
         case '+': {
             double complex l = ComplexNodeEvaluate(node->left);
             double complex r = ComplexNodeEvaluate(node->right);
             double complex res = l + r;
- //           printf("  '+' result: creal=%f, cimag=%f\n", creal(res), cimag(res));
             return res;
         }
         case '-': {
             double complex l = ComplexNodeEvaluate(node->left);
             double complex r = ComplexNodeEvaluate(node->right);
             double complex res = l - r;
- //           printf("  '-' result: creal=%f, cimag=%f\n", creal(res), cimag(res));
             return res;
         }
         case '*': {
             double complex l = ComplexNodeEvaluate(node->left);
             double complex r = ComplexNodeEvaluate(node->right);
             double complex res = l * r;
- //           printf("  '*' result: creal=%f, cimag=%f\n", creal(res), cimag(res));
             return res;
         }
         case '/': {
             double complex l = ComplexNodeEvaluate(node->left);
             double complex r = ComplexNodeEvaluate(node->right);
             double complex res = l / r;
- //           printf("  '/' result: creal=%f, cimag=%f\n", creal(res), cimag(res));
             return res;
         }
         case '^': {
             double complex l = ComplexNodeEvaluate(node->left);
             double complex r = ComplexNodeEvaluate(node->right);
             double complex res = cpow(l, r);
- //           printf("  '^' result: creal=%f, cimag=%f\n", creal(res), cimag(res));
             return res;
         }
         case '|': {
             if (!node->left) {
-  //              printf("  '|' node has no left child!\n");
                 return nan("");
             }
             double complex val = ComplexNodeEvaluate(node->left);
             double abs_val = cabs(val);
- //           printf("  '|' result: |z| = %f\n", abs_val);
             return abs_val + 0.0 * I;
         }
         case 'M': {
@@ -307,17 +292,13 @@ double complex ComplexNodeEvaluate(ComplexNodeRef node)
             // Fix: ensure +0.0 for real negative numbers
             if (fabs(imag) < 1e-15) imag = 0.0;
             double complex res = real + imag * I;
- //           printf("  Unary minus result: creal=%f, cimag=%f\n", creal(res), cimag(res));
             return res;
         }
         case 'F': {
- //           printf("  Function call node\n");
             double complex result = builtInMathFunction((ComplexNumberFunctionRef) node);
- //           printf("  Function result: creal=%f, cimag=%f\n", creal(result), cimag(result));
             return result;
         }
         default:
- //           printf("  Unknown nodeType '%c' (%d)\n", node->nodeType, node->nodeType);
             return nan("");
     }
 }

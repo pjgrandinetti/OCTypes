@@ -14,7 +14,6 @@ static char **typeIDTable = NULL;
 static OCTypeID typeIDTableCount = 0;
 
 void cleanupTypeIDTable(void) {
-    printf("Cleaning up typeIDTable...\n");
     if (typeIDTable) {
         for (OCTypeID i = 0; i < typeIDTableCount; i++) {
             free(typeIDTable[i]);
