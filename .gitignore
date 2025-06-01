@@ -34,6 +34,8 @@ OCComplexParser.tab.h
 /build/
 /build-*/
 build-xcode/
+/install/
+
 
 # CMake-generated files
 CMakeCache.txt
