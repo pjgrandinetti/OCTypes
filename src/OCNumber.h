@@ -169,6 +169,22 @@ OCNumberRef OCNumberCreateWithSInt32(int32_t value);
 OCNumberRef OCNumberCreateWithSInt64(int64_t value);
 
 /**
+ * @brief Creates an OCNumber from a signed int value.
+ * @param value The int value to store.
+ * @return An OCNumberRef or NULL on error.
+ * @ingroup OCNumber
+ */
+OCNumberRef OCNumberCreateWithInt(int value);
+
+/**
+ * @brief Creates an OCNumber from a signed long value.
+ * @param value The long value to store.
+ * @return An OCNumberRef or NULL on error.
+ * @ingroup OCNumber
+ */
+OCNumberRef OCNumberCreateWithLong(long value);
+
+/**
  * @brief Creates an OCNumber from a 32-bit floating-point value.
  * @param value The float value to store.
  * @return An OCNumberRef or NULL on error.
