@@ -50,7 +50,7 @@ jobs:
                CFLAGS="-std=c99 -I. -Isrc -O3 -Wall -Wextra \
                        -Wno-sign-compare -Wno-unused-parameter \
                        -Wno-missing-field-initializers" \
-               LEX=flex YACC="bison -y"
+               LEX=flex YACC="bison"
           cp lib/libOCTypes.a libOCTypes.a
 
       - name: Upload library artifact

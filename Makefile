@@ -41,7 +41,6 @@ TEST_OBJ := $(addprefix $(OBJ_DIR)/, $(notdir $(TEST_FILES:.c=.o)))
 RM := rm -f
 MKDIR_P := mkdir -p
 LIBDIR := lib
-# INCDIR is no longer needed as we use install target for headers
 
 # Install target layout
 INSTALL_DIR := install
