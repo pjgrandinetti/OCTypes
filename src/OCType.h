@@ -164,6 +164,10 @@ bool OCTypeGetStaticInstance(const void * ptr);
  */
 void OCTypeSetStaticInstance(const void * ptr, bool static_instance);
 
+
+bool OCTypeGetFinalized(const void * ptr);
+
+
 /**
  * @brief Gets the OCTypeID associated with an OCType instance.
  *
@@ -173,6 +177,10 @@ void OCTypeSetStaticInstance(const void * ptr, bool static_instance);
  * @ingroup OCType
  */
 OCTypeID OCGetTypeID(const void *ptr);
+
+
+const char *OCTypeNameFromTypeID(const void * ptr);
+
 
 /** \cond INTERNAL */
 /**
@@ -184,11 +192,15 @@ typedef struct __OCBase {
     OCTypeID typeID;  /**< Type identifier. */
     uint32_t retainCount;  /**< Reference count. */
     void (*finalize)(const void *);  /**< Finalizer function. */
+    bool finalized;                // field to track finalization
     bool (*equal)(const void *, const void *);  /**< Equality comparator. */
     OCStringRef (*copyFormattingDesc)(OCTypeRef cf);  /**< Description formatter. */
     bool static_instance;  /**< Indicates if the instance is static. */
 } OCBase;
 /** \endcond */
+
+
+
 
 /** @} */ // end of OCType group
 

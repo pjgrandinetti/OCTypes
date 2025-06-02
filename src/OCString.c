@@ -190,8 +190,11 @@ str_replace(const char *orig,
 
     // 3) Allocate new buffer (+1 for NUL)
     result = malloc(new_len + 1);
-    if (!result) return NULL;
-
+    if (NULL == result) {
+        fprintf(stderr, "str_replace: Memory allocation failed.\n");
+        *count = 0;
+        return NULL;
+    }
     // 4) Perform the replacement pass
     tmp = result;
     ins = orig;
@@ -264,6 +267,7 @@ static void __OCStringFinalize(const void * theType)
     OCStringRef theString = (OCStringRef) theType;
     free(theString->string);
     free((void *)theString);
+    theString = NULL; // Set to NULL to avoid dangling pointer
 }
 
 static OCStringRef __OCStringCopyFormattingDescription(OCTypeRef cf)
@@ -279,19 +283,24 @@ OCTypeID OCStringGetTypeID(void)
 
 static struct __OCString *OCStringAllocate()
 {
-    struct __OCString *theString = malloc(sizeof(struct __OCString));
-    if(NULL == theString) return NULL;
-    theString->_base.typeID = OCStringGetTypeID();
-    theString->_base.static_instance = false; // Not static
-    theString->_base.finalize = __OCStringFinalize;
-    theString->_base.equal = __OCStringEqual;
-    theString->_base.copyFormattingDesc = __OCStringCopyFormattingDescription;
-    theString->string = NULL;
-    theString->length = 0;
-    theString->capacity = 0;
-    theString->_base.retainCount = 0;
-    OCRetain(theString); // Increment retain count for the new object
-    return theString;
+    struct __OCString *obj = malloc(sizeof(struct __OCString));
+    if(NULL == obj) {
+        fprintf(stderr, "OCStringAllocate: Memory allocation failed.\n");
+        return NULL;
+    }
+    obj->_base.typeID = OCStringGetTypeID();
+    obj->_base.static_instance = false; // Not static
+    obj->_base.finalize = __OCStringFinalize;
+    obj->_base.equal = __OCStringEqual;
+    obj->_base.copyFormattingDesc = __OCStringCopyFormattingDescription;
+    obj->_base.retainCount = 1;
+    obj->_base.finalized = false;
+
+    obj->string = NULL;
+    obj->length = 0;
+    obj->capacity = 0;
+
+    return obj;
 }
 
 
@@ -357,7 +366,8 @@ OCMutableStringRef OCStringCreateMutable(uint64_t capacity) {
     s->capacity = capacity;
     s->length   = 0;
     s->string   = malloc(capacity + 1);
-    if (!s->string) {
+    if (NULL == s->string) {
+        fprintf(stderr, "OCStringCreateMutable: Memory allocation failed for string.\n");
         OCRelease(s);
         return NULL;
     }
@@ -382,7 +392,8 @@ OCMutableStringCreateWithCString(const char *cString)
 
     // Allocate memory for the string content
     s->string = malloc(byteLen + 1);
-    if (!s->string) {
+    if (NULL==s->string) {
+        fprintf(stderr, "OCMutableStringCreateWithCString: Memory allocation failed for string.\n");
         OCRelease(s); // Free the allocated OCString instance
         return NULL;
     }
@@ -395,7 +406,8 @@ OCMutableStringCreateWithCString(const char *cString)
 // ——— Immutable wrapper onto the mutable creator ———
 OCStringRef OCStringCreateWithCString(const char *cString)
 {
-    return (OCStringRef)OCMutableStringCreateWithCString(cString);
+    OCStringRef theString = (OCStringRef)OCMutableStringCreateWithCString(cString);
+    return theString;
 }
 
 OCMutableStringRef OCStringCreateMutableCopy(OCStringRef theString) {
@@ -409,7 +421,8 @@ OCMutableStringRef OCStringCreateMutableCopy(OCStringRef theString) {
     s->length   = theString->length;
 
     s->string = malloc(byteLen + 1);
-    if (!s->string) {
+    if (NULL==s->string) {
+        fprintf(stderr, "OCStringCreateMutableCopy: Memory allocation failed for string.\n");
         OCRelease(s);
         return NULL;
     }
@@ -434,7 +447,10 @@ OCStringRef OCStringCreateWithSubstring(OCStringRef str, OCRange range) {
 
     size_t byteCount = off2 - off1;
     char *buf = malloc(byteCount + 1);
-    if (!buf) return NULL;
+    if (NULL == buf) {
+        fprintf(stderr, "OCStringCreateWithSubstring: Memory allocation failed for substring buffer.\n");
+        return NULL;
+    }
     memcpy(buf, str->string + off1, byteCount);
     buf[byteCount] = '\0';
 
@@ -511,9 +527,8 @@ void OCStringAppendCString(OCMutableStringRef s, const char *cString) {
         }
 
         char *new_s_string_buffer = realloc(s->string, new_capacity + 1); // +1 for NUL
-        if (!new_s_string_buffer) {
-            // Allocation failure. Cannot append.
-            // Consider error handling strategy. For now, return without changing string.
+        if (NULL == new_s_string_buffer) {
+            fprintf(stderr, "OCStringAppendCString: Memory allocation failed for new string buffer.\n");
             return;
         }
         s->string = new_s_string_buffer;
@@ -578,7 +593,10 @@ void OCStringReplace(OCMutableStringRef s, OCRange range, OCStringRef rep)
 
     // 4) Allocate fresh buffer and do three bounded memcpy’s
     char *newbuf = malloc(newAlloc);
-    if (!newbuf) return;
+    if (NULL == newbuf) {
+        fprintf(stderr, "OCStringReplace: Memory allocation failed for new string buffer.\n");
+        return;
+        }
 
     //   a) head
     memcpy(newbuf, s->string, off1);
@@ -744,7 +762,10 @@ OCStringRef OCFloatCreateStringValue(float value) {
     // Determine needed buffer size
     int n = snprintf(NULL, 0, "%g", value);
     char *buf = malloc(n + 1);
-    if (!buf) return NULL;
+    if (NULL == buf) {
+        fprintf(stderr, "OCFloatCreateStringValue: Memory allocation failed for string buffer.\n");
+        return NULL;
+    }
     snprintf(buf, n + 1, "%g", value);
     OCStringRef s = OCStringCreateWithCString(buf);
     free(buf);
@@ -755,7 +776,10 @@ OCStringRef OCFloatCreateStringValue(float value) {
 OCStringRef OCDoubleCreateStringValue(double value) {
     int n = snprintf(NULL, 0, "%g", value);
     char *buf = malloc(n + 1);
-    if (!buf) return NULL;
+    if (NULL == buf) {
+        fprintf(stderr, "OCDoubleCreateStringValue: Memory allocation failed for string buffer.\n");
+        return NULL;
+    }
     snprintf(buf, n + 1, "%g", value);
     OCStringRef s = OCStringCreateWithCString(buf);
     free(buf);
@@ -769,7 +793,10 @@ OCStringRef OCFloatComplexCreateStringValue(float complex v, OCStringRef format)
     double real = crealf(v), imag = cimagf(v);
     int n = snprintf(NULL, 0, fmt, real, imag);
     char *buf = malloc(n + 1);
-    if (!buf) return NULL;
+    if (NULL == buf) {  
+        fprintf(stderr, "OCFloatComplexCreateStringValue: Memory allocation failed for string buffer.\n");
+        return NULL;
+    }
     snprintf(buf, n + 1, fmt, real, imag);
     OCStringRef s = OCStringCreateWithCString(buf);
     free(buf);
@@ -782,7 +809,10 @@ OCStringRef OCDoubleComplexCreateStringValue(double complex v, OCStringRef forma
     double real = creal(v), imag = cimag(v);
     int n = snprintf(NULL, 0, fmt, real, imag);
     char *buf = malloc(n + 1);
-    if (!buf) return NULL;
+    if (NULL == buf) {
+        fprintf(stderr, "OCDoubleComplexCreateStringValue: Memory allocation failed for string buffer.\n");
+        return NULL;
+    }
     snprintf(buf, n + 1, fmt, real, imag);
     OCStringRef s = OCStringCreateWithCString(buf);
     free(buf);
@@ -1053,6 +1083,10 @@ void _OCStringAppendFormatAndArgumentsAux(OCMutableStringRef outputString,
                 if (*p) p++;
                 size_t len = p - start;
                 char *subFmt = malloc(len+1);
+                if (NULL == subFmt) {
+                    fprintf(stderr, "_OCStringAppendFormatAndArgumentsAux: Memory allocation failed for subFmt.\n");
+                    return;
+                }
                 memcpy(subFmt, start, len);
                 subFmt[len] = '\0';
                 va_list argsCopy;
@@ -1061,6 +1095,11 @@ void _OCStringAppendFormatAndArgumentsAux(OCMutableStringRef outputString,
                 va_end(argsCopy);
                 if (needed > 0) {
                     char *buf = malloc((size_t)needed + 1);
+                    if (NULL == buf) {
+                        fprintf(stderr, "_OCStringAppendFormatAndArgumentsAux: Memory allocation failed for buf.\n");
+                        free(subFmt);
+                        return;
+                    }
                     vsnprintf(buf, (size_t)needed + 1, subFmt, args);
                     OCStringAppendCString(outputString, buf);
                     free(buf);
@@ -1084,7 +1123,10 @@ void _OCStringAppendFormatAndArgumentsAux(OCMutableStringRef outputString,
 
     // Format into buffer
     char *buf = malloc((size_t)needed + 1);
-    if (!buf) return;
+    if (NULL == buf) {
+        fprintf(stderr, "_OCStringAppendFormatAndArgumentsAux: Memory allocation failed for buf.\n");
+        return;
+    }
     vsnprintf(buf, (size_t)needed + 1, fmt, args);
 
     // Append the result
@@ -1148,7 +1190,11 @@ OCArrayRef OCStringCreateArrayWithFindResults(OCStringRef string,
     OCRange search = rangeToSearch, found;
     while (OCStringFindWithOptions(string, stringToFind, search, compareOptions, &found)) {
         OCRange *r = malloc(sizeof(OCRange));
-        if (!r) { OCRelease(result); return NULL; }
+        if (NULL == r) {
+            fprintf(stderr, "OCStringCreateArrayWithFindResults: Memory allocation failed for range.\n");
+            OCRelease(result); 
+            return NULL; 
+        }   
         *r = found;
         OCArrayAppendValue(result, r);
 

@@ -6,6 +6,7 @@
 //  Updated to fix format‐string warnings by wrapping literals in STR()
 //
 
+#include <stdio.h>
 #include <stdlib.h>   // for malloc(), free()
 #include <complex.h>   // for creal/cimag on complex types
 #include <inttypes.h> // Provides PRIu64 and related macros
@@ -95,6 +96,8 @@ static bool __OCNumberEqual(const void * theType1, const void * theType2)
 static void __OCNumberFinalize(const void * theType)
 {
     free((void *)theType);
+    theType = NULL; // Set to NULL to avoid dangling pointer
+
 }
 
 static OCStringRef __OCNumberCopyFormattingDescription(OCTypeRef theType)
@@ -143,17 +146,21 @@ OCTypeID OCNumberGetTypeID(void)
 
 static struct __OCNumber *OCNumberAllocate(void)
 {
-    struct __OCNumber *n = malloc(sizeof(*n));
-    if (!n) return NULL;
-    n->_base.typeID             = OCNumberGetTypeID();
-    n->_base.static_instance    = false; // Not static
-    n->_base.finalize           = __OCNumberFinalize;
-    n->_base.equal              = __OCNumberEqual;
-    n->_base.copyFormattingDesc = __OCNumberCopyFormattingDescription;
-    n->_base.retainCount        = 0;
-    n->type                    = kOCNumberFloat64Type; // Default type
-    OCRetain(n); // Initial retain count
-    return n;
+    struct __OCNumber *obj = malloc(sizeof(struct __OCNumber));
+    if (NULL==obj) {
+        fprintf(stderr, "OCNumberAllocate: Memory allocation failed.\n");
+        return NULL;
+    }
+    obj->_base.typeID             = OCNumberGetTypeID();
+    obj->_base.static_instance    = false; // Not static
+    obj->_base.finalize           = __OCNumberFinalize;
+    obj->_base.equal              = __OCNumberEqual;
+    obj->_base.copyFormattingDesc = __OCNumberCopyFormattingDescription;
+    obj->_base.finalized = false; // Not finalized yet
+    obj->_base.retainCount        = 1;
+
+    obj->type                    = kOCNumberFloat64Type; // Default type
+    return obj;
 }
 
 OCNumberRef OCNumberCreate(const OCNumberType type, void *value)

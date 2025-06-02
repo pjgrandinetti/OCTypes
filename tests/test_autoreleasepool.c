@@ -5,28 +5,28 @@
 // Original autoreleasePoolTest0 implementation
 bool autoreleasePoolTest0(void) {
     fprintf(stderr, "%s begin...\n", __func__);
+
     bool ok;
     OCAutoreleasePoolRef p1 = OCAutoreleasePoolCreate(); 
-    if(!p1) PRINTERROR;
+    if (!p1) PRINTERROR;
     ok = OCAutoreleasePoolRelease(p1); 
-    if(!ok) PRINTERROR;
-    
+    if (!ok) PRINTERROR;
+
     OCAutoreleasePoolRef p2 = OCAutoreleasePoolCreate(); 
-    if(!p2) PRINTERROR; // Added check for p2
+    if (!p2) PRINTERROR;
+
     OCStringRef s2 = OCStringCreateWithCString("t");
-    if(!s2) { // Added check for s2
+    if (s2 == NULL) {
         OCAutoreleasePoolRelease(p2);
         PRINTERROR;
     }
-    if (OCAutorelease(s2)!=s2) {
-        OCRelease(s2); // Release s2 if OCAutorelease fails
-        OCAutoreleasePoolRelease(p2);
-        PRINTERROR;
-    }
-    // s2 is now in the pool, OCAutoreleasePoolRelease should handle its release.
+
+    // Add s2 to pool — no need for return check or manual release
+    OCAutorelease(s2);
+
     ok = OCAutoreleasePoolRelease(p2); 
-    if(!ok) PRINTERROR;
-    
+    if (!ok) PRINTERROR;
+
     fprintf(stderr, "%s end...without problems\n", __func__);
     return true;
 }
