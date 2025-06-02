@@ -98,26 +98,25 @@ OCTypeID OCDictionaryGetTypeID(void)
 
 static struct __OCDictionary *OCDictionaryAllocate()
 {
-    struct __OCDictionary *theDictionary = malloc(sizeof(struct __OCDictionary));
-    if (NULL == theDictionary)
+    struct __OCDictionary *obj = malloc(sizeof(struct __OCDictionary));
+    if (NULL == obj)
     {
         fprintf(stderr, "OCDictionaryAllocate: Memory allocation failed.\n");
         return NULL;
     }
-    theDictionary->_base.typeID = OCDictionaryGetTypeID();
-    theDictionary->_base.static_instance = false; // Not static
-    theDictionary->_base.finalize = __OCDictionaryFinalize;
-    theDictionary->_base.equal = __OCDictionaryEqual;
-    theDictionary->_base.copyFormattingDesc = NULL;
-    theDictionary->_base.retainCount = 0;
-    theDictionary->count = 0;
-    theDictionary->capacity = 0;
-    theDictionary->keys = NULL;   // Initialize keys pointer
-    theDictionary->values = NULL; // Initialize values pointer
-    theDictionary->_base.finalized = false; // Not finalized yet
+    obj->_base.typeID = OCDictionaryGetTypeID();
+    obj->_base.static_instance = false; // Not static
+    obj->_base.finalize = __OCDictionaryFinalize;
+    obj->_base.equal = __OCDictionaryEqual;
+    obj->_base.copyFormattingDesc = NULL;
+    obj->_base.finalized = false; // Not finalized yet
+    obj->_base.retainCount = 1;
+    obj->count = 0;
+    obj->capacity = 0;
+    obj->keys = NULL;   // Initialize keys pointer
+    obj->values = NULL; // Initialize values pointer
 
-    OCRetain(theDictionary);      // Increment retain count for the new object
-    return theDictionary;
+    return obj;
 }
 
 uint64_t OCDictionaryGetCount(OCDictionaryRef theDictionary)

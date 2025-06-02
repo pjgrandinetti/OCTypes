@@ -146,21 +146,21 @@ OCTypeID OCNumberGetTypeID(void)
 
 static struct __OCNumber *OCNumberAllocate(void)
 {
-    struct __OCNumber *n = malloc(sizeof(*n));
-    if (NULL==n) {
+    struct __OCNumber *obj = malloc(sizeof(struct __OCNumber));
+    if (NULL==obj) {
         fprintf(stderr, "OCNumberAllocate: Memory allocation failed.\n");
         return NULL;
     }
-    n->_base.typeID             = OCNumberGetTypeID();
-    n->_base.static_instance    = false; // Not static
-    n->_base.finalize           = __OCNumberFinalize;
-    n->_base.equal              = __OCNumberEqual;
-    n->_base.copyFormattingDesc = __OCNumberCopyFormattingDescription;
-    n->_base.retainCount        = 0;
-    n->_base.finalized = false; // Not finalized yet
+    obj->_base.typeID             = OCNumberGetTypeID();
+    obj->_base.static_instance    = false; // Not static
+    obj->_base.finalize           = __OCNumberFinalize;
+    obj->_base.equal              = __OCNumberEqual;
+    obj->_base.copyFormattingDesc = __OCNumberCopyFormattingDescription;
+    obj->_base.finalized = false; // Not finalized yet
+    obj->_base.retainCount        = 1;
 
-    n->type                    = kOCNumberFloat64Type; // Default type
-    return (struct __OCNumber *) OCRetain(n);
+    obj->type                    = kOCNumberFloat64Type; // Default type
+    return obj;
 }
 
 OCNumberRef OCNumberCreate(const OCNumberType type, void *value)

@@ -52,21 +52,21 @@ OCTypeID OCDataGetTypeID(void)
 
 static struct __OCData *OCDataAllocate()
 {
-    struct __OCData *theData = malloc(sizeof(struct __OCData));
-    if(NULL == theData) {
+    struct __OCData *obj = malloc(sizeof(struct __OCData));
+    if(NULL == obj) {
         fprintf(stderr, "OCDataAllocate: Memory allocation failed.\n");
         return NULL;
         }
-    theData->_base.typeID = OCDataGetTypeID();
-    theData->_base.static_instance = false; // Not static
-    theData->_base.finalize = __OCDataFinalize;
-    theData->_base.equal = __OCDataEqual;
-    theData->_base.copyFormattingDesc = NULL;
-    theData->_base.finalized = false; // Not finalized yet
-    theData->_base.retainCount = 0;
-    OCRetain(theData);
+    obj->_base.typeID = OCDataGetTypeID();
+    obj->_base.static_instance = false; // Not static
+    obj->_base.finalized = false; // Not finalized yet
+    obj->_base.finalize = __OCDataFinalize;
+    obj->_base.equal = __OCDataEqual;
+    obj->_base.copyFormattingDesc = NULL;
+    obj->_base.finalized = false; // Not finalized yet
+    obj->_base.retainCount = 1;
 
-    return theData;
+    return obj;
 }
 
 OCDataRef OCDataCreate(const uint8_t *bytes, uint64_t length)

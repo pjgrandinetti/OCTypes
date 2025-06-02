@@ -115,24 +115,21 @@ void OCRelease(const void * ptr)
     if (NULL == theType) return;
 
     if (theType->_base.typeID == _kOCNotATypeID) {
-        fprintf(stderr, "ERROR: OCRelease called on object with invalid typeID (%p)\n", theType);
+        fprintf(stderr, "ERROR: OCRelease called on invalid object (%p),  typeID = %s \n", theType,OCTypeNameFromTypeID(theType));
         return;
     }
 
     if (theType->_base.static_instance) return;
 
     if (theType->_base.finalized) {
-        fprintf(stderr, "ERROR: OCRelease called on already-finalized object (%p)\n", theType);
+        fprintf(stderr, "ERROR: OCRelease called on (%p), an already-finalized object, typeID = %s \n", theType, OCTypeNameFromTypeID(theType));
         return; // or abort() if you want to crash for debugging
     }
 
 
     if (theType->_base.retainCount < 1) {
-        fprintf(stderr, "ERROR: OCRelease called with retainCount < 1 (%p), typeID = %s\n",
-                theType, OCTypeNameFromTypeID(theType->_base.typeID));
-
-
-
+        fprintf(stderr, "ERROR: OCRelease called on (%p) with retainCount < 1, typeID = %s\n",
+                theType, OCTypeNameFromTypeID(theType));
         return;
     } else if (theType->_base.retainCount == 1) {
         if (theType->_base.finalize) {
@@ -145,32 +142,40 @@ void OCRelease(const void * ptr)
     theType->_base.retainCount--;
 }
 
-// Increments the reference count of an object.
-const void *OCRetain(const void * ptr)
+const void *OCRetain(const void *ptr)
 {
-    // Cast to non-const internal struct pointer for modification
+    if (ptr == NULL) {
+        fprintf(stderr, "*** WARNING: OCRetain called on NULL pointer.\n");
+        return NULL;
+    }
+
     struct __OCType *theType = (struct __OCType *) ptr;
-    if(NULL == theType) return NULL;
 
-    if(theType->_base.static_instance) {
-        // Static instances should not be retained.
-        return theType;
+    OCTypeID typeID = theType->_base.typeID;
+    const char *typeName = OCTypeNameFromTypeID(theType);
+
+    if (typeID == _kOCNotATypeID) {
+        fprintf(stderr, "*** WARNING: OCRetain called on invalid object (%p), typeID = InvalidTypeID\n", ptr);
+        return ptr;
     }
 
-    // Since retainCount is uint32_t, it cannot be negative.
-    // A retainCount of 0 will be incremented to 1.
-    // The previous conditional block to handle retainCount < 1 (and not 0)
-    // was always false and has been removed.
+    if (theType->_base.static_instance) {
+        // Static instances are immortal
+    }
 
-    // Check for overflow if retainCount is near max value of uint32_t
+    if (theType->_base.finalized) {
+        fprintf(stderr, "*** WARNING: OCRetain called on already-finalized object (%p), typeID = %s\n", ptr, typeName);
+        return ptr;
+    }
+
     if (theType->_base.retainCount == UINT32_MAX) {
-        // Handle overflow: either error, assert, or cap.
-        // For now, let's assume it's an error condition or highly unlikely.
-        // Depending on policy, could log or abort.
-        return theType; // Cannot retain further
+        fprintf(stderr, "*** WARNING: OCRetain overflow on object (%p), typeID = %s\n", ptr, typeName);
+        return ptr;
     }
+
     theType->_base.retainCount++;
-    return theType;
+
+    return ptr;
 }
 
 // Returns a formatted description of the object.
@@ -241,12 +246,20 @@ void OCTypeSetStaticInstance(const void * ptr, bool static_instance) {
     theType->_base.static_instance = static_instance;
 }
 
-const char *OCTypeNameFromTypeID(OCTypeID typeID)
+bool OCTypeGetFinalized(const void * ptr) {
+    if (NULL == ptr) return false;
+    struct __OCType *theType = (struct __OCType *) ptr;
+    return theType->_base.finalized;
+}
+
+const char *OCTypeNameFromTypeID(const void * ptr)
 {
-    if (typeID == _kOCNotATypeID || typeID == 0 || typeID > typeIDTableCount) {
+    struct __OCType *theType = (struct __OCType *) ptr;
+
+    if (theType->_base.typeID == _kOCNotATypeID || theType->_base.typeID == 0 || theType->_base.typeID > typeIDTableCount) {
         return "InvalidTypeID";
     }
 
-    const char *name = typeIDTable[typeID - 1];
+    const char *name = typeIDTable[theType->_base.typeID - 1];
     return (name != NULL) ? name : "UnnamedType";
 }

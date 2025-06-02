@@ -283,23 +283,24 @@ OCTypeID OCStringGetTypeID(void)
 
 static struct __OCString *OCStringAllocate()
 {
-    struct __OCString *theString = malloc(sizeof(struct __OCString));
-    if(NULL == theString) {
+    struct __OCString *obj = malloc(sizeof(struct __OCString));
+    if(NULL == obj) {
         fprintf(stderr, "OCStringAllocate: Memory allocation failed.\n");
         return NULL;
     }
-    theString->_base.typeID = OCStringGetTypeID();
-    theString->_base.static_instance = false; // Not static
-    theString->_base.finalize = __OCStringFinalize;
-    theString->_base.equal = __OCStringEqual;
-    theString->_base.copyFormattingDesc = __OCStringCopyFormattingDescription;
-    theString->string = NULL;
-    theString->length = 0;
-    theString->capacity = 0;
-    theString->_base.retainCount = 0;
-    theString->_base.finalized = false; // Not finalized yet
-    OCRetain(theString); // Increment retain count for the new object
-    return theString;
+    obj->_base.typeID = OCStringGetTypeID();
+    obj->_base.static_instance = false; // Not static
+    obj->_base.finalize = __OCStringFinalize;
+    obj->_base.equal = __OCStringEqual;
+    obj->_base.copyFormattingDesc = __OCStringCopyFormattingDescription;
+    obj->_base.retainCount = 1;
+    obj->_base.finalized = false;
+
+    obj->string = NULL;
+    obj->length = 0;
+    obj->capacity = 0;
+
+    return obj;
 }
 
 

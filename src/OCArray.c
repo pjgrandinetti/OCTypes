@@ -165,26 +165,26 @@ void _OCArrayInitialize(void) {
 
 static struct __OCArray *OCArrayAllocate()
 {
-    struct __OCArray *theArray = malloc(sizeof(struct __OCArray));
-    if(NULL == theArray) {
+    struct __OCArray *obj = malloc(sizeof(struct __OCArray));
+    if(NULL == obj) {
         fprintf(stderr, "OCArrayAllocate: Memory allocation failed.\n");
         return NULL;
     }
 
-    theArray->_base.typeID = OCArrayGetTypeID();
-    theArray->_base.finalize = __OCArrayFinalize;
-    theArray->_base.equal = __OCArrayEqual;
-    theArray->_base.static_instance = false; // Not static
-    theArray->_base.copyFormattingDesc = NULL; // Or provide a suitable function
-    theArray->callBacks = &__kOCNullArrayCallBacks; // Default, can be overridden
-    theArray->count = 0;
-    theArray->capacity = 0;
-    theArray->data = NULL; // Initialize data pointer
-    theArray->_base.finalized = false; // Not finalized yet
-    theArray->_base.retainCount = 0;
-    OCRetain(theArray); // Increment retain count for the new object
+    obj->_base.typeID = OCArrayGetTypeID();
+    obj->_base.finalize = __OCArrayFinalize;
+    obj->_base.equal = __OCArrayEqual;
+    obj->_base.static_instance = false; // Not static
+    obj->_base.finalized = false;
+    obj->_base.copyFormattingDesc = NULL; // Or provide a suitable function
+    obj->_base.retainCount = 1;
 
-    return theArray;
+    obj->callBacks = &__kOCNullArrayCallBacks; // Default, can be overridden
+    obj->count = 0;
+    obj->capacity = 0;
+    obj->data = NULL; // Initialize data pointer
+
+    return obj;
 }
 
 OCArrayRef OCArrayCreate(const void **values, uint64_t numValues, const OCArrayCallBacks *callBacks)

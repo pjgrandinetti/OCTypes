@@ -164,6 +164,10 @@ bool OCTypeGetStaticInstance(const void * ptr);
  */
 void OCTypeSetStaticInstance(const void * ptr, bool static_instance);
 
+
+bool OCTypeGetFinalized(const void * ptr);
+
+
 /**
  * @brief Gets the OCTypeID associated with an OCType instance.
  *
@@ -175,7 +179,7 @@ void OCTypeSetStaticInstance(const void * ptr, bool static_instance);
 OCTypeID OCGetTypeID(const void *ptr);
 
 
-const char *OCTypeNameFromTypeID(OCTypeID typeID);
+const char *OCTypeNameFromTypeID(const void * ptr);
 
 
 /** \cond INTERNAL */
