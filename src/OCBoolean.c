@@ -47,10 +47,13 @@ void _OCBooleanInitialize(void) {
     __kOCBooleanTrue._base.typeID   = kOCBooleanTypeID;
     __kOCBooleanTrue._base.finalize = __OCBooleanFinalize;
     __kOCBooleanTrue._base.equal    = __OCBooleanEqual;
+    __kOCBooleanTrue._base.finalized = false; // Not finalized yet
 
     __kOCBooleanFalse._base.typeID   = kOCBooleanTypeID;
     __kOCBooleanFalse._base.finalize = __OCBooleanFinalize;
     __kOCBooleanFalse._base.equal    = __OCBooleanEqual;
+    __kOCBooleanFalse._base.finalized = false; // Not finalized yet
+
 }
 
 OCTypeID OCBooleanGetTypeID(void) {

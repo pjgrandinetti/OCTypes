@@ -111,24 +111,37 @@ OCTypeID OCRegisterType(char *typeName)
 // Decrements the reference count of an object and finalizes it if the count reaches zero.
 void OCRelease(const void * ptr)
 {
-    // Cast to non-const internal struct pointer for modification
     struct __OCType *theType = (struct __OCType *) ptr;
-    if(NULL == theType) return;
+    if (NULL == theType) return;
 
-    if(theType->_base.static_instance) {
-        // Static instances should not be released.
+    if (theType->_base.typeID == _kOCNotATypeID) {
+        fprintf(stderr, "ERROR: OCRelease called on object with invalid typeID (%p)\n", theType);
         return;
     }
-    // Decrement the retain count and finalize if it reaches zero.
-    if(theType->_base.retainCount < 1) {
-        theType->_base.retainCount = 0; // Should this be an assertion or error?
+
+    if (theType->_base.static_instance) return;
+
+    if (theType->_base.finalized) {
+        fprintf(stderr, "ERROR: OCRelease called on already-finalized object (%p)\n", theType);
+        return; // or abort() if you want to crash for debugging
+    }
+
+
+    if (theType->_base.retainCount < 1) {
+        fprintf(stderr, "ERROR: OCRelease called with retainCount < 1 (%p), typeID = %s\n",
+                theType, OCTypeNameFromTypeID(theType->_base.typeID));
+
+
+
         return;
-    } else if(theType->_base.retainCount == 1) {
-        if (theType->_base.finalize) { // Check if finalize is not NULL
+    } else if (theType->_base.retainCount == 1) {
+        if (theType->_base.finalize) {
+            theType->_base.finalized = true;  
             theType->_base.finalize(theType);
         }
-        return; // Return after finalize, as the object might be invalid.
+        return;
     }
+
     theType->_base.retainCount--;
 }
 
@@ -227,4 +240,13 @@ void OCTypeSetStaticInstance(const void * ptr, bool static_instance) {
     theType->_base.retainCount = 1;
     theType->_base.static_instance = static_instance;
 }
-// Returns the retain count of the object.
+
+const char *OCTypeNameFromTypeID(OCTypeID typeID)
+{
+    if (typeID == _kOCNotATypeID || typeID == 0 || typeID > typeIDTableCount) {
+        return "InvalidTypeID";
+    }
+
+    const char *name = typeIDTable[typeID - 1];
+    return (name != NULL) ? name : "UnnamedType";
+}

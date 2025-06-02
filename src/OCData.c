@@ -5,8 +5,9 @@
 //  Created by philip on 6/28/17.
 //
 
-#include <stdlib.h>   // for malloc, free, realloc
-#include <string.h>   // for memcmp, memcpy, memmove
+#include <stdio.h> 
+#include <stdlib.h>
+#include <string.h>
 #include "OCLibrary.h"
 
 static OCTypeID kOCDataID = _kOCNotATypeID;
@@ -40,6 +41,7 @@ static void __OCDataFinalize(const void * theType)
     OCDataRef theData = (OCDataRef) theType;
     free(theData->bytes);
     free((void *)theData);
+    theData = NULL; // Set to NULL to avoid dangling pointer
 }
 
 OCTypeID OCDataGetTypeID(void)
@@ -51,12 +53,16 @@ OCTypeID OCDataGetTypeID(void)
 static struct __OCData *OCDataAllocate()
 {
     struct __OCData *theData = malloc(sizeof(struct __OCData));
-    if(NULL == theData) return NULL;
+    if(NULL == theData) {
+        fprintf(stderr, "OCDataAllocate: Memory allocation failed.\n");
+        return NULL;
+        }
     theData->_base.typeID = OCDataGetTypeID();
     theData->_base.static_instance = false; // Not static
     theData->_base.finalize = __OCDataFinalize;
     theData->_base.equal = __OCDataEqual;
     theData->_base.copyFormattingDesc = NULL;
+    theData->_base.finalized = false; // Not finalized yet
     theData->_base.retainCount = 0;
     OCRetain(theData);
 
@@ -69,6 +75,11 @@ OCDataRef OCDataCreate(const uint8_t *bytes, uint64_t length)
     struct __OCData *newData = OCDataAllocate();
     if(NULL == newData) return NULL;
     newData->bytes = (uint8_t *) malloc(length * sizeof(uint8_t));
+    if(NULL == newData->bytes) {
+        fprintf(stderr, "OCDataCreate: Memory allocation for bytes failed.\n");
+        OCRelease(newData);
+        return NULL;
+    }
     memcpy((void *) newData->bytes, (const void *) bytes, length * sizeof(uint8_t));
     newData->length = length;
     newData->capacity = length;
@@ -97,7 +108,14 @@ OCMutableDataRef OCDataCreateMutable(uint64_t capacity)
 {
     struct __OCData *newData = OCDataAllocate();
     if(NULL == newData) return NULL;
-    if(capacity>0) newData->bytes = (uint8_t *) malloc(capacity * sizeof(uint8_t));
+    if(capacity>0) {
+        newData->bytes = (uint8_t *) malloc(capacity * sizeof(uint8_t));
+        if(NULL == newData->bytes) {
+            fprintf(stderr, "OCDataCreateMutable: Memory allocation for bytes failed.\n");
+            OCRelease(newData);
+            return NULL;
+        }
+    }
     else newData->bytes = NULL;
     
     newData->length = 0;
@@ -143,8 +161,16 @@ void OCDataSetLength(OCMutableDataRef theData, uint64_t length)
     if (length > theData->capacity) {
         if (theData->bytes == NULL) {
             theData->bytes = malloc(length * sizeof(uint8_t));
+            if (theData->bytes == NULL) {
+                fprintf(stderr, "OCDataSetLength: Memory allocation for bytes failed.\n");
+                return; 
+            }
         } else {
             theData->bytes = realloc(theData->bytes, length * sizeof(uint8_t));
+            if (theData->bytes == NULL) {
+                fprintf(stderr, "OCDataSetLength: Memory reallocation for bytes failed.\n");
+                return; 
+            }
         }
         theData->capacity = length;
     }

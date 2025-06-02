@@ -367,19 +367,38 @@ static int OCAutoreleasePoolGetNumberOfPoolObjects(OCAutoreleasePoolRef thePool)
  */
 static bool OCAutoreleasePoolAddObject(OCAutoreleasePoolRef thePool, const void * object, void (*release)(const void *))
 {
-    IF_NO_OBJECT_EXISTS_RETURN(thePool,false)
-    
-    if(object) {
-        OCAutoreleasePoolObjectRef pool_object = OCAutoreleasePoolObjectCreate(object,release);
-        thePool->number_of_pool_objects++;
-        thePool->pool_objects = realloc(thePool->pool_objects,
-                                        thePool->number_of_pool_objects*sizeof(OCAutoreleasePoolObjectRef)); // Corrected sizeof
-        thePool->pool_objects[thePool->number_of_pool_objects-1] = pool_object;
-        return true;
-    }
-    return false;
-}
+    IF_NO_OBJECT_EXISTS_RETURN(thePool, false)
+    IF_NO_OBJECT_EXISTS_RETURN(object, false)
+    IF_NO_OBJECT_EXISTS_RETURN(release, false)
 
+    // Check for duplicate object already in the pool
+    for (int i = 0; i < thePool->number_of_pool_objects; i++) {
+        if (OCAutoreleasePoolObjectGetObject(thePool->pool_objects[i]) == object) {
+            // Object already in pool, skip adding again
+#ifdef DEBUG
+            fprintf(stderr, "DEBUG: Skipping duplicate autorelease for object %p\n", object);
+#endif
+            return true;
+        }
+    }
+
+    // Allocate and add new pool object
+    OCAutoreleasePoolObjectRef pool_object = OCAutoreleasePoolObjectCreate(object, release);
+    if (!pool_object) return false;
+
+    thePool->number_of_pool_objects++;
+    thePool->pool_objects = realloc(thePool->pool_objects,
+        thePool->number_of_pool_objects * sizeof(OCAutoreleasePoolObjectRef));
+    if (NULL == thePool->pool_objects) {
+        fprintf(stderr, "*** ERROR - %s %s - realloc failed to grow pool_objects array. Object cannot be added.\n", __FILE__, __func__);
+        thePool->number_of_pool_objects--; // Revert count
+        OCAutoreleasePoolObjectDeallocate(pool_object);
+        return false;
+    }
+
+    thePool->pool_objects[thePool->number_of_pool_objects - 1] = pool_object;
+    return true;
+}
 
 
 /**************************************************************************
@@ -390,7 +409,7 @@ static bool OCAutoreleasePoolAddObject(OCAutoreleasePoolRef thePool, const void 
 const void * OCAutorelease(const void *ptr)
 {
     IF_NO_OBJECT_EXISTS_RETURN(ptr,NULL)
-
+    fprintf(stderr, "OCAutorelease called for %p\n", ptr);
     OCAutoreleasePoolsManagerAddObject(ptr, OCRelease);
     return ptr;
 }

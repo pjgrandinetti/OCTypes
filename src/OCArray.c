@@ -150,6 +150,7 @@ static void __OCArrayFinalize(const void * theType)
     }
 
     free((void *)theArray);
+    theArray = NULL; // Set to NULL to avoid dangling pointer
 }
 
 OCTypeID OCArrayGetTypeID(void)
@@ -165,7 +166,11 @@ void _OCArrayInitialize(void) {
 static struct __OCArray *OCArrayAllocate()
 {
     struct __OCArray *theArray = malloc(sizeof(struct __OCArray));
-    if(NULL == theArray) return NULL;
+    if(NULL == theArray) {
+        fprintf(stderr, "OCArrayAllocate: Memory allocation failed.\n");
+        return NULL;
+    }
+
     theArray->_base.typeID = OCArrayGetTypeID();
     theArray->_base.finalize = __OCArrayFinalize;
     theArray->_base.equal = __OCArrayEqual;
@@ -175,6 +180,7 @@ static struct __OCArray *OCArrayAllocate()
     theArray->count = 0;
     theArray->capacity = 0;
     theArray->data = NULL; // Initialize data pointer
+    theArray->_base.finalized = false; // Not finalized yet
     theArray->_base.retainCount = 0;
     OCRetain(theArray); // Increment retain count for the new object
 
@@ -192,7 +198,8 @@ OCArrayRef OCArrayCreate(const void **values, uint64_t numValues, const OCArrayC
     if (numValues > 0) {
         newArray->data = (const void **) malloc(numValues * sizeof(const void *));
         if (NULL == newArray->data) {
-            free(newArray); // Clean up allocated array shell
+            fprintf(stderr, "OCArrayCreate: Memory allocation for data failed.\n");
+            OCRelease(newArray); // Clean up allocated array shell
             return NULL;
         }
         memcpy((void *) newArray->data, (const void *) values, numValues * sizeof(const void *));
@@ -223,7 +230,8 @@ OCMutableArrayRef OCArrayCreateMutable(uint64_t capacity, const OCArrayCallBacks
     if (capacity > 0) {
         newArray->data = (const void **) malloc(capacity * sizeof(const void *));
         if (NULL == newArray->data) {
-            free(newArray);
+            fprintf(stderr, "OCArrayCreateMutable: Memory allocation for data failed.\n");
+            OCRelease(newArray);
             return NULL;
         }
     } else {
@@ -310,6 +318,7 @@ void OCArrayAppendValue(OCMutableArrayRef theArray, const void * value)
         uint64_t newCapacity = (theArray->capacity == 0) ? 1 : theArray->capacity * 2; // Grow by doubling, or start at 1
         const void **newData = (const void **) realloc(theArray->data, newCapacity * sizeof(const void *));
         if (NULL == newData) {
+            fprintf(stderr, "OCArrayAppendValue: Memory reallocation failed.\n");
             return;
         }
         theArray->data = newData;
@@ -350,6 +359,7 @@ void OCArrayInsertValueAtIndex(OCMutableArrayRef theArray, uint64_t index, const
         uint64_t newCapacity = (theArray->capacity == 0) ? 1 : theArray->capacity * 2;
         const void **newData = (const void **) realloc(theArray->data, newCapacity * sizeof(const void *));
         if (NULL == newData) {
+            fprintf(stderr, "OCArrayInsertValueAtIndex: Memory reallocation failed.\n");
             return;
         }
         theArray->data = newData;

@@ -32,7 +32,9 @@ bool dataTest0(void) {
     bytes2[2] = 0x0C;
 
     OCDataRef data2 = OCDataCreateWithBytesNoCopy(bytes2, len2);
-    if (!data2) { free(bytes2); OCRelease(data1); PRINTERROR; }
+    if (!data2) { free(bytes2); 
+    OCRelease(data1); 
+    PRINTERROR; }
     if (OCDataGetLength(data2) != len2) { OCRelease(data2); OCRelease(data1); PRINTERROR; }
     const uint8_t *ptr2 = OCDataGetBytePtr(data2);
     for (size_t i = 0; i < len2; ++i) {
