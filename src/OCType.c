@@ -26,10 +26,16 @@ void cleanupTypeIDTable(void) {
 
 // Run **after** LSAN’s destructors (101–103), so this cleanup
 // happens once leak checking has already run.
-__attribute__((destructor(104)))
+__attribute__((destructor(200)))
 static void _OCTypes_cleanup_after_leak_check(void) {
     cleanupConstantStringTable();
     cleanupTypeIDTable();
+
+    #if defined(DEBUG) \
+        && !defined(__SANITIZE_ADDRESS__) \
+        && !(defined(__clang__) && __has_feature(address_sanitizer))
+        // _OCReportLeaks();
+    #endif
 }
 
 struct __OCType {

@@ -39,7 +39,10 @@ void _OCUntrack(const void *ptr) {
     pthread_mutex_unlock(&gLeakLock);
 }
 
+
 void _OCReportLeaks(void) {
+    // Do nothing under AddressSanitizer:
+#if !__has_feature(address_sanitizer)
     pthread_mutex_lock(&gLeakLock);
 
     if (gLeakCount == 0) {
@@ -49,15 +52,15 @@ void _OCReportLeaks(void) {
     }
 
     typedef struct {
-        OCTypeID typeID;
+        OCTypeID    typeID;
         const char *typeName;
-        size_t count;
-        size_t staticCount;
+        size_t      count;
+        size_t      staticCount;
     } LeakSummary;
 
-    size_t capacity = 16;
-    size_t typeCount = 0;
-    LeakSummary *summaries = malloc(capacity * sizeof(LeakSummary));
+    size_t        capacity  = 16;
+    size_t        typeCount = 0;
+    LeakSummary  *summaries = malloc(capacity * sizeof(LeakSummary));
     if (!summaries) {
         fprintf(stderr, "[OCLeakTracker] ERROR: Failed to allocate memory for leak summary.\n");
         pthread_mutex_unlock(&gLeakLock);
@@ -68,11 +71,11 @@ void _OCReportLeaks(void) {
         const OCBase *base = gLeakTable[i].ptr;
         if (!base) continue;
 
-        OCTypeID tid = base->typeID;
-        const char *typeName = OCTypeIDName(base);
+        OCTypeID    tid       = base->typeID;
+        const char *typeName  = OCTypeIDName(base);
         if (!typeName) typeName = "(unknown)";
 
-        // Search for existing entry
+        // Look for existing summary entry
         size_t j;
         for (j = 0; j < typeCount; ++j) {
             if (summaries[j].typeID == tid) {
@@ -82,11 +85,12 @@ void _OCReportLeaks(void) {
             }
         }
 
-        // New typeID
+        // If it’s a new typeID, add a new summary slot
         if (j == typeCount) {
             if (typeCount == capacity) {
                 capacity *= 2;
-                LeakSummary *newSummaries = realloc(summaries, capacity * sizeof(LeakSummary));
+                LeakSummary *newSummaries =
+                    realloc(summaries, capacity * sizeof(LeakSummary));
                 if (!newSummaries) {
                     fprintf(stderr, "[OCLeakTracker] ERROR: Failed to realloc memory.\n");
                     free(summaries);
@@ -95,26 +99,33 @@ void _OCReportLeaks(void) {
                 }
                 summaries = newSummaries;
             }
-            summaries[typeCount].typeID = tid;
-            summaries[typeCount].typeName = typeName;
-            summaries[typeCount].count = 1;
+            summaries[typeCount].typeID      = tid;
+            summaries[typeCount].typeName    = typeName;
+            summaries[typeCount].count       = 1;
             summaries[typeCount].staticCount = base->static_instance ? 1 : 0;
             typeCount++;
         }
     }
 
-    fprintf(stderr, "\n[OCLeakTracker] %zu object(s) not finalized, grouped by type:\n", gLeakCount);
+    fprintf(stderr,
+            "\n[OCLeakTracker] %zu object(s) not finalized, grouped by type:\n",
+            gLeakCount);
     for (size_t i = 0; i < typeCount; ++i) {
         if (summaries[i].staticCount > 0) {
             fprintf(stderr, "  %s: %zu (%zu static)\n",
-                    summaries[i].typeName, summaries[i].count, summaries[i].staticCount);
+                    summaries[i].typeName,
+                    summaries[i].count,
+                    summaries[i].staticCount);
         } else {
-            fprintf(stderr, "  %s: %zu\n", summaries[i].typeName, summaries[i].count);
+            fprintf(stderr, "  %s: %zu\n",
+                    summaries[i].typeName,
+                    summaries[i].count);
         }
     }
 
     free(summaries);
     pthread_mutex_unlock(&gLeakLock);
+#endif  // !__has_feature(address_sanitizer)
 }
 
 
