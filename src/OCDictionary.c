@@ -31,11 +31,51 @@ static bool __OCDictionaryEqual(const void *theType1, const void *theType2)
 
 OCStringRef OCDictionaryCopyFormattingDesc(OCTypeRef cf)
 {
+    if (!cf) return OCStringCreateWithCString("<OCDictionary: NULL>");
+    
     OCDictionaryRef dict = (OCDictionaryRef)cf;
-    char buffer[64];
-    snprintf(buffer, sizeof(buffer), "<OCDictionary: %llu pairs>", (unsigned long long)dict->count);
-    return OCStringCreateWithCString(buffer);
+    const size_t maxItems = 5;
+    size_t count = OCDictionaryGetCount(dict);
+    size_t shown = count < maxItems ? count : maxItems;
+
+    OCMutableStringRef result = OCStringCreateMutable(0);
+    OCStringAppendFormat(result, STR("<OCDictionary: %zu pair%s {"),
+                         count, count == 1 ? "" : "s");
+
+    for (size_t i = 0; i < shown; ++i) {
+        if (i > 0)
+            OCStringAppendCString(result, ", ");
+
+        OCTypeRef key   = (OCTypeRef)dict->keys[i];
+        OCTypeRef value = dict->values[i];
+
+        OCStringRef keyDesc = OCTypeCopyFormattingDesc(key);
+        OCStringRef valDesc = OCTypeCopyFormattingDesc(value);
+
+        if (keyDesc) {
+            OCStringAppend(result, keyDesc);
+            OCRelease(keyDesc);
+        } else {
+            OCStringAppendCString(result, "(null key)");
+        }
+
+        OCStringAppendCString(result, ": ");
+
+        if (valDesc) {
+            OCStringAppend(result, valDesc);
+            OCRelease(valDesc);
+        } else {
+            OCStringAppendCString(result, "(null value)");
+        }
+    }
+
+    if (count > shown)
+        OCStringAppendCString(result, ", …");
+
+    OCStringAppendCString(result, "}>");
+    return result;
 }
+
 
 static void __OCDictionaryReleaseValues(OCDictionaryRef dict)
 {

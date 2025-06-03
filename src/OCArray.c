@@ -43,7 +43,7 @@
 
 static OCTypeID kOCArrayID = _kOCNotATypeID;
 
-const OCArrayCallBacks kOCTypeArrayCallBacks = {0, OCRetain, OCRelease, OCCopyDescription, OCTypeEqual};
+const OCArrayCallBacks kOCTypeArrayCallBacks = {0, OCRetain, OCRelease, OCTypeCopyFormattingDesc, OCTypeEqual};
 static const OCArrayCallBacks __kOCNullArrayCallBacks = {0, NULL, NULL, NULL, NULL};
 
 // OCArray Opaque Type
@@ -59,40 +59,28 @@ struct __OCArray {
 
 static bool __OCArrayEqual(const void *theType1, const void *theType2)
 {
-    OCArrayRef theArray1 = (OCArrayRef) theType1;
-    OCArrayRef theArray2 = (OCArrayRef) theType2;
-    if(theArray1->_base.typeID != theArray2->_base.typeID) return false;
+    OCArrayRef a1 = (OCArrayRef) theType1;
+    OCArrayRef a2 = (OCArrayRef) theType2;
+    if (!a1 || !a2) return false;
+    if (a1 == a2) return true;
+    if (a1->_base.typeID != a2->_base.typeID) return false;
+    if (a1->count != a2->count) return false;
+    if (a1->callBacks != a2->callBacks) return false;
 
-    if(NULL == theArray1 || NULL == theArray2) return false;
-    if(theArray1 == theArray2) return true;
-    if(theArray1->count != theArray2->count) return false;
-    if(theArray1->callBacks != theArray2->callBacks) return false;
+    OCArrayEqualCallBack equalFn = NULL;
+    if (a1->callBacks == &kOCTypeArrayCallBacks) {
+        equalFn = OCTypeEqual;
+    } else if (a1->callBacks && a1->callBacks->equal) {
+        equalFn = a1->callBacks->equal;
+    }
 
-    for(uint64_t index = 0;index< theArray1->count; index++) { // Changed from u_int64_t
-        OCTypeRef val1 = theArray1->data[index];
-        OCTypeRef val2 = theArray2->data[index];
-        if(!OCTypeEqual(val1, val2)) return false;
-    }
-    
-    if(theArray1->callBacks == &kOCTypeArrayCallBacks) {
-        for(uint64_t index=0; index<theArray1->count; index++) {
-            OCTypeRef val1 = theArray1->data[index];
-            OCTypeRef val2 = theArray2->data[index];
-            if(!OCTypeEqual(val1, val2)) return false;
-        }
-    }
-    else if(theArray1->callBacks && theArray1->callBacks->equal!=NULL) {
-        for(uint64_t index=0; index<theArray1->count; index++) {
-            OCTypeRef val1 = theArray1->data[index];
-            OCTypeRef val2 = theArray2->data[index];
-            if(!theArray1->callBacks->equal(val1, val2)) return false;
-        }
-    }
-    else {
-        for(uint64_t index=0; index<theArray1->count; index++) {
-            OCTypeRef val1 = theArray1->data[index];
-            OCTypeRef val2 = theArray2->data[index];
-            if(val1 != val2) return false;
+    for (uint64_t i = 0; i < a1->count; ++i) {
+        const void *v1 = a1->data[i];
+        const void *v2 = a2->data[i];
+        if (equalFn) {
+            if (!equalFn(v1, v2)) return false;
+        } else {
+            if (v1 != v2) return false;
         }
     }
 
@@ -127,11 +115,55 @@ uint64_t OCArrayGetCount(OCArrayRef theArray)
     return theArray->count;
 }
 
+const OCArrayCallBacks *OCArrayGetCallBacks(OCArrayRef array) {
+    if (!array) return NULL;
+    return array->callBacks;
+}
+
+
+
 OCStringRef OCArrayCopyFormattingDesc(OCTypeRef cf)
 {
-    (void)cf; // Unused parameter
-
-    return OCStringCreateWithCString("<OCArray>");
+    if (!cf) return OCStringCreateWithCString("<OCArray: NULL>");
+    
+    OCArrayRef array = (OCArrayRef)cf;
+    const OCArrayCallBacks *cb = OCArrayGetCallBacks(array);
+    
+    const size_t maxItems = 5;
+    size_t count = OCArrayGetCount(array);
+    size_t shown = count < maxItems ? count : maxItems;
+    
+    OCMutableStringRef result = OCStringCreateMutable(0);
+    OCStringAppendFormat(result, STR("<OCArray: %zu item%s ["),
+                         count, count == 1 ? "" : "s");
+    
+    for (size_t i = 0; i < shown; ++i) {
+        if (i > 0)
+            OCStringAppendCString(result, ", ");
+        
+        const void *element = OCArrayGetValueAtIndex(array, i);
+        OCStringRef desc = NULL;
+        
+        // Use copyFormattingDesc if available
+        if (cb == &kOCTypeArrayCallBacks) {
+            desc = OCTypeCopyFormattingDesc((OCTypeRef)element);
+        }
+        
+        if (desc) {
+            OCStringAppend(result, desc);
+            OCRelease(desc);
+        } else if (element) {
+            OCStringAppendFormat(result, STR("%p"), element);
+        } else {
+            OCStringAppendCString(result, "(null)");
+        }
+    }
+    
+    if (count > maxItems)
+        OCStringAppendCString(result, ", …");
+    
+    OCStringAppendCString(result, "]>");
+    return result;
 }
 
 static void __OCArrayFinalize(const void * theType)

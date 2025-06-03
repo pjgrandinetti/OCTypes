@@ -231,6 +231,8 @@ int64_t OCArrayBSearchValues(OCArrayRef array, OCRange range, const void *value,
  */
 OCArrayRef OCArrayCreateWithArray(OCArrayRef array);
 
+const OCArrayCallBacks *OCArrayGetCallBacks(OCArrayRef array);
+
 /** @} */ // end of OCArray group
 
 #endif /* OCArray_h */

@@ -10,7 +10,7 @@
 #define OC_LEAKTRACKER_H
 
 #include <stddef.h>
-
+#include "OCLibrary.h"
 #ifdef __cplusplus
 extern "C" {
 #endif

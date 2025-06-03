@@ -5,6 +5,7 @@
 //  Created by Philip Grandinetti on 5/15/17.
 //  Updated by ChatGPT on 2025-05-11.
 //
+#include <stdio.h>
 #include "OCLibrary.h"
 #include "OCType.h" // for OCRegisterType, OCTypeID, _kOCNotATypeID
 
@@ -40,11 +41,19 @@ static void __OCBooleanFinalize(const void *unused) {
     (void)unused;
 }
 
-static OCStringRef __OCBooleanCopyFormattingDesc(OCTypeRef cf) {
-    return ((OCBooleanRef)cf == kOCBooleanTrue)
-           ? OCStringCreateWithCString("true")
-           : OCStringCreateWithCString("false");
+static OCStringRef __OCBooleanCopyFormattingDesc(OCTypeRef cf)
+{
+    if (!cf) return NULL;
+    OCBase *base = (OCBase *)cf;
+    if (base->typeID != OCBooleanGetTypeID()) {
+        fprintf(stderr, "[OCBooleanCopyFormattingDesc] Invalid typeID %u\n", base->typeID);
+        return NULL;
+    }
+
+    bool value = (cf == (OCTypeRef)kOCBooleanTrue);
+    return OCStringCreateWithCString(value ? "true" : "false");
 }
+
 
 // Made _OCBooleanInitialize externally visible
 void _OCBooleanInitialize(void) {

@@ -26,10 +26,32 @@ static bool __OCDataEqual(const void * theType1, const void * theType2)
 
 OCStringRef OCDataCopyFormattingDesc(OCTypeRef cf)
 {
+    if (!cf) return NULL;
     OCDataRef data = (OCDataRef)cf;
-    char buffer[64];
-    snprintf(buffer, sizeof(buffer), "<OCData: %llu bytes>", (unsigned long long)data->length);
-    return OCStringCreateWithCString(buffer);
+
+    const size_t maxPreview = 16;
+    size_t previewLen = data->length < maxPreview ? data->length : maxPreview;
+
+    // Estimate: 2 chars per byte + "…" + static text overhead
+    size_t bufferSize = 64 + previewLen * 3;
+    char *buffer = calloc(1, bufferSize);
+    if (!buffer) return NULL;
+
+    int offset = snprintf(buffer, bufferSize, "<OCData: %llu bytes, preview: ",
+                          (unsigned long long)data->length);
+
+    for (size_t i = 0; i < previewLen && offset < (int)(bufferSize - 4); ++i)
+        offset += snprintf(buffer + offset, bufferSize - offset, "%02X ", data->bytes[i]);
+
+    if (data->length > maxPreview)
+        snprintf(buffer + offset, bufferSize - offset, "…>");
+
+    else
+        snprintf(buffer + offset, bufferSize - offset, ">");
+
+    OCStringRef result = OCStringCreateWithCString(buffer);
+    free(buffer);
+    return result;
 }
 
 static void __OCDataFinalize(const void * theType)

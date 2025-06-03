@@ -81,8 +81,17 @@ static void __OCNumberFinalize(const void *theType)
     (void)theType;
 }
 
-static OCStringRef __OCNumberCopyFormattingDescription(OCTypeRef theType)
+#include <inttypes.h>
+
+static OCStringRef __OCNumberCopyFormattingDesc(OCTypeRef theType)
 {
+    if (!theType) return NULL;
+    OCBase *base = (OCBase *)theType;
+    if (base->typeID != OCNumberGetTypeID()) {
+        fprintf(stderr, "[OCNumberCopyFormattingDesc] Invalid typeID %u\n", base->typeID);
+        return NULL;
+    }
+
     OCNumberRef n = (OCNumberRef)theType;
     switch (n->type) {
         case kOCNumberUInt8Type: return OCStringCreateWithFormat(STR("%u"), n->value.uint8Value);
@@ -91,8 +100,8 @@ static OCStringRef __OCNumberCopyFormattingDescription(OCTypeRef theType)
         case kOCNumberSInt16Type: return OCStringCreateWithFormat(STR("%d"), n->value.int16Value);
         case kOCNumberUInt32Type: return OCStringCreateWithFormat(STR("%u"), n->value.uint32Value);
         case kOCNumberSInt32Type: return OCStringCreateWithFormat(STR("%d"), n->value.int32Value);
-        case kOCNumberUInt64Type: return OCStringCreateWithFormat(STR("%lu"), n->value.uint64Value);
-        case kOCNumberSInt64Type: return OCStringCreateWithFormat(STR("%ld"), n->value.int64Value);
+        case kOCNumberUInt64Type: return OCStringCreateWithFormat(STR("%" PRIu64), n->value.uint64Value);
+        case kOCNumberSInt64Type: return OCStringCreateWithFormat(STR("%" PRId64), n->value.int64Value);
         case kOCNumberFloat32Type: return OCStringCreateWithFormat(STR("%f"), n->value.floatValue);
         case kOCNumberFloat64Type: return OCStringCreateWithFormat(STR("%lf"), n->value.doubleValue);
         case kOCNumberFloat32ComplexType:
@@ -104,6 +113,7 @@ static OCStringRef __OCNumberCopyFormattingDescription(OCTypeRef theType)
                                             creal(n->value.doubleComplexValue),
                                             cimag(n->value.doubleComplexValue));
     }
+
     return NULL;
 }
 
@@ -121,7 +131,7 @@ static struct __OCNumber *OCNumberAllocate(void)
         OCNumberGetTypeID(),
         __OCNumberFinalize,
         __OCNumberEqual,
-        __OCNumberCopyFormattingDescription);
+        __OCNumberCopyFormattingDesc);
 }
 
 

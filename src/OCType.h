@@ -167,7 +167,7 @@ OCTypeID OCGetTypeID(const void *ptr);
  * @return Type name string.
  * @ingroup OCType
  */
-const char *OCTypeNameFromTypeID(const void * ptr);
+const char *OCTypeIDName(const void * ptr);
 
 /** \cond INTERNAL */
 
@@ -220,6 +220,7 @@ void *OCTypeAllocate(size_t size,
  */
 #define OCTypeAlloc(TYPE, TYPEID, FINALIZER, EQUAL_FN, DESC_FN) \
     (TYPE *)OCTypeAllocate(sizeof(TYPE), TYPEID, FINALIZER, EQUAL_FN, DESC_FN, __FILE__, __LINE__)
+
 
 /**
  * @brief Reports any OCTypeRef-tracked objects that were not finalized.

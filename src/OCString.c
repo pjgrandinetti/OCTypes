@@ -3,6 +3,7 @@
 #include <string.h>   // strlen, strcmp, memcpy, memmove
 #include <stdint.h>   // uint32_t
 #include <stddef.h>   // ptrdiff_t, size_t
+#include <stdarg.h>
 #include <complex.h>
 #include <math.h>
 #include "OCString.h"
@@ -268,9 +269,15 @@ static void __OCStringFinalize(const void * theType)
     free(theString->string);
 }
 
-static OCStringRef __OCStringCopyFormattingDescription(OCTypeRef cf)
+static OCStringRef __OCStringCopyFormattingDesc(OCTypeRef cf)
 {
-    return (OCStringRef) OCStringCreateCopy((OCStringRef)cf);
+    if (!cf) return NULL;
+    OCBase *base = (OCBase *)cf;
+    if (base->typeID != OCStringGetTypeID()) {
+        fprintf(stderr, "[OCStringCopyFormattingDesc] Warning: expected OCString typeID, got %u\n", base->typeID);
+        return NULL;
+    }
+    return OCStringCreateCopy((OCStringRef)cf);
 }
 
 OCTypeID OCStringGetTypeID(void)
@@ -285,7 +292,7 @@ static struct __OCString *OCStringAllocate()
                                          OCStringGetTypeID(),
                                          __OCStringFinalize,
                                          __OCStringEqual,
-                                         __OCStringCopyFormattingDescription);
+                                         __OCStringCopyFormattingDesc);
 
     // Initialize type-specific fields
     obj->string = NULL;
@@ -307,7 +314,7 @@ static struct __OCString *OCStringAllocate()
 //     obj->_base.static_instance = false; // Not static
 //     obj->_base.finalize = __OCStringFinalize;
 //     obj->_base.equal = __OCStringEqual;
-//     obj->_base.copyFormattingDesc = __OCStringCopyFormattingDescription;
+//     obj->_base.copyFormattingDesc = __OCStringCopyFormattingDesc;
 //     obj->_base.retainCount = 1;
 //     obj->_base.finalized = false;
 

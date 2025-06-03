@@ -42,12 +42,28 @@ void _OCUntrack(const void *ptr) {
 void _OCReportLeaks(void) {
     pthread_mutex_lock(&gLeakLock);
     if (gLeakCount > 0) {
-        fprintf(stderr, "[OCLeakTracker] %zu object(s) not finalized:\n", gLeakCount);
+        fprintf(stderr, "\n[OCLeakTracker] %zu object(s) not finalized:\n", gLeakCount);
         for (size_t i = 0; i < gLeakCount; ++i) {
-            fprintf(stderr, "  Leak at %p (allocated at %s:%d)\n",
-                    gLeakTable[i].ptr, gLeakTable[i].file, gLeakTable[i].line);
+            const OCBase *base = gLeakTable[i].ptr;
+            const char *typeName = OCTypeIDName(base);
+            fprintf(stderr, "  Leak: %s at %p (%s) (allocated at %s:%d)\n",
+                    typeName ? typeName : "(unknown type)",
+                    gLeakTable[i].ptr,
+                    base->static_instance ? "static" : "dynamic",
+                    gLeakTable[i].file, gLeakTable[i].line);
+
+            if (base->copyFormattingDesc) {
+                OCStringRef desc = base->copyFormattingDesc((OCTypeRef)base);
+                if (desc) {
+                    fprintf(stderr, "    → contents: %s\n", OCStringGetCString(desc));
+                    OCRelease(desc);
+                }
+            }
         }
+    } else {
+        fprintf(stderr, "[OCLeakTracker] All objects finalized successfully.\n");
     }
     pthread_mutex_unlock(&gLeakLock);
 }
+
 #endif

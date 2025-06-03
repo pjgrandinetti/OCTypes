@@ -29,6 +29,9 @@ void cleanupTypeIDTable(void) {
 __attribute__((destructor(104)))
 static void _OCTypes_cleanup_after_leak_check(void) {
     cleanupConstantStringTable();
+    #ifdef DEBUG
+    _OCReportLeaks();
+    #endif
     cleanupTypeIDTable();
 }
 
@@ -113,7 +116,7 @@ void OCRelease(const void * ptr)
 
     if (theType->_base.typeID == _kOCNotATypeID) {
         fprintf(stderr, "ERROR: OCRelease called on invalid object (%p),  typeID = %s\n",
-                theType, OCTypeNameFromTypeID(theType));
+                theType, OCTypeIDName(theType));
         return;
     }
 
@@ -121,13 +124,13 @@ void OCRelease(const void * ptr)
 
     if (theType->_base.finalized) {
         fprintf(stderr, "ERROR: OCRelease called on (%p), an already-finalized object, typeID = %s\n",
-                theType, OCTypeNameFromTypeID(theType));
+                theType, OCTypeIDName(theType));
         return;
     }
 
     if (theType->_base.retainCount < 1) {
         fprintf(stderr, "ERROR: OCRelease called on (%p) with retainCount < 1, typeID = %s\n",
-                theType, OCTypeNameFromTypeID(theType));
+                theType, OCTypeIDName(theType));
         return;
     }
 
@@ -160,7 +163,7 @@ const void *OCRetain(const void *ptr)
     struct __OCType *theType = (struct __OCType *) ptr;
 
     OCTypeID typeID = theType->_base.typeID;
-    const char *typeName = OCTypeNameFromTypeID(theType);
+    const char *typeName = OCTypeIDName(theType);
 
     if (typeID == _kOCNotATypeID) {
         fprintf(stderr, "*** WARNING: OCRetain called on invalid object (%p), typeID = InvalidTypeID\n", ptr);
@@ -293,7 +296,7 @@ bool OCTypeGetFinalized(const void * ptr) {
     return theType->_base.finalized;
 }
 
-const char *OCTypeNameFromTypeID(const void * ptr)
+const char *OCTypeIDName(const void * ptr)
 {
     struct __OCType *theType = (struct __OCType *) ptr;
 

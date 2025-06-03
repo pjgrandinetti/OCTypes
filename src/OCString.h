@@ -189,6 +189,7 @@ OCMutableStringRef OCStringCreateMutable(uint64_t capacity);
  */
 OCMutableStringRef OCMutableStringCreateWithCString(const char *cString);
 
+
 /**
  * @brief Returns a C string representation of an immutable OCString.
  * @param theString Immutable OCString.

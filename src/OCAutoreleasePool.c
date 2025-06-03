@@ -436,7 +436,7 @@ const void *OCAutorelease(const void *ptr)
     struct __OCType *theType = (struct __OCType *) ptr;
 
     // fprintf(stderr, "OCAutorelease called for %p, typeID = %s\n",
-    //         ptr, OCTypeNameFromTypeID(theType));
+    //         ptr, OCTypeIDName(theType));
 
     // Invalid type check
     if (OCGetTypeID(ptr) == _kOCNotATypeID) {
@@ -452,14 +452,14 @@ const void *OCAutorelease(const void *ptr)
     // Prevent autorelease of finalized objects
     if (OCTypeGetFinalized(ptr)) {
         fprintf(stderr, "*** WARNING: OCAutorelease called on finalized object (%p), typeID = %s\n",
-                ptr, OCTypeNameFromTypeID(theType));
+                ptr, OCTypeIDName(theType));
         return ptr;
     }
 
     // Prevent autorelease if retainCount is already zero
     if (OCTypeGetRetainCount(ptr) < 1) {
         fprintf(stderr, "*** WARNING: OCAutorelease called on object with retainCount < 1 (%p), typeID = %s\n",
-                ptr, OCTypeNameFromTypeID(theType));
+                ptr, OCTypeIDName(theType));
         return ptr;
     }
 
