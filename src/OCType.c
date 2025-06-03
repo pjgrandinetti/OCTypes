@@ -29,9 +29,6 @@ void cleanupTypeIDTable(void) {
 __attribute__((destructor(104)))
 static void _OCTypes_cleanup_after_leak_check(void) {
     cleanupConstantStringTable();
-    #ifdef DEBUG
-    _OCReportLeaks();
-    #endif
     cleanupTypeIDTable();
 }
 

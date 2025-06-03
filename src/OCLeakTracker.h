@@ -44,6 +44,10 @@ void _OCUntrack(const void *ptr);
  */
 void _OCReportLeaks(void);
 
+
+size_t _OCLeakCountForType(OCTypeID typeID);
+
+
 #endif // DEBUG
 
 #ifdef __cplusplus
