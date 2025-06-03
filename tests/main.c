@@ -23,6 +23,15 @@
 #include "test_number.h"       // ← New: OCNumber tests
 #include "test_dictionary.h"  // ← New: OCDictionary tests
 
+#ifdef DEBUG
+#include "../src/OCLeakTracker.h"
+
+__attribute__((destructor))
+static void ReportLeaksAtExit(void) {
+    _OCReportLeaks();
+}
+#endif
+
 // Note: The OCStringCompareAdapter is now in test_array.c
 // Note: The extern declaration for raise_to_integer_power is now in test_math.h
 

@@ -106,8 +106,6 @@ OCTypeID OCRegisterType(char *typeName)
 }
 
 
-
-
 // Decrements the reference count of an object and finalizes it if the count reaches zero.
 void OCRelease(const void * ptr)
 {
@@ -115,27 +113,31 @@ void OCRelease(const void * ptr)
     if (NULL == theType) return;
 
     if (theType->_base.typeID == _kOCNotATypeID) {
-        fprintf(stderr, "ERROR: OCRelease called on invalid object (%p),  typeID = %s \n", theType,OCTypeNameFromTypeID(theType));
+        fprintf(stderr, "ERROR: OCRelease called on invalid object (%p),  typeID = %s\n",
+                theType, OCTypeNameFromTypeID(theType));
         return;
     }
 
     if (theType->_base.static_instance) return;
 
     if (theType->_base.finalized) {
-        fprintf(stderr, "ERROR: OCRelease called on (%p), an already-finalized object, typeID = %s \n", theType, OCTypeNameFromTypeID(theType));
-        return; // or abort() if you want to crash for debugging
+        fprintf(stderr, "ERROR: OCRelease called on (%p), an already-finalized object, typeID = %s\n",
+                theType, OCTypeNameFromTypeID(theType));
+        return;
     }
-
 
     if (theType->_base.retainCount < 1) {
         fprintf(stderr, "ERROR: OCRelease called on (%p) with retainCount < 1, typeID = %s\n",
                 theType, OCTypeNameFromTypeID(theType));
         return;
-    } else if (theType->_base.retainCount == 1) {
+    }
+
+    if (theType->_base.retainCount == 1) {
         if (theType->_base.finalize) {
-            theType->_base.finalized = true;  
-            theType->_base.finalize(theType);
+            theType->_base.finalized = true;
+            theType->_base.finalize(theType);  // Clean up internal fields only
         }
+        free((void *)theType); 
         return;
     }
 
@@ -205,6 +207,39 @@ OCStringRef OCCopyDescription(const void * ptr)
          return OCStringCreateWithCString("UnnamedType");
     }
     return OCStringCreateWithCString(typeIDTable[currentTypeID - 1]);
+}
+
+
+void *OCTypeAllocate(size_t size, 
+                    OCTypeID typeID,
+                    void (*finalize)(const void *),
+                    bool (*equal)(const void *, const void *),
+                    OCStringRef (*copyDesc)(OCTypeRef),
+                    const char *file, 
+                    int line)
+{
+    struct __OCType *object = calloc(1, size);
+    if (!object) {
+        fprintf(stderr, "OCTypeAllocate: allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+
+    object->_base.typeID = typeID;
+    object->_base.retainCount = 1;
+    object->_base.finalize = finalize;
+    object->_base.equal = equal;
+    object->_base.copyFormattingDesc = copyDesc;
+    object->_base.static_instance = false;
+    object->_base.finalized = false;
+
+#ifdef DEBUG
+    object->_base.allocFile = file;
+    object->_base.allocLine = line;
+    object->_base.tracked = true;
+    _OCTrackDebug(object, file, line);
+#endif
+
+    return object;
 }
 
 // Retrieves the type ID of the given object.

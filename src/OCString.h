@@ -1,16 +1,21 @@
-/**
- * @file OCString.h
- * @brief Immutable and mutable OCString reference types and operations.
- *
- * Provides creation, manipulation, comparison, and conversion functions
- * for OCTypes string objects, including support for complex arithmetic parsing.
- */
+//
+//  OCString.h
+//  OCTypes
+//
+//  Created by Philip Grandinetti
+//
+
 #ifndef OCString_h
 #define OCString_h
 
-// System & OCTypes headers
 #include <complex.h>
-#include "OCLibrary.h" // Ensures OCStringRef and other types are available
+#include "OCLibrary.h"
+
+/**
+ * @note Ownership follows CoreFoundation conventions:
+ *       The caller owns any OCStringRef returned from functions with "Create"
+ *       in the name, and must call OCRelease() when done.
+ */
 
 /** @defgroup OCString OCString
  *  @brief Immutable and mutable OCString operations.

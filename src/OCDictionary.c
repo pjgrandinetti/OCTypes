@@ -1,94 +1,74 @@
-//
-//  OCDictionary.c
-//  OCTypes
-//
-//  Created by philip on 4/21/17.
-//
-
-#include <stdlib.h> // for malloc, free, realloc
-#include <string.h> // for memcpy
-#include <stdio.h>  // for printf
+// OCDictionary.c – Updated to use OCTypeAlloc and leak-safe finalization
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 #include "OCLibrary.h"
 
 static OCTypeID kOCDictionaryID = _kOCNotATypeID;
 
 // OCDictionary Opaque Type
-struct __OCDictionary
-{
+struct __OCDictionary {
     OCBase _base;
-
-    // OCDictionary Type attributes
     uint64_t count;
     uint64_t capacity;
     OCStringRef *keys;
     OCTypeRef *values;
 };
 
-bool __OCDictionaryEqual(const void *theType1, const void *theType2)
+static bool __OCDictionaryEqual(const void *theType1, const void *theType2)
 {
-    OCDictionaryRef theDictionary1 = (OCDictionaryRef)theType1;
-    OCDictionaryRef theDictionary2 = (OCDictionaryRef)theType2;
-    if (theDictionary1->_base.typeID != theDictionary2->_base.typeID)
-        return false;
-
-    if (NULL == theDictionary1 || NULL == theDictionary2)
-        return false;
-    if (theDictionary1 == theDictionary2)
-        return true;
-    if (theDictionary1->count != theDictionary2->count)
-        return false;
-
-    // For Dictionaries to be equal the keys-values must have the same storage order
-    // This doesn't allow dictionaries with the identical key-values but in different
-    // storage to be equal.  Need to fix this.
-    for (uint64_t index = 0; index < theDictionary1->count; index++)
-    {
-        OCStringRef key1 = theDictionary1->keys[index];
-        OCStringRef key2 = theDictionary2->keys[index];
-        if (!OCTypeEqual(key1, key2))
-            return false;
-        OCTypeRef value1 = theDictionary1->values[index];
-        OCTypeRef value2 = theDictionary2->values[index];
-        if (!OCTypeEqual(value1, value2))
-            return false;
+    OCDictionaryRef d1 = (OCDictionaryRef)theType1;
+    OCDictionaryRef d2 = (OCDictionaryRef)theType2;
+    if (d1 == d2) return true;
+    if (!d1 || !d2 || d1->_base.typeID != d2->_base.typeID) return false;
+    if (d1->count != d2->count) return false;
+    for (uint64_t i = 0; i < d1->count; i++) {
+        if (!OCTypeEqual(d1->keys[i], d2->keys[i])) return false;
+        if (!OCTypeEqual(d1->values[i], d2->values[i])) return false;
     }
     return true;
 }
 
-static void __OCDictionaryReleaseValues(OCDictionaryRef theDictionary)
+OCStringRef OCDictionaryCopyFormattingDesc(OCTypeRef cf)
 {
-    for (size_t index = 0; index < theDictionary->count; index++)
-    {
-        OCRelease(theDictionary->values[index]);
-        OCRelease(theDictionary->keys[index]);
+    OCDictionaryRef dict = (OCDictionaryRef)cf;
+    char buffer[64];
+    snprintf(buffer, sizeof(buffer), "<OCDictionary: %llu pairs>", (unsigned long long)dict->count);
+    return OCStringCreateWithCString(buffer);
+}
+
+static void __OCDictionaryReleaseValues(OCDictionaryRef dict)
+{
+    for (uint64_t i = 0; i < dict->count; i++) {
+        OCRelease(dict->keys[i]);
+        OCRelease(dict->values[i]);
     }
 }
 
-static void __OCDictionaryRetainValues(OCDictionaryRef theDictionary)
+static void __OCDictionaryRetainValues(OCDictionaryRef dict)
 {
-    for (size_t index = 0; index < theDictionary->count; index++)
-    {
-        // Retain both values and keys for copied dictionaries
-        OCRetain(theDictionary->values[index]);
-        OCRetain(theDictionary->keys[index]);
+    for (uint64_t i = 0; i < dict->count; i++) {
+        OCRetain(dict->keys[i]);
+        OCRetain(dict->values[i]);
     }
 }
-
-void __OCDictionaryFinalize(const void *theType)
+static void __OCDictionaryFinalize(const void *theType)
 {
-    if (NULL == theType)
-    {
+    if (NULL == theType) {
         fprintf(stderr, "Finalize called with NULL pointer\n");
         return;
     }
-    OCDictionaryRef theDictionary = (OCDictionaryRef)theType;
+    OCDictionaryRef dict = (OCDictionaryRef)theType;
+    __OCDictionaryReleaseValues(dict);
 
-    __OCDictionaryReleaseValues(theDictionary);
-    free((void *)theDictionary->keys);
-    free((void *)theDictionary->values);
-    free((void *)theDictionary);
-    theDictionary = NULL; // Set to NULL to avoid dangling pointer
+    if (dict->keys) {
+        free(dict->keys);
+    }
+    if (dict->values) {
+        free(dict->values);
+    }
 }
+
 OCTypeID OCDictionaryGetTypeID(void)
 {
     if (kOCDictionaryID == _kOCNotATypeID)
@@ -98,25 +78,12 @@ OCTypeID OCDictionaryGetTypeID(void)
 
 static struct __OCDictionary *OCDictionaryAllocate()
 {
-    struct __OCDictionary *obj = malloc(sizeof(struct __OCDictionary));
-    if (NULL == obj)
-    {
-        fprintf(stderr, "OCDictionaryAllocate: Memory allocation failed.\n");
-        return NULL;
-    }
-    obj->_base.typeID = OCDictionaryGetTypeID();
-    obj->_base.static_instance = false; // Not static
-    obj->_base.finalize = __OCDictionaryFinalize;
-    obj->_base.equal = __OCDictionaryEqual;
-    obj->_base.copyFormattingDesc = NULL;
-    obj->_base.finalized = false; // Not finalized yet
-    obj->_base.retainCount = 1;
-    obj->count = 0;
-    obj->capacity = 0;
-    obj->keys = NULL;   // Initialize keys pointer
-    obj->values = NULL; // Initialize values pointer
-
-    return obj;
+    return OCTypeAlloc(
+        struct __OCDictionary,
+        OCDictionaryGetTypeID(),
+        __OCDictionaryFinalize,
+        __OCDictionaryEqual,
+        OCDictionaryCopyFormattingDesc);
 }
 
 uint64_t OCDictionaryGetCount(OCDictionaryRef theDictionary)
@@ -133,7 +100,7 @@ OCDictionaryRef OCDictionaryCreate(const void **keys, const void **values, uint6
     struct __OCDictionary *theDictionary = OCDictionaryAllocate();
     if (NULL == theDictionary)
         return NULL;
-    theDictionary->values = (OCTypeRef *)malloc(numValues * sizeof(OCTypeRef));
+    theDictionary->values = (OCTypeRef *)calloc(numValues, sizeof(OCTypeRef));
     if (NULL == theDictionary->values)
     {
         fprintf(stderr, "OCDictionaryCreate: Memory allocation for values failed.\n");
@@ -141,7 +108,7 @@ OCDictionaryRef OCDictionaryCreate(const void **keys, const void **values, uint6
         return NULL;
     }
     memcpy((void *)theDictionary->values, (const void *)values, numValues * sizeof(void *));
-    theDictionary->keys = (OCStringRef *)malloc(numValues * sizeof(OCStringRef));
+    theDictionary->keys = (OCStringRef *) calloc(numValues, sizeof(OCStringRef));
     if (NULL == theDictionary->keys)
     {
         fprintf(stderr, "OCDictionaryCreate: Memory allocation for keys failed.\n");
@@ -162,14 +129,14 @@ OCMutableDictionaryRef OCDictionaryCreateMutable(uint64_t capacity)
     struct __OCDictionary *theDictionary = OCDictionaryAllocate();
     if (NULL == theDictionary)
         return NULL;
-    theDictionary->values = (OCTypeRef *)malloc(capacity * sizeof(OCTypeRef));
+    theDictionary->values = (OCTypeRef *) calloc(capacity, sizeof(OCTypeRef));
     if (NULL == theDictionary->values)
     {
         fprintf(stderr, "OCDictionaryCreateMutable: Memory allocation for values failed.\n");
         OCRelease(theDictionary);
         return NULL;
     }
-    theDictionary->keys = (OCStringRef *)malloc(capacity * sizeof(OCStringRef));
+    theDictionary->keys = (OCStringRef *) calloc(capacity, sizeof(OCStringRef));
     if (NULL == theDictionary->keys)
     {
         fprintf(stderr, "OCDictionaryCreateMutable: Memory allocation for keys failed.\n");
@@ -259,7 +226,7 @@ void OCDictionaryAddValue(OCMutableDictionaryRef theDictionary, OCStringRef key,
     {
         if (NULL == theDictionary->values)
         {
-            theDictionary->values = (OCTypeRef *)malloc(sizeof(OCTypeRef));
+            theDictionary->values = (OCTypeRef *) calloc(1, sizeof(OCTypeRef));
             if (NULL == theDictionary->values)
             {
                 fprintf(stderr, "OCDictionaryAddValue: Memory allocation for values failed.\n");
@@ -278,7 +245,7 @@ void OCDictionaryAddValue(OCMutableDictionaryRef theDictionary, OCStringRef key,
 
         if (NULL == theDictionary->keys)
         {
-            theDictionary->keys = (OCStringRef *)malloc(sizeof(OCStringRef));
+            theDictionary->keys = (OCStringRef *) calloc(1, sizeof(OCStringRef));
             if (NULL == theDictionary->keys)
             {
                 fprintf(stderr, "OCDictionaryAddValue: Memory allocation for keys failed.\n");
@@ -378,13 +345,13 @@ OCArrayRef OCDictionaryCreateArrayWithAllKeys(OCDictionaryRef theDictionary)
         return NULL;
 
     uint64_t count = OCDictionaryGetCount(theDictionary);
-    const void **keys = malloc(count * sizeof(const void *));
+    const void **keys = calloc(count, sizeof(const void *));
     if (NULL == keys)
     {
         fprintf(stderr, "OCDictionaryCreateArrayWithAllKeys: Memory allocation for keys failed.\n");
         return NULL;
     }
-    const void **values = malloc(count * sizeof(const void *));
+    const void **values = calloc(count, sizeof(const void *));
     if (NULL == values)
     {
         fprintf(stderr, "OCDictionaryCreateArrayWithAllKeys: Memory allocation for values failed.\n");
@@ -406,13 +373,13 @@ OCArrayRef OCDictionaryCreateArrayWithAllValues(OCDictionaryRef theDictionary)
         return NULL;
 
     uint64_t count = OCDictionaryGetCount(theDictionary);
-    const void **keys = malloc(count * sizeof(void *));
+    const void **keys = calloc(count, sizeof(void *));
     if (NULL == keys)
     {
         fprintf(stderr, "OCDictionaryCreateArrayWithAllValues: Memory allocation for keys failed.\n");
         return NULL;
     }
-    const void **values = malloc(count * sizeof(void *));
+    const void **values = calloc(count, sizeof(void *));
     if (NULL == values)
     {
         fprintf(stderr, "OCDictionaryCreateArrayWithAllValues: Memory allocation for values failed.\n");

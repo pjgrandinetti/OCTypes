@@ -8,51 +8,40 @@
 #ifndef OCNumber_h
 #define OCNumber_h
 
-#include <complex.h>      // Needed for complex number types
+#include <complex.h>
 #include <limits.h>
-#include "OCLibrary.h"    // Ensures OCNumberRef and other types are available
+#include "OCLibrary.h"
+
+/**
+ * @note Ownership follows CoreFoundation conventions:
+ *       The caller owns any OCNumberRef returned from functions with "Create"
+ *       in the name, and must call OCRelease() when done.
+ */
 
 /** @cond INTERNAL */
 typedef union __Number {
-    /** @brief Signed 8-bit integer value. */
-    int8_t  int8Value;
-    /** @brief Signed 16-bit integer value. */
-    int16_t int16Value;
-    /** @brief Signed 32-bit integer value. */
-    int32_t int32Value;
-    /** @brief Signed 64-bit integer value. */
-    int64_t int64Value;
-    /** @brief Unsigned 8-bit integer value. */
-    uint8_t uint8Value;
-    /** @brief Unsigned 16-bit integer value. */
-    uint16_t uint16Value;
-    /** @brief Unsigned 32-bit integer value. */
-    uint32_t uint32Value;
-    /** @brief Unsigned 64-bit integer value. */
-    uint64_t uint64Value;
-    /** @brief 32-bit floating-point value. */
-    float   floatValue;
-    /** @brief 64-bit floating-point value (double). */
-    double  doubleValue;
-    /** @brief Complex float value (float _Complex). */
-    float complex floatComplexValue;
-    /** @brief Complex double value (double _Complex). */
-    double complex doubleComplexValue;
+    int8_t  int8Value;           /**< Signed 8-bit integer value. */
+    int16_t int16Value;          /**< Signed 16-bit integer value. */
+    int32_t int32Value;          /**< Signed 32-bit integer value. */
+    int64_t int64Value;          /**< Signed 64-bit integer value. */
+    uint8_t uint8Value;          /**< Unsigned 8-bit integer value. */
+    uint16_t uint16Value;        /**< Unsigned 16-bit integer value. */
+    uint32_t uint32Value;        /**< Unsigned 32-bit integer value. */
+    uint64_t uint64Value;        /**< Unsigned 64-bit integer value. */
+    float   floatValue;          /**< 32-bit float value. */
+    double  doubleValue;         /**< 64-bit float (double) value. */
+    float complex floatComplexValue; /**< Complex float value. */
+    double complex doubleComplexValue; /**< Complex double value. */
 } __Number;
 /** @endcond */
 
 /**
  * @defgroup OCNumber OCNumber
- *  @brief Numerical value representation using OCType-compatible objects.
- *  @{
+ * @brief Numerical value representation using OCType-compatible objects.
+ * @{
  */
 
 /** @cond INTERNAL */
-/**
- * @name Legacy Numeric Type Codes
- * @brief Internal codes for OCNumberType. Prefer using the OCNumberType enum.
- * @{
- */
 #define SInt8Type 1
 #define SInt16Type 2
 #define SInt32Type 3
@@ -65,7 +54,6 @@ typedef union __Number {
 #define UInt64Type 20
 #define Float32ComplexType 24
 #define Float64ComplexType 26
-/** @} */
 /** @endcond */
 
 /**
@@ -73,7 +61,7 @@ typedef union __Number {
  * @brief Enumerates the specific numeric data types that an OCNumber object can represent.
  * @ingroup OCNumber
  */
-typedef enum { // Anonymous enum
+typedef enum {
     kOCNumberSInt8Type = SInt8Type,               /**< Signed 8-bit integer. */
     kOCNumberSInt16Type = SInt16Type,             /**< Signed 16-bit integer. */
     kOCNumberSInt32Type = SInt32Type,             /**< Signed 32-bit integer. */
@@ -88,7 +76,6 @@ typedef enum { // Anonymous enum
     kOCNumberFloat64ComplexType = Float64ComplexType  /**< Complex double. */
 } OCNumberType;
 
-/* Platform-independent aliases for native C types */
 #if INT_MAX == 127
   #define kOCNumberIntType kOCNumberSInt8Type
 #elif INT_MAX == 32767
@@ -119,124 +106,39 @@ OCTypeID OCNumberGetTypeID(void);
 /**
  * @brief Creates an OCNumber object from a raw value and specified OCNumberType.
  * @param type The numeric type.
- * @param value Pointer to the raw value (must match the size of the type).
+ * @param value Pointer to a variable of the matching C type (e.g., uint8_t*, double*, etc.).
  * @return An OCNumberRef or NULL on error.
+ * @ingroup OCNumber
  */
 OCNumberRef OCNumberCreate(OCNumberType type, void *value);
 
-/* --- Convenience Constructors --- */
-
 /**
- * @brief Creates an OCNumber from an unsigned 8-bit integer.
- * @param value The uint8_t value to store.
- * @return An OCNumberRef or NULL on error.
+ * @brief Creates a formatted string representing the OCNumber's value.
+ * @param theNumber An OCNumberRef.
+ * @return An OCStringRef with the formatted string. Caller must release.
  * @ingroup OCNumber
  */
-OCNumberRef OCNumberCreateWithUInt8(uint8_t value);
+OCStringRef OCNumberCreateStringValue(OCNumberRef theNumber);
 
 /**
- * @brief Creates an OCNumber from an unsigned 16-bit integer.
- * @param value The uint16_t value to store.
- * @return An OCNumberRef or NULL on error.
+ * @brief Returns a formatting-friendly description of the number.
+ * @param theNumber OCNumberRef to describe.
+ * @return OCStringRef describing the number (caller must release).
  * @ingroup OCNumber
  */
-OCNumberRef OCNumberCreateWithUInt16(uint16_t value);
+OCStringRef OCNumberCopyFormattingDesc(OCNumberRef theNumber);
 
 /**
- * @brief Creates an OCNumber from an unsigned 32-bit integer.
- * @param value The uint32_t value to store.
- * @return An OCNumberRef or NULL on error.
+ * @brief Retrieves the raw value from an OCNumber.
+ *
+ * If the type does not match the OCNumber's actual type, no value is written.
+ *
+ * @param number The OCNumberRef to query.
+ * @param type Expected OCNumberType.
+ * @param outValue Destination buffer (must match type).
  * @ingroup OCNumber
  */
-OCNumberRef OCNumberCreateWithUInt32(uint32_t value);
-
-/**
- * @brief Creates an OCNumber from an unsigned 64-bit integer.
- * @param value The uint64_t value to store.
- * @return An OCNumberRef or NULL on error.
- * @ingroup OCNumber
- */
-OCNumberRef OCNumberCreateWithUInt64(uint64_t value);
-
-/**
- * @brief Creates an OCNumber from a signed 8-bit integer.
- * @param value The int8_t value to store.
- * @return An OCNumberRef or NULL on error.
- * @ingroup OCNumber
- */
-OCNumberRef OCNumberCreateWithSInt8(int8_t value);
-
-/**
- * @brief Creates an OCNumber from a signed 16-bit integer.
- * @param value The int16_t value to store.
- * @return An OCNumberRef or NULL on error.
- * @ingroup OCNumber
- */
-OCNumberRef OCNumberCreateWithSInt16(int16_t value);
-
-/**
- * @brief Creates an OCNumber from a signed 32-bit integer.
- * @param value The int32_t value to store.
- * @return An OCNumberRef or NULL on error.
- * @ingroup OCNumber
- */
-OCNumberRef OCNumberCreateWithSInt32(int32_t value);
-
-/**
- * @brief Creates an OCNumber from a signed 64-bit integer.
- * @param value The int64_t value to store.
- * @return An OCNumberRef or NULL on error.
- * @ingroup OCNumber
- */
-OCNumberRef OCNumberCreateWithSInt64(int64_t value);
-
-/**
- * @brief Creates an OCNumber from a signed int value.
- * @param value The int value to store.
- * @return An OCNumberRef or NULL on error.
- * @ingroup OCNumber
- */
-OCNumberRef OCNumberCreateWithInt(int value);
-
-/**
- * @brief Creates an OCNumber from a signed long value.
- * @param value The long value to store.
- * @return An OCNumberRef or NULL on error.
- * @ingroup OCNumber
- */
-OCNumberRef OCNumberCreateWithLong(long value);
-
-/**
- * @brief Creates an OCNumber from a 32-bit floating-point value.
- * @param value The float value to store.
- * @return An OCNumberRef or NULL on error.
- * @ingroup OCNumber
- */
-OCNumberRef OCNumberCreateWithFloat(float value);
-
-/**
- * @brief Creates an OCNumber from a 64-bit floating-point value.
- * @param value The double value to store.
- * @return An OCNumberRef or NULL on error.
- * @ingroup OCNumber
- */
-OCNumberRef OCNumberCreateWithDouble(double value);
-
-/**
- * @brief Creates an OCNumber from a complex float value.
- * @param value The float complex value to store.
- * @return An OCNumberRef or NULL on error.
- * @ingroup OCNumber
- */
-OCNumberRef OCNumberCreateWithFloatComplex(float complex value);
-
-/**
- * @brief Creates an OCNumber from a complex double value.
- * @param value The double complex value to store.
- * @return An OCNumberRef or NULL on error.
- * @ingroup OCNumber
- */
-OCNumberRef OCNumberCreateWithDoubleComplex(double complex value);
+void OCNumberGetValue(OCNumberRef number, OCNumberType type, void *outValue);
 
 /**
  * @brief Returns the size in bytes of the C type corresponding to the given OCNumberType.
@@ -247,22 +149,28 @@ OCNumberRef OCNumberCreateWithDoubleComplex(double complex value);
 int OCNumberTypeSize(OCNumberType type);
 
 /**
- * @brief Creates a formatted string representing the OCNumber's value.
- * @param theNumber An OCNumberRef.
- * @return An OCStringRef with the formatted string. Caller must release.
- */
-OCStringRef OCNumberCreateStringValue(OCNumberRef theNumber);
-
-/**
- * @brief Retrieves the raw value from an OCNumber.
- * @param number The OCNumberRef to query.
- * @param type Expected OCNumberType.
- * @param outValue Destination buffer (must match type).
- * @return None. The value is written to outValue.
+ * @name Convenience Constructors
+ * @brief Create OCNumberRefs for native numeric types.
  * @ingroup OCNumber
+ * @{ 
  */
-void OCNumberGetValue(OCNumberRef number, OCNumberType type, void *outValue);
+OCNumberRef OCNumberCreateWithUInt8(uint8_t value);
+OCNumberRef OCNumberCreateWithUInt16(uint16_t value);
+OCNumberRef OCNumberCreateWithUInt32(uint32_t value);
+OCNumberRef OCNumberCreateWithUInt64(uint64_t value);
+OCNumberRef OCNumberCreateWithSInt8(int8_t value);
+OCNumberRef OCNumberCreateWithSInt16(int16_t value);
+OCNumberRef OCNumberCreateWithSInt32(int32_t value);
+OCNumberRef OCNumberCreateWithSInt64(int64_t value);
+OCNumberRef OCNumberCreateWithInt(int value);
+OCNumberRef OCNumberCreateWithLong(long value);
+OCNumberRef OCNumberCreateWithFloat(float value);
+OCNumberRef OCNumberCreateWithDouble(double value);
+OCNumberRef OCNumberCreateWithFloatComplex(float complex value);
+OCNumberRef OCNumberCreateWithDoubleComplex(double complex value);
+/** @} */
 
 /** @} */ // end of OCNumber group
 
 #endif /* OCNumber_h */
+

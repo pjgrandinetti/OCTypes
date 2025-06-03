@@ -59,6 +59,15 @@ extern const OCBooleanRef kOCBooleanFalse;
  */
 bool OCBooleanGetValue(OCBooleanRef boolean);
 
+
+/**
+ * @brief Returns a new OCStringRef representing the Boolean value ("true" or "false").
+ * @param boolean The OCBooleanRef to convert.
+ * @return A new OCStringRef ("true" or "false"). Caller must release.
+ * @ingroup OCBoolean
+ */
+OCStringRef OCBooleanCreateStringValue(OCBooleanRef boolean);
+
 /** @} */ // end of OCBoolean group
 
 #endif /* OCBoolean_h */

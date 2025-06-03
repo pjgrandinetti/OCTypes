@@ -1,129 +1,100 @@
-//
-//  OCNumber.c
-//  OCTypes
-//
-//  Created by Philip Grandinetti on 5/15/17.
-//  Updated to fix format‐string warnings by wrapping literals in STR()
-//
-
+// OCNumber.c – Updated to use OCTypeAlloc and leak-safe finalization
 #include <stdio.h>
-#include <stdlib.h>   // for malloc(), free()
-#include <complex.h>   // for creal/cimag on complex types
-#include <inttypes.h> // Provides PRIu64 and related macros
+#include <stdlib.h>
+#include <complex.h>
+#include <inttypes.h>
 #include "OCLibrary.h"
 
 static OCTypeID kOCNumberID = _kOCNotATypeID;
 
-// OCNumber Opaque Type
 struct __OCNumber {
     OCBase _base;
-
-    // OCNumber Type attributes  - order of declaration is essential
-    OCNumberType    type;
-    __Number        value;
+    OCNumberType type;
+    __Number value;
 };
 
-static bool __OCNumberEqual(const void * theType1, const void * theType2)
+static bool __OCNumberEqual(const void *a_, const void *b_)
 {
-    OCNumberRef a = (OCNumberRef)theType1;
-    OCNumberRef b = (OCNumberRef)theType2;
+    OCNumberRef a = (OCNumberRef)a_;
+    OCNumberRef b = (OCNumberRef)b_;
     if (a == b) return true;
-    if (!a || !b) return false;
-    if (a->_base.typeID != b->_base.typeID) return false;
+    if (!a || !b || a->_base.typeID != b->_base.typeID) return false;
 
-    // Convert both numbers to double or double complex for comparison
-    double val_a_real, val_b_real;
-    double val_a_imag = 0.0, val_b_imag = 0.0;
-    bool a_is_complex = false, b_is_complex = false;
+    double ar, ai = 0.0, br, bi = 0.0;
+    bool ac = false, bc = false;
 
     switch (a->type) {
-        case kOCNumberUInt8Type:    val_a_real = (double)a->value.uint8Value; break;
-        case kOCNumberSInt8Type:    val_a_real = (double)a->value.int8Value; break;
-        case kOCNumberUInt16Type:   val_a_real = (double)a->value.uint16Value; break;
-        case kOCNumberSInt16Type:   val_a_real = (double)a->value.int16Value; break;
-        case kOCNumberUInt32Type:   val_a_real = (double)a->value.uint32Value; break;
-        case kOCNumberSInt32Type:   val_a_real = (double)a->value.int32Value; break;
-        case kOCNumberUInt64Type:   val_a_real = (double)a->value.uint64Value; break;
-        case kOCNumberSInt64Type:   val_a_real = (double)a->value.int64Value; break;
-        case kOCNumberFloat32Type:  val_a_real = (double)a->value.floatValue; break;
-        case kOCNumberFloat64Type:  val_a_real = a->value.doubleValue; break;
+        case kOCNumberUInt8Type: ar = a->value.uint8Value; break;
+        case kOCNumberSInt8Type: ar = a->value.int8Value; break;
+        case kOCNumberUInt16Type: ar = a->value.uint16Value; break;
+        case kOCNumberSInt16Type: ar = a->value.int16Value; break;
+        case kOCNumberUInt32Type: ar = a->value.uint32Value; break;
+        case kOCNumberSInt32Type: ar = a->value.int32Value; break;
+        case kOCNumberUInt64Type: ar = a->value.uint64Value; break;
+        case kOCNumberSInt64Type: ar = a->value.int64Value; break;
+        case kOCNumberFloat32Type: ar = a->value.floatValue; break;
+        case kOCNumberFloat64Type: ar = a->value.doubleValue; break;
         case kOCNumberFloat32ComplexType:
-            val_a_real = crealf(a->value.floatComplexValue);
-            val_a_imag = cimagf(a->value.floatComplexValue);
-            a_is_complex = true;
+            ar = crealf(a->value.floatComplexValue);
+            ai = cimagf(a->value.floatComplexValue);
+            ac = true;
             break;
         case kOCNumberFloat64ComplexType:
-            val_a_real = creal(a->value.doubleComplexValue);
-            val_a_imag = cimag(a->value.doubleComplexValue);
-            a_is_complex = true;
+            ar = creal(a->value.doubleComplexValue);
+            ai = cimag(a->value.doubleComplexValue);
+            ac = true;
             break;
-        default: return false; // Should not happen
+        default: return false;
     }
 
     switch (b->type) {
-        case kOCNumberUInt8Type:    val_b_real = (double)b->value.uint8Value; break;
-        case kOCNumberSInt8Type:    val_b_real = (double)b->value.int8Value; break;
-        case kOCNumberUInt16Type:   val_b_real = (double)b->value.uint16Value; break;
-        case kOCNumberSInt16Type:   val_b_real = (double)b->value.int16Value; break;
-        case kOCNumberUInt32Type:   val_b_real = (double)b->value.uint32Value; break;
-        case kOCNumberSInt32Type:   val_b_real = (double)b->value.int32Value; break;
-        case kOCNumberUInt64Type:   val_b_real = (double)b->value.uint64Value; break;
-        case kOCNumberSInt64Type:   val_b_real = (double)b->value.int64Value; break;
-        case kOCNumberFloat32Type:  val_b_real = (double)b->value.floatValue; break;
-        case kOCNumberFloat64Type:  val_b_real = b->value.doubleValue; break;
+        case kOCNumberUInt8Type: br = b->value.uint8Value; break;
+        case kOCNumberSInt8Type: br = b->value.int8Value; break;
+        case kOCNumberUInt16Type: br = b->value.uint16Value; break;
+        case kOCNumberSInt16Type: br = b->value.int16Value; break;
+        case kOCNumberUInt32Type: br = b->value.uint32Value; break;
+        case kOCNumberSInt32Type: br = b->value.int32Value; break;
+        case kOCNumberUInt64Type: br = b->value.uint64Value; break;
+        case kOCNumberSInt64Type: br = b->value.int64Value; break;
+        case kOCNumberFloat32Type: br = b->value.floatValue; break;
+        case kOCNumberFloat64Type: br = b->value.doubleValue; break;
         case kOCNumberFloat32ComplexType:
-            val_b_real = crealf(b->value.floatComplexValue);
-            val_b_imag = cimagf(b->value.floatComplexValue);
-            b_is_complex = true;
+            br = crealf(b->value.floatComplexValue);
+            bi = cimagf(b->value.floatComplexValue);
+            bc = true;
             break;
         case kOCNumberFloat64ComplexType:
-            val_b_real = creal(b->value.doubleComplexValue);
-            val_b_imag = cimag(b->value.doubleComplexValue);
-            b_is_complex = true;
+            br = creal(b->value.doubleComplexValue);
+            bi = cimag(b->value.doubleComplexValue);
+            bc = true;
             break;
-        default: return false; // Should not happen
+        default: return false;
     }
 
-    if (a_is_complex || b_is_complex) {
-        // If either is complex, compare both as complex numbers
-        return val_a_real == val_b_real && val_a_imag == val_b_imag;
-    } else {
-        // Otherwise, compare as real numbers
-        return val_a_real == val_b_real;
-    }
+    if (ac || bc) return (ar == br && ai == bi);
+    return ar == br;
 }
 
-static void __OCNumberFinalize(const void * theType)
+static void __OCNumberFinalize(const void *theType)
 {
-    free((void *)theType);
-    theType = NULL; // Set to NULL to avoid dangling pointer
-
+    // No need to free — handled by OCRelease
+    (void)theType;
 }
 
 static OCStringRef __OCNumberCopyFormattingDescription(OCTypeRef theType)
 {
     OCNumberRef n = (OCNumberRef)theType;
     switch (n->type) {
-        case kOCNumberUInt8Type:
-            return OCStringCreateWithFormat(STR("%u"), n->value.uint8Value);
-        case kOCNumberSInt8Type:
-            return OCStringCreateWithFormat(STR("%d"), n->value.int8Value);
-        case kOCNumberUInt16Type:
-            return OCStringCreateWithFormat(STR("%u"), n->value.uint16Value);
-        case kOCNumberSInt16Type:
-            return OCStringCreateWithFormat(STR("%d"), n->value.int16Value);
-        case kOCNumberUInt32Type:
-            return OCStringCreateWithFormat(STR("%u"), n->value.uint32Value);
-        case kOCNumberSInt32Type:
-            return OCStringCreateWithFormat(STR("%d"), n->value.int32Value);
-        case kOCNumberUInt64Type:
-            return OCStringCreateWithFormat(STR("%lu"), n->value.uint64Value);
-        case kOCNumberSInt64Type:
-            return OCStringCreateWithFormat(STR("%ld"), n->value.int64Value);
-        case kOCNumberFloat32Type:
-            return OCStringCreateWithFormat(STR("%f"), n->value.floatValue);
-        case kOCNumberFloat64Type:
-            return OCStringCreateWithFormat(STR("%lf"), n->value.doubleValue);
+        case kOCNumberUInt8Type: return OCStringCreateWithFormat(STR("%u"), n->value.uint8Value);
+        case kOCNumberSInt8Type: return OCStringCreateWithFormat(STR("%d"), n->value.int8Value);
+        case kOCNumberUInt16Type: return OCStringCreateWithFormat(STR("%u"), n->value.uint16Value);
+        case kOCNumberSInt16Type: return OCStringCreateWithFormat(STR("%d"), n->value.int16Value);
+        case kOCNumberUInt32Type: return OCStringCreateWithFormat(STR("%u"), n->value.uint32Value);
+        case kOCNumberSInt32Type: return OCStringCreateWithFormat(STR("%d"), n->value.int32Value);
+        case kOCNumberUInt64Type: return OCStringCreateWithFormat(STR("%lu"), n->value.uint64Value);
+        case kOCNumberSInt64Type: return OCStringCreateWithFormat(STR("%ld"), n->value.int64Value);
+        case kOCNumberFloat32Type: return OCStringCreateWithFormat(STR("%f"), n->value.floatValue);
+        case kOCNumberFloat64Type: return OCStringCreateWithFormat(STR("%lf"), n->value.doubleValue);
         case kOCNumberFloat32ComplexType:
             return OCStringCreateWithFormat(STR("%f+I•%f"),
                                             crealf(n->value.floatComplexValue),
@@ -138,30 +109,21 @@ static OCStringRef __OCNumberCopyFormattingDescription(OCTypeRef theType)
 
 OCTypeID OCNumberGetTypeID(void)
 {
-    if (kOCNumberID == _kOCNotATypeID) {
+    if (kOCNumberID == _kOCNotATypeID)
         kOCNumberID = OCRegisterType("OCNumber");
-    }
     return kOCNumberID;
 }
 
 static struct __OCNumber *OCNumberAllocate(void)
 {
-    struct __OCNumber *obj = malloc(sizeof(struct __OCNumber));
-    if (NULL==obj) {
-        fprintf(stderr, "OCNumberAllocate: Memory allocation failed.\n");
-        return NULL;
-    }
-    obj->_base.typeID             = OCNumberGetTypeID();
-    obj->_base.static_instance    = false; // Not static
-    obj->_base.finalize           = __OCNumberFinalize;
-    obj->_base.equal              = __OCNumberEqual;
-    obj->_base.copyFormattingDesc = __OCNumberCopyFormattingDescription;
-    obj->_base.finalized = false; // Not finalized yet
-    obj->_base.retainCount        = 1;
-
-    obj->type                    = kOCNumberFloat64Type; // Default type
-    return obj;
+    return OCTypeAlloc(
+        struct __OCNumber,
+        OCNumberGetTypeID(),
+        __OCNumberFinalize,
+        __OCNumberEqual,
+        __OCNumberCopyFormattingDescription);
 }
+
 
 OCNumberRef OCNumberCreate(const OCNumberType type, void *value)
 {

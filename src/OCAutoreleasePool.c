@@ -59,7 +59,7 @@ static OCAutoreleasePoolObjectRef OCAutoreleasePoolObjectCreate(const void * obj
 {
     OCAutoreleasePoolObjectRef thePoolObject  = malloc(sizeof(struct _OCAutoreleasePoolObject));
     
-    IF_NO_OBJECT_EXISTS_RETURN(thePoolObject,NULL)
+    IF_NO_OBJECT_EXISTS_RETURN(thePoolObject,NULL);
     
     thePoolObject->object = object;
     thePoolObject->release = release;
@@ -74,7 +74,7 @@ static OCAutoreleasePoolObjectRef OCAutoreleasePoolObjectCreate(const void * obj
  */
 static bool OCAutoreleasePoolObjectDeallocate(OCAutoreleasePoolObjectRef thePoolObject)
 {
-    IF_NO_OBJECT_EXISTS_RETURN(thePoolObject,false)
+    IF_NO_OBJECT_EXISTS_RETURN(thePoolObject,false);
     
     if(thePoolObject) {
         free(thePoolObject);
@@ -91,7 +91,7 @@ static bool OCAutoreleasePoolObjectDeallocate(OCAutoreleasePoolObjectRef thePool
  */
 static void *OCAutoreleasePoolObjectGetReleaseFunction(OCAutoreleasePoolObjectRef thePoolObject)
 {
-    IF_NO_OBJECT_EXISTS_RETURN(thePoolObject,NULL)
+    IF_NO_OBJECT_EXISTS_RETURN(thePoolObject,NULL);
     
     return thePoolObject->release;
 }
@@ -104,7 +104,7 @@ static void *OCAutoreleasePoolObjectGetReleaseFunction(OCAutoreleasePoolObjectRe
  */
 static const void * OCAutoreleasePoolObjectGetObject(OCAutoreleasePoolObjectRef thePoolObject)
 {
-    IF_NO_OBJECT_EXISTS_RETURN(thePoolObject,NULL)
+    IF_NO_OBJECT_EXISTS_RETURN(thePoolObject,NULL);
     
     return thePoolObject->object;
 }
@@ -121,7 +121,7 @@ static bool OCAutoreleasePoolAddObject(OCAutoreleasePoolRef thePool, const void 
 static OCAutoreleasePoolsManagerRef OCAutoreleasePoolsManagerCreate(void)
 {
     OCAutoreleasePoolsManagerRef thePoolsManager  = malloc(sizeof(struct _OCAutoreleasePoolsManager));
-    IF_NO_OBJECT_EXISTS_RETURN(thePoolsManager,NULL)
+    IF_NO_OBJECT_EXISTS_RETURN(thePoolsManager,NULL);
     
     thePoolsManager->pools = NULL;
     thePoolsManager->number_of_pools = 0;
@@ -130,8 +130,8 @@ static OCAutoreleasePoolsManagerRef OCAutoreleasePoolsManagerCreate(void)
 
 static int OCAutoreleasePoolsManagerIndexOfPool(OCAutoreleasePoolRef thePool)
 {
-    IF_NO_OBJECT_EXISTS_RETURN(autorelease_pool_manager,POOL_NOT_FOUND)
-    IF_NO_OBJECT_EXISTS_RETURN(thePool,POOL_NOT_FOUND)
+    IF_NO_OBJECT_EXISTS_RETURN(autorelease_pool_manager,POOL_NOT_FOUND);
+    IF_NO_OBJECT_EXISTS_RETURN(thePool,POOL_NOT_FOUND);
     
     int poolIndex = POOL_NOT_FOUND;
     for(int i=0;i<autorelease_pool_manager->number_of_pools;i++) {
@@ -150,8 +150,8 @@ static int OCAutoreleasePoolsManagerIndexOfPool(OCAutoreleasePoolRef thePool)
  */
 static bool OCAutoreleasePoolsManagerRemovePool(OCAutoreleasePoolRef thePool)
 {
-    IF_NO_OBJECT_EXISTS_RETURN(autorelease_pool_manager,false)
-    IF_NO_OBJECT_EXISTS_RETURN(thePool,false)
+    IF_NO_OBJECT_EXISTS_RETURN(autorelease_pool_manager,false);
+    IF_NO_OBJECT_EXISTS_RETURN(thePool,false);
     
     int poolIndex =  OCAutoreleasePoolsManagerIndexOfPool(thePool);
     if(poolIndex == POOL_NOT_FOUND) return false;
@@ -183,7 +183,7 @@ static bool OCAutoreleasePoolsManagerRemovePool(OCAutoreleasePoolRef thePool)
 
 static bool OCAutoreleasePoolsManagerDeallocate(OCAutoreleasePoolsManagerRef thePoolsManager)
 {
-    IF_NO_OBJECT_EXISTS_RETURN(thePoolsManager,false)
+    IF_NO_OBJECT_EXISTS_RETURN(thePoolsManager,false);
     
     for(int i=0;i<thePoolsManager->number_of_pools;i++) OCAutoreleasePoolsManagerRemovePool(thePoolsManager->pools[i]);
     
@@ -218,7 +218,7 @@ static int OCAutoreleasePoolsManagerGetNumberOfPools(void)
  */
 static void OCAutoreleasePoolsManagerAddPool(OCAutoreleasePoolRef thePool)
 {
-    IF_NO_OBJECT_EXISTS_RETURN(thePool,)
+    IF_NO_OBJECT_EXISTS_RETURN(thePool,);
     
     if(autorelease_pool_manager==NULL) autorelease_pool_manager = OCAutoreleasePoolsManagerCreate();
     if(autorelease_pool_manager) {
@@ -258,9 +258,9 @@ static void OCAutoreleasePoolsManagerAddPool(OCAutoreleasePoolRef thePool)
  */
 static bool OCAutoreleasePoolsManagerAddObject(const void *object, void (*release)(const void *))
 {
-    IF_NO_OBJECT_EXISTS_RETURN(autorelease_pool_manager,false)
-    IF_NO_OBJECT_EXISTS_RETURN(object,false)
-    IF_NO_OBJECT_EXISTS_RETURN(release,false)
+    IF_NO_OBJECT_EXISTS_RETURN(autorelease_pool_manager,false);
+    IF_NO_OBJECT_EXISTS_RETURN(object,false);
+    IF_NO_OBJECT_EXISTS_RETURN(release,false);
     
     // add object to OCAutoreleasePool at the top of the list
     
@@ -284,7 +284,7 @@ OCAutoreleasePoolRef OCAutoreleasePoolCreate()
 {
     OCAutoreleasePoolRef thePool = malloc(sizeof(struct _OCAutoreleasePool));
     
-    IF_NO_OBJECT_EXISTS_RETURN(thePool,NULL)
+    IF_NO_OBJECT_EXISTS_RETURN(thePool,NULL);
     
     thePool->pool_objects = NULL;
     thePool->number_of_pool_objects = 0;
@@ -300,7 +300,7 @@ OCAutoreleasePoolRef OCAutoreleasePoolCreate()
  */
 static bool OCAutoreleasePoolDeallocate(OCAutoreleasePoolRef thePool)
 {
-    IF_NO_OBJECT_EXISTS_RETURN(thePool,false)
+    IF_NO_OBJECT_EXISTS_RETURN(thePool,false);
     
     for(int i=0;i<thePool->number_of_pool_objects;i++) if(thePool->pool_objects[i]) {
         OCAutoreleasePoolObjectRef pool_object = thePool->pool_objects[i];
@@ -334,7 +334,7 @@ static bool OCAutoreleasePoolDeallocate(OCAutoreleasePoolRef thePool)
 
 bool OCAutoreleasePoolRelease(OCAutoreleasePoolRef thePool)
 {
-    IF_NO_OBJECT_EXISTS_RETURN(thePool,false)
+    IF_NO_OBJECT_EXISTS_RETURN(thePool,false);
     
     return OCAutoreleasePoolsManagerRemovePool(thePool);
 }
@@ -380,7 +380,7 @@ void OCAutoreleasePoolDrain(OCAutoreleasePoolRef thePool)
  */
 static int OCAutoreleasePoolGetNumberOfPoolObjects(OCAutoreleasePoolRef thePool)
 {
-    IF_NO_OBJECT_EXISTS_RETURN(thePool,0)
+    IF_NO_OBJECT_EXISTS_RETURN(thePool,0);
     return thePool->number_of_pool_objects;
 }
 
@@ -394,9 +394,9 @@ static int OCAutoreleasePoolGetNumberOfPoolObjects(OCAutoreleasePoolRef thePool)
  */
 static bool OCAutoreleasePoolAddObject(OCAutoreleasePoolRef thePool, const void * object, void (*release)(const void *))
 {
-    IF_NO_OBJECT_EXISTS_RETURN(thePool, false)
-    IF_NO_OBJECT_EXISTS_RETURN(object, false)
-    IF_NO_OBJECT_EXISTS_RETURN(release, false)
+    IF_NO_OBJECT_EXISTS_RETURN(thePool, false);
+    IF_NO_OBJECT_EXISTS_RETURN(object, false);
+    IF_NO_OBJECT_EXISTS_RETURN(release, false);
 
     // Check for duplicate object already in the pool
     // for (int i = 0; i < thePool->number_of_pool_objects; i++) {

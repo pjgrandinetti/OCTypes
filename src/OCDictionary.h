@@ -4,6 +4,10 @@
  *
  * This header defines the OCDictionaryRef and OCMutableDictionaryRef types
  * and associated APIs for managing collections of uniquely keyed values.
+ *
+ * @note Ownership follows CoreFoundation conventions:
+ *       The caller owns any OCDictionaryRef or OCMutableDictionaryRef returned
+ *       by functions with "Create" or "Copy" in the name, and must call OCRelease().
  */
 
 #ifndef OCDICTIONARY_H
@@ -18,7 +22,7 @@
 /**
  * @defgroup OCDictionary OCDictionary
  * @brief Dictionary types and operations.
- * @{
+ * @{ 
  */
 
 /**
@@ -105,7 +109,10 @@ bool OCDictionaryContainsValue(OCDictionaryRef theDictionary, const void *value)
 void OCDictionaryAddValue(OCMutableDictionaryRef theDictionary, OCStringRef key, const void *value);
 
 /**
- * @brief Sets the value for a key (alias of OCDictionaryAddValue).
+ * @brief Sets the value for a key.
+ *
+ * If the key does not exist, this function inserts it.
+ * Equivalent to OCDictionaryAddValue().
  *
  * @param theDictionary Dictionary to modify.
  * @param key Key to set.
@@ -116,6 +123,8 @@ void OCDictionarySetValue(OCMutableDictionaryRef theDictionary, OCStringRef key,
 
 /**
  * @brief Replaces the value for an existing key.
+ *
+ * Does nothing if the key is not present.
  *
  * @param theDictionary Dictionary to modify.
  * @param key Key whose value is to be replaced.
@@ -171,6 +180,16 @@ OCArrayRef OCDictionaryCreateArrayWithAllKeys(OCDictionaryRef theDictionary);
  */
 OCArrayRef OCDictionaryCreateArrayWithAllValues(OCDictionaryRef theDictionary);
 
-/** @} */ // end of OCDictionary group
+/**
+ * @brief Returns a human-readable description of the dictionary.
+ *
+ * @param theDictionary Dictionary to describe.
+ * @return A formatted OCStringRef (caller must release).
+ * @ingroup OCDictionary
+ */
+OCStringRef OCDictionaryCopyFormattingDesc(OCTypeRef cf);
+
+/** @} */
 
 #endif /* OCDICTIONARY_H */
+

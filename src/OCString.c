@@ -266,8 +266,6 @@ static void __OCStringFinalize(const void * theType)
     if(NULL == theType) return;
     OCStringRef theString = (OCStringRef) theType;
     free(theString->string);
-    free((void *)theString);
-    theString = NULL; // Set to NULL to avoid dangling pointer
 }
 
 static OCStringRef __OCStringCopyFormattingDescription(OCTypeRef cf)
@@ -283,25 +281,42 @@ OCTypeID OCStringGetTypeID(void)
 
 static struct __OCString *OCStringAllocate()
 {
-    struct __OCString *obj = malloc(sizeof(struct __OCString));
-    if(NULL == obj) {
-        fprintf(stderr, "OCStringAllocate: Memory allocation failed.\n");
-        return NULL;
-    }
-    obj->_base.typeID = OCStringGetTypeID();
-    obj->_base.static_instance = false; // Not static
-    obj->_base.finalize = __OCStringFinalize;
-    obj->_base.equal = __OCStringEqual;
-    obj->_base.copyFormattingDesc = __OCStringCopyFormattingDescription;
-    obj->_base.retainCount = 1;
-    obj->_base.finalized = false;
+    struct __OCString *obj = OCTypeAlloc(struct __OCString,
+                                         OCStringGetTypeID(),
+                                         __OCStringFinalize,
+                                         __OCStringEqual,
+                                         __OCStringCopyFormattingDescription);
 
+    // Initialize type-specific fields
     obj->string = NULL;
     obj->length = 0;
     obj->capacity = 0;
 
     return obj;
 }
+
+
+// static struct __OCString *OCStringAllocate()
+// {
+//     struct __OCString *obj = malloc(sizeof(struct __OCString));
+//     if(NULL == obj) {
+//         fprintf(stderr, "OCStringAllocate: Memory allocation failed.\n");
+//         return NULL;
+//     }
+//     obj->_base.typeID = OCStringGetTypeID();
+//     obj->_base.static_instance = false; // Not static
+//     obj->_base.finalize = __OCStringFinalize;
+//     obj->_base.equal = __OCStringEqual;
+//     obj->_base.copyFormattingDesc = __OCStringCopyFormattingDescription;
+//     obj->_base.retainCount = 1;
+//     obj->_base.finalized = false;
+
+//     obj->string = NULL;
+//     obj->length = 0;
+//     obj->capacity = 0;
+
+//     return obj;
+// }
 
 
 

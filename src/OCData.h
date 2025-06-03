@@ -4,6 +4,10 @@
  *
  * OCData provides immutable and mutable representations of raw byte sequences,
  * with memory safety and efficient operations.
+ *
+ * @note Ownership follows CoreFoundation conventions:
+ *       The caller owns returned OCDataRef or OCMutableDataRef from functions
+ *       with "Create" or "Copy" in the name and must call OCRelease().
  */
 
 #ifndef OCData_h
@@ -14,7 +18,7 @@
 /**
  * @defgroup OCData OCData
  * @brief Binary data buffer types and utilities.
- * @{
+ * @{ 
  */
 
 /**
@@ -138,6 +142,15 @@ void OCDataIncreaseLength(OCMutableDataRef theData, uint64_t extraLength);
  * @ingroup OCData
  */
 void OCDataAppendBytes(OCMutableDataRef theData, const uint8_t *bytes, uint64_t length);
+
+/**
+ * @brief Returns a human-readable string description of a data object.
+ *
+ * @param theData OCDataRef instance.
+ * @return A formatted OCStringRef (caller must release).
+ * @ingroup OCData
+ */
+OCStringRef OCDataCopyFormattingDesc(OCTypeRef cf);
 
 /** @} */ // end of OCData group
 

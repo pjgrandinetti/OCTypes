@@ -40,20 +40,29 @@ static void __OCBooleanFinalize(const void *unused) {
     (void)unused;
 }
 
+static OCStringRef __OCBooleanCopyFormattingDesc(OCTypeRef cf) {
+    return ((OCBooleanRef)cf == kOCBooleanTrue)
+           ? OCStringCreateWithCString("true")
+           : OCStringCreateWithCString("false");
+}
+
 // Made _OCBooleanInitialize externally visible
 void _OCBooleanInitialize(void) {
     kOCBooleanTypeID = OCRegisterType("OCBoolean");
-    // patch up each base:
+
     __kOCBooleanTrue._base.typeID   = kOCBooleanTypeID;
     __kOCBooleanTrue._base.finalize = __OCBooleanFinalize;
     __kOCBooleanTrue._base.equal    = __OCBooleanEqual;
-    __kOCBooleanTrue._base.finalized = false; // Not finalized yet
+    __kOCBooleanTrue._base.copyFormattingDesc = __OCBooleanCopyFormattingDesc;
+    __kOCBooleanTrue._base.finalized = false;
+    OCTypeSetStaticInstance(kOCBooleanTrue, true);
 
     __kOCBooleanFalse._base.typeID   = kOCBooleanTypeID;
     __kOCBooleanFalse._base.finalize = __OCBooleanFinalize;
     __kOCBooleanFalse._base.equal    = __OCBooleanEqual;
-    __kOCBooleanFalse._base.finalized = false; // Not finalized yet
-
+    __kOCBooleanFalse._base.copyFormattingDesc = __OCBooleanCopyFormattingDesc;
+    __kOCBooleanFalse._base.finalized = false;
+    OCTypeSetStaticInstance(kOCBooleanFalse, true);
 }
 
 OCTypeID OCBooleanGetTypeID(void) {
@@ -62,6 +71,10 @@ OCTypeID OCBooleanGetTypeID(void) {
 
 bool OCBooleanGetValue(OCBooleanRef b) {
     return (b == kOCBooleanTrue);
+}
+
+OCStringRef OCBooleanCreateStringValue(OCBooleanRef boolean) {
+    return OCStringCreateWithCString(OCBooleanGetValue(boolean) ? "true" : "false");
 }
 
 // Automatically initialize boolean type at load time

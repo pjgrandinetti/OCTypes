@@ -127,30 +127,35 @@ uint64_t OCArrayGetCount(OCArrayRef theArray)
     return theArray->count;
 }
 
+OCStringRef OCArrayCopyFormattingDesc(OCTypeRef cf)
+{
+    (void)cf; // Unused parameter
+
+    return OCStringCreateWithCString("<OCArray>");
+}
+
 static void __OCArrayFinalize(const void * theType)
 {
     if (NULL == theType) return;
+
     struct __OCArray *theArray = (struct __OCArray *)theType;
+
     _OCArrayReleaseValues(theArray);
 
-    // only free non-NULL data
+    // Only free non-NULL data
     if (theArray->data) {
-        // debug‐only: verify it really came from malloc()
-    #if defined(__APPLE__)
+#if defined(__APPLE__)
         malloc_zone_t *zone = malloc_zone_from_ptr(theArray->data);
         if (zone) {
             free((void *)theArray->data);
         } else {
             fprintf(stderr, "OCArrayFinalize: invalid free of %p\n", theArray->data);
         }
-    #else
+#else
         free((void *)theArray->data);
-    #endif
+#endif
         theArray->data = NULL;
     }
-
-    free((void *)theArray);
-    theArray = NULL; // Set to NULL to avoid dangling pointer
 }
 
 OCTypeID OCArrayGetTypeID(void)
@@ -159,33 +164,49 @@ OCTypeID OCArrayGetTypeID(void)
     return kOCArrayID;
 }
 
-void _OCArrayInitialize(void) {
-    kOCArrayID = OCRegisterType("OCArray");
-}
-
+// NOTE: Uses OCTypeAlloc — object will be tracked for memory leaks and
+// must be released via OCRelease when no longer needed.
 static struct __OCArray *OCArrayAllocate()
 {
-    struct __OCArray *obj = malloc(sizeof(struct __OCArray));
-    if(NULL == obj) {
-        fprintf(stderr, "OCArrayAllocate: Memory allocation failed.\n");
-        return NULL;
-    }
+    struct __OCArray *obj = OCTypeAlloc(
+        struct __OCArray,
+        OCArrayGetTypeID(),
+        __OCArrayFinalize,
+        __OCArrayEqual,
+        OCArrayCopyFormattingDesc 
+    );
 
-    obj->_base.typeID = OCArrayGetTypeID();
-    obj->_base.finalize = __OCArrayFinalize;
-    obj->_base.equal = __OCArrayEqual;
-    obj->_base.static_instance = false; // Not static
-    obj->_base.finalized = false;
-    obj->_base.copyFormattingDesc = NULL; // Or provide a suitable function
-    obj->_base.retainCount = 1;
-
-    obj->callBacks = &__kOCNullArrayCallBacks; // Default, can be overridden
+    obj->callBacks = &__kOCNullArrayCallBacks;
     obj->count = 0;
     obj->capacity = 0;
-    obj->data = NULL; // Initialize data pointer
+    obj->data = NULL;
 
     return obj;
 }
+
+// static struct __OCArray *OCArrayAllocate()
+// {
+//     struct __OCArray *obj = malloc(sizeof(struct __OCArray));
+//     if(NULL == obj) {
+//         fprintf(stderr, "OCArrayAllocate: Memory allocation failed.\n");
+//         return NULL;
+//     }
+
+//     obj->_base.typeID = OCArrayGetTypeID();
+//     obj->_base.finalize = __OCArrayFinalize;
+//     obj->_base.equal = __OCArrayEqual;
+//     obj->_base.static_instance = false; // Not static
+//     obj->_base.finalized = false;
+//     obj->_base.copyFormattingDesc = NULL; // Or provide a suitable function
+//     obj->_base.retainCount = 1;
+
+//     obj->callBacks = &__kOCNullArrayCallBacks; // Default, can be overridden
+//     obj->count = 0;
+//     obj->capacity = 0;
+//     obj->data = NULL; // Initialize data pointer
+
+//     return obj;
+// }
 
 OCArrayRef OCArrayCreate(const void **values, uint64_t numValues, const OCArrayCallBacks *callBacks)
 {
@@ -196,7 +217,7 @@ OCArrayRef OCArrayCreate(const void **values, uint64_t numValues, const OCArrayC
     if(NULL == newArray) return NULL;
 
     if (numValues > 0) {
-        newArray->data = (const void **) malloc(numValues * sizeof(const void *));
+        newArray->data = (const void **) calloc(numValues, sizeof(const void *));
         if (NULL == newArray->data) {
             fprintf(stderr, "OCArrayCreate: Memory allocation for data failed.\n");
             OCRelease(newArray); // Clean up allocated array shell
@@ -228,7 +249,7 @@ OCMutableArrayRef OCArrayCreateMutable(uint64_t capacity, const OCArrayCallBacks
     if(NULL == newArray) return NULL;
 
     if (capacity > 0) {
-        newArray->data = (const void **) malloc(capacity * sizeof(const void *));
+        newArray->data = (const void **) calloc(capacity, sizeof(const void *));
         if (NULL == newArray->data) {
             fprintf(stderr, "OCArrayCreateMutable: Memory allocation for data failed.\n");
             OCRelease(newArray);
