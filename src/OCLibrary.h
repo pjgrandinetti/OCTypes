@@ -408,6 +408,9 @@ void cleanupTypeIDTable(void);
 #include "OCNumber.h"
 #include "OCDictionary.h"
 #include "OCArray.h"
+#ifdef DEBUG
+#include "OCLeakTracker.h"
+#endif
 
 /** @} */ // end of OCLibrary group
 

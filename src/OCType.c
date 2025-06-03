@@ -106,7 +106,6 @@ OCTypeID OCRegisterType(char *typeName)
 }
 
 
-// Decrements the reference count of an object and finalizes it if the count reaches zero.
 void OCRelease(const void * ptr)
 {
     struct __OCType *theType = (struct __OCType *) ptr;
@@ -137,7 +136,14 @@ void OCRelease(const void * ptr)
             theType->_base.finalized = true;
             theType->_base.finalize(theType);  // Clean up internal fields only
         }
-        free((void *)theType); 
+
+#ifdef DEBUG
+        if (theType->_base.tracked) {
+            _OCUntrack(theType);
+        }
+#endif
+
+        free((void *)theType);
         return;
     }
 
