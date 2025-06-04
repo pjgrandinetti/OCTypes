@@ -1001,7 +1001,7 @@ typedef enum {
  *     Returns NULL if encoding fails or input is invalid. The caller is responsible for releasing the result.
  */
 OCStringRef OCStringCreateBase64EncodedWithOptions(OCDataRef data,
-                                                   OCBase64EncodingOptions options)
+                                                   OCBase64EncodingOptions options);
 /** @} */ // end of OCString group
 
 #endif /* OCString_h */
