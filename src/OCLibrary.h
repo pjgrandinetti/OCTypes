@@ -27,14 +27,20 @@
 #include <stdint.h>   /* for uint64_t, int32_t, etc. */
 #include <stdbool.h>  /* for bool */
 
+#define OCLIB_TYPES_COUNT 9 // Total number of types in OCTypes
+
 // Forward declarations for all opaque struct types
-struct __OCType;
+struct __OCType; // Abstract base type for all OCTypes objects
 struct __OCString;
 struct __OCArray;
 struct __OCDictionary;
 struct __OCBoolean;
 struct __OCData;
 struct __OCNumber;
+struct __OCIndexSet;
+struct __OCIndexArray;
+struct __OCIndexPairSet;
+
 // OCAutoreleasePoolRef is already a typedef to a pointer to a non-const struct,
 // so it doesn't follow the same "Ref" pattern for const structs.
 // No forward declaration needed here for __OCAutoreleasePool if OCAutoreleasePoolRef
@@ -265,6 +271,7 @@ typedef const struct __OCDictionary *OCDictionaryRef;
 typedef const struct __OCBoolean *OCBooleanRef;
 typedef const struct __OCData *OCDataRef;
 typedef const struct __OCNumber *OCNumberRef;
+typedef const struct __OCIndexSet *OCIndexSetRef;
 typedef const struct __OCIndexArray *OCIndexArrayRef;
 typedef const struct __OCIndexPairSet *OCIndexPairSetRef;
 // OCAutoreleasePoolRef is typically 'typedef struct _OCAutoreleasePool *OCAutoreleasePoolRef;'
@@ -275,6 +282,7 @@ typedef struct __OCArray *OCMutableArrayRef;
 typedef struct __OCData *OCMutableDataRef;
 typedef struct __OCDictionary *OCMutableDictionaryRef;
 typedef struct __OCString *OCMutableStringRef;
+typedef struct __OCIndexSet *OCMutableIndexSetRef;
 typedef struct __OCIndexArray *OCMutableIndexArrayRef;
 typedef struct __OCIndexPairSet *OCMutableIndexPairSetRef;
 /** @endcond */
@@ -412,6 +420,7 @@ void cleanupTypeIDTable(void);
 #include "OCNumber.h"
 #include "OCDictionary.h"
 #include "OCArray.h"
+#include "OCIndexSet.h"
 #include "OCIndexArray.h"
 #include "OCIndexPairSet.h"
 #include "OCLeakTracker.h"
