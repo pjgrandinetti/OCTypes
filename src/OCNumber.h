@@ -54,7 +54,23 @@ typedef union __Number {
 #define UInt64Type 20
 #define Float32ComplexType 24
 #define Float64ComplexType 26
+
+typedef enum csdmNumericType {
+    kCSDMNumberUInt8Type = -1,
+    kCSDMNumberSInt8Type = 1,
+    kCSDMNumberUInt16Type = -2,
+    kCSDMNumberSInt16Type = 2,
+    kCSDMNumberUInt32Type = -3,
+    kCSDMNumberSInt32Type = 3,
+    kCSDMNumberUInt64Type = -4,
+    kCSDMNumberSInt64Type = 4,
+    kCSDMNumberFloat32Type = 12,
+    kCSDMNumberFloat64Type = 13,
+    kCSDMNumberComplex64Type = 24,
+    kCSDMNumberComplex128Type = 26,
+} csdmNumericType;
 /** @endcond */
+
 
 /**
  * @enum OCNumberType
@@ -164,6 +180,7 @@ OCNumberRef OCNumberCreateWithSInt32(int32_t value);
 OCNumberRef OCNumberCreateWithSInt64(int64_t value);
 OCNumberRef OCNumberCreateWithInt(int value);
 OCNumberRef OCNumberCreateWithLong(long value);
+OCNumberRef OCNumberCreateWithOCIndex(OCIndex index);
 OCNumberRef OCNumberCreateWithFloat(float value);
 OCNumberRef OCNumberCreateWithDouble(double value);
 OCNumberRef OCNumberCreateWithFloatComplex(float complex value);

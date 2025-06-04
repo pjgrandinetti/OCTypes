@@ -1,252 +1,131 @@
+/**
+ * @file OCIndexSet.h
+ * @brief Public interface for OCIndexSet and OCMutableIndexSet types.
+ *
+ * Provides creation, mutation, access, and serialization of index sets represented
+ * as sorted arrays of OCIndex values. Supports efficient range-based construction
+ * and full integration with OC serialization APIs.
+ */
+
 #ifndef OCINDEXSET_H
 #define OCINDEXSET_H
 
-#include "OCLibrary.h"   // Provides OCTypeID, OCBase, OCDataRef, OCMutableDataRef, OCArrayRef, OCDictionaryRef, OCNumberRef, etc.
-#include <stdbool.h>     // For bool
+#include "OCLibrary.h"
+#include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-
-//-------------------------------------------------------------------------
-// Constructors
-//-------------------------------------------------------------------------
+/**
+ * @brief Creates an immutable, empty OCIndexSet.
+ */
+OCIndexSetRef OCIndexSetCreate(void);
 
 /**
- * Creates an immutable, empty OCIndexSet.
- *
- * @return A new OCIndexSetRef (caller must release).
+ * @brief Creates a mutable, empty OCIndexSet.
  */
-OCIndexSetRef
-OCIndexSetCreate(void);
+OCMutableIndexSetRef OCIndexSetCreateMutable(void);
 
 /**
- * Creates a mutable, empty OCIndexSet.
- *
- * @return A new OCMutableIndexSetRef (caller must release).
+ * @brief Creates an immutable copy of the provided set.
  */
-OCMutableIndexSetRef
-OCIndexSetCreateMutable(void);
+OCIndexSetRef OCIndexSetCreateCopy(OCIndexSetRef theIndexSet);
 
 /**
- * Creates an immutable copy of the provided set.
- *
- * @param theIndexSet  Existing OCIndexSetRef (may be NULL).
- * @return             A new OCIndexSetRef with identical contents, or an empty set if input was NULL.
+ * @brief Creates a mutable copy of the provided set.
  */
-OCIndexSetRef
-OCIndexSetCreateCopy(OCIndexSetRef theIndexSet);
+OCMutableIndexSetRef OCIndexSetCreateMutableCopy(OCIndexSetRef theIndexSet);
 
 /**
- * Creates a mutable copy of the provided set.
- *
- * @param theIndexSet  Existing OCIndexSetRef (may be NULL).
- * @return             A new OCMutableIndexSetRef with identical contents, or an empty set if input was NULL.
+ * @brief Creates an OCIndexSet containing exactly one index.
  */
-OCMutableIndexSetRef
-OCIndexSetCreateMutableCopy(OCIndexSetRef theIndexSet);
+OCIndexSetRef OCIndexSetCreateWithIndex(OCIndex index);
 
 /**
- * Creates an OCIndexSet containing exactly one index.
- *
- * @param index  The single index to store.
- * @return       A new OCIndexSetRef (caller must release).
+ * @brief Creates an OCIndexSet containing all indices in [location, location + length).
  */
-OCIndexSetRef
-OCIndexSetCreateWithIndex(long index);
+OCIndexSetRef OCIndexSetCreateWithIndexesInRange(OCIndex location, OCIndex length);
 
 /**
- * Creates an OCIndexSet containing all indices in [location, location+length):
- *   { location, location+1, …, location+length−1 }. If length ≤ 0, returns an empty set.
- *
- * @param location  Starting index (inclusive).
- * @param length    Number of consecutive indices.
- * @return          A new OCIndexSetRef (caller must release).
+ * @brief Gets the underlying OCData buffer containing the indices.
  */
-OCIndexSetRef
-OCIndexSetCreateWithIndexesInRange(long location,
-                                   long length);
-
-
-//-------------------------------------------------------------------------
-// Accessors
-//-------------------------------------------------------------------------
+OCDataRef OCIndexSetGetIndexes(OCIndexSetRef theIndexSet);
 
 /**
- * Returns the underlying OCDataRef containing the sorted array of longs.
- * May be NULL if the set is empty. Caller may CFRetain if ownership is required.
- *
- * @param theIndexSet  OCIndexSetRef to query.
- * @return             OCDataRef of raw index bytes, or NULL.
+ * @brief Returns a pointer to the raw OCIndex array (internal storage).
  */
-OCDataRef
-OCIndexSetGetIndexes(OCIndexSetRef theIndexSet);
+OCIndex *OCIndexSetGetBytePtr(OCIndexSetRef theIndexSet);
 
 /**
- * Returns a pointer to the contiguous long‐array buffer. Do not modify unless you know the internals.
- *
- * @param theIndexSet  OCIndexSetRef to query.
- * @return             long *, or NULL if the set is empty.
+ * @brief Gets the number of indices stored in the set.
  */
-long *
-OCIndexSetGetBytePtr(OCIndexSetRef theIndexSet);
+OCIndex OCIndexSetGetCount(OCIndexSetRef theIndexSet);
 
 /**
- * Returns the number of indices stored.
- *
- * @param theIndexSet  OCIndexSetRef to query.
- * @return             Count of longs, or 0 if empty.
+ * @brief Gets the smallest (first) index.
  */
-long
-OCIndexSetGetCount(OCIndexSetRef theIndexSet);
+OCIndex OCIndexSetFirstIndex(OCIndexSetRef theIndexSet);
 
 /**
- * Returns the first (smallest) index, or kOCNotFound if the set is empty.
- *
- * @param theIndexSet  OCIndexSetRef to query.
- * @return             First index, or kOCNotFound.
+ * @brief Gets the largest (last) index.
  */
-long
-OCIndexSetFirstIndex(OCIndexSetRef theIndexSet);
+OCIndex OCIndexSetLastIndex(OCIndexSetRef theIndexSet);
 
 /**
- * Returns the last (largest) index, or kOCNotFound if the set is empty.
- *
- * @param theIndexSet  OCIndexSetRef to query.
- * @return             Last index, or kOCNotFound.
+ * @brief Finds the largest index smaller than the given one.
  */
-long
-OCIndexSetLastIndex(OCIndexSetRef theIndexSet);
+OCIndex OCIndexSetIndexLessThanIndex(OCIndexSetRef theIndexSet, OCIndex index);
 
 /**
- * Returns the greatest index < the given index, or kOCNotFound if none exists.
- *
- * @param theIndexSet  OCIndexSetRef to query.
- * @param index        Reference index.
- * @return             Next‐lower index, or kOCNotFound.
+ * @brief Finds the smallest index greater than the given one.
  */
-long
-OCIndexSetIndexLessThanIndex(OCIndexSetRef theIndexSet,
-                             long            index);
+OCIndex OCIndexSetIndexGreaterThanIndex(OCIndexSetRef theIndexSet, OCIndex index);
 
 /**
- * Returns the smallest index > the given index, or kOCNotFound if none exists.
- *
- * @param theIndexSet  OCIndexSetRef to query.
- * @param index        Reference index.
- * @return             Next‐higher index, or kOCNotFound.
+ * @brief Checks if the set contains a given index.
  */
-long
-OCIndexSetIndexGreaterThanIndex(OCIndexSetRef theIndexSet,
-                                long            index);
+bool OCIndexSetContainsIndex(OCIndexSetRef theIndexSet, OCIndex index);
 
 /**
- * Returns true if the set contains exactly that index; false otherwise.
- *
- * @param theIndexSet  OCIndexSetRef to query.
- * @param index        Index to test.
- * @return             true if present; false otherwise.
+ * @brief Inserts a new index into the mutable set.
  */
-bool
-OCIndexSetContainsIndex(OCIndexSetRef theIndexSet,
-                        long          index);
-
-
-//-------------------------------------------------------------------------
-// Mutators (require OCMutableIndexSetRef)
-//-------------------------------------------------------------------------
+bool OCIndexSetAddIndex(OCMutableIndexSetRef theIndexSet, OCIndex index);
 
 /**
- * Inserts the given index into the sorted set. If already present, no change is made and false is returned.
- *
- * @param theIndexSet  OCMutableIndexSetRef to modify.
- * @param index        The index to add.
- * @return             true if insertion occurred; false if duplicate or on error.
+ * @brief Compares two index sets for equality.
  */
-bool
-OCIndexSetAddIndex(OCMutableIndexSetRef theIndexSet,
-                   long                 index);
-
-
-//-------------------------------------------------------------------------
-// Equality
-//-------------------------------------------------------------------------
+bool OCIndexSetEqual(OCIndexSetRef input1, OCIndexSetRef input2);
 
 /**
- * Performs a byte‐for‐byte comparison of two OCIndexSet instances.
- *
- * @param input1  First OCIndexSetRef.
- * @param input2  Second OCIndexSetRef.
- * @return        true if they have equal length and identical contents; false otherwise.
+ * @brief Converts the index set into an OCArray of OCNumber objects.
  */
-bool
-OCIndexSetEqual(OCIndexSetRef input1,
-                OCIndexSetRef input2);
-
-
-//-------------------------------------------------------------------------
-// Conversion & Serialization
-//-------------------------------------------------------------------------
+OCArrayRef OCIndexSetCreateOCNumberArray(OCIndexSetRef theIndexSet);
 
 /**
- * Creates an OCArray (of OCNumberRef) representing each stored index.
- *
- * @param theIndexSet  OCIndexSetRef to convert.
- * @return             OCArrayRef containing OCNumberRefs in sorted order; caller must release.
+ * @brief Serializes the set to a dictionary (e.g., for plist storage).
  */
-OCArrayRef
-OCIndexSetCreateOCNumberArray(OCIndexSetRef theIndexSet);
+OCDictionaryRef OCIndexSetCreatePList(OCIndexSetRef theIndexSet);
 
 /**
- * Creates a plist‐compatible dictionary with key "indexes" → OCDataRef of raw index bytes.
- *
- * @param theIndexSet  OCIndexSetRef to serialize.
- * @return             OCDictionaryRef (caller must release).
+ * @brief Reconstructs a set from a dictionary produced by OCIndexSetCreatePList.
  */
-OCDictionaryRef
-OCIndexSetCreatePList(OCIndexSetRef theIndexSet);
+OCIndexSetRef OCIndexSetCreateWithPList(OCDictionaryRef dictionary);
 
 /**
- * Reconstructs an OCIndexSet from a dictionary returned by OCIndexSetCreatePList.
- *
- * @param dictionary  OCDictionaryRef containing key "indexes" → OCDataRef.
- * @return            OCIndexSetRef (caller must release), or an empty set if no data found.
+ * @brief Creates an OCData snapshot of the current set.
  */
-OCIndexSetRef
-OCIndexSetCreateWithPList(OCDictionaryRef dictionary);
+OCDataRef OCIndexSetCreateData(OCIndexSetRef theIndexSet);
 
 /**
- * Returns an owned OCDataRef containing the raw index bytes. Caller must release.
- *
- * @param theIndexSet  OCIndexSetRef to query.
- * @return             OCDataRef (caller must release), or NULL if empty.
+ * @brief Creates a set using the bytes from an existing OCData object.
  */
-OCDataRef
-OCIndexSetCreateData(OCIndexSetRef theIndexSet);
+OCIndexSetRef OCIndexSetCreateWithData(OCDataRef data);
 
 /**
- * Constructs a new OCIndexSet from an existing OCDataRef of raw index bytes.
- *
- * @param data  OCDataRef whose bytes represent sorted `long` values.
- * @return      OCIndexSetRef (caller must release).
+ * @brief Prints the contents of the set to stderr.
  */
-OCIndexSetRef
-OCIndexSetCreateWithData(OCDataRef data);
-
-
-//-------------------------------------------------------------------------
-// Debugging
-//-------------------------------------------------------------------------
-
-/**
- * Prints the entire contents of the set to stderr in the form “(i0,i1,i2,…)”.
- *
- * @param theIndexSet  OCIndexSetRef to display.
- */
-void
-OCIndexSetShow(OCIndexSetRef theIndexSet);
-
+void OCIndexSetShow(OCIndexSetRef theIndexSet);
 
 #ifdef __cplusplus
 }

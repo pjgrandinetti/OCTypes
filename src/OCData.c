@@ -14,6 +14,12 @@ struct __OCData {
     uint64_t capacity;
 };
 
+OCTypeID OCDataGetTypeID(void)
+{
+    if (kOCDataID == _kOCNotATypeID) kOCDataID = OCRegisterType("OCData");
+    return kOCDataID;
+}
+
 static bool __OCDataEqual(const void * theType1, const void * theType2)
 {
     OCDataRef theData1 = (OCDataRef) theType1;
@@ -61,12 +67,6 @@ static void __OCDataFinalize(const void * theType)
     if (theData->bytes) {
         free(theData->bytes);
     }
-}
-
-OCTypeID OCDataGetTypeID(void)
-{
-    if (kOCDataID == _kOCNotATypeID) kOCDataID = OCRegisterType("OCData");
-    return kOCDataID;
 }
 
 static struct __OCData *OCDataAllocate()

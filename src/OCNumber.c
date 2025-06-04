@@ -176,6 +176,19 @@ OCNumberRef OCNumberCreateWithFloatComplex(float complex v)
 OCNumberRef OCNumberCreateWithDoubleComplex(double complex v)
                                                   { return OCNumberCreate(kOCNumberFloat64ComplexType, &v); }
 
+OCNumberRef OCNumberCreateWithOCIndex(OCIndex index) {
+    OCNumberType type;
+
+    switch (sizeof(OCIndex)) {
+        case 1: type = kOCNumberSInt8Type; break;
+        case 2: type = kOCNumberSInt16Type; break;
+        case 4: type = kOCNumberSInt32Type; break;
+        case 8: type = kOCNumberSInt64Type; break;
+        default: return NULL;
+    }
+
+    return OCNumberCreate(type, &index);
+}
 
 OCNumberRef OCNumberCreateWithInt(int value) {
     OCNumberType type;

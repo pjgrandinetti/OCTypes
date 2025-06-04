@@ -1,9 +1,10 @@
-//
-//  OCIndexPairSet.c
-//
-//  Created by PhySy Ltd on 10/21/11.
-//  Copyright (c) 2008-2014 PhySy Ltd. All rights reserved.
-//
+/*
+ * OCIndexArray.c – Improved Implementation
+ *
+ * Defines and implements OCIndexArray and OCMutableIndexArray types for managing
+ * arrays of OCIndex values. Includes support for copying, mutation, serialization,
+ * and Base64 conversion.
+ */
 
 #include "OCLibrary.h"
 #include <stdio.h>
@@ -14,46 +15,39 @@ static OCTypeID kOCIndexArrayID = _kOCNotATypeID;
 
 struct __OCIndexArray {
     OCBase _base;
-
     OCMutableDataRef indexes;
 };
 
-OCTypeID OCIndexArrayGetTypeID(void)
-{
+OCTypeID OCIndexArrayGetTypeID(void) {
     if (kOCIndexArrayID == _kOCNotATypeID)
         kOCIndexArrayID = OCRegisterType("OCIndexArray");
     return kOCIndexArrayID;
 }
 
-bool __OCIndexArrayEqual(OCIndexArrayRef input1, OCIndexArrayRef input2)
-{
-	IF_NO_OBJECT_EXISTS_RETURN(input1,false);
-	IF_NO_OBJECT_EXISTS_RETURN(input2,false);
-    
-    if(OCDataGetLength(input1->indexes) != OCDataGetLength(input2->indexes)) return false;
-    long count = OCIndexArrayGetCount(input1);
-    for(long index = 0; index<count; index++) {
-        if(OCIndexArrayGetValueAtIndex(input1, index) != OCIndexArrayGetValueAtIndex(input2, index)) return false;
+static bool __OCIndexArrayEqual(const void *a_, const void *b_) {
+    OCIndexArrayRef a = (OCIndexArrayRef)a_;
+    OCIndexArrayRef b = (OCIndexArrayRef)b_;
+    if (OCDataGetLength(a->indexes) != OCDataGetLength(b->indexes)) return false;
+    OCIndex count = OCIndexArrayGetCount(a);
+    for (OCIndex i = 0; i < count; i++) {
+        if (OCIndexArrayGetValueAtIndex(a, i) != OCIndexArrayGetValueAtIndex(b, i))
+            return false;
     }
-	return true;
+    return true;
 }
 
-static void __OCIndexArrayFinalize(const void *theType)
-{
-    OCMutableIndexArrayRef input = (OCMutableIndexArrayRef)theType;
-
-    if(input->indexes) OCRelease(input->indexes);
-    input->indexes = NULL;
+static void __OCIndexArrayFinalize(const void *obj) {
+    OCMutableIndexArrayRef array = (OCMutableIndexArrayRef)obj;
+    if (array->indexes) OCRelease(array->indexes);
+    array->indexes = NULL;
 }
 
-static OCStringRef __OCIndexArrayCopyFormattingDesc(const void *theType)
-{
-    return NULL;
+static OCStringRef __OCIndexArrayCopyFormattingDesc(OCTypeRef cf) {
+    return OCStringCreateWithCString("<OCIndexArray>");
 }
 
-static struct __OCIndexArray *OCIndexArrayAllocate(void)
-{
-    return OCTypeAlloc(
+static OCMutableIndexArrayRef OCIndexArrayAllocate(void) {
+    return (OCMutableIndexArrayRef)OCTypeAlloc(
         struct __OCIndexArray,
         OCIndexArrayGetTypeID(),
         __OCIndexArrayFinalize,
@@ -61,268 +55,189 @@ static struct __OCIndexArray *OCIndexArrayAllocate(void)
         __OCIndexArrayCopyFormattingDesc);
 }
 
-OCIndexArrayRef OCIndexArrayCreate(long *indexes, long numValues)
-{
-    // Initialize object
-    
-    OCMutableIndexArrayRef newIndexArray = (OCMutableIndexArrayRef) OCIndexArrayAllocate();
-    
-    // *** Setup attributes ***
-    
-    newIndexArray->indexes = (OCMutableDataRef) OCDataCreate((const UInt8 *) indexes, numValues*sizeof(long));
-    return (OCIndexArrayRef) newIndexArray;
+OCIndexArrayRef OCIndexArrayCreate(OCIndex *values, OCIndex count) {
+    OCMutableIndexArrayRef array = OCIndexArrayAllocate();
+    array->indexes = (OCMutableDataRef)OCDataCreate((const uint8_t *)values, count * sizeof(OCIndex));
+    return array;
 }
 
-OCMutableIndexArrayRef OCIndexArrayCreateMutable(long capacity)
-{
-    // Initialize object
-    
-    OCMutableIndexArrayRef newIndexArray = (OCMutableIndexArrayRef) OCIndexArrayAllocate();
-    
-    // *** Setup attributes ***
-    
-    newIndexArray->indexes = OCDataCreateMutable(capacity*sizeof(long));
-    OCDataSetLength(newIndexArray->indexes, capacity*sizeof(long));
-    return (OCMutableIndexArrayRef) newIndexArray;
+OCMutableIndexArrayRef OCIndexArrayCreateMutable(OCIndex capacity) {
+    OCMutableIndexArrayRef array = OCIndexArrayAllocate();
+    array->indexes = OCDataCreateMutable(capacity * sizeof(OCIndex));
+    OCDataSetLength(array->indexes, capacity * sizeof(OCIndex));
+    return array;
 }
 
-static OCIndexArrayRef OCIndexArrayCreateWithParameters(OCDataRef indexes)
-{
-    OCMutableIndexArrayRef newIndexArray = (OCMutableIndexArrayRef) OCIndexArrayAllocate();
-    
-    // *** Setup attributes ***
-    
-    newIndexArray->indexes = (OCMutableDataRef) OCDataCreateCopy(indexes);
-    return (OCIndexArrayRef) newIndexArray;
+static OCIndexArrayRef OCIndexArrayCreateWithParameters(OCDataRef indexes) {
+    OCMutableIndexArrayRef array = OCIndexArrayAllocate();
+    array->indexes = (OCMutableDataRef)OCDataCreateCopy(indexes);
+    return array;
 }
 
-static OCMutableIndexArrayRef OCIndexArrayCreateMutableWithParameters(OCMutableDataRef indexes)
-{
-    OCMutableIndexArrayRef newIndexArray = (OCMutableIndexArrayRef) OCIndexArrayAllocate();
-    
-    // *** Setup attributes ***
-    
-    newIndexArray->indexes = OCDataCreateMutableCopy(OCDataGetLength(indexes),indexes);
-    return (OCMutableIndexArrayRef) newIndexArray;
+static OCMutableIndexArrayRef OCIndexArrayCreateMutableWithParameters(OCMutableDataRef indexes) {
+    OCMutableIndexArrayRef array = OCIndexArrayAllocate();
+    array->indexes = OCDataCreateMutableCopy(OCDataGetLength(indexes), indexes);
+    return array;
 }
 
-OCIndexArrayRef OCIndexArrayCreateCopy(OCIndexArrayRef theIndexArray)
-{
-	return OCIndexArrayCreateWithParameters(theIndexArray->indexes);
+OCIndexArrayRef OCIndexArrayCreateCopy(OCIndexArrayRef src) {
+    return OCIndexArrayCreateWithParameters(src->indexes);
 }
 
-OCMutableIndexArrayRef OCIndexArrayCreateMutableCopy(OCIndexArrayRef theIndexArray)
-{
-	return OCIndexArrayCreateMutableWithParameters(theIndexArray->indexes);
+OCMutableIndexArrayRef OCIndexArrayCreateMutableCopy(OCIndexArrayRef src) {
+    return OCIndexArrayCreateMutableWithParameters(src->indexes);
 }
 
-long OCIndexArrayGetCount(OCIndexArrayRef theIndexArray)
-{
-    if(theIndexArray->indexes) return OCDataGetLength(theIndexArray->indexes)/sizeof(long);
-    return 0;
+OCIndex OCIndexArrayGetCount(OCIndexArrayRef array) {
+    return array && array->indexes ? OCDataGetLength(array->indexes) / sizeof(OCIndex) : 0;
 }
 
-long *OCIndexArrayGetMutableBytePtr(OCIndexArrayRef theIndexArray) {
-    if(theIndexArray->indexes)
-        return (long *) OCDataGetMutableBytePtr(theIndexArray->indexes);
-    return NULL;
+OCIndex *OCIndexArrayGetMutableBytePtr(OCIndexArrayRef array) {
+    return array && array->indexes ? (OCIndex *)OCDataGetMutableBytePtr(array->indexes) : NULL;
 }
 
-long OCIndexArrayGetValueAtIndex(OCIndexArrayRef theIndexArray, long index)
-{
-    if(theIndexArray->indexes) {
-        long *indexes = (long *) OCDataGetBytePtr(theIndexArray->indexes);
-        return indexes[index];
+OCIndex OCIndexArrayGetValueAtIndex(OCIndexArrayRef array, OCIndex index) {
+    OCIndex *ptr = (OCIndex *)OCDataGetBytePtr(array->indexes);
+    return ptr ? ptr[index] : kOCNotFound;
+}
+
+bool OCIndexArraySetValueAtIndex(OCMutableIndexArrayRef array, OCIndex index, OCIndex value) {
+    OCIndex *ptr = (OCIndex *)OCDataGetBytePtr(array->indexes);
+    if (!ptr) return false;
+    ptr[index] = value;
+    return true;
+}
+
+bool OCIndexArrayRemoveValueAtIndex(OCMutableIndexArrayRef array, OCIndex index) {
+    OCIndex count = OCIndexArrayGetCount(array);
+    if (index >= count) return false;
+    OCIndex *old = (OCIndex *)OCDataGetBytePtr(array->indexes);
+    OCMutableDataRef data = OCDataCreateMutable((count - 1) * sizeof(OCIndex));
+    OCIndex *copy = (OCIndex *)OCDataGetMutableBytePtr(data);
+    for (OCIndex i = 0, j = 0; i < count; i++) {
+        if (i != index) copy[j++] = old[i];
     }
-    return kOCNotFound;
+    OCRelease(array->indexes);
+    array->indexes = data;
+    return true;
 }
 
-bool OCIndexArraySetValueAtIndex(OCMutableIndexArrayRef theIndexArray, long index, long value)
-{
-    if(theIndexArray->indexes) {
-        long *indexes = (long *) OCDataGetBytePtr(theIndexArray->indexes);
-        indexes[index] = value;
-        return true;
-    }
-    return false;
-}
-
-bool OCIndexArrayRemoveValueAtIndex(OCMutableIndexArrayRef theIndexArray, long index)
-{
-    if(theIndexArray->indexes) {
-        long *oldIndexes = (long *) OCDataGetBytePtr(theIndexArray->indexes);
-        long count = OCIndexArrayGetCount(theIndexArray);
-        OCMutableDataRef data = OCDataCreateMutable((count-1)*sizeof(long));
-        OCDataSetLength(data, (count-1)*sizeof(long));
-        long *newIndexes = (long *) OCDataGetMutableBytePtr(data);
-        long j = 0;
-        for(long i =0; i<count; i++) {
-            if(i != index)
-                newIndexes[j++] = oldIndexes[i];
-        }
-        OCRelease(theIndexArray->indexes);
-        theIndexArray->indexes = data;
-        return true;
-    }
-    return false;
- 
-}
-
-void OCIndexArrayRemoveValuesAtIndexes(OCMutableIndexArrayRef theIndexArray, OCIndexSetRef theIndexSet)
-{
-    if(theIndexArray==NULL) return;
-    if(theIndexSet==NULL) return;
-    
-long count = OCIndexSetGetCount(theIndexSet);
-    if(count) {
-        long index = OCIndexSetLastIndex(theIndexSet);
-        OCIndexArrayRemoveValueAtIndex(theIndexArray, index);
-        for(long i=0; i<count-1; i++) {
-            index = OCIndexSetIndexLessThanIndex(theIndexSet, index);
-            if(index==kOCNotFound) return;
-            OCIndexArrayRemoveValueAtIndex(theIndexArray, index);
-        }
+void OCIndexArrayRemoveValuesAtIndexes(OCMutableIndexArrayRef array, OCIndexSetRef indexesToRemove) {
+    if (!array || !indexesToRemove) return;
+    OCIndex count = OCIndexSetGetCount(indexesToRemove);
+    for (OCIndex i = count; i-- > 0;) {
+        OCIndex index = (i == count - 1) ? OCIndexSetLastIndex(indexesToRemove)
+                                        : OCIndexSetIndexLessThanIndex(indexesToRemove, index);
+        if (index != kOCNotFound)
+            OCIndexArrayRemoveValueAtIndex(array, index);
     }
 }
 
-
-bool OCIndexArrayContainsIndex(OCIndexArrayRef theIndexArray, long index)
-{
-    if(theIndexArray->indexes) {
-        long count = OCIndexArrayGetCount(theIndexArray);
-        long *indexes = (long *) OCDataGetBytePtr(theIndexArray->indexes);
-        for(int32_t i=0;i<count;i++) if(indexes[i] == index) return true;
+bool OCIndexArrayContainsIndex(OCIndexArrayRef array, OCIndex value) {
+    OCIndex count = OCIndexArrayGetCount(array);
+    OCIndex *ptr = (OCIndex *)OCDataGetBytePtr(array->indexes);
+    for (OCIndex i = 0; i < count; i++) {
+        if (ptr[i] == value) return true;
     }
     return false;
 }
 
-bool OCIndexArrayAppendValue(OCMutableIndexArrayRef theIndexArray, long index)
-{
-    if(theIndexArray->indexes) {
-        long count = OCIndexArrayGetCount(theIndexArray);
-        OCDataIncreaseLength(theIndexArray->indexes, sizeof(long));
-        long *indexes = (long *) OCDataGetBytePtr(theIndexArray->indexes);
-        indexes[count] = index;
-        return true;
+bool OCIndexArrayAppendValue(OCMutableIndexArrayRef array, OCIndex value) {
+    if (!array || !array->indexes) return false;
+    OCDataIncreaseLength(array->indexes, sizeof(OCIndex));
+    OCIndex *ptr = (OCIndex *)OCDataGetBytePtr(array->indexes);
+    ptr[OCIndexArrayGetCount(array) - 1] = value;
+    return true;
+}
+
+bool OCIndexArrayAppendValues(OCMutableIndexArrayRef dst, OCIndexArrayRef src) {
+    if (!dst || !src) return false;
+    OCMutableDataRef newData = OCDataCreateMutableCopy(0, dst->indexes);
+    OCDataAppendBytes(newData, OCDataGetBytePtr(src->indexes), OCDataGetLength(src->indexes));
+    OCRelease(dst->indexes);
+    dst->indexes = newData;
+    return true;
+}
+
+OCStringRef OCIndexArrayCreateBase64String(OCIndexArrayRef array, csdmNumericType type) {
+    if (!array) return NULL;
+    OCIndex count = OCIndexArrayGetCount(array);
+    OCIndex *src = (OCIndex *)OCDataGetBytePtr(array->indexes);
+
+    size_t size = 0;
+    void *converted = NULL;
+
+    switch (type) {
+        case kCSDMNumberUInt8Type:
+        case kCSDMNumberSInt8Type:
+            size = sizeof(uint8_t);
+            converted = malloc(count * size);
+            for (OCIndex i = 0; i < count; i++) ((uint8_t *)converted)[i] = (uint8_t)src[i];
+            break;
+        case kCSDMNumberUInt16Type:
+        case kCSDMNumberSInt16Type:
+            size = sizeof(uint16_t);
+            converted = malloc(count * size);
+            for (OCIndex i = 0; i < count; i++) ((uint16_t *)converted)[i] = (uint16_t)src[i];
+            break;
+        case kCSDMNumberUInt32Type:
+        case kCSDMNumberSInt32Type:
+            size = sizeof(uint32_t);
+            converted = malloc(count * size);
+            for (OCIndex i = 0; i < count; i++) ((uint32_t *)converted)[i] = (uint32_t)src[i];
+            break;
+        case kCSDMNumberUInt64Type:
+        case kCSDMNumberSInt64Type:
+            size = sizeof(uint64_t);
+            converted = malloc(count * size);
+            for (OCIndex i = 0; i < count; i++) ((uint64_t *)converted)[i] = (uint64_t)src[i];
+            break;
+        default:
+            return OCStringCreateBase64EncodedWithOptions(array->indexes, OCBase64EncodingOptionsNone);
     }
-    return false;
+
+    OCDataRef data = OCDataCreate((const uint8_t *)converted, count * size);
+    free(converted);
+    OCStringRef result = OCStringCreateBase64EncodedWithOptions(data, OCBase64EncodingOptionsNone);
+    OCRelease(data);
+    return result;
 }
 
-OCStringRef OCIndexArrayCreateBase64String(OCIndexArrayRef theIndexArray, csdmNumericType integerType)
-{
-    long *indexes = (long *) OCDataGetBytePtr(theIndexArray->indexes);
-    if(integerType == kCSDMNumberUInt8Type || integerType == kCSDMNumberSInt8Type) {
-        long count = OCIndexArrayGetCount(theIndexArray);
-        uint8_t *theIndexes = malloc(count*sizeof(uint8_t));
-        for(long i=0;i<count;i++) theIndexes[i] = indexes[i];
-        OCDataRef theData = OCDataCreate(theIndexes, sizeof(uint8_t)*count);
-        OCStringRef result = (OCStringRef) [[(NSData *) theData base64EncodedStringWithOptions:0] retain];
-        OCRelease(theData);
-        free(theIndexes);
-        return result;
+OCArrayRef OCIndexArrayCreateCFNumberArray(OCIndexArrayRef array) {
+    OCIndex count = OCIndexArrayGetCount(array);
+    OCMutableArrayRef result = OCArrayCreateMutable(count, &kOCTypeArrayCallBacks);
+    for (OCIndex i = 0; i < count; i++) {
+        OCNumberRef num = OCNumberCreateWithOCIndex(OCIndexArrayGetValueAtIndex(array, i));
+        OCArrayAppendValue(result, num);
+        OCRelease(num);
     }
-    if(integerType == kCSDMNumberUInt16Type || integerType == kCSDMNumberSInt16Type) {
-        long count = OCIndexArrayGetCount(theIndexArray);
-        uint16_t *theIndexes = malloc(count*sizeof(uint16_t));
-        for(long i=0;i<count;i++) theIndexes[i] = indexes[i];
-        OCDataRef theData = OCDataCreate((const unsigned char *) theIndexes, sizeof(uint16_t)*count);
-        OCStringRef result = (OCStringRef) [[(NSData *) theData base64EncodedStringWithOptions:0] retain];
-        OCRelease(theData);
-        free(theIndexes);
-        return result;
-    }
-    if(integerType == kCSDMNumberUInt32Type || integerType == kCSDMNumberSInt32Type) {
-        long count = OCIndexArrayGetCount(theIndexArray);
-        uint32_t *theIndexes = malloc(count*sizeof(uint32_t));
-        for(long i=0;i<count;i++) theIndexes[i] = (uint32_t) indexes[i];
-        OCDataRef theData = OCDataCreate((const unsigned char *) theIndexes, sizeof(uint32_t)*count);
-        OCStringRef result = (OCStringRef) [[(NSData *) theData base64EncodedStringWithOptions:0] retain];
-        OCRelease(theData);
-        free(theIndexes);
-        return result;
-    }
-    if(integerType == kCSDMNumberUInt64Type || integerType == kCSDMNumberSInt64Type) {
-        long count = OCIndexArrayGetCount(theIndexArray);
-        uint64_t *theIndexes = malloc(count*sizeof(uint64_t));
-        for(long i=0;i<count;i++) theIndexes[i] = indexes[i];
-        OCDataRef theData = OCDataCreate((const unsigned char *) theIndexes, sizeof(uint64_t)*count);
-        OCStringRef result = (OCStringRef) [[(NSData *) theData base64EncodedStringWithOptions:0] retain];
-        OCRelease(theData);
-        free(theIndexes);
-        return result;
-    }
-    return (OCStringRef) [[(NSData *) theIndexArray->indexes base64EncodedStringWithOptions:0] retain];
+    return result;
 }
 
-bool OCIndexArrayAppendValues(OCMutableIndexArrayRef theIndexArray, OCIndexArrayRef arrayToAppend)
-{
-    if(theIndexArray->indexes) {
-        OCMutableDataRef newIndexes = OCDataCreateMutableCopy(0, theIndexArray->indexes);
-        OCDataAppendBytes(newIndexes, OCDataGetBytePtr(arrayToAppend->indexes), OCDataGetLength(arrayToAppend->indexes));
-        OCRelease(theIndexArray->indexes);
-        theIndexArray->indexes = newIndexes;
-        return true;
-    }
-    return false;
+OCDictionaryRef OCIndexArrayCreatePList(OCIndexArrayRef array) {
+    OCMutableDictionaryRef dict = OCDictionaryCreateMutable(0);
+    if (array && array->indexes)
+        OCDictionarySetValue(dict, STR("indexes"), array->indexes);
+    return dict;
 }
 
-
-
-OCArrayRef OCIndexArrayCreateCFNumberArray(OCIndexArrayRef theIndexArray)
-{
-    long count = OCIndexArrayGetCount(theIndexArray);
-    OCMutableArrayRef theArray = OCArrayCreateMutable(count, &kOCTypeArrayCallBacks);
-    for(long i = 0;i<count;i++) {
-        long index = OCIndexArrayGetValueAtIndex(theIndexArray, i);
-        OCNumberRef number = OCNumberCreateWithlong(index);
-        OCArrayAppendValue(theArray, number);
-        OCRelease(number);
-    }
-    return theArray;
+OCIndexArrayRef OCIndexArrayCreateWithPList(OCDictionaryRef dict) {
+    return dict ? OCIndexArrayCreateWithParameters(OCDictionaryGetValue(dict, STR("indexes"))) : NULL;
 }
 
-OCDictionaryRef OCIndexArrayCreatePList(OCIndexArrayRef theIndexArray)
-{
-    OCMutableDictionaryRef dictionary = NULL;
-    if(theIndexArray) {
-        dictionary = OCDictionaryCreateMutable(0);
-        OCDictionarySetValue( dictionary, CFSTR("indexes"), theIndexArray->indexes);
-        
-	}
-	return dictionary;
+OCDataRef OCIndexArrayCreateData(OCIndexArrayRef array) {
+    return array ? OCRetain(array->indexes) : NULL;
 }
 
-OCIndexArrayRef OCIndexArrayCreateWithPList(OCDictionaryRef dictionary)
-{
-	if(dictionary==NULL) return NULL;
-	return OCIndexArrayCreateWithParameters(OCDictionaryGetValue(dictionary, CFSTR("indexes")));
+OCIndexArrayRef OCIndexArrayCreateWithData(OCDataRef data) {
+    return data ? OCIndexArrayCreateWithParameters(data) : NULL;
 }
 
-
-OCDataRef OCIndexArrayCreateData(OCIndexArrayRef theIndexArray)
-{
-    if(theIndexArray == NULL) return NULL;
-    return CFRetain(theIndexArray->indexes);
-}
-
-OCIndexArrayRef OCIndexArrayCreateWithData(OCDataRef data)
-{
-    if(data==NULL) return NULL;
-    return OCIndexArrayCreateWithParameters(data);
-}
-
-
-void OCIndexArrayShow(OCIndexArrayRef theIndexArray)
-{
-    long count = OCIndexArrayGetCount(theIndexArray);
+void OCIndexArrayShow(OCIndexArrayRef array) {
     fprintf(stderr, "(");
-    for(long index = 0; index<count; index++)
-    {
-        fprintf(stderr, "%ld", OCIndexArrayGetValueAtIndex(theIndexArray, index));
-        if(index<count-1) fprintf(stderr, ",");
+    OCIndex count = OCIndexArrayGetCount(array);
+    for (OCIndex i = 0; i < count; i++) {
+        fprintf(stderr, "%ld%s", OCIndexArrayGetValueAtIndex(array, i), (i < count - 1 ? "," : ""));
     }
     fprintf(stderr, ")\n");
 }
-
-
-

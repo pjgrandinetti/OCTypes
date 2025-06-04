@@ -1,335 +1,172 @@
+/**
+ * @file OCIndexPairSet.h
+ * @brief Public interface for OCIndexPairSet and OCMutableIndexPairSet types.
+ *
+ * Provides creation, manipulation, and serialization of sets of (index, value) pairs.
+ * Each pair is represented by an OCIndexPair structure and stored internally as contiguous OCData.
+ */
 
 #ifndef OCINDEXPAIRSET_H
 #define OCINDEXPAIRSET_H
 
-#include "OCLibrary.h"    // Provides OCTypeID, OCBase, OCDataRef, OCMutableDataRef, OCIndexArrayRef, OCIndexSetRef, OCArrayRef, OCDictionaryRef, OCStringRef, OCIndexPair, csdmNumericType, kOCNotFound, etc.
-#include <stdbool.h>      // For bool
+#include "OCLibrary.h"
+#include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-//-------------------------------------------------------------------------
-// Type Definitions
-//-------------------------------------------------------------------------
-
-typedef struct OCIndexPair
-{
-    long index;
-    long value;
+/**
+ * @struct OCIndexPair
+ * @brief Represents a simple (index, value) pair.
+ */
+typedef struct OCIndexPair {
+    OCIndex index; /**< The index component of the pair */
+    OCIndex value; /**< The associated value */
 } OCIndexPair;
 
-
-//-------------------------------------------------------------------------
-// Constructors
-//-------------------------------------------------------------------------
+/**
+ * @brief Returns the unique type ID for OCIndexPairSet.
+ */
+OCTypeID OCIndexPairSetGetTypeID(void);
 
 /**
- * Creates an empty, immutable OCIndexPairSet.
- *
- * @return  New OCIndexPairSetRef with no pairs (caller must release).
+ * @brief Creates an empty immutable OCIndexPairSet.
  */
-OCIndexPairSetRef
-OCIndexPairSetCreate(void);
+OCIndexPairSetRef OCIndexPairSetCreate(void);
 
 /**
- * Creates an empty, mutable OCIndexPairSet.
- *
- * @return  New OCMutableIndexPairSetRef with no pairs (caller must release).
+ * @brief Creates an empty mutable OCIndexPairSet.
  */
-OCMutableIndexPairSetRef
-OCIndexPairSetCreateMutable(void);
+OCMutableIndexPairSetRef OCIndexPairSetCreateMutable(void);
 
 /**
- * Internal helper: Creates an immutable OCIndexPairSet from existing OCDataRef.
- *
- * @param indexPairs   OCDataRef containing a contiguous array of OCIndexPair structs.
- * @return             New OCIndexPairSetRef (caller must release).
+ * @brief Returns an immutable deep copy of the given index pair set.
  */
-OCIndexPairSetRef
-OCIndexPairSetCreateWithParameters(OCDataRef indexPairs);
+OCIndexPairSetRef OCIndexPairSetCreateCopy(OCIndexPairSetRef source);
 
 /**
- * Internal helper: Creates a mutable OCIndexPairSet from existing OCDataRef.
- *
- * @param indexPairs   OCDataRef containing a contiguous array of OCIndexPair structs.
- * @return             New OCMutableIndexPairSetRef (caller must release).
+ * @brief Returns a mutable deep copy of the given index pair set.
  */
-OCMutableIndexPairSetRef
-OCIndexPairSetCreateMutableWithParameters(OCDataRef indexPairs);
+OCMutableIndexPairSetRef OCIndexPairSetCreateMutableCopy(OCIndexPairSetRef source);
 
 /**
- * Creates a deep, immutable copy of an existing OCIndexPairSet.
- *
- * @param theIndexSet  Source OCIndexPairSetRef.
- * @return             New OCIndexPairSetRef (caller must release).
+ * @brief Creates a mutable index pair set from a flat array of values.
+ * @details The index is derived from the array index.
  */
-OCIndexPairSetRef
-OCIndexPairSetCreateCopy(OCIndexPairSetRef theIndexSet);
+OCMutableIndexPairSetRef OCIndexPairSetCreateMutableWithIndexArray(OCIndexArrayRef indexArray);
 
 /**
- * Creates a deep, mutable copy of an existing OCIndexPairSet.
+ * @brief Creates an immutable set from an array of index pairs.
  *
- * @param theIndexSet  Source OCIndexPairSetRef.
- * @return             New OCMutableIndexPairSetRef (caller must release).
+ * @param array Pointer to array of OCIndexPair.
+ * @param count Number of elements in the array.
  */
-OCMutableIndexPairSetRef
-OCIndexPairSetCreateMutableCopy(OCIndexPairSetRef theIndexSet);
+OCIndexPairSetRef OCIndexPairSetCreateWithIndexPairArray(OCIndexPair *array, int count);
 
 /**
- * Creates a mutable OCIndexPairSet from an OCIndexArray.
- * Each element in the array is treated as a value, with its index as the “index” of the pair.
- *
- * @param indexArray   OCIndexArrayRef whose elements become (index, value) pairs.
- * @return             New OCMutableIndexPairSetRef (caller must release).
+ * @brief Creates an immutable set with one index-value pair.
  */
-OCMutableIndexPairSetRef
-OCIndexPairSetCreateMutableWithIndexArray(OCIndexArrayRef indexArray);
+OCIndexPairSetRef OCIndexPairSetCreateWithIndexPair(OCIndex index, OCIndex value);
 
 /**
- * Creates an immutable OCIndexPairSet from a C‐array of OCIndexPair elements.
- *
- * @param array      Pointer to an array of OCIndexPair structs.
- * @param numValues  Number of elements in that array.
- * @return           New OCIndexPairSetRef (caller must release).
+ * @brief Creates an immutable set with two index-value pairs.
  */
-OCIndexPairSetRef
-OCIndexPairSetCreateWithIndexPairArray(OCIndexPair *array,
-                                       int        numValues);
+OCIndexPairSetRef OCIndexPairSetCreateWithTwoIndexPairs(OCIndex index1, OCIndex value1, OCIndex index2, OCIndex value2);
 
 /**
- * Creates an immutable OCIndexPairSet containing exactly one (index, value) pair.
- *
- * @param index  The index of the single pair.
- * @param value  The associated value.
- * @return       New OCIndexPairSetRef (caller must release).
+ * @brief Returns the backing OCDataRef holding all index pairs.
  */
-OCIndexPairSetRef
-OCIndexPairSetCreateWithIndexPair(long index,
-                                  long value);
+OCDataRef OCIndexPairSetGetIndexPairs(OCIndexPairSetRef set);
 
 /**
- * Creates an immutable OCIndexPairSet containing exactly two (index, value) pairs.
- *
- * @param index1  The first index.
- * @param value1  The first value.
- * @param index2  The second index.
- * @param value2  The second value.
- * @return        New OCIndexPairSetRef (caller must release).
+ * @brief Returns the number of index pairs in the set.
  */
-OCIndexPairSetRef
-OCIndexPairSetCreateWithTwoIndexPairs(long index1,
-                                      long value1,
-                                      long index2,
-                                      long value2);
-
-
-//-------------------------------------------------------------------------
-// Accessors
-//-------------------------------------------------------------------------
+OCIndex OCIndexPairSetGetCount(OCIndexPairSetRef set);
 
 /**
- * Returns the backing OCDataRef containing all OCIndexPair structs.
- *
- * @param theIndexSet  OCIndexPairSetRef to query.
- * @return             OCDataRef (caller must release or CFRetain if needed).
+ * @brief Returns a pointer to the index pair array (internal representation).
  */
-OCDataRef
-OCIndexPairSetGetIndexPairs(OCIndexPairSetRef theIndexSet);
+OCIndexPair *OCIndexPairSetGetBytePtr(OCIndexPairSetRef set);
 
 /**
- * Returns the value associated with a given index in the set.
- *
- * @param theIndexSet  OCIndexPairSetRef to query.
- * @param index        The key to look up.
- * @return             The corresponding value, or kOCNotFound if not present.
+ * @brief Retrieves the value associated with a given index, or kOCNotFound.
  */
-long
-OCIndexPairSetValueForIndex(OCIndexPairSetRef theIndexSet,
-                            long               index);
+OCIndex OCIndexPairSetValueForIndex(OCIndexPairSetRef set, OCIndex index);
 
 /**
- * Produces a new OCIndexArray of all “value” entries, in the same order as stored.
- *
- * @param theIndexSet  OCIndexPairSetRef to convert.
- * @return             OCIndexArrayRef of values (caller must release).
+ * @brief Returns an array of all values in the index pair set.
  */
-OCIndexArrayRef
-OCIndexPairSetCreateIndexArrayOfValues(OCIndexPairSetRef theIndexSet);
+OCIndexArrayRef OCIndexPairSetCreateIndexArrayOfValues(OCIndexPairSetRef set);
 
 /**
- * Produces a new OCIndexSet containing all “index” keys in the set.
- *
- * @param theIndexSet  OCIndexPairSetRef to convert.
- * @return             OCIndexSetRef of indices (caller must release).
+ * @brief Returns a set of all indexes in the index pair set.
  */
-OCIndexSetRef
-OCIndexPairSetCreateIndexSetOfIndexes(OCIndexPairSetRef theIndexSet);
+OCIndexSetRef OCIndexPairSetCreateIndexSetOfIndexes(OCIndexPairSetRef set);
 
 /**
- * Returns a raw pointer to the internal OCIndexPair buffer.
- * Modifying this buffer directly will alter the set’s contents.
- *
- * @param theIndexSet  OCIndexPairSetRef to query.
- * @return             OCIndexPair* or NULL if empty.
+ * @brief Returns the first index-value pair in the set.
  */
-OCIndexPair *
-OCIndexPairSetGetBytePtr(OCIndexPairSetRef theIndexSet);
+OCIndexPair OCIndexPairSetFirstIndex(OCIndexPairSetRef set);
 
 /**
- * Returns the number of (index, value) pairs stored in the set.
- *
- * @param theIndexSet  OCIndexPairSetRef to query.
- * @return             Count of pairs, or 0 if empty.
+ * @brief Returns the last index-value pair in the set.
  */
-long
-OCIndexPairSetGetCount(OCIndexPairSetRef theIndexSet);
+OCIndexPair OCIndexPairSetLastIndex(OCIndexPairSetRef set);
 
 /**
- * Returns the first (index, value) pair in the set.
- * If the set is empty, returns {kOCNotFound, 0}.
- *
- * @param theIndexSet  OCIndexPairSetRef to query.
- * @return             First OCIndexPair in storage order.
+ * @brief Returns the index pair with index less than the input pair's index.
  */
-OCIndexPair
-OCIndexPairSetFirstIndex(OCIndexPairSetRef theIndexSet);
+OCIndexPair OCIndexPairSetIndexPairLessThanIndexPair(OCIndexPairSetRef set, OCIndexPair target);
 
 /**
- * Returns the last (index, value) pair in the set.
- * If the set is empty, returns {kOCNotFound, 0}.
- *
- * @param theIndexSet  OCIndexPairSetRef to query.
- * @return             Last OCIndexPair in storage order.
+ * @brief Returns true if the set contains the given index.
  */
-OCIndexPair
-OCIndexPairSetLastIndex(OCIndexPairSetRef theIndexSet);
+bool OCIndexPairSetContainsIndex(OCIndexPairSetRef set, OCIndex index);
 
 /**
- * Finds the largest (index, value) pair whose index is strictly less than the given pair’s index.
- *
- * @param theIndexSet  OCIndexPairSetRef to search.
- * @param indexPair    The reference OCIndexPair (only its .index field is used for comparison).
- * @return             OCIndexPair with the next‐lower index, or {kOCNotFound, 0} if none exists.
+ * @brief Returns true if the set contains the given index-value pair.
  */
-OCIndexPair
-OCIndexPairSetIndexPairLessThanIndexPair(OCIndexPairSetRef theIndexSet,
-                                         OCIndexPair       indexPair);
+bool OCIndexPairSetContainsIndexPair(OCIndexPairSetRef set, OCIndexPair pair);
 
 /**
- * Returns true if the set contains a pair with the specified index (ignoring value).
- *
- * @param theIndexSet  OCIndexPairSetRef to query.
- * @param index        The key to look for.
- * @return             true if present; false otherwise.
+ * @brief Adds a new index-value pair if index does not already exist.
  */
-bool
-OCIndexPairSetContainsIndex(OCIndexPairSetRef theIndexSet,
-                            long               index);
+bool OCIndexPairSetAddIndexPair(OCMutableIndexPairSetRef set, OCIndex index, OCIndex value);
 
 /**
- * Returns true if the set contains exactly the specified (index, value) pair.
- *
- * @param theIndexSet  OCIndexPairSetRef to query.
- * @param indexPair    The OCIndexPair (both fields must match).
- * @return             true if present; false otherwise.
+ * @brief Removes a pair with the given index, if present.
  */
-bool
-OCIndexPairSetContainsIndexPair(OCIndexPairSetRef theIndexSet,
-                                OCIndexPair       indexPair);
-
-
-//-------------------------------------------------------------------------
-// Mutators
-//-------------------------------------------------------------------------
+bool OCIndexPairSetRemoveIndexPairWithIndex(OCMutableIndexPairSetRef set, OCIndex index);
 
 /**
- * Removes the pair with the given index (if it exists), shifting subsequent pairs down.
- *
- * @param theIndexSet  OCMutableIndexPairSetRef to modify.
- * @param index        The key to remove.
- * @return             true if a pair was removed; false if not found or null.
+ * @brief Converts the set into a dictionary suitable for plist serialization.
  */
-bool
-OCIndexPairSetRemoveIndexPairWithIndex(OCMutableIndexPairSetRef theIndexSet,
-                                       long                       index);
+OCDictionaryRef OCIndexPairSetCreatePList(OCIndexPairSetRef set);
 
 /**
- * Inserts a new (index, value) pair into the set in ascending‐index order.
- * If a pair with the same index already exists, insertion fails and returns false.
- *
- * @param theIndexSet  OCMutableIndexPairSetRef to modify.
- * @param index        The key to insert.
- * @param value        The associated value.
- * @return             true if inserted successfully; false if duplicate index or null.
+ * @brief Creates a set from a dictionary generated by OCIndexPairSetCreatePList.
  */
-bool
-OCIndexPairSetAddIndexPair(OCMutableIndexPairSetRef theIndexSet,
-                           long                       index,
-                           long                       value);
-
-
-//-------------------------------------------------------------------------
-// Serialization & Data Conversion
-//-------------------------------------------------------------------------
+OCIndexPairSetRef OCIndexPairSetCreateWithPList(OCDictionaryRef dict);
 
 /**
- * Creates a plist‐compatible dictionary containing a single key "indexPairs"
- * mapping to the raw OCDataRef. Useful for writing to disk or transferring.
- *
- * @param theIndexSet  OCIndexPairSetRef to serialize.
- * @return             OCDictionaryRef containing the data under key "indexPairs"; caller must release.
+ * @brief Returns a data object representing the internal state.
  */
-OCDictionaryRef
-OCIndexPairSetCreatePList(OCIndexPairSetRef theIndexSet);
+OCDataRef OCIndexPairSetCreateData(OCIndexPairSetRef set);
 
 /**
- * Recreates an OCIndexPairSet from a plist dictionary created by
- * OCIndexPairSetCreatePList. Expects the key "indexPairs" → OCDataRef.
- *
- * @param dictionary  OCDictionaryRef containing key "indexPairs".
- * @return            OCIndexPairSetRef built from that data (caller must release).
+ * @brief Creates a set using the given OCDataRef.
  */
-OCIndexPairSetRef
-OCIndexPairSetCreateWithPList(OCDictionaryRef dictionary);
+OCIndexPairSetRef OCIndexPairSetCreateWithData(OCDataRef data);
 
 /**
- * Returns an owned OCDataRef containing the raw bytes of the index‐pair set.
- *
- * @param theIndexSet  OCIndexPairSetRef to query.
- * @return             OCDataRef (caller must release); or NULL if input is NULL.
+ * @brief Displays the contents of the index pair set to stderr.
  */
-OCDataRef
-OCIndexPairSetCreateData(OCIndexPairSetRef theIndexSet);
-
-/**
- * Creates an OCIndexPairSet directly from an existing OCDataRef.
- * The caller retains ownership of that data internally (CFRetain).
- *
- * @param data  OCDataRef whose bytes represent consecutive OCIndexPair structs.
- * @return      OCIndexPairSetRef built on top of that data (caller must release).
- */
-OCIndexPairSetRef
-OCIndexPairSetCreateWithData(OCDataRef data);
-
-
-//-------------------------------------------------------------------------
-// Utility / Debug
-//-------------------------------------------------------------------------
-
-/**
- * Prints the contents of an OCIndexPairSet to stderr in the form:
- *     ((i0,v0),(i1,v1),...)
- *
- * @param theIndexPairSet  OCIndexPairSetRef to display.
- */
-void
-OCIndexPairSetShow(OCIndexPairSetRef theIndexPairSet);
+void OCIndexPairSetShow(OCIndexPairSetRef set);
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif /* OCINDEXPAIRSET_H */
-
 

@@ -262,6 +262,8 @@ typedef enum {
  */
 typedef OCOptionFlags OCStringCompareFlags;
 
+typedef signed long OCIndex;
+
 /** @cond INTERNAL */
 // Centralized Ref typedefs
 typedef const struct __OCType *OCTypeRef;

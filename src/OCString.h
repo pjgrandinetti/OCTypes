@@ -954,6 +954,55 @@ bool characterIsDigitOrDecimalPoint(uint32_t character);
  */
 bool characterIsDigitOrDecimalPointOrSpace(uint32_t character);
 
+
+/**
+ * @typedef OCBase64EncodingOptions
+ * @brief Options that specify how Base64-encoded output should be formatted.
+ *
+ * These options determine the maximum line length and the line break characters
+ * inserted into the Base64-encoded output. They may be combined using the bitwise OR operator.
+ */
+typedef enum {
+    /** No line breaks or special formatting; a single continuous Base64 string. */
+    OCBase64EncodingOptionsNone = 0,
+
+    /** Insert line breaks every 64 characters in the encoded output. */
+    OCBase64Encoding64CharacterLineLength = 1 << 0,
+
+    /** Insert line breaks every 76 characters in the encoded output. */
+    OCBase64Encoding76CharacterLineLength = 1 << 1,
+
+    /** Use a carriage return (`\r`) as the line ending. */
+    OCBase64EncodingEndLineWithCarriageReturn = 1 << 4,
+
+    /** Use a line feed (`\n`) as the line ending. */
+    OCBase64EncodingEndLineWithLineFeed = 1 << 5,
+
+    /**
+     * Use carriage return followed by line feed (`\r\n`) as the line ending.
+     * This is a custom extension not present in Apple's `NSDataBase64EncodingOptions`.
+     */
+    OCBase64EncodingEndLineWithCarriageReturnLineFeed = 1 << 6
+} OCBase64EncodingOptions;
+
+
+
+/**
+ * @brief Creates a Base64-encoded OCString from OCData using specified encoding options.
+ *
+ * @param data
+ *     The OCDataRef containing the raw bytes to be encoded. Must not be NULL.
+ *
+ * @param options
+ *     A bitmask of OCBase64EncodingOptions that control line length and line ending format.
+ *
+ * @return
+ *     A new OCStringRef containing the Base64-encoded representation of the input data.
+ *     Returns NULL if encoding fails or input is invalid. The caller is responsible for releasing the result.
+ */
+OCStringRef OCStringCreateBase64EncodedWithOptions(OCDataRef data,
+                                                   OCBase64EncodingOptions options)
 /** @} */ // end of OCString group
 
 #endif /* OCString_h */
+
