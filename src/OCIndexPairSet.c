@@ -142,7 +142,7 @@ long OCIndexPairSetValueForIndex(OCIndexPairSetRef theIndexSet, long index)
     for(long i=0;i<count; i++) {
         if(indexPairs[i].index == index) return indexPairs[i].value;
     }
-    return kCFNotFound;
+    return kOCNotFound;
 }
 
 OCIndexArrayRef OCIndexPairSetCreateIndexArrayOfValues(OCIndexPairSetRef theIndexSet)
@@ -185,7 +185,7 @@ OCIndexPair OCIndexPairSetFirstIndex(OCIndexPairSetRef theIndexSet)
         OCIndexPair *indexPairs = (OCIndexPair *) OCDataGetBytePtr(theIndexSet->indexPairs);
         return indexPairs[0];
     }
-    OCIndexPair result = {kCFNotFound,0};
+    OCIndexPair result = {kOCNotFound,0};
     return result;
 }
 
@@ -196,13 +196,13 @@ OCIndexPair OCIndexPairSetLastIndex(OCIndexPairSetRef theIndexSet)
         OCIndexPair *indexPairs = (OCIndexPair *) OCDataGetBytePtr(theIndexSet->indexPairs);
         return indexPairs[count-1];
     }
-    OCIndexPair result = {kCFNotFound,0};
+    OCIndexPair result = {kOCNotFound,0};
     return result;
 }
 
 OCIndexPair OCIndexPairSetIndexPairLessThanIndexPair(OCIndexPairSetRef theIndexSet, OCIndexPair indexPair)
 {
-    OCIndexPair noResult = {kCFNotFound,0};
+    OCIndexPair noResult = {kOCNotFound,0};
     if(theIndexSet==NULL || theIndexSet->indexPairs == NULL) return noResult;
     long count = OCIndexPairSetGetCount(theIndexSet);
     OCIndexPair *indexPairs = (OCIndexPair *) OCDataGetBytePtr(theIndexSet->indexPairs);

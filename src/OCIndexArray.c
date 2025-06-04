@@ -18,7 +18,6 @@ struct __OCIndexArray {
     OCMutableDataRef indexes;
 };
 
-
 OCTypeID OCIndexArrayGetTypeID(void)
 {
     if (kOCIndexArrayID == _kOCNotATypeID)
@@ -66,7 +65,7 @@ OCIndexArrayRef OCIndexArrayCreate(long *indexes, long numValues)
 {
     // Initialize object
     
-    OCMutableIndexArrayRef newIndexArray = (OCMutableIndexArrayRef) OCIndexArrayAllocate(void);
+    OCMutableIndexArrayRef newIndexArray = (OCMutableIndexArrayRef) OCIndexArrayAllocate();
     
     // *** Setup attributes ***
     
@@ -78,7 +77,7 @@ OCMutableIndexArrayRef OCIndexArrayCreateMutable(long capacity)
 {
     // Initialize object
     
-    OCMutableIndexArrayRef newIndexArray = (OCMutableIndexArrayRef) OCIndexArrayAllocate(void);
+    OCMutableIndexArrayRef newIndexArray = (OCMutableIndexArrayRef) OCIndexArrayAllocate();
     
     // *** Setup attributes ***
     
@@ -89,7 +88,7 @@ OCMutableIndexArrayRef OCIndexArrayCreateMutable(long capacity)
 
 static OCIndexArrayRef OCIndexArrayCreateWithParameters(OCDataRef indexes)
 {
-    OCMutableIndexArrayRef newIndexArray = (OCMutableIndexArrayRef) OCIndexArrayAllocate(void);
+    OCMutableIndexArrayRef newIndexArray = (OCMutableIndexArrayRef) OCIndexArrayAllocate();
     
     // *** Setup attributes ***
     
@@ -99,7 +98,7 @@ static OCIndexArrayRef OCIndexArrayCreateWithParameters(OCDataRef indexes)
 
 static OCMutableIndexArrayRef OCIndexArrayCreateMutableWithParameters(OCMutableDataRef indexes)
 {
-    OCMutableIndexArrayRef newIndexArray = (OCMutableIndexArrayRef) OCIndexArrayAllocate(void);
+    OCMutableIndexArrayRef newIndexArray = (OCMutableIndexArrayRef) OCIndexArrayAllocate();
     
     // *** Setup attributes ***
     
@@ -286,7 +285,7 @@ OCDictionaryRef OCIndexArrayCreatePList(OCIndexArrayRef theIndexArray)
 {
     OCMutableDictionaryRef dictionary = NULL;
     if(theIndexArray) {
-        dictionary = OCDictionaryCreateMutable(0,&kOCTypeDictionaryKeyCallBacks,&kOCTypeDictionaryValueCallBacks);
+        dictionary = OCDictionaryCreateMutable(0);
         OCDictionarySetValue( dictionary, CFSTR("indexes"), theIndexArray->indexes);
         
 	}

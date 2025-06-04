@@ -1,256 +1,376 @@
-//
-//  PSIndexSet.c
-//
-//  Created by PhySy Ltd on 10/21/11.
-//  Copyright (c) 2008-2014 PhySy Ltd. All rights reserved.
-//
-
 #include "OCLibrary.h"
+#include <stdio.h>  
+#include <stdlib.h> 
+#include <string.h> 
 
-@interface PSIndexSet ()
+
+//-----------------------------------------------------------------------------
+// Static TypeID
+//-----------------------------------------------------------------------------
+static OCTypeID kOCIndexSetID = _kOCNotATypeID;
+
+struct __OCIndexSet {
+    OCBase _base;
+
+    OCDataRef indexes;
+};
+
+//-----------------------------------------------------------------------------
+// Equality Callback
+//-----------------------------------------------------------------------------
+bool __OCIndexSetEqual(const void *a_, const void *b_)
 {
-@private
-    CFDataRef indexes;
-}
-@end
+    OCIndexSetRef input1 = (OCIndexSetRef)a_;
+    OCIndexSetRef input2 = (OCIndexSetRef)b_;
 
+    IF_NO_OBJECT_EXISTS_RETURN(input1, false);
+    IF_NO_OBJECT_EXISTS_RETURN(input2, false);
 
-@implementation PSIndexSet
+    // Compare lengths
+    size_t len1 = input1->indexes ? OCDataGetLength(input1->indexes) : 0;
+    size_t len2 = input2->indexes ? OCDataGetLength(input2->indexes) : 0;
+    if (len1 != len2) return false;
 
-- (void) dealloc
-{
-    if(indexes) CFRelease(indexes);
-    [super dealloc];
-}
+    // If both are NULL or both lengths are zero, they’re equal
+    if (len1 == 0 && len2 == 0) return true;
 
-PSIndexSetRef PSIndexSetCreate()
-{
-    // Initialize object
-    
-    PSIndexSet *newIndexSet = [PSIndexSet alloc];
-    
-    // *** Setup attributes ***
-    
-    newIndexSet->indexes = NULL;
-    return (PSIndexSetRef) newIndexSet;
-}
-
-PSMutableIndexSetRef PSIndexSetCreateMutable(void)
-{
-    // Initialize object
-    
-    PSIndexSet *newIndexSet = [PSIndexSet alloc];
-    
-    // *** Setup attributes ***
-    
-    newIndexSet->indexes = NULL;
-    return (PSMutableIndexSetRef) newIndexSet;
-}
-
-static PSIndexSetRef PSIndexSetCreateWithParameters(CFDataRef indexes)
-{
-    PSIndexSet *newIndexSet = [PSIndexSet alloc];
-    
-    // *** Setup attributes ***
-    
-    newIndexSet->indexes = CFDataCreateCopy(kCFAllocatorDefault, indexes);
-    return (PSIndexSetRef) newIndexSet;
+    // Byte-for-byte comparison
+    const void *bytes1 = OCDataGetBytePtr(input1->indexes);
+    const void *bytes2 = OCDataGetBytePtr(input2->indexes);
+    return (memcmp(bytes1, bytes2, len1) == 0);
 }
 
-static PSMutableIndexSetRef PSIndexSetCreateMutableWithParameters(CFDataRef indexes)
+
+//-----------------------------------------------------------------------------
+// Finalizer Callback
+//-----------------------------------------------------------------------------
+void __OCIndexSetFinalize(const void *theType)
 {
-    PSIndexSet *newIndexSet = [PSIndexSet alloc];
-    
-    // *** Setup attributes ***
-    
-    newIndexSet->indexes = CFDataCreateCopy(kCFAllocatorDefault,indexes);
-    return (PSMutableIndexSetRef) newIndexSet;
+    OCMutableIndexSetRef obj = (OCMutableIndexSetRef)theType;
+    if (obj->indexes) {
+        OCRelease(obj->indexes);
+        obj->indexes = NULL;
+    }
 }
 
-PSIndexSetRef PSIndexSetCreateCopy(PSIndexSetRef theIndexSet)
-{
-	return PSIndexSetCreateWithParameters(theIndexSet->indexes);
-}
 
-PSMutableIndexSetRef PSIndexSetCreateMutableCopy(PSIndexSetRef theIndexSet)
+//-----------------------------------------------------------------------------
+// Copy-Formatting Callback (unused here)
+//-----------------------------------------------------------------------------
+OCStringRef __OCIndexSetCopyFormattingDesc(const void *theType)
 {
-	return PSIndexSetCreateMutableWithParameters(theIndexSet->indexes);
-}
-
-PSIndexSetRef PSIndexSetCreateWithIndex(CFIndex index)
-{
-    PSIndexSet *newIndexSet = [PSIndexSet alloc];
-    
-    // *** Setup attributes ***
-    
-    newIndexSet->indexes = CFDataCreate(kCFAllocatorDefault, (const UInt8 *) &index, sizeof(CFIndex));
-    return (PSIndexSetRef) newIndexSet;
-}
-
-PSIndexSetRef PSIndexSetCreateWithIndexesInRange(CFRange indexRange)
-{
-    PSIndexSet *newIndexSet = [PSIndexSet alloc];
-    
-    // *** Setup attributes ***
-    CFIndex *indexes = malloc(indexRange.length*sizeof(CFIndex));
-    for(int32_t index = 0;index<indexRange.length; index++) indexes[index] = indexRange.location + index;
-    newIndexSet->indexes = CFDataCreate(kCFAllocatorDefault, (const UInt8 *) indexes, indexRange.length*sizeof(CFIndex));
-    free(indexes);
-    return (PSIndexSetRef) newIndexSet;
-}
-
-CFDataRef PSIndexSetGetIndexes(PSIndexSetRef theIndexSet)
-{
-    return theIndexSet->indexes;
-}
-
-CFIndex *PSIndexSetGetBytePtr(PSIndexSetRef theIndexSet)
-{
-    if(theIndexSet->indexes)
-        return (CFIndex *) CFDataGetBytePtr(theIndexSet->indexes);
+    (void)theType;
     return NULL;
 }
 
-CFIndex PSIndexSetGetCount(PSIndexSetRef theIndexSet)
+
+//-----------------------------------------------------------------------------
+// Allocate a new object via OCTypeAlloc
+//-----------------------------------------------------------------------------
+OCMutableIndexSetRef OCIndexSetAllocate(void)
 {
-    if(theIndexSet->indexes) return CFDataGetLength(theIndexSet->indexes)/sizeof(CFIndex);
-    return 0;
+    return (OCMutableIndexSetRef)
+        OCTypeAlloc(
+            struct __OCIndexSet,
+            OCIndexSetGetTypeID(),
+            __OCIndexSetFinalize,
+            __OCIndexSetEqual,
+            __OCIndexSetCopyFormattingDesc
+        );
 }
 
-CFIndex PSIndexSetFirstIndex(PSIndexSetRef theIndexSet)
+
+//-----------------------------------------------------------------------------
+// TypeID Registration
+//-----------------------------------------------------------------------------
+OCTypeID OCIndexSetGetTypeID(void)
 {
-    if(theIndexSet->indexes) {
-        CFIndex *indexes = (CFIndex *) CFDataGetBytePtr(theIndexSet->indexes);
-        return indexes[0];
+    if (kOCIndexSetID == _kOCNotATypeID) {
+        kOCIndexSetID = OCRegisterType("OCIndexSet");
     }
-    return kCFNotFound;
+    return kOCIndexSetID;
 }
 
-CFIndex PSIndexSetLastIndex(PSIndexSetRef theIndexSet)
+
+//-----------------------------------------------------------------------------
+// Public Constructors
+//-----------------------------------------------------------------------------
+OCIndexSetRef OCIndexSetCreate(void)
 {
-    if(theIndexSet->indexes) {
-        CFIndex count = PSIndexSetGetCount(theIndexSet);
-        CFIndex *indexes = (CFIndex *) CFDataGetBytePtr(theIndexSet->indexes);
-        return indexes[count-1];
+    OCMutableIndexSetRef newSet = (OCMutableIndexSetRef) OCIndexSetAllocate();
+    newSet->indexes = NULL;
+    return (OCIndexSetRef)newSet;
+}
+
+OCMutableIndexSetRef OCIndexSetCreateMutable(void)
+{
+    OCMutableIndexSetRef newSet = OCIndexSetAllocate();
+    newSet->indexes = NULL;
+    return newSet;
+}
+
+OCIndexSetRef OCIndexSetCreateCopy(OCIndexSetRef theIndexSet)
+{
+    if (!theIndexSet) return NULL;
+    // Internally, just copy the OCDataRef buffer if it exists
+    OCDataRef oldData = theIndexSet->indexes;
+    return (oldData
+            ? OCIndexSetCreateWithData(oldData)
+            : OCIndexSetCreate());
+}
+
+OCMutableIndexSetRef OCIndexSetCreateMutableCopy(OCIndexSetRef theIndexSet)
+{
+    if (!theIndexSet) return NULL;
+    OCDataRef oldData = theIndexSet->indexes;
+    return (oldData
+            ? (OCMutableIndexSetRef) OCIndexSetCreateWithData(oldData)
+            : OCIndexSetCreateMutable());
+}
+
+OCIndexSetRef OCIndexSetCreateWithIndex(long index)
+{
+    OCMutableIndexSetRef newSet = OCIndexSetAllocate();
+    // Create a single-element data buffer
+    newSet->indexes = OCDataCreate((const unsigned char *)&index,
+                                   sizeof(long));
+    return (OCIndexSetRef)newSet;
+}
+
+OCIndexSetRef OCIndexSetCreateWithIndexesInRange(long location, long length)
+{
+    OCMutableIndexSetRef newSet = OCIndexSetAllocate();
+    if (length <= 0) {
+        newSet->indexes = NULL;
+        return (OCIndexSetRef)newSet;
     }
-    return kCFNotFound;
-}
 
-CFIndex PSIndexSetIndexLessThanIndex(PSIndexSetRef theIndexSet, CFIndex index)
-{
-    if(theIndexSet==NULL || theIndexSet->indexes == NULL) return kCFNotFound;
-    CFIndex count = PSIndexSetGetCount(theIndexSet);
-    CFIndex *indexes = (CFIndex *) CFDataGetBytePtr(theIndexSet->indexes);
-    for(CFIndex i=count-1; i>=0;i--) {
-        if(indexes[i]<index) return indexes[i];
+    // Build a temporary C array of longs: { location, location+1, …, location+length−1 }
+    long *temp = (long *)malloc(sizeof(long) * length);
+    for (long i = 0; i < length; i++) {
+        temp[i] = location + i;
     }
-    return kCFNotFound;
+
+    // Create the OCDataRef from that buffer
+    newSet->indexes = OCDataCreate((const unsigned char *)temp,
+                                   sizeof(long) * length);
+    free(temp);
+    return (OCIndexSetRef)newSet;
 }
 
-CFIndex PSIndexSetIndexGreaterThanIndex(PSIndexSetRef theIndexSet, CFIndex index)
+
+//-----------------------------------------------------------------------------
+// Accessors
+//-----------------------------------------------------------------------------
+OCDataRef OCIndexSetGetIndexes(OCIndexSetRef theIndexSet)
 {
-    if(theIndexSet==NULL || theIndexSet->indexes == NULL) return kCFNotFound;
-    CFIndex count = PSIndexSetGetCount(theIndexSet);
-    CFIndex *indexes = (CFIndex *) CFDataGetBytePtr(theIndexSet->indexes);
-    for(CFIndex i=count-1; i>=0;i--) {
-        if(indexes[i]>index) return indexes[i];
+    if (!theIndexSet) return NULL;
+    return theIndexSet->indexes;
+}
+
+long *OCIndexSetGetBytePtr(OCIndexSetRef theIndexSet)
+{
+    if (!theIndexSet || !theIndexSet->indexes) return NULL;
+    return (long *)OCDataGetBytePtr(theIndexSet->indexes);
+}
+
+long OCIndexSetGetCount(OCIndexSetRef theIndexSet)
+{
+    if (!theIndexSet || !theIndexSet->indexes) return 0;
+    return (long)(OCDataGetLength(theIndexSet->indexes) / sizeof(long));
+}
+
+long OCIndexSetFirstIndex(OCIndexSetRef theIndexSet)
+{
+    if (!theIndexSet || !theIndexSet->indexes) return kOCNotFound;
+    long *buf = (long *)OCDataGetBytePtr(theIndexSet->indexes);
+    return buf ? buf[0] : kOCNotFound;
+}
+
+long OCIndexSetLastIndex(OCIndexSetRef theIndexSet)
+{
+    if (!theIndexSet || !theIndexSet->indexes) return kOCNotFound;
+    long count = OCIndexSetGetCount(theIndexSet);
+    if (count == 0) return kOCNotFound;
+    long *buf = (long *)OCDataGetBytePtr(theIndexSet->indexes);
+    return buf[count - 1];
+}
+
+long OCIndexSetIndexLessThanIndex(OCIndexSetRef theIndexSet, long index)
+{
+    if (!theIndexSet || !theIndexSet->indexes) return kOCNotFound;
+    long count = OCIndexSetGetCount(theIndexSet);
+    long *buf = (long *)OCDataGetBytePtr(theIndexSet->indexes);
+    for (long i = count - 1; i >= 0; i--) {
+        if (buf[i] < index) return buf[i];
     }
-    return kCFNotFound;
+    return kOCNotFound;
 }
 
-bool PSIndexSetContainsIndex(PSIndexSetRef theIndexSet, CFIndex index)
+long OCIndexSetIndexGreaterThanIndex(OCIndexSetRef theIndexSet, long index)
 {
-    if(theIndexSet->indexes) {
-        CFIndex count = PSIndexSetGetCount(theIndexSet);
-        CFIndex *indexes = (CFIndex *) CFDataGetBytePtr(theIndexSet->indexes);
-        for(int32_t i=0;i<count;i++) if(indexes[i] == index) return true;
+    if (!theIndexSet || !theIndexSet->indexes) return kOCNotFound;
+    long count = OCIndexSetGetCount(theIndexSet);
+    long *buf = (long *)OCDataGetBytePtr(theIndexSet->indexes);
+    // Since they are sorted, we could scan forward—but we’ll do a simple linear scan:
+    for (long i = 0; i < count; i++) {
+        if (buf[i] > index) return buf[i];
+    }
+    return kOCNotFound;
+}
+
+bool OCIndexSetContainsIndex(OCIndexSetRef theIndexSet, long index)
+{
+    if (!theIndexSet || !theIndexSet->indexes) return false;
+    long count = OCIndexSetGetCount(theIndexSet);
+    long *buf = (long *)OCDataGetBytePtr(theIndexSet->indexes);
+    for (long i = 0; i < count; i++) {
+        if (buf[i] == index) return true;
     }
     return false;
 }
 
-bool PSIndexSetAddIndex(PSMutableIndexSetRef theIndexSet, CFIndex index)
+
+//-----------------------------------------------------------------------------
+// Mutator: insert one index into the sorted buffer
+//-----------------------------------------------------------------------------
+bool OCIndexSetAddIndex(OCMutableIndexSetRef theIndexSet, long index)
 {
-    int32_t i = 0;
-    CFIndex count = 0;
-    if(theIndexSet->indexes) {
-        count = PSIndexSetGetCount(theIndexSet);
-        CFIndex *indexes = (CFIndex *) CFDataGetBytePtr(theIndexSet->indexes);
-        for(i=0;i<count;i++) {
-            if(indexes[i] == index) return false;
-            if(indexes[i]>index) break;
-        }
-        CFIndex *newIndexes = malloc((count+1)*sizeof(CFIndex));
-        for(int32_t j = 0;j<count+1; j++) {
-            if(j<i) newIndexes[j] = indexes[j];
-            else if(j==i) newIndexes[j] = index;
-            else newIndexes[j] = indexes[j-1];
-        }
-        CFRelease(theIndexSet->indexes);
-        theIndexSet->indexes = CFDataCreate(CFGetAllocator(theIndexSet), (const UInt8 *) newIndexes,(count+1)*sizeof(CFIndex));
-        free(newIndexes);
+    if (!theIndexSet) return false;
+
+    // If no data exists yet, simply create a single‐element buffer:
+    if (!theIndexSet->indexes) {
+        theIndexSet->indexes = OCDataCreate((const unsigned char *)&index,
+                                            sizeof(long));
         return true;
     }
-    theIndexSet->indexes = CFDataCreate(CFGetAllocator(theIndexSet), (const UInt8 *) &index, sizeof(CFIndex));
+
+    long count = OCIndexSetGetCount(theIndexSet);
+    long *buf = (long *)OCDataGetBytePtr(theIndexSet->indexes);
+
+    // Find insertion point (or detect duplicate):
+    long i;
+    for (i = 0; i < count; i++) {
+        if (buf[i] == index) {
+            // Already present → do nothing
+            return false;
+        }
+        if (buf[i] > index) {
+            break;
+        }
+    }
+
+    // Allocate a new C array with one extra slot
+    long *newBuf = (long *)malloc(sizeof(long) * (count + 1));
+    for (long j = 0; j < count + 1; j++) {
+        if (j < i) {
+            newBuf[j] = buf[j];
+        }
+        else if (j == i) {
+            newBuf[j] = index;
+        }
+        else {
+            newBuf[j] = buf[j - 1];
+        }
+    }
+
+    // Release old OCDataRef, create a new one, free the temporary
+    OCRelease(theIndexSet->indexes);
+    theIndexSet->indexes = OCDataCreate((const unsigned char *)newBuf,
+                                        sizeof(long) * (count + 1));
+    free(newBuf);
     return true;
 }
 
-bool PSIndexSetEqual(PSIndexSetRef input1, PSIndexSetRef input2)
+
+//-----------------------------------------------------------------------------
+// Equality (public wrapper)
+//-----------------------------------------------------------------------------
+bool OCIndexSetEqual(OCIndexSetRef input1, OCIndexSetRef input2)
 {
-	IF_NO_OBJECT_EXISTS_RETURN(input1,false);
-	IF_NO_OBJECT_EXISTS_RETURN(input2,false);
-    
-    if(CFDataGetLength(input1->indexes) != CFDataGetLength(input2->indexes)) return false;
-	if(!memcmp(CFDataGetBytePtr(input1->indexes), CFDataGetBytePtr(input2->indexes), CFDataGetLength(input1->indexes))) return false;
-	return true;
+    return __OCIndexSetEqual(input1, input2);
 }
 
 
-CFArrayRef PSIndexSetCreateCFNumberArray(PSIndexSetRef theIndexSet)
+//-----------------------------------------------------------------------------
+// Convert to OCNumber-backed OCArray
+//-----------------------------------------------------------------------------
+OCArrayRef OCIndexSetCreateOCNumberArray(OCIndexSetRef theIndexSet)
 {
-    CFIndex count = PSIndexSetGetCount(theIndexSet);
-    CFMutableArrayRef theArray = CFArrayCreateMutable(kCFAllocatorDefault, count, &kCFTypeArrayCallBacks);
-    CFIndex *indexes = PSIndexSetGetBytePtr(theIndexSet);
-
-    for(CFIndex i = 0;i<count;i++) {
-        CFNumberRef number = PSCFNumberCreateWithCFIndex(indexes[i]);
-        CFArrayAppendValue(theArray, number);
-        CFRelease(number);
+    if (!theIndexSet || !theIndexSet->indexes) {
+        // Return empty array
+        return OCArrayCreateMutable(0, &kOCTypeArrayCallBacks);
     }
-    return theArray;
+
+    long count = OCIndexSetGetCount(theIndexSet);
+    OCMutableArrayRef arr = OCArrayCreateMutable(count, &kOCTypeArrayCallBacks);
+    long *buf = (long *)OCDataGetBytePtr(theIndexSet->indexes);
+
+    for (long i = 0; i < count; i++) {
+        OCNumberRef num = OCNumberCreateWithLong(buf[i]);
+        OCArrayAppendValue(arr, num);
+        OCRelease(num);
+    }
+    return arr;
 }
 
-CFDictionaryRef PSIndexSetCreatePList(PSIndexSetRef theIndexSet)
+
+//-----------------------------------------------------------------------------
+// Plist Serialization
+//-----------------------------------------------------------------------------
+OCDictionaryRef OCIndexSetCreatePList(OCIndexSetRef theIndexSet)
 {
-    CFMutableDictionaryRef dictionary = nil;
-    if(theIndexSet) {
-        dictionary = CFDictionaryCreateMutable(kCFAllocatorDefault,0,&kCFTypeDictionaryKeyCallBacks,&kCFTypeDictionaryValueCallBacks);
-        CFDictionarySetValue( dictionary, CFSTR("indexes"), theIndexSet->indexes);
-        
-	}
-	return dictionary;
+    if (!theIndexSet) return NULL;
+    OCDictionaryRef dict = OCDictionaryCreateMutable(0);
+    if (theIndexSet->indexes) {
+        OCDictionarySetValue(dict, STR("indexes"), theIndexSet->indexes);
+    }
+    return dict;
 }
 
-PSIndexSetRef PSIndexSetCreateWithPList(CFDictionaryRef dictionary)
+OCIndexSetRef OCIndexSetCreateWithPList(OCDictionaryRef dictionary)
 {
-	if(dictionary==NULL) return NULL;
-	return PSIndexSetCreateWithParameters(CFDictionaryGetValue(dictionary, CFSTR("indexes")));
+    if (!dictionary) return NULL;
+    OCDataRef data = (OCDataRef)OCDictionaryGetValue(dictionary, STR("indexes"));
+    if (!data) return OCIndexSetCreate();
+    return OCIndexSetCreateWithData(data);
 }
 
 
-CFDataRef PSIndexSetCreateData(PSIndexSetRef theIndexSet)
+OCDataRef OCIndexSetCreateData(OCIndexSetRef theIndexSet)
 {
-    if(theIndexSet == NULL) return NULL;
-    return CFRetain(theIndexSet->indexes);
+    if (!theIndexSet || !theIndexSet->indexes) return NULL;
+    return OCRetain(theIndexSet->indexes);
 }
 
-PSIndexSetRef PSIndexSetCreateWithData(CFDataRef data)
+OCIndexSetRef OCIndexSetCreateWithData(OCDataRef data)
 {
-    if(data==nil) return nil;
-    return PSIndexSetCreateWithParameters(data);
+    if (!data) return NULL;
+    // Copy the underlying OCDataRef
+    OCMutableIndexSetRef newSet = OCIndexSetAllocate();
+    newSet->indexes = (OCMutableDataRef)OCDataCreateCopy(data);
+    return (OCIndexSetRef)newSet;
 }
 
 
+//-----------------------------------------------------------------------------
+// Debug Print
+//-----------------------------------------------------------------------------
+void OCIndexSetShow(OCIndexSetRef theIndexSet)
+{
+    if (!theIndexSet || !theIndexSet->indexes) {
+        fprintf(stderr, "( )\n");
+        return;
+    }
+    long count = OCIndexSetGetCount(theIndexSet);
+    long *buf = (long *)OCDataGetBytePtr(theIndexSet->indexes);
 
-@end
-
-
+    fprintf(stderr, "(");
+    for (long i = 0; i < count; i++) {
+        fprintf(stderr, "%ld", buf[i]);
+        if (i < count - 1) {
+            fprintf(stderr, ",");
+        }
+    }
+    fprintf(stderr, ")\n");
+}
