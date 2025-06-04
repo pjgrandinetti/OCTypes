@@ -84,6 +84,8 @@ int main(int argc, const char * argv[]) {
     
     fprintf(stderr, "\nAll tests passed successfully!\n");
     OCAutoreleasePoolRelease(pool);
+
+    OCTypesShutdown();  // Clean up OCTypes resources
     return EXIT_SUCCESS;
 }
 
