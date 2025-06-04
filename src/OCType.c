@@ -24,19 +24,49 @@ void cleanupTypeIDTable(void) {
     }
 }
 
-// Run **after** LSAN’s destructors (101–103), so this cleanup
-// happens once leak checking has already run.
-__attribute__((destructor(200)))
-static void _OCTypes_cleanup_after_leak_check(void) {
-    cleanupConstantStringTable();
-    cleanupTypeIDTable();
+static bool TypeIDTableContainsName(const char *typeName) {
+    if (typeName == NULL || typeIDTable == NULL) {
+        return false;
+    }
 
-    #if defined(DEBUG) \
-        && !defined(__SANITIZE_ADDRESS__) \
-        && !(defined(__clang__) && __has_feature(address_sanitizer))
-        // _OCReportLeaks();
-    #endif
+    for (OCTypeID i = 0; i < typeIDTableCount; ++i) {
+        if (typeIDTable[i] != NULL && strcmp(typeIDTable[i], typeName) == 0) {
+            return true;
+        }
+    }
+
+    return false;
 }
+
+void OCTypesShutdown(void) {
+    OCAutoreleasePoolCleanup();
+    cleanupConstantStringTable();
+    #if defined(DEBUG)                                \
+        && !defined(__SANITIZE_ADDRESS__)              \
+        && !(defined(__clang__) && __has_feature(address_sanitizer))
+        if(TypeIDTableContainsName("OCString")) 
+            _OCReportLeaksForType(OCStringGetTypeID());
+        if(TypeIDTableContainsName("OCNumber")) 
+            _OCReportLeaksForType(OCNumberGetTypeID());
+        if(TypeIDTableContainsName("OCArray")) 
+            _OCReportLeaksForType(OCArrayGetTypeID());
+        if(TypeIDTableContainsName("OCDictionary")) 
+            _OCReportLeaksForType(OCDictionaryGetTypeID());
+        if(TypeIDTableContainsName("OCData")) 
+            _OCReportLeaksForType(OCDataGetTypeID());
+        if(TypeIDTableContainsName("OCBoolean")) 
+            _OCReportLeaksForType(OCBooleanGetTypeID());
+    #endif
+    cleanupTypeIDTable();
+}
+
+// Run *after* LSAN’s destructors (101–103), so that LSAN gets to see
+// everything and only afterward we print out any remaining leaks.
+__attribute__((destructor(100)))  
+static void _OCTypes_cleanup(void) {
+    if(typeIDTableCount == 6) OCTypesShutdown();
+}
+
 
 struct __OCType {
     OCBase _base;
@@ -308,5 +338,14 @@ const char *OCTypeIDName(const void * ptr)
     }
 
     const char *name = typeIDTable[theType->_base.typeID - 1];
+    return (name != NULL) ? name : "UnnamedType";
+}
+
+const char *OCTypeNameFromTypeID(OCTypeID typeID)
+{
+    if (typeID == _kOCNotATypeID || typeID == 0 || typeID > typeIDTableCount) {
+        return "InvalidTypeID";
+    }
+    const char *name = typeIDTable[typeID - 1];
     return (name != NULL) ? name : "UnnamedType";
 }

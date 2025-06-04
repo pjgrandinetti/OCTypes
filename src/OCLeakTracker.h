@@ -44,6 +44,8 @@ void _OCUntrack(const void *ptr);
  */
 void _OCReportLeaks(void);
 
+void _OCReportLeaksForType(OCTypeID filterTypeID);
+
 
 size_t _OCLeakCountForType(OCTypeID typeID);
 

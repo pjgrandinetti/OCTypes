@@ -169,6 +169,8 @@ OCTypeID OCGetTypeID(const void *ptr);
  */
 const char *OCTypeIDName(const void * ptr);
 
+const char *OCTypeNameFromTypeID(OCTypeID typeID);
+
 /** \cond INTERNAL */
 
 /**
@@ -223,12 +225,20 @@ void *OCTypeAllocate(size_t size,
 
 
 /**
- * @brief Reports any OCTypeRef-tracked objects that were not finalized.
- * Only available in debug builds.
+ * @brief Finalizes and cleans up resources used by the OCTypes library.
+ *
+ * This function releases all memory and internal state associated with the OCTypes
+ * library. It should be called near the end of the program, but only if one or more
+ * OCType-compatible objects were registered using `OCRegisterType`.
+ *
+ * Calling this function ensures that all resources are properly deallocated and that
+ * leak detection tools (e.g., LSAN, ASan) report accurately.
+ *
+ * @note This function is only necessary if `OCRegisterType` was invoked during the program's execution.
+ *
+ * @ingroup OCType
  */
-#ifdef DEBUG
-void OCTypeReportLeaks(void);
-#endif
+void OCTypesShutdown(void);
 
 /** \endcond */
 /** @} */ // end of OCType group

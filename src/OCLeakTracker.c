@@ -140,4 +140,65 @@ size_t _OCLeakCountForType(OCTypeID typeID) {
     return count;
 }
 
+
+void _OCReportLeaksForType(OCTypeID filterTypeID) {
+    pthread_mutex_lock(&gLeakLock);
+    
+    // Count how many leaked entries match filterTypeID
+    size_t filteredCount = 0;
+    for (size_t i = 0; i < gLeakCount; ++i) {
+        const OCBase *base = gLeakTable[i].ptr;
+        if (!base) continue;
+        if (base->typeID == filterTypeID) {
+            filteredCount++;
+        }
+    }
+
+    if (filteredCount == 0) {
+        // No outstanding leaks of this type
+        const char *typeName = OCTypeNameFromTypeID(filterTypeID);
+        // If there's at least one instance in memory, grab its name.
+        // Otherwise we cannot look up the name at runtime, so stick with "(unknown)".
+        for (size_t i = 0; i < gLeakCount; ++i) {
+            const OCBase *base = gLeakTable[i].ptr;
+            if (base && base->typeID == filterTypeID) {
+                typeName = OCTypeIDName(base);
+                break;
+            }
+        }
+        fprintf(stderr,
+                "[OCLeakTracker] No leaked objects of type \"%s\" (typeID %u) found.\n",
+                typeName, (unsigned)filterTypeID);
+        pthread_mutex_unlock(&gLeakLock);
+        return;
+    }
+
+    // We have at least one leak of filterTypeID.  Find a representative name.
+    const char *typeName = "(unknown)";
+    for (size_t i = 0; i < gLeakCount; ++i) {
+        const OCBase *base = gLeakTable[i].ptr;
+        if (base && base->typeID == filterTypeID) {
+            typeName = OCTypeIDName(base);
+            break;
+        }
+    }
+
+    fprintf(stderr,
+            "[OCLeakTracker] %zu object(s) of type \"%s\" (typeID %u) not finalized:\n",
+            filteredCount, typeName, (unsigned)filterTypeID);
+
+    // Print each leak’s file/line for that type
+    for (size_t i = 0; i < gLeakCount; ++i) {
+        const OCBase *base = gLeakTable[i].ptr;
+        if (base && base->typeID == filterTypeID) {
+            fprintf(stderr, "  • leaked at %s:%d\n",
+                    gLeakTable[i].file, gLeakTable[i].line);
+        }
+    }
+
+    pthread_mutex_unlock(&gLeakLock);
+}
+
+
+
 #endif

@@ -75,6 +75,9 @@ const void *OCAutorelease(const void *ptr);
  */
 void OCAutoreleasePoolDrain(OCAutoreleasePoolRef pool);
 
+
+void OCAutoreleasePoolCleanup(void);
+
 /** @} */ // end of OCAutoreleasePool group
 
 #endif /* OCAutoreleasePool_h */
