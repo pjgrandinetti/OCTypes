@@ -15,8 +15,6 @@
 extern "C" {
 #endif
 
-#ifdef DEBUG
-
 /**
  * @brief Track a newly allocated object for leak detection.
  *
@@ -42,15 +40,12 @@ void _OCUntrack(const void *ptr);
  *
  * Call this at test teardown or via `atexit()` for memory leak reporting.
  */
-void _OCReportLeaks(void);
+void OCReportLeaks(void);
 
-void _OCReportLeaksForType(OCTypeID filterTypeID);
+void OCReportLeaksForType(OCTypeID filterTypeID);
 
 
 size_t _OCLeakCountForType(OCTypeID typeID);
-
-
-#endif // DEBUG
 
 #ifdef __cplusplus
 }

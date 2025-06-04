@@ -45,17 +45,17 @@ void OCTypesShutdown(void) {
         && !defined(__SANITIZE_ADDRESS__)              \
         && !(defined(__clang__) && __has_feature(address_sanitizer))
         if(TypeIDTableContainsName("OCString")) 
-            _OCReportLeaksForType(OCStringGetTypeID());
+            OCReportLeaksForType(OCStringGetTypeID());
         if(TypeIDTableContainsName("OCNumber")) 
-            _OCReportLeaksForType(OCNumberGetTypeID());
+            OCReportLeaksForType(OCNumberGetTypeID());
         if(TypeIDTableContainsName("OCArray")) 
-            _OCReportLeaksForType(OCArrayGetTypeID());
+            OCReportLeaksForType(OCArrayGetTypeID());
         if(TypeIDTableContainsName("OCDictionary")) 
-            _OCReportLeaksForType(OCDictionaryGetTypeID());
+            OCReportLeaksForType(OCDictionaryGetTypeID());
         if(TypeIDTableContainsName("OCData")) 
-            _OCReportLeaksForType(OCDataGetTypeID());
+            OCReportLeaksForType(OCDataGetTypeID());
         if(TypeIDTableContainsName("OCBoolean")) 
-            _OCReportLeaksForType(OCBooleanGetTypeID());
+            OCReportLeaksForType(OCBooleanGetTypeID());
     #endif
     cleanupTypeIDTable();
 }

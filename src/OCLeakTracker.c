@@ -40,7 +40,7 @@ void _OCUntrack(const void *ptr) {
 }
 
 
-void _OCReportLeaks(void) {
+void OCReportLeaks(void) {
     // Do nothing under AddressSanitizer:
 #if !__has_feature(address_sanitizer)
     pthread_mutex_lock(&gLeakLock);
@@ -141,7 +141,7 @@ size_t _OCLeakCountForType(OCTypeID typeID) {
 }
 
 
-void _OCReportLeaksForType(OCTypeID filterTypeID) {
+void OCReportLeaksForType(OCTypeID filterTypeID) {
     pthread_mutex_lock(&gLeakLock);
     
     // Count how many leaked entries match filterTypeID
