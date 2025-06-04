@@ -125,11 +125,16 @@ bool OCIndexArrayRemoveValueAtIndex(OCMutableIndexArrayRef array, OCIndex index)
 void OCIndexArrayRemoveValuesAtIndexes(OCMutableIndexArrayRef array, OCIndexSetRef indexesToRemove) {
     if (!array || !indexesToRemove) return;
     OCIndex count = OCIndexSetGetCount(indexesToRemove);
+    OCIndex prevIndex = kOCNotFound;
     for (OCIndex i = count; i-- > 0;) {
-        OCIndex index = (i == count - 1) ? OCIndexSetLastIndex(indexesToRemove)
-                                        : OCIndexSetIndexLessThanIndex(indexesToRemove, index);
-        if (index != kOCNotFound)
-            OCIndexArrayRemoveValueAtIndex(array, index);
+        OCIndex idx;
+        if (i == count - 1)
+            idx = OCIndexSetLastIndex(indexesToRemove);
+        else
+            idx = OCIndexSetIndexLessThanIndex(indexesToRemove, prevIndex);
+        prevIndex = idx;
+        if (idx != kOCNotFound)
+            OCIndexArrayRemoveValueAtIndex(array, idx);
     }
 }
 
