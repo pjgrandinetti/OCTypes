@@ -7,8 +7,6 @@
 
 #include "OCLibrary.h"
 
-#include "OCLibrary.h"
-
 static OCTypeID kOCIndexPairSetID = _kOCNotATypeID;
 
 struct __OCIndexPairSet {
@@ -36,7 +34,7 @@ bool __OCIndexPairSetEqual(const void *a_, const void *b_)
 
 static void __OCIndexPairSetFinalize(const void *theType)
 {
-    OCIndexPairSetRef input = (OCIndexPairSetRef)theType;
+    OCMutableIndexPairSetRef input = (OCMutableIndexPairSetRef)theType;
 
     if(input->indexPairs) OCRelease(input->indexPairs);
     input->indexPairs = NULL;
@@ -59,30 +57,30 @@ static struct __OCIndexPairSet *OCIndexPairSetAllocate(void)
 
 OCIndexPairSetRef OCIndexPairSetCreate(void)
 {
-    OCIndexPairSet *newIndexSet = OCIndexPairSetAllocate();
+    OCMutableIndexPairSetRef newIndexSet = (OCMutableIndexPairSetRef) OCIndexPairSetAllocate();
     newIndexSet->indexPairs = NULL;
     return (OCIndexPairSetRef) newIndexSet;
 }
 
 OCMutableIndexPairSetRef OCIndexPairSetCreateMutable(void)
 {
-    OCIndexPairSet *newIndexSet = [OCIndexPairSet alloc];
+    OCMutableIndexPairSetRef newIndexSet = (OCMutableIndexPairSetRef) OCIndexPairSetAllocate();
     newIndexSet->indexPairs = NULL;
-    return (OCMutableIndexPairSetRef) newIndexSet;
+    return newIndexSet;
 }
 
 static OCIndexPairSetRef OCIndexPairSetCreateWithParameters(OCDataRef indexPairs)
 {
-    OCIndexPairSet *newIndexSet = [OCIndexPairSet alloc];
-    newIndexSet->indexPairs = OCDataCreateCopy(kCFAllocatorDefault, indexPairs);
+    OCMutableIndexPairSetRef newIndexSet = (OCMutableIndexPairSetRef) OCIndexPairSetAllocate();
+    newIndexSet->indexPairs = OCDataCreateCopy(indexPairs);
     return (OCIndexPairSetRef) newIndexSet;
 }
 
 static OCMutableIndexPairSetRef OCIndexPairSetCreateMutableWithParameters(OCDataRef indexPairs)
 {
-    OCIndexPairSet *newIndexSet = [OCIndexPairSet alloc];
-    newIndexSet->indexPairs = OCDataCreateCopy(kCFAllocatorDefault,indexPairs);
-    return (OCMutableIndexPairSetRef) newIndexSet;
+    OCMutableIndexPairSetRef newIndexSet = (OCMutableIndexPairSetRef) OCIndexPairSetAllocate();
+    newIndexSet->indexPairs = OCDataCreateCopy(indexPairs);
+    return newIndexSet;
 }
 
 OCIndexPairSetRef OCIndexPairSetCreateCopy(OCIndexPairSetRef theIndexSet)
@@ -95,40 +93,40 @@ OCMutableIndexPairSetRef OCIndexPairSetCreateMutableCopy(OCIndexPairSetRef theIn
 	return OCIndexPairSetCreateMutableWithParameters(theIndexSet->indexPairs);
 }
 
-OCMutableIndexPairSetRef OCIndexPairSetCreateMutableWithIndexArray(PSIndexArrayRef indexArray)
+OCMutableIndexPairSetRef OCIndexPairSetCreateMutableWithIndexArray(OCIndexArrayRef indexArray)
 {
     OCMutableIndexPairSetRef indexPairSet = OCIndexPairSetCreateMutable();
-    for(long index = 0; index<PSIndexArrayGetCount(indexArray); index++) {
-        OCIndexPairSetAddIndexPair(indexPairSet, index, PSIndexArrayGetValueAtIndex(indexArray, index));
+    for(long index = 0; index<OCIndexArrayGetCount(indexArray); index++) {
+        OCIndexPairSetAddIndexPair(indexPairSet, index, OCIndexArrayGetValueAtIndex(indexArray, index));
     }
     return indexPairSet;
 }
 
-OCIndexPairSetRef OCIndexPairSetCreateWithIndexPairArray(PSIndexPair *array, int numValues)
+OCIndexPairSetRef OCIndexPairSetCreateWithIndexPairArray(OCIndexPair *array, int numValues)
 {
-    OCIndexPairSet *newIndexSet = [OCIndexPairSet alloc];
-    newIndexSet->indexPairs = OCDataCreate((const UInt8 *) array, numValues*sizeof(PSIndexPair));
+    OCMutableIndexPairSetRef newIndexSet = (OCMutableIndexPairSetRef) OCIndexPairSetAllocate();
+    newIndexSet->indexPairs = OCDataCreate((const UInt8 *) array, numValues*sizeof(OCIndexPair));
     return (OCIndexPairSetRef) newIndexSet;
 
 }
 
 OCIndexPairSetRef OCIndexPairSetCreateWithIndexPair(long index, long value)
 {
-    OCIndexPairSet *newIndexSet = [OCIndexPairSet alloc];
-    PSIndexPair indexPair = {index,value};
+    OCMutableIndexPairSetRef newIndexSet = (OCMutableIndexPairSetRef) OCIndexPairSetAllocate();
+    OCIndexPair indexPair = {index,value};
     // *** Setup attributes ***
     
-    newIndexSet->indexPairs = OCDataCreate((const UInt8 *) &indexPair, sizeof(PSIndexPair));
+    newIndexSet->indexPairs = OCDataCreate((const UInt8 *) &indexPair, sizeof(OCIndexPair));
     return (OCIndexPairSetRef) newIndexSet;
 }
 
 OCIndexPairSetRef OCIndexPairSetCreateWithTwoIndexPairs(long index1, long value1, long index2, long value2)
 {
-    OCIndexPairSet *newIndexSet = [OCIndexPairSet alloc];
-    PSIndexPair indexPair[2] = {index1,value1,index2,value2};
+    OCMutableIndexPairSetRef newIndexSet = (OCMutableIndexPairSetRef) OCIndexPairSetAllocate();
+    OCIndexPair indexPair[2] = {index1,value1,index2,value2};
     // *** Setup attributes ***
     
-    newIndexSet->indexPairs = OCDataCreate((const UInt8 *) &indexPair, sizeof(PSIndexPair));
+    newIndexSet->indexPairs = OCDataCreate((const UInt8 *) &indexPair, sizeof(OCIndexPair));
     return (OCIndexPairSetRef) newIndexSet;
 }
 
@@ -140,74 +138,74 @@ OCDataRef OCIndexPairSetGetIndexPairs(OCIndexPairSetRef theIndexSet)
 long OCIndexPairSetValueForIndex(OCIndexPairSetRef theIndexSet, long index)
 {
     long count = OCIndexPairSetGetCount(theIndexSet);
-    PSIndexPair *indexPairs = (PSIndexPair *) OCDataGetBytePtr(theIndexSet->indexPairs);
+    OCIndexPair *indexPairs = (OCIndexPair *) OCDataGetBytePtr(theIndexSet->indexPairs);
     for(long i=0;i<count; i++) {
         if(indexPairs[i].index == index) return indexPairs[i].value;
     }
     return kCFNotFound;
 }
 
-PSIndexArrayRef OCIndexPairSetCreateIndexArrayOfValues(OCIndexPairSetRef theIndexSet)
+OCIndexArrayRef OCIndexPairSetCreateIndexArrayOfValues(OCIndexPairSetRef theIndexSet)
 {
     long count = OCIndexPairSetGetCount(theIndexSet);
-    OCMutableIndexArrayRef values = PSIndexArrayCreateMutable(count);
-    PSIndexPair *indexPairs = (PSIndexPair *) OCDataGetBytePtr(theIndexSet->indexPairs);
+    OCMutableIndexArrayRef values = OCIndexArrayCreateMutable(count);
+    OCIndexPair *indexPairs = (OCIndexPair *) OCDataGetBytePtr(theIndexSet->indexPairs);
     for(long index=0;index<OCIndexPairSetGetCount(theIndexSet); index++) {
-        PSIndexArraySetValueAtIndex(values, index, indexPairs[index].value);
+        OCIndexArraySetValueAtIndex(values, index, indexPairs[index].value);
     }
     return values;
 }
 
-PSIndexSetRef OCIndexPairSetCreateIndexSetOfIndexes(OCIndexPairSetRef theIndexSet)
+OCIndexSetRef OCIndexPairSetCreateIndexSetOfIndexes(OCIndexPairSetRef theIndexSet)
 {
-    OCMutableIndexSetRef indexes = PSIndexSetCreateMutable();
-    PSIndexPair *indexPairs = (PSIndexPair *) OCDataGetBytePtr(theIndexSet->indexPairs);
+    OCMutableIndexSetRef indexes = OCIndexSetCreateMutable();
+    OCIndexPair *indexPairs = (OCIndexPair *) OCDataGetBytePtr(theIndexSet->indexPairs);
     for(long index=0;index<OCIndexPairSetGetCount(theIndexSet); index++) {
-        PSIndexSetAddIndex(indexes, indexPairs[index].index);
+        OCIndexSetAddIndex(indexes, indexPairs[index].index);
     }
     return indexes;
 }
 
-PSIndexPair *OCIndexPairSetGetBytePtr(OCIndexPairSetRef theIndexSet)
+OCIndexPair *OCIndexPairSetGetBytePtr(OCIndexPairSetRef theIndexSet)
 {
     if(theIndexSet->indexPairs)
-        return (PSIndexPair *) OCDataGetBytePtr(theIndexSet->indexPairs);
+        return (OCIndexPair *) OCDataGetBytePtr(theIndexSet->indexPairs);
     return NULL;
 }
 
 long OCIndexPairSetGetCount(OCIndexPairSetRef theIndexSet)
 {
-    if(theIndexSet->indexPairs) return OCDataGetLength(theIndexSet->indexPairs)/sizeof(PSIndexPair);
+    if(theIndexSet->indexPairs) return OCDataGetLength(theIndexSet->indexPairs)/sizeof(OCIndexPair);
     return 0;
 }
 
-PSIndexPair OCIndexPairSetFirstIndex(OCIndexPairSetRef theIndexSet)
+OCIndexPair OCIndexPairSetFirstIndex(OCIndexPairSetRef theIndexSet)
 {
     if(theIndexSet->indexPairs) {
-        PSIndexPair *indexPairs = (PSIndexPair *) OCDataGetBytePtr(theIndexSet->indexPairs);
+        OCIndexPair *indexPairs = (OCIndexPair *) OCDataGetBytePtr(theIndexSet->indexPairs);
         return indexPairs[0];
     }
-    PSIndexPair result = {kCFNotFound,0};
+    OCIndexPair result = {kCFNotFound,0};
     return result;
 }
 
-PSIndexPair OCIndexPairSetLastIndex(OCIndexPairSetRef theIndexSet)
+OCIndexPair OCIndexPairSetLastIndex(OCIndexPairSetRef theIndexSet)
 {
     if(theIndexSet->indexPairs) {
         long count = OCIndexPairSetGetCount(theIndexSet);
-        PSIndexPair *indexPairs = (PSIndexPair *) OCDataGetBytePtr(theIndexSet->indexPairs);
+        OCIndexPair *indexPairs = (OCIndexPair *) OCDataGetBytePtr(theIndexSet->indexPairs);
         return indexPairs[count-1];
     }
-    PSIndexPair result = {kCFNotFound,0};
+    OCIndexPair result = {kCFNotFound,0};
     return result;
 }
 
-PSIndexPair OCIndexPairSetIndexPairLessThanIndexPair(OCIndexPairSetRef theIndexSet, PSIndexPair indexPair)
+OCIndexPair OCIndexPairSetIndexPairLessThanIndexPair(OCIndexPairSetRef theIndexSet, OCIndexPair indexPair)
 {
-    PSIndexPair noResult = {kCFNotFound,0};
+    OCIndexPair noResult = {kCFNotFound,0};
     if(theIndexSet==NULL || theIndexSet->indexPairs == NULL) return noResult;
     long count = OCIndexPairSetGetCount(theIndexSet);
-    PSIndexPair *indexPairs = (PSIndexPair *) OCDataGetBytePtr(theIndexSet->indexPairs);
+    OCIndexPair *indexPairs = (OCIndexPair *) OCDataGetBytePtr(theIndexSet->indexPairs);
     for(long i=count-1; i>=0;i--) {
         if(indexPairs[i].index<indexPair.index) return indexPairs[i];
     }
@@ -218,18 +216,18 @@ bool OCIndexPairSetContainsIndex(OCIndexPairSetRef theIndexSet, long index)
 {
     if(theIndexSet->indexPairs) {
         long count = OCIndexPairSetGetCount(theIndexSet);
-        PSIndexPair *indexPairs = (PSIndexPair *) OCDataGetBytePtr(theIndexSet->indexPairs);
+        OCIndexPair *indexPairs = (OCIndexPair *) OCDataGetBytePtr(theIndexSet->indexPairs);
         for(int32_t i=0;i<count;i++)
             if(indexPairs[i].index == index) return true;
     }
     return false;
 }
 
-bool OCIndexPairSetContainsIndexPair(OCIndexPairSetRef theIndexSet, PSIndexPair indexPair)
+bool OCIndexPairSetContainsIndexPair(OCIndexPairSetRef theIndexSet, OCIndexPair indexPair)
 {
     if(theIndexSet->indexPairs) {
         long count = OCIndexPairSetGetCount(theIndexSet);
-        PSIndexPair *indexPairs = (PSIndexPair *) OCDataGetBytePtr(theIndexSet->indexPairs);
+        OCIndexPair *indexPairs = (OCIndexPair *) OCDataGetBytePtr(theIndexSet->indexPairs);
         for(int32_t i=0;i<count;i++)
             if(indexPairs[i].index == indexPair.index && indexPairs[i].value == indexPair.value) return true;
     }
@@ -243,9 +241,9 @@ bool OCIndexPairSetRemoveIndexPairWithIndex(OCMutableIndexPairSetRef theIndexSet
     long count = OCIndexPairSetGetCount(theIndexSet);
     if(count<1) return false;
     
-    PSIndexPair *indexPairs = (PSIndexPair *) OCDataGetBytePtr(theIndexSet->indexPairs);
+    OCIndexPair *indexPairs = (OCIndexPair *) OCDataGetBytePtr(theIndexSet->indexPairs);
     
-    PSIndexPair newIndexPairs[count-1];
+    OCIndexPair newIndexPairs[count-1];
     long i = 0;
     for(long j = 0; j < count; j++) {
         if(indexPairs[j].index != index) {
@@ -254,7 +252,7 @@ bool OCIndexPairSetRemoveIndexPairWithIndex(OCMutableIndexPairSetRef theIndexSet
     }
     OCRelease(theIndexSet->indexPairs);
     
-    theIndexSet->indexPairs = OCDataCreate((const UInt8 *) newIndexPairs, (count-1)*sizeof(PSIndexPair));
+    theIndexSet->indexPairs = OCDataCreate((const UInt8 *) newIndexPairs, (count-1)*sizeof(OCIndexPair));
     return true;
 }
 
@@ -263,27 +261,27 @@ bool OCIndexPairSetAddIndexPair(OCMutableIndexPairSetRef theIndexSet, long index
 {
     int32_t i = 0;
     long count = 0;
-    PSIndexPair indexPair = {index, value};
+    OCIndexPair indexPair = {index, value};
 
     if(theIndexSet->indexPairs) {
         count = OCIndexPairSetGetCount(theIndexSet);
-        PSIndexPair *indexPairs = (PSIndexPair *) OCDataGetBytePtr(theIndexSet->indexPairs);
+        OCIndexPair *indexPairs = (OCIndexPair *) OCDataGetBytePtr(theIndexSet->indexPairs);
         for(i=0;i<count;i++) {
             if(indexPairs[i].index == indexPair.index) return false;
             if(indexPairs[i].index>indexPair.index) break;
         }
-        PSIndexPair *newIndexPairs = malloc((count+1)*sizeof(PSIndexPair));
+        OCIndexPair *newIndexPairs = malloc((count+1)*sizeof(OCIndexPair));
         for(int32_t j = 0;j<count+1; j++) {
             if(j<i) newIndexPairs[j] = indexPairs[j];
             else if(j==i) newIndexPairs[j] = indexPair;
             else newIndexPairs[j] = indexPairs[j-1];
         }
         OCRelease(theIndexSet->indexPairs);
-        theIndexSet->indexPairs = OCDataCreate(CFGetAllocator(theIndexSet), (const UInt8 *) newIndexPairs,(count+1)*sizeof(PSIndexPair));
+        theIndexSet->indexPairs = OCDataCreate(CFGetAllocator(theIndexSet), (const UInt8 *) newIndexPairs,(count+1)*sizeof(OCIndexPair));
         free(newIndexPairs);
         return true;
     }
-    theIndexSet->indexPairs = OCDataCreate(CFGetAllocator(theIndexSet), (const UInt8 *) &indexPair, sizeof(PSIndexPair));
+    theIndexSet->indexPairs = OCDataCreate(CFGetAllocator(theIndexSet), (const UInt8 *) &indexPair, sizeof(OCIndexPair));
     return true;
 }
 
@@ -320,7 +318,7 @@ OCIndexPairSetRef OCIndexPairSetCreateWithData(OCDataRef data)
 
 void OCIndexPairSetShow(OCIndexPairSetRef theIndexPairSet)
 {
-    PSIndexPair *indexPairs = (PSIndexPair *) OCDataGetBytePtr(theIndexPairSet->indexPairs);
+    OCIndexPair *indexPairs = (OCIndexPair *) OCDataGetBytePtr(theIndexPairSet->indexPairs);
     long count = OCIndexPairSetGetCount(theIndexPairSet);
     fprintf(stderr,"(");
     for(long index=0; index<count; index++) {
