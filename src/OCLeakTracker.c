@@ -129,7 +129,7 @@ void OCReportLeaks(void) {
 }
 
 
-size_t _OCLeakCountForType(OCTypeID typeID) {
+size_t OCLeakCountForType(OCTypeID typeID) {
     size_t count = 0;
     pthread_mutex_lock(&gLeakLock);
     for (size_t i = 0; i < gLeakCount; ++i) {

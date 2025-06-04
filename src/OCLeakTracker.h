@@ -45,7 +45,7 @@ void OCReportLeaks(void);
 void OCReportLeaksForType(OCTypeID filterTypeID);
 
 
-size_t _OCLeakCountForType(OCTypeID typeID);
+size_t OCLeakCountForType(OCTypeID typeID);
 
 #ifdef __cplusplus
 }
