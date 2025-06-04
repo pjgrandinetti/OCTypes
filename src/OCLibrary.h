@@ -265,6 +265,7 @@ typedef const struct __OCDictionary *OCDictionaryRef;
 typedef const struct __OCBoolean *OCBooleanRef;
 typedef const struct __OCData *OCDataRef;
 typedef const struct __OCNumber *OCNumberRef;
+typedef const struct __OCIndexPairSet *OCIndexPairSetRef;
 // OCAutoreleasePoolRef is typically 'typedef struct _OCAutoreleasePool *OCAutoreleasePoolRef;'
 // and not a 'const struct'. So, it's usually defined directly in OCAutoreleasePool.h.
 
@@ -273,6 +274,7 @@ typedef struct __OCArray *OCMutableArrayRef;
 typedef struct __OCData *OCMutableDataRef;
 typedef struct __OCDictionary *OCMutableDictionaryRef;
 typedef struct __OCString *OCMutableStringRef;
+typedef struct __OCIndexPairSet *OCMutableIndexPairSetRef;
 /** @endcond */
 
 /**

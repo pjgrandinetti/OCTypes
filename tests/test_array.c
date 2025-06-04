@@ -240,7 +240,7 @@ bool arrayTest2_access(void) {
     if (!n1) { fprintf(stderr, "Error: OCNumberCreateWithSInt32(10) failed in %s\n", __func__); goto cleanup; }
     n2 = OCNumberCreateWithSInt32(20);
     if (!n2) { fprintf(stderr, "Error: OCNumberCreateWithSInt32(20) failed in %s\n", __func__); goto cleanup; }
-    n3 = OCNumberCreateWithSInt32(10); // Same value as n1 for OCEqual test
+    n3 = OCNumberCreateWithSInt32(10); // Same value as n1 for OCTypeEqual test
     if (!n3) { fprintf(stderr, "Error: OCNumberCreateWithSInt32(10) for n3 failed in %s\n", __func__); goto cleanup; }
     n4 = OCNumberCreateWithSInt32(30);
     if (!n4) { fprintf(stderr, "Error: OCNumberCreateWithSInt32(30) failed in %s\n", __func__); goto cleanup; }
@@ -251,12 +251,12 @@ bool arrayTest2_access(void) {
 
     if (!(OCArrayGetFirstIndexOfValue(num_arr, n1) == 0)) { fprintf(stderr, "Assertion failed: FirstIndexOfValue (n1) failed in %s\n", __func__); goto cleanup; }
     if (!(OCArrayGetFirstIndexOfValue(num_arr, n2) == 1)) { fprintf(stderr, "Assertion failed: FirstIndexOfValue (n2) failed in %s\n", __func__); goto cleanup; }
-    if (!(OCArrayGetFirstIndexOfValue(num_arr, n3) == 0)) { fprintf(stderr, "Assertion failed: FirstIndexOfValue (n3) due to OCEqual failed in %s\n", __func__); goto cleanup; }
+    if (!(OCArrayGetFirstIndexOfValue(num_arr, n3) == 0)) { fprintf(stderr, "Assertion failed: FirstIndexOfValue (n3) due to OCTypeEqual failed in %s\n", __func__); goto cleanup; }
     if (!(OCArrayGetFirstIndexOfValue(num_arr, n4) == kOCNotFound)) { fprintf(stderr, "Assertion failed: FirstIndexOfValue (n4 not present) failed in %s\n", __func__); goto cleanup; }
     if (!(OCArrayGetFirstIndexOfValue(empty_arr, n1) == kOCNotFound)) { fprintf(stderr, "Assertion failed: FirstIndexOfValue on empty array failed in %s\n", __func__); goto cleanup; }
 
     if (!(OCArrayContainsValue(num_arr, n1))) { fprintf(stderr, "Assertion failed: ContainsValue (n1) failed in %s\n", __func__); goto cleanup; }
-    if (!(OCArrayContainsValue(num_arr, n3))) { fprintf(stderr, "Assertion failed: ContainsValue (n3) due to OCEqual failed in %s\n", __func__); goto cleanup; }
+    if (!(OCArrayContainsValue(num_arr, n3))) { fprintf(stderr, "Assertion failed: ContainsValue (n3) due to OCTypeEqual failed in %s\n", __func__); goto cleanup; }
     if (!(!OCArrayContainsValue(num_arr, n4))) { fprintf(stderr, "Assertion failed: ContainsValue (n4 not present) failed in %s\n", __func__); goto cleanup; }
     if (!(!OCArrayContainsValue(empty_arr, n1))) { fprintf(stderr, "Assertion failed: ContainsValue on empty array failed in %s\n", __func__); goto cleanup; }
 

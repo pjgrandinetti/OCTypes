@@ -13,6 +13,13 @@ struct __OCNumber {
     __Number value;
 };
 
+OCTypeID OCNumberGetTypeID(void)
+{
+    if (kOCNumberID == _kOCNotATypeID)
+        kOCNumberID = OCRegisterType("OCNumber");
+    return kOCNumberID;
+}
+
 static bool __OCNumberEqual(const void *a_, const void *b_)
 {
     OCNumberRef a = (OCNumberRef)a_;
@@ -77,7 +84,6 @@ static bool __OCNumberEqual(const void *a_, const void *b_)
 
 static void __OCNumberFinalize(const void *theType)
 {
-    // No need to free — handled by OCRelease
     (void)theType;
 }
 
@@ -115,13 +121,6 @@ static OCStringRef __OCNumberCopyFormattingDesc(OCTypeRef theType)
     }
 
     return NULL;
-}
-
-OCTypeID OCNumberGetTypeID(void)
-{
-    if (kOCNumberID == _kOCNotATypeID)
-        kOCNumberID = OCRegisterType("OCNumber");
-    return kOCNumberID;
 }
 
 static struct __OCNumber *OCNumberAllocate(void)
