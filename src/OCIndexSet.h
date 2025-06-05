@@ -23,6 +23,10 @@
  * @{
  */
 
+
+OCTypeID OCIndexSetGetTypeID(void);
+
+
 /**
  * @brief Creates an empty, immutable OCIndexSet.
  *

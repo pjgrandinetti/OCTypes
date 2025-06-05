@@ -24,6 +24,14 @@
  */
 
 /**
+ * @brief Returns the unique OCTypeID for OCIndexArray.
+ *
+ * @return The OCTypeID corresponding to OCIndexArray.
+ * @ingroup OCIndexArray
+ */
+OCTypeID OCIndexArrayGetTypeID(void);
+
+/**
  * @brief Creates an immutable OCIndexArray from a C array of OCIndex values.
  *
  * @param indexes Pointer to a C array of OCIndex.
