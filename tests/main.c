@@ -22,6 +22,8 @@
 #include "test_type.h"
 #include "test_number.h"       // ← New: OCNumber tests
 #include "test_dictionary.h"  // ← New: OCDictionary tests
+#include "test_dictionary.h"  // ← New: OCDictionary tests
+#include "test_ocindexarray.h" // ← New: OCIndexArray tests
 
 // Note: The OCStringCompareAdapter is now in test_array.c
 // Note: The extern declaration for raise_to_integer_power is now in test_math.h
@@ -75,6 +77,14 @@ int main(int argc, const char * argv[]) {
     if (!stringTest11())         failures++;  // ← Invoke stringTest11
 
     if (!complex_parser_Test0())          failures++;
+
+
+    if (!test_OCIndexArrayCreateAndCount())       failures++;
+    if (!test_OCIndexArrayGetValueAtIndex())      failures++;
+    if (!test_OCIndexArraySetValueAtIndex())      failures++;
+    if (!test_OCIndexArrayRemoveValueAtIndex())   failures++;
+    if (!test_OCIndexArrayRemoveValuesAtIndexes())failures++;
+
 
     if (failures) {
         fprintf(stderr, "\n%d test(s) failed.\n", failures);
