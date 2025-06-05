@@ -1,5 +1,0 @@
-OCMath
-======
-
-.. doxygenfile:: OCMath.h
-

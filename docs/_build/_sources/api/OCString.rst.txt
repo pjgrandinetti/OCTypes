@@ -1,5 +1,0 @@
-OCString
-========
-
-.. doxygenfile:: OCString.h
-

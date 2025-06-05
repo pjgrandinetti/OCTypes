@@ -38,13 +38,17 @@ This produces ``libOCTypes.a``.
    :caption: API Reference
 
    api/OCType
-   api/OCAutoreleasePool
-   api/OCNumber
-   api/OCBoolean
    api/OCString
+   api/OCBoolean
+   api/OCNumber
    api/OCArray
+   api/OCSet
    api/OCDictionary
    api/OCData
+   api/OCIndexArray
+   api/OCIndexSet
+   api/OCIndexPairSet
+   api/OCAutoreleasePool
    api/OCMath
    api/OCLibrary
 

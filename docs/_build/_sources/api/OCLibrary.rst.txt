@@ -1,4 +1,0 @@
-OCLibrary
-=========
-
-.. doxygenfile:: OCLibrary.h

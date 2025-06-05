@@ -27,12 +27,13 @@
 #include <stdint.h>   /* for uint64_t, int32_t, etc. */
 #include <stdbool.h>  /* for bool */
 
-#define OCLIB_TYPES_COUNT 9 // Total number of types in OCTypes
+#define OCLIB_TYPES_COUNT 10 // Total number of types in OCTypes
 
 // Forward declarations for all opaque struct types
 struct __OCType; // Abstract base type for all OCTypes objects
 struct __OCString;
 struct __OCArray;
+struct __OCSet;
 struct __OCDictionary;
 struct __OCBoolean;
 struct __OCData;
@@ -269,6 +270,7 @@ typedef signed long OCIndex;
 typedef const struct __OCType *OCTypeRef;
 typedef const struct __OCString *OCStringRef;
 typedef const struct __OCArray *OCArrayRef;
+typedef const struct __OCSet *OCSetRef;
 typedef const struct __OCDictionary *OCDictionaryRef;
 typedef const struct __OCBoolean *OCBooleanRef;
 typedef const struct __OCData *OCDataRef;
@@ -281,6 +283,7 @@ typedef const struct __OCIndexPairSet *OCIndexPairSetRef;
 
 // Mutable Ref typedefs
 typedef struct __OCArray *OCMutableArrayRef;
+typedef struct __OCSet *OCMutableSetRef;
 typedef struct __OCData *OCMutableDataRef;
 typedef struct __OCDictionary *OCMutableDictionaryRef;
 typedef struct __OCString *OCMutableStringRef;
@@ -422,6 +425,7 @@ void cleanupTypeIDTable(void);
 #include "OCNumber.h"
 #include "OCDictionary.h"
 #include "OCArray.h"
+#include "OCSet.h"
 #include "OCIndexSet.h"
 #include "OCIndexArray.h"
 #include "OCIndexPairSet.h"

@@ -1,5 +1,0 @@
-OCAutoreleasePool
-=================
-
-.. doxygenfile:: OCAutoreleasePool.h
-
