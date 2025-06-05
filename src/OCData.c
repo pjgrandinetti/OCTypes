@@ -123,39 +123,47 @@ uint8_t *OCDataGetMutableBytePtr(OCMutableDataRef data) {
     return data ? data->bytes : NULL;
 }
 
-void OCDataGetBytes(OCDataRef data, OCRange range, uint8_t *buffer) {
-    if (data && buffer && data->bytes)
-        memcpy(buffer, data->bytes + range.location, range.length);
+bool OCDataGetBytes(OCDataRef data, OCRange range, uint8_t *buffer) {
+    if (!data || !buffer || !data->bytes) return false;
+    if (range.location + range.length > data->length) return false;
+
+    memcpy(buffer, data->bytes + range.location, range.length);
+    return true;
 }
 
-void OCDataSetLength(OCMutableDataRef data, uint64_t length) {
-    if (!data) return;
-    if (length == data->length) return;
+bool OCDataSetLength(OCMutableDataRef data, uint64_t length) {
+    if (!data) return false;
+    if (length == data->length) return true;
 
     if (length > data->capacity) {
         void *newBytes = realloc(data->bytes, length);
         if (!newBytes) {
             fprintf(stderr, "OCDataSetLength: realloc failed\n");
-            return;
+            return false;
         }
         data->bytes = newBytes;
         data->capacity = length;
     }
 
-    if (length > data->length)
-        memset(data->bytes + data->length, 0, length - data->length);
+    if (length > data->length) {
+        memset((uint8_t *)data->bytes + data->length, 0, length - data->length);
+    }
 
     data->length = length;
+    return true;
 }
 
-void OCDataIncreaseLength(OCMutableDataRef data, uint64_t extraLength) {
-    OCDataSetLength(data, data->length + extraLength);
+bool OCDataIncreaseLength(OCMutableDataRef data, uint64_t extraLength) {
+    if (!data) return false;
+    return OCDataSetLength(data, data->length + extraLength);
 }
 
-void OCDataAppendBytes(OCMutableDataRef data, const uint8_t *bytes, uint64_t length) {
-    if (!data || !bytes || length == 0) return;
+bool OCDataAppendBytes(OCMutableDataRef data, const uint8_t *bytes, uint64_t length) {
+    if (!data || !bytes || length == 0) return false;
+
     uint64_t oldLength = data->length;
-    OCDataSetLength(data, oldLength + length);
-    memcpy(data->bytes + oldLength, bytes, length);
-}
+    if (!OCDataSetLength(data, oldLength + length)) return false;
 
+    memcpy((uint8_t *)data->bytes + oldLength, bytes, length);
+    return true;
+}

@@ -79,11 +79,11 @@ int main(int argc, const char * argv[]) {
     if (!complex_parser_Test0())          failures++;
 
 
-    if (!test_OCIndexArrayCreateAndCount())       failures++;
-    if (!test_OCIndexArrayGetValueAtIndex())      failures++;
-    if (!test_OCIndexArraySetValueAtIndex())      failures++;
-    if (!test_OCIndexArrayRemoveValueAtIndex())   failures++;
-    if (!test_OCIndexArrayRemoveValuesAtIndexes())failures++;
+    if (!OCIndexArrayCreateAndCount_test())       failures++;
+    if (!OCIndexArrayGetValueAtIndex_test())      failures++;
+    if (!OCIndexArraySetValueAtIndex_test())      failures++;
+    if (!OCIndexArrayRemoveValueAtIndex_test())   failures++;
+    if (!OCIndexArrayRemoveValuesAtIndexes_test())failures++;
 
 
     if (failures) {

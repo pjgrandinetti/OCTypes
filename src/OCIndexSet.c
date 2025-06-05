@@ -144,30 +144,65 @@ bool OCIndexSetContainsIndex(OCIndexSetRef set, OCIndex index) {
     return false;
 }
 
+
+
 bool OCIndexSetAddIndex(OCMutableIndexSetRef set, OCIndex index) {
     if (!set) return false;
-    OCIndex count = OCIndexSetGetCount(set);
-    OCIndex *buf = OCIndexSetGetBytePtr(set);
 
-    // Check if already exists
+    OCIndex *buf = NULL;
+    OCIndex count = 0;
+
+    // If we have no backing data yet, create a one‐element buffer
+    if (!set->indexes) {
+        OCMutableDataRef newData = OCDataCreateMutable(sizeof(OCIndex));
+        if (!newData) return false;
+        if (!OCDataSetLength(newData, sizeof(OCIndex))) { OCRelease(newData); return false; }
+        OCIndex *ptr = (OCIndex *)OCDataGetMutableBytePtr(newData);
+        ptr[0] = index;
+        set->indexes = newData;
+        return true;
+    }
+
+    // Otherwise, we already have some data:
+    count = OCIndexSetGetCount(set);
+    buf   = OCIndexSetGetBytePtr(set);
+    if (!buf) return false;
+
+    // Check if already present
     for (OCIndex i = 0; i < count; i++) {
         if (buf[i] == index) return false;
         if (buf[i] > index) {
-            // Insert before
+            // Insert into the middle
             OCIndex *newBuf = malloc(sizeof(OCIndex) * (count + 1));
-            memcpy(newBuf, buf, i * sizeof(OCIndex));
+            if (!newBuf) return false;
+            memcpy(newBuf,         buf,    i * sizeof(OCIndex));
             newBuf[i] = index;
             memcpy(newBuf + i + 1, buf + i, (count - i) * sizeof(OCIndex));
+
             OCRelease(set->indexes);
-            set->indexes = OCDataCreate((const uint8_t *)newBuf, sizeof(OCIndex) * (count + 1));
+            OCMutableDataRef newData = OCDataCreateMutable(sizeof(OCIndex) * (count + 1));
+            if (!newData) {
+                free(newBuf);
+                return false;
+            }
+            if (!OCDataSetLength(newData, sizeof(OCIndex) * (count + 1))) {
+                OCRelease(newData);
+                free(newBuf);
+                return false;
+            }
+            memcpy(OCDataGetMutableBytePtr(newData), newBuf, sizeof(OCIndex) * (count + 1));
             free(newBuf);
+            set->indexes = newData;
             return true;
         }
     }
 
     // Append at end
-    OCDataIncreaseLength((OCMutableDataRef)set->indexes, sizeof(OCIndex));
+    if (!OCDataIncreaseLength((OCMutableDataRef)set->indexes, sizeof(OCIndex)))
+        return false;
+
     OCIndex *newPtr = (OCIndex *)OCDataGetMutableBytePtr((OCMutableDataRef)set->indexes);
+    if (!newPtr) return false;
     newPtr[count] = index;
     return true;
 }

@@ -13,11 +13,11 @@
 extern "C" {
 #endif
 
-void test_OCIndexArrayCreateAndCount(void);
-void test_OCIndexArrayGetValueAtIndex(void);
-void test_OCIndexArraySetValueAtIndex(void);
-void test_OCIndexArrayRemoveValueAtIndex(void);
-void test_OCIndexArrayRemoveValuesAtIndexes(void);
+bool OCIndexArrayCreateAndCount_test(void);
+bool OCIndexArrayGetValueAtIndex_test(void);
+bool OCIndexArraySetValueAtIndex_test(void);
+bool OCIndexArrayRemoveValueAtIndex_test(void);
+bool OCIndexArrayRemoveValuesAtIndexes_test(void);
 
 #ifdef __cplusplus
 }
