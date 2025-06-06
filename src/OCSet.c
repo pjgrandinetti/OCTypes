@@ -92,7 +92,7 @@ OCSetRef OCSetCreate(void)
     return (OCSetRef) OCSetAllocate();
 }
 
-OCMutableSetRef OCSetCreateMutable(OCIndex capacity __unused)
+OCMutableSetRef OCSetCreateMutable(OCIndex capacity)
 {
     return (OCMutableSetRef)OCSetAllocate();
 }
