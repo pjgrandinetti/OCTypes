@@ -1,7 +1,6 @@
 /* OCLeakTracker.c */
 #include "OCLeakTracker.h"
 
-#ifdef DEBUG
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -198,7 +197,3 @@ void OCReportLeaksForType(OCTypeID filterTypeID) {
 
     pthread_mutex_unlock(&gLeakLock);
 }
-
-
-
-#endif

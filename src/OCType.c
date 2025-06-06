@@ -41,8 +41,10 @@ static bool TypeIDTableContainsName(const char *typeName) {
 void OCTypesShutdown(void) {
     OCAutoreleasePoolCleanup();
     cleanupConstantStringTable();
-    #if defined(DEBUG)                                \
-        && !defined(__SANITIZE_ADDRESS__)              \
+    // #if defined(DEBUG)                                \
+    //     && !defined(__SANITIZE_ADDRESS__)              \
+    //     && !(defined(__clang__) && __has_feature(address_sanitizer))
+    #if !defined(__SANITIZE_ADDRESS__)              \
         && !(defined(__clang__) && __has_feature(address_sanitizer))
         if(TypeIDTableContainsName("OCString")) 
             OCReportLeaksForType(OCStringGetTypeID());
@@ -54,6 +56,8 @@ void OCTypesShutdown(void) {
             OCReportLeaksForType(OCDataGetTypeID());
         if(TypeIDTableContainsName("OCArray")) 
             OCReportLeaksForType(OCArrayGetTypeID());
+        if(TypeIDTableContainsName("OCSet")) 
+            OCReportLeaksForType(OCSetGetTypeID());
         if(TypeIDTableContainsName("OCIndexArray")) 
             OCReportLeaksForType(OCIndexArrayGetTypeID());
         if(TypeIDTableContainsName("OCIndexSet")) 
