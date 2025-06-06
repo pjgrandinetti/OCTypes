@@ -20,8 +20,14 @@
 #include "test_data.h"
 #include "test_boolean.h"
 #include "test_type.h"
-#include "test_number.h"       // ← New: OCNumber tests
-#include "test_dictionary.h"  // ← New: OCDictionary tests
+#include "test_number.h"  
+#include "test_dictionary.h"
+#include "test_dictionary.h" 
+#include "test_indexarray.h"
+#include "test_indexset.h" 
+#include "test_indexpairset.h"
+
+
 
 // Note: The OCStringCompareAdapter is now in test_array.c
 // Note: The extern declaration for raise_to_integer_power is now in test_math.h
@@ -75,6 +81,24 @@ int main(int argc, const char * argv[]) {
     if (!stringTest11())         failures++;  // ← Invoke stringTest11
 
     if (!complex_parser_Test0())          failures++;
+
+
+    if (!OCIndexArrayCreateAndCount_test())       failures++;
+    if (!OCIndexArrayGetValueAtIndex_test())      failures++;
+    if (!OCIndexArraySetValueAtIndex_test())      failures++;
+    if (!OCIndexArrayRemoveValueAtIndex_test())   failures++;
+    if (!OCIndexArrayRemoveValuesAtIndexes_test())failures++;
+
+    if (!OCIndexSetCreateAndAccess_test())        failures++;
+    if (!OCIndexSetAddAndContains_test())         failures++;
+    if (!OCIndexSetRangeAndBounds_test())         failures++;
+    if (!OCIndexSetSerialization_test())          failures++;
+
+    if (!OCIndexPairSetCreation_test())             failures++;
+    if (!OCIndexPairSetAddAndContains_test())       failures++;
+    if (!OCIndexPairSetValueLookup_test())          failures++;
+    if (!OCIndexPairSetEquality_test())             failures++;
+    if (!OCIndexPairSetShow_test())                 failures++;
 
     if (failures) {
         fprintf(stderr, "\n%d test(s) failed.\n", failures);

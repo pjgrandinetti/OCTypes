@@ -9,7 +9,7 @@
 #include <stdint.h>
 
 #include "../src/OCLibrary.h" // General OCTypes definitions
-#include "../src/OCType.h"   // For OCTypeID, OCEqual, OCGetTypeID etc.
+#include "../src/OCType.h"   // For OCTypeID, OCTypeEqual, OCGetTypeID etc.
 
 // PRINTERROR macro for consistent error reporting in tests
 // Added __FILE__ to identify which test file failed.

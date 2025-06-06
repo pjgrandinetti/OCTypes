@@ -20,7 +20,7 @@ bool booleanTest0(void) {
     if (directID == _kOCNotATypeID) PRINTERROR;
     if (trueID != falseID) PRINTERROR;
     if (trueID != directID) PRINTERROR;
-    // equality using OCTypeEqual (which should internally use OCEqual or specific type equal)
+    // equality using OCTypeEqual (which should internally use OCTypeEqual or specific type equal)
     if (!OCTypeEqual(kOCBooleanTrue,  kOCBooleanTrue))  PRINTERROR;
     if (!OCTypeEqual(kOCBooleanFalse, kOCBooleanFalse)) PRINTERROR;
     if ( OCTypeEqual(kOCBooleanTrue,  kOCBooleanFalse)) PRINTERROR;

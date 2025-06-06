@@ -1,5 +1,0 @@
-OCType
-======
-
-.. doxygenfile:: OCType.h
-

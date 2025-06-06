@@ -106,42 +106,55 @@ const uint8_t *OCDataGetBytePtr(OCDataRef theData);
 uint8_t *OCDataGetMutableBytePtr(OCMutableDataRef theData);
 
 /**
- * @brief Copies a byte range from the data object.
+ * @brief Copies a range of bytes from an OCData object into a buffer.
  *
- * @param theData Source data.
- * @param range Range to copy.
- * @param buffer Destination buffer.
+ * @param data The source OCData object.
+ * @param range The byte range to copy.
+ * @param buffer Destination buffer (must be large enough).
+ * @return true if the copy succeeded; false if inputs are invalid or out of bounds.
+ *
  * @ingroup OCData
  */
-void OCDataGetBytes(OCDataRef theData, OCRange range, uint8_t *buffer);
+bool OCDataGetBytes(OCDataRef theData, OCRange range, uint8_t *buffer);
 
 /**
  * @brief Sets the length of a mutable data object.
  *
- * @param theData Mutable data.
- * @param length New length in bytes.
+ * If the new length is greater than the current length, the extra memory is zero-initialized.
+ * If the new length exceeds the current capacity, the buffer is reallocated.
+ *
+ * @param theData Mutable data object to resize.
+ * @param length The desired new length in bytes.
+ * @return true if the operation succeeded; false if allocation failed or input was NULL.
+ *
  * @ingroup OCData
  */
-void OCDataSetLength(OCMutableDataRef theData, uint64_t length);
+bool OCDataSetLength(OCMutableDataRef theData, uint64_t length);
 
 /**
- * @brief Increases the length of mutable data.
+ * @brief Increases the length of a mutable data object by a given amount.
  *
- * @param theData Mutable data.
- * @param extraLength Bytes to add.
+ * @param data The mutable data object.
+ * @param extraLength The number of bytes to add.
+ * @return true if the resize was successful; false on failure or invalid input.
+ *
  * @ingroup OCData
  */
-void OCDataIncreaseLength(OCMutableDataRef theData, uint64_t extraLength);
+bool OCDataIncreaseLength(OCMutableDataRef theData, uint64_t extraLength);
 
 /**
- * @brief Appends raw bytes to the end of a mutable data object.
+ * @brief Appends bytes to the end of a mutable data object.
  *
- * @param theData Target mutable data.
- * @param bytes Pointer to source data.
- * @param length Number of bytes to append.
+ * Grows the data buffer as needed. If allocation fails, no changes are made.
+ *
+ * @param data The mutable data object.
+ * @param bytes The bytes to append.
+ * @param length The number of bytes to append.
+ * @return true if the bytes were appended successfully; false on failure.
+ *
  * @ingroup OCData
  */
-void OCDataAppendBytes(OCMutableDataRef theData, const uint8_t *bytes, uint64_t length);
+bool OCDataAppendBytes(OCMutableDataRef theData, const uint8_t *bytes, uint64_t length);
 
 /**
  * @brief Returns a human-readable string description of a data object.

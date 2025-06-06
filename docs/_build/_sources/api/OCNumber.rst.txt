@@ -1,5 +1,0 @@
-OCNumber
-========
-
-.. doxygenfile:: OCNumber.h
-

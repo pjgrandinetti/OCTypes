@@ -7,7 +7,7 @@
 #include "../src/OCType.h"
 #include "../src/OCString.h"
 
-#define OCEqual(a,b) OCTypeEqual((const void*)(a),(const void*)(b))
+#define OCTypeEqual(a,b) OCTypeEqual((const void*)(a),(const void*)(b))
 
 bool numberTest0(void) {
 

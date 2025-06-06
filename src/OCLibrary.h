@@ -27,14 +27,21 @@
 #include <stdint.h>   /* for uint64_t, int32_t, etc. */
 #include <stdbool.h>  /* for bool */
 
+#define OCLIB_TYPES_COUNT 10 // Total number of types in OCTypes
+
 // Forward declarations for all opaque struct types
-struct __OCType;
+struct __OCType; // Abstract base type for all OCTypes objects
 struct __OCString;
 struct __OCArray;
+struct __OCSet;
 struct __OCDictionary;
 struct __OCBoolean;
 struct __OCData;
 struct __OCNumber;
+struct __OCIndexSet;
+struct __OCIndexArray;
+struct __OCIndexPairSet;
+
 // OCAutoreleasePoolRef is already a typedef to a pointer to a non-const struct,
 // so it doesn't follow the same "Ref" pattern for const structs.
 // No forward declaration needed here for __OCAutoreleasePool if OCAutoreleasePoolRef
@@ -256,23 +263,33 @@ typedef enum {
  */
 typedef OCOptionFlags OCStringCompareFlags;
 
+typedef signed long OCIndex;
+
 /** @cond INTERNAL */
 // Centralized Ref typedefs
 typedef const struct __OCType *OCTypeRef;
 typedef const struct __OCString *OCStringRef;
 typedef const struct __OCArray *OCArrayRef;
+typedef const struct __OCSet *OCSetRef;
 typedef const struct __OCDictionary *OCDictionaryRef;
 typedef const struct __OCBoolean *OCBooleanRef;
 typedef const struct __OCData *OCDataRef;
 typedef const struct __OCNumber *OCNumberRef;
+typedef const struct __OCIndexSet *OCIndexSetRef;
+typedef const struct __OCIndexArray *OCIndexArrayRef;
+typedef const struct __OCIndexPairSet *OCIndexPairSetRef;
 // OCAutoreleasePoolRef is typically 'typedef struct _OCAutoreleasePool *OCAutoreleasePoolRef;'
 // and not a 'const struct'. So, it's usually defined directly in OCAutoreleasePool.h.
 
 // Mutable Ref typedefs
 typedef struct __OCArray *OCMutableArrayRef;
+typedef struct __OCSet *OCMutableSetRef;
 typedef struct __OCData *OCMutableDataRef;
 typedef struct __OCDictionary *OCMutableDictionaryRef;
 typedef struct __OCString *OCMutableStringRef;
+typedef struct __OCIndexSet *OCMutableIndexSetRef;
+typedef struct __OCIndexArray *OCMutableIndexArrayRef;
+typedef struct __OCIndexPairSet *OCMutableIndexPairSetRef;
 /** @endcond */
 
 /**
@@ -408,6 +425,10 @@ void cleanupTypeIDTable(void);
 #include "OCNumber.h"
 #include "OCDictionary.h"
 #include "OCArray.h"
+#include "OCSet.h"
+#include "OCIndexSet.h"
+#include "OCIndexArray.h"
+#include "OCIndexPairSet.h"
 #include "OCLeakTracker.h"
 
 /** @} */ // end of OCLibrary group

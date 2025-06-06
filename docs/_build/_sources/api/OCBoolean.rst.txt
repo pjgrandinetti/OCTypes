@@ -1,5 +1,0 @@
-OCBoolean
-=========
-
-.. doxygenfile:: OCBoolean.h
-

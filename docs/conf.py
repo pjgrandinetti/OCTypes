@@ -33,6 +33,8 @@ templates_path = ['_templates']
 # List of patterns, relative to source directory, that match files to ignore.
 exclude_patterns = []
 
+# Suppress duplicate C declaration warnings from Breathe
+suppress_warnings = ['duplicate_declaration', 'duplicate_declaration.c']
 
 # -- Breathe configuration --------------------------------------------------
 

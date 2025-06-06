@@ -48,14 +48,20 @@ void OCTypesShutdown(void) {
             OCReportLeaksForType(OCStringGetTypeID());
         if(TypeIDTableContainsName("OCNumber")) 
             OCReportLeaksForType(OCNumberGetTypeID());
-        if(TypeIDTableContainsName("OCArray")) 
-            OCReportLeaksForType(OCArrayGetTypeID());
-        if(TypeIDTableContainsName("OCDictionary")) 
-            OCReportLeaksForType(OCDictionaryGetTypeID());
-        if(TypeIDTableContainsName("OCData")) 
-            OCReportLeaksForType(OCDataGetTypeID());
         if(TypeIDTableContainsName("OCBoolean")) 
             OCReportLeaksForType(OCBooleanGetTypeID());
+        if(TypeIDTableContainsName("OCData")) 
+            OCReportLeaksForType(OCDataGetTypeID());
+        if(TypeIDTableContainsName("OCArray")) 
+            OCReportLeaksForType(OCArrayGetTypeID());
+        if(TypeIDTableContainsName("OCIndexArray")) 
+            OCReportLeaksForType(OCIndexArrayGetTypeID());
+        if(TypeIDTableContainsName("OCIndexSet")) 
+            OCReportLeaksForType(OCIndexSetGetTypeID());
+        if(TypeIDTableContainsName("OCIndexPairSet")) 
+            OCReportLeaksForType(OCIndexPairSetGetTypeID());
+        if(TypeIDTableContainsName("OCDictionary")) 
+            OCReportLeaksForType(OCDictionaryGetTypeID());
     #endif
     cleanupTypeIDTable();
 }
@@ -64,7 +70,7 @@ void OCTypesShutdown(void) {
 // everything and only afterward we print out any remaining leaks.
 __attribute__((destructor(100)))  
 static void _OCTypes_cleanup(void) {
-    if(typeIDTableCount == 6) OCTypesShutdown();
+    if(typeIDTableCount == OCLIB_TYPES_COUNT) OCTypesShutdown();
 }
 
 
