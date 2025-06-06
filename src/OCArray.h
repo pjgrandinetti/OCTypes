@@ -22,7 +22,6 @@
  *
  * @param value The value to be retained.
  * @return The retained value.
- *
  * @ingroup OCArray
  */
 typedef const void *(*OCArrayRetainCallBack)(const void *value);
@@ -31,7 +30,6 @@ typedef const void *(*OCArrayRetainCallBack)(const void *value);
  * @brief Callback to release a value from the array.
  *
  * @param value The value to be released.
- *
  * @ingroup OCArray
  */
 typedef void (*OCArrayReleaseCallBack)(const void *value);
@@ -41,7 +39,6 @@ typedef void (*OCArrayReleaseCallBack)(const void *value);
  *
  * @param value The value to describe.
  * @return An OCStringRef describing the value.
- *
  * @ingroup OCArray
  */
 typedef OCStringRef (*OCArrayCopyDescriptionCallBack)(const void *value);
@@ -52,14 +49,12 @@ typedef OCStringRef (*OCArrayCopyDescriptionCallBack)(const void *value);
  * @param value1 First value.
  * @param value2 Second value.
  * @return true if equal, false otherwise.
- *
  * @ingroup OCArray
  */
 typedef bool (*OCArrayEqualCallBack)(const void *value1, const void *value2);
 
 /**
  * @brief Struct defining callbacks for array value management.
- *
  * @ingroup OCArray
  */
 typedef struct {
@@ -84,6 +79,7 @@ OCTypeID OCArrayGetTypeID(void);
 
 /**
  * @brief Returns the number of elements in an array.
+ *
  * @param theArray The array to query.
  * @return Element count, or 0 if NULL.
  * @ingroup OCArray
@@ -97,7 +93,6 @@ uint64_t OCArrayGetCount(OCArrayRef theArray);
  * @param numValues Number of values.
  * @param callBacks Pointer to value management callbacks.
  * @return New OCArrayRef or NULL.
- *
  * @ingroup OCArray
  */
 OCArrayRef OCArrayCreate(const void **values, uint64_t numValues, const OCArrayCallBacks *callBacks);
@@ -143,69 +138,62 @@ const void *OCArrayGetValueAtIndex(OCArrayRef theArray, uint64_t index);
 /**
  * @brief Replaces the value at the specified index in a mutable array.
  *
- * Releases the existing value (if applicable) and retains the new value.
+ * Releases the existing value (if applicable) and retains the new value using the array's callbacks.
  *
  * @param theArray The mutable array.
  * @param index The index at which to set the value.
  * @param value The new value.
+ * @return true if the operation succeeded; false if the array is NULL, the index is invalid, or memory operations failed.
  * @ingroup OCArray
  */
 bool OCArraySetValueAtIndex(OCMutableArrayRef theArray, OCIndex index, const void *value);
 
 /**
- * @brief Appends a value to a mutable array.
+ * @brief Appends a value to the end of a mutable array.
  *
- * @param theArray Mutable array.
- * @param value Value to append.
+ * Retains the value using the array's callbacks. Will reallocate storage if the internal capacity is exceeded.
+ *
+ * @param theArray The mutable array.
+ * @param value The value to append.
+ * @return true if the value was appended successfully; false if the array or value is NULL, or if allocation failed.
  * @ingroup OCArray
  */
 bool OCArrayAppendValue(OCMutableArrayRef theArray, const void *value);
 
 /**
- * @brief Appends a range of values from another array.
+ * @brief Appends a range of values from another array into a mutable array.
  *
- * @param theArray Destination array.
- * @param otherArray Source array.
- * @param range Range of values to append.
+ * Each value is retained using the destination array's callbacks.
+ *
+ * @param theArray The mutable destination array.
+ * @param otherArray The source array to copy from.
+ * @param range The range [location, location+length) of values to append from the source.
+ * @return true if all values were appended successfully; false if parameters are invalid or memory operations fail.
  * @ingroup OCArray
  */
 bool OCArrayAppendArray(OCMutableArrayRef theArray, OCArrayRef otherArray, OCRange range);
 
 /**
- * @brief Finds the first index of a value.
+ * @brief Removes a value at a specific index from a mutable array.
  *
- * @param theArray The array.
- * @param value The value to search for.
- * @return Index or kOCNotFound.
- * @ingroup OCArray
- */
-long OCArrayGetFirstIndexOfValue(OCArrayRef theArray, const void *value);
-
-/**
- * @brief Checks if the array contains a value.
+ * The value is released using the array's release callback. The remaining elements are shifted to fill the gap.
  *
- * @param theArray The array.
- * @param value The value to check.
- * @return true if found, false otherwise.
- * @ingroup OCArray
- */
-bool OCArrayContainsValue(OCArrayRef theArray, const void *value);
-
-/**
- * @brief Removes a value at a given index.
- *
- * @param theArray The array.
- * @param index Index to remove.
+ * @param theArray The mutable array.
+ * @param index The index of the value to remove.
+ * @return true if the value was removed successfully; false if the array is NULL or the index is out of bounds.
  * @ingroup OCArray
  */
 bool OCArrayRemoveValueAtIndex(OCMutableArrayRef theArray, uint64_t index);
 
 /**
- * @brief Inserts a value at a given index.
+ * @brief Inserts a value into a mutable array at the specified index.
  *
- * @param theArray The array.
- * @param index Index for insertion.
+ * Shifts existing elements to make space, retains the new value using the array's callbacks, and grows the internal buffer if needed.
+ *
+ * @param theArray The mutable array.
+ * @param index The index at which to insert the new value (must be ≤ count).
  * @param value The value to insert.
+ * @return true if the value was inserted successfully; false on invalid input or allocation failure.
  * @ingroup OCArray
  */
 bool OCArrayInsertValueAtIndex(OCMutableArrayRef theArray, uint64_t index, const void *value);
@@ -243,6 +231,13 @@ int64_t OCArrayBSearchValues(OCArrayRef array, OCRange range, const void *value,
  */
 OCArrayRef OCArrayCreateWithArray(OCArrayRef array);
 
+/**
+ * @brief Returns the callback structure associated with the array.
+ *
+ * @param array The array.
+ * @return Pointer to the array’s OCArrayCallBacks, or NULL if not available.
+ * @ingroup OCArray
+ */
 const OCArrayCallBacks *OCArrayGetCallBacks(OCArrayRef array);
 
 /** @} */ // end of OCArray group
