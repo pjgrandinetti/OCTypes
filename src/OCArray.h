@@ -161,6 +161,19 @@ bool OCArraySetValueAtIndex(OCMutableArrayRef theArray, OCIndex index, const voi
 bool OCArrayAppendValue(OCMutableArrayRef theArray, const void *value);
 
 /**
+ * @brief Checks whether a value is present in the array.
+ *
+ * Uses the array's equality callback to determine equivalence. If no callback is set,
+ * compares pointers directly. For `kOCTypeArrayCallBacks`, uses `OCTypeEqual`.
+ *
+ * @param theArray The array to check.
+ * @param value The value to look for.
+ * @return true if the value is found, false otherwise (including if array or value is NULL).
+ * @ingroup OCArray
+ */
+bool OCArrayContainsValue(OCArrayRef theArray, const void *value);
+
+/**
  * @brief Appends a range of values from another array into a mutable array.
  *
  * Each value is retained using the destination array's callbacks.
