@@ -174,6 +174,19 @@ bool OCArrayAppendValue(OCMutableArrayRef theArray, const void *value);
 bool OCArrayAppendArray(OCMutableArrayRef theArray, OCArrayRef otherArray, OCRange range);
 
 /**
+ * @brief Finds the first index of a value in the array.
+ *
+ * Uses the array's equality callback to determine equivalence. If no callback is set,
+ * compares pointers directly. For `kOCTypeArrayCallBacks`, uses `OCTypeEqual`.
+ *
+ * @param theArray The array to search.
+ * @param value The value to search for.
+ * @return The index of the first matching value, or `kOCNotFound` if not found or if the array/value is NULL.
+ * @ingroup OCArray
+ */
+long OCArrayGetFirstIndexOfValue(OCArrayRef theArray, const void *value);
+
+/**
  * @brief Removes a value at a specific index from a mutable array.
  *
  * The value is released using the array's release callback. The remaining elements are shifted to fill the gap.
