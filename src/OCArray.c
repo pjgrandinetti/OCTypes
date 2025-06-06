@@ -323,20 +323,56 @@ const void * OCArrayGetValueAtIndex(OCArrayRef theArray, uint64_t index)
     return theArray->data[index];
 }
 
-void OCArrayRemoveValueAtIndex(OCMutableArrayRef theArray,uint64_t index)
+bool OCArraySetValueAtIndex(OCMutableArrayRef theArray, OCIndex index, const void *value) {
+    if (!theArray || index < 0 || index >= OCArrayGetCount(theArray)) {
+        return false;
+    }
+
+    const void *oldValue = OCArrayGetValueAtIndex(theArray, index);
+    if (oldValue == value) {
+        // No change needed
+        return true;
+    }
+
+    const OCArrayCallBacks *cb = OCArrayGetCallBacks(theArray);
+
+    // Release existing value if necessary
+    if (cb && cb->release && oldValue) {
+        cb->release(oldValue);
+    }
+
+    // Retain new value if necessary
+    const void *retained = value;
+    if (cb && cb->retain && value) {
+        retained = cb->retain(value);
+    }
+
+    theArray->data[index] = retained;
+    return true;
+}
+
+bool OCArrayRemoveValueAtIndex(OCMutableArrayRef theArray, uint64_t index)
 {
-    if(NULL == theArray || index >= theArray->count) return; // Added NULL check for theArray
-
-    if(theArray->callBacks && theArray->callBacks->release) { // Check if release callback exists
-        theArray->callBacks->release(theArray->data[index]);
-    } else if (theArray->callBacks == &kOCTypeArrayCallBacks) { // Specific check for kOCTypeArrayCallBacks
-        OCRelease(theArray->data[index]);
+    if (theArray == NULL || index >= theArray->count) {
+        return false;
     }
 
-    theArray->count--; // Decrement count first
-    for(uint64_t i = index; i < theArray->count; i++) { // Loop up to new count
-        theArray->data[i] = theArray->data[i+1];
+    const void *value = theArray->data[index];
+    const OCArrayCallBacks *cb = theArray->callBacks;
+
+    if (cb && cb->release && value) {
+        cb->release(value);
+    } else if (cb == &kOCTypeArrayCallBacks && value) {
+        OCRelease(value);
     }
+
+    // Shift elements down
+    for (uint64_t i = index; i < theArray->count - 1; i++) {
+        theArray->data[i] = theArray->data[i + 1];
+    }
+
+    theArray->count--;
+    return true;
 }
 
 long OCArrayGetFirstIndexOfValue(OCArrayRef theArray, const void * value)
@@ -361,77 +397,91 @@ long OCArrayGetFirstIndexOfValue(OCArrayRef theArray, const void * value)
     return kOCNotFound; // Use kOCNotFound
 }
 
-void OCArrayAppendValue(OCMutableArrayRef theArray, const void * value)
+bool OCArrayAppendValue(OCMutableArrayRef theArray, const void *value)
 {
-    if(NULL==theArray || NULL==value) return; // Added NULL check for value
-    
-    OCTypeRef type = (OCTypeRef) value; // Assuming value is an OCTypeRef for retain/release
-
-    if(theArray->count == theArray->capacity) {
-        uint64_t newCapacity = (theArray->capacity == 0) ? 1 : theArray->capacity * 2; // Grow by doubling, or start at 1
-        const void **newData = (const void **) realloc(theArray->data, newCapacity * sizeof(const void *));
-        if (NULL == newData) {
-            fprintf(stderr, "OCArrayAppendValue: Memory reallocation failed.\n");
-            return;
-        }
-        theArray->data = newData;
-        theArray->capacity = newCapacity;
+    if (theArray == NULL || value == NULL) {
+        return false;
     }
 
-    theArray->data[theArray->count] = value; // assign original pointer without dropping qualifiers
-    
-    if(theArray->callBacks && theArray->callBacks->retain) {
-        theArray->callBacks->retain(type);
-    } else if (theArray->callBacks == &kOCTypeArrayCallBacks) { // Specific check for kOCTypeArrayCallBacks
-         OCRetain(type);
-    }
+    OCTypeRef type = (OCTypeRef)value; // Assuming value is an OCTypeRef
 
-    theArray->count++;
-}
-
-void OCArrayAppendArray(OCMutableArrayRef theArray, OCArrayRef otherArray, OCRange range)
-{
-    if(NULL==theArray) return;
-    if(NULL==otherArray) return;
-    uint64_t count = OCArrayGetCount(otherArray);
-    if(range.location+range.length > count) return;
-    
-    for(uint64_t index=range.location;index<range.location+range.length;index++) {
-        OCTypeRef theType = (OCTypeRef) OCArrayGetValueAtIndex(otherArray, index);
-        OCArrayAppendValue(theArray, theType);
-    }
-}
-
-void OCArrayInsertValueAtIndex(OCMutableArrayRef theArray, uint64_t index, const void * value)
-{
-    if(NULL == theArray || NULL == value || index > theArray->count) return; // Added NULL checks, ensure index is valid
-
-    OCTypeRef type = (OCTypeRef) value;
-
-    if(theArray->count == theArray->capacity) {
+    // Reallocate if needed
+    if (theArray->count == theArray->capacity) {
         uint64_t newCapacity = (theArray->capacity == 0) ? 1 : theArray->capacity * 2;
         const void **newData = (const void **) realloc(theArray->data, newCapacity * sizeof(const void *));
-        if (NULL == newData) {
-            fprintf(stderr, "OCArrayInsertValueAtIndex: Memory reallocation failed.\n");
-            return;
+        if (newData == NULL) {
+            fprintf(stderr, "OCArrayAppendValue: Memory reallocation failed.\n");
+            return false;
         }
         theArray->data = newData;
         theArray->capacity = newCapacity;
     }
 
-    for(uint64_t i = theArray->count; i > index; i--) {
-        theArray->data[i] = theArray->data[i-1];
-    }
-    
-    theArray->data[index] = value;
+    theArray->data[theArray->count] = value;
 
-    if(theArray->callBacks && theArray->callBacks->retain) {
+    // Retain if needed
+    if (theArray->callBacks && theArray->callBacks->retain) {
         theArray->callBacks->retain(type);
     } else if (theArray->callBacks == &kOCTypeArrayCallBacks) {
         OCRetain(type);
     }
-    
+
     theArray->count++;
+    return true;
+}
+
+bool OCArrayAppendArray(OCMutableArrayRef theArray, OCArrayRef otherArray, OCRange range)
+{
+    if (theArray == NULL || otherArray == NULL) {
+        return false;
+    }
+
+    uint64_t count = OCArrayGetCount(otherArray);
+    if (range.location + range.length > count) {
+        return false;
+    }
+
+    for (uint64_t index = range.location; index < range.location + range.length; index++) {
+        OCTypeRef theType = (OCTypeRef)OCArrayGetValueAtIndex(otherArray, index);
+        OCArrayAppendValue(theArray, theType);  // Assume this always succeeds
+    }
+
+    return true;
+}
+
+bool OCArrayInsertValueAtIndex(OCMutableArrayRef theArray, uint64_t index, const void *value)
+{
+    if (theArray == NULL || value == NULL || index > theArray->count) {
+        return false;
+    }
+
+    OCTypeRef type = (OCTypeRef)value;
+
+    if (theArray->count == theArray->capacity) {
+        uint64_t newCapacity = (theArray->capacity == 0) ? 1 : theArray->capacity * 2;
+        const void **newData = (const void **) realloc(theArray->data, newCapacity * sizeof(const void *));
+        if (newData == NULL) {
+            fprintf(stderr, "OCArrayInsertValueAtIndex: Memory reallocation failed.\n");
+            return false;
+        }
+        theArray->data = newData;
+        theArray->capacity = newCapacity;
+    }
+
+    for (uint64_t i = theArray->count; i > index; i--) {
+        theArray->data[i] = theArray->data[i - 1];
+    }
+
+    theArray->data[index] = value;
+
+    if (theArray->callBacks && theArray->callBacks->retain) {
+        theArray->callBacks->retain(type);
+    } else if (theArray->callBacks == &kOCTypeArrayCallBacks) {
+        OCRetain(type);
+    }
+
+    theArray->count++;
+    return true;
 }
 
 struct _acompareContext {

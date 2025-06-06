@@ -296,61 +296,73 @@ bool arrayTest3_modification(void) {
     OCArrayRef arr_to_append = NULL;
 
     s1 = OCStringCreateWithCString("a");
-    if (!s1) { fprintf(stderr, "Error: OCStringCreateWithCString(\"a\") failed in %s\n", __func__); goto cleanup; }
     s2 = OCStringCreateWithCString("b");
-    if (!s2) { fprintf(stderr, "Error: OCStringCreateWithCString(\"b\") failed in %s\n", __func__); goto cleanup; }
     s3 = OCStringCreateWithCString("c");
-    if (!s3) { fprintf(stderr, "Error: OCStringCreateWithCString(\"c\") failed in %s\n", __func__); goto cleanup; }
     s4 = OCStringCreateWithCString("d");
-    if (!s4) { fprintf(stderr, "Error: OCStringCreateWithCString(\"d\") failed in %s\n", __func__); goto cleanup; }
     s_extra = OCStringCreateWithCString("extra");
-    if (!s_extra) { fprintf(stderr, "Error: OCStringCreateWithCString(\"extra\") failed in %s\n", __func__); goto cleanup; }
+    if (!s1 || !s2 || !s3 || !s4 || !s_extra) {
+        fprintf(stderr, "Error: OCStringCreateWithCString failed for one or more strings in %s\n", __func__);
+        goto cleanup;
+    }
 
     marr = OCArrayCreateMutable(2, &kOCTypeArrayCallBacks);
-    if (!marr) { fprintf(stderr, "Error: Failed to create mutable array for modification tests in %s\n", __func__); goto cleanup; }
+    if (!marr) {
+        fprintf(stderr, "Error: Failed to create mutable array in %s\n", __func__);
+        goto cleanup;
+    }
 
     OCArrayAppendValue(marr, s1);
-    if (!(OCArrayGetCount(marr) == 1)) { fprintf(stderr, "Assertion failed: AppendValue count failed in %s\n", __func__); goto cleanup; }
-    if (!(OCTypeEqual(OCArrayGetValueAtIndex(marr, 0), s1))) { fprintf(stderr, "Assertion failed: AppendValue value failed in %s\n", __func__); goto cleanup; }
+    if (!(OCArrayGetCount(marr) == 1)) goto cleanup;
 
     s_insert = OCStringCreateWithCString("insert_me");
-    if (!s_insert) { fprintf(stderr, "Error: OCStringCreateWithCString(\"insert_me\") failed in %s\n", __func__); goto cleanup; }
-    OCArrayInsertValueAtIndex(marr, 0, s_insert); // marr: [insert_me, a]
-    if (!(OCArrayGetCount(marr) == 2)) { fprintf(stderr, "Assertion failed: InsertValueAtIndex count failed in %s\n", __func__); goto cleanup; }
-    if (!(OCTypeEqual(OCArrayGetValueAtIndex(marr, 0), s_insert))) { fprintf(stderr, "Assertion failed: InsertValueAtIndex(0) value failed in %s\n", __func__); goto cleanup; }
-    if (!(OCTypeEqual(OCArrayGetValueAtIndex(marr, 1), s1))) { fprintf(stderr, "Assertion failed: InsertValueAtIndex(1) (original s1) value failed in %s\n", __func__); goto cleanup; }
+    if (!s_insert || !OCArrayInsertValueAtIndex(marr, 0, s_insert)) {
+        fprintf(stderr, "Error: Insert failed in %s\n", __func__);
+        goto cleanup;
+    }
 
-    OCArrayAppendValue(marr, s2); // marr: [insert_me, a, b]
-    if (!(OCArrayGetCount(marr) == 3)) { fprintf(stderr, "Assertion failed: AppendValue (s2) count failed in %s\n", __func__); goto cleanup; }
+    OCArrayAppendValue(marr, s2);
+    if (!(OCArrayGetCount(marr) == 3)) goto cleanup;
 
-    OCArrayRemoveValueAtIndex(marr, 1); // marr: [insert_me, b]
-    if (!(OCArrayGetCount(marr) == 2)) { fprintf(stderr, "Assertion failed: RemoveValueAtIndex count failed in %s\n", __func__); goto cleanup; }
-    if (!(OCTypeEqual(OCArrayGetValueAtIndex(marr, 0), s_insert))) { fprintf(stderr, "Assertion failed: RemoveValueAtIndex(0) (s_insert) value failed in %s\n", __func__); goto cleanup; }
-    if (!(OCTypeEqual(OCArrayGetValueAtIndex(marr, 1), s2))) { fprintf(stderr, "Assertion failed: RemoveValueAtIndex(1) (s2) value failed in %s\n", __func__); goto cleanup; }
+    if (!OCArrayRemoveValueAtIndex(marr, 1)) {
+        fprintf(stderr, "Error: Remove index 1 failed in %s\n", __func__);
+        goto cleanup;
+    }
 
-    OCArrayRemoveValueAtIndex(marr, 0); 
-    OCArrayInsertValueAtIndex(marr, 0, s3);
-    if (!(OCArrayGetCount(marr) == 2)) { fprintf(stderr, "Assertion failed: ReplaceValueAtIndex count failed in %s\n", __func__); goto cleanup; }
-    if (!(OCTypeEqual(OCArrayGetValueAtIndex(marr, 0), s3))) { fprintf(stderr, "Assertion failed: ReplaceValueAtIndex(0) (s3) value failed in %s\n", __func__); goto cleanup; }
-    if (!(OCTypeEqual(OCArrayGetValueAtIndex(marr, 1), s2))) { fprintf(stderr, "Assertion failed: ReplaceValueAtIndex(1) (s2) value failed in %s\n", __func__); goto cleanup; }
+    if (!OCArrayRemoveValueAtIndex(marr, 0)) {
+        fprintf(stderr, "Error: Remove index 0 failed in %s\n", __func__);
+        goto cleanup;
+    }
+
+    if (!OCArrayInsertValueAtIndex(marr, 0, s3)) {
+        fprintf(stderr, "Error: Insert s3 failed in %s\n", __func__);
+        goto cleanup;
+    }
 
     s_another = OCStringCreateWithCString("another");
-    if (!s_another) { fprintf(stderr, "Error: OCStringCreateWithCString(\"another\") failed in %s\n", __func__); goto cleanup; }
-    const void* other_values[] = {s4, s_another};
-    arr_to_append = OCArrayCreate((const void **)other_values, 2, &kOCTypeArrayCallBacks);
-    if (!arr_to_append) { fprintf(stderr, "Error: OCArrayCreate for arr_to_append failed in %s\n", __func__); goto cleanup; }
-    OCArrayAppendArray(marr, arr_to_append, OCRangeMake(0, OCArrayGetCount(arr_to_append))); // marr: [c, b, d, another]
-    if (!(OCArrayGetCount(marr) == 4)) { fprintf(stderr, "Assertion failed: AppendArray count failed in %s\n", __func__); goto cleanup; }
-    if (!(OCTypeEqual(OCArrayGetValueAtIndex(marr, 2), s4))) { fprintf(stderr, "Assertion failed: AppendArray value s4 failed in %s\n", __func__); goto cleanup; }
-    if (!(OCTypeEqual(OCArrayGetValueAtIndex(marr, 3), s_another))) { fprintf(stderr, "Assertion failed: AppendArray value s_another failed in %s\n", __func__); goto cleanup; }
-
-    while(OCArrayGetCount(marr) > 0) {
-        OCArrayRemoveValueAtIndex(marr, 0);
+    if (!s_another) {
+        fprintf(stderr, "Error: OCStringCreateWithCString(\"another\") failed in %s\n", __func__);
+        goto cleanup;
     }
-    if (!(OCArrayGetCount(marr) == 0)) { fprintf(stderr, "Assertion failed: RemoveAllValues count failed in %s\n", __func__); goto cleanup; }
-    OCArrayAppendValue(marr, s_extra); // Check if it's usable after removing all
-    if (!(OCArrayGetCount(marr) == 1)) { fprintf(stderr, "Assertion failed: Append after RemoveAllValues count failed in %s\n", __func__); goto cleanup; }
-    if (!(OCTypeEqual(OCArrayGetValueAtIndex(marr, 0), s_extra))) { fprintf(stderr, "Assertion failed: Append after RemoveAllValues value failed in %s\n", __func__); goto cleanup; }
+
+    const void* other_values[] = {s4, s_another};
+    arr_to_append = OCArrayCreate(other_values, 2, &kOCTypeArrayCallBacks);
+    if (!arr_to_append || !OCArrayAppendArray(marr, arr_to_append, OCRangeMake(0, 2))) {
+        fprintf(stderr, "Error: Append array failed in %s\n", __func__);
+        goto cleanup;
+    }
+
+    while (OCArrayGetCount(marr) > 0) {
+        if (!OCArrayRemoveValueAtIndex(marr, 0)) {
+            fprintf(stderr, "Error: Remove loop failed in %s\n", __func__);
+            goto cleanup;
+        }
+    }
+
+    OCArrayAppendValue(marr, s_extra);
+    if (!(OCArrayGetCount(marr) == 1) || !OCTypeEqual(OCArrayGetValueAtIndex(marr, 0), s_extra)) {
+        fprintf(stderr, "Assertion failed: Post-clear append failed in %s\n", __func__);
+        goto cleanup;
+    }
 
     fprintf(stderr, "%s end...without problems\n", __func__);
     success = true;

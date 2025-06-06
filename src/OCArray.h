@@ -141,13 +141,25 @@ OCMutableArrayRef OCArrayCreateMutableCopy(OCArrayRef theArray);
 const void *OCArrayGetValueAtIndex(OCArrayRef theArray, uint64_t index);
 
 /**
+ * @brief Replaces the value at the specified index in a mutable array.
+ *
+ * Releases the existing value (if applicable) and retains the new value.
+ *
+ * @param theArray The mutable array.
+ * @param index The index at which to set the value.
+ * @param value The new value.
+ * @ingroup OCArray
+ */
+bool OCArraySetValueAtIndex(OCMutableArrayRef theArray, OCIndex index, const void *value);
+
+/**
  * @brief Appends a value to a mutable array.
  *
  * @param theArray Mutable array.
  * @param value Value to append.
  * @ingroup OCArray
  */
-void OCArrayAppendValue(OCMutableArrayRef theArray, const void *value);
+bool OCArrayAppendValue(OCMutableArrayRef theArray, const void *value);
 
 /**
  * @brief Appends a range of values from another array.
@@ -157,7 +169,7 @@ void OCArrayAppendValue(OCMutableArrayRef theArray, const void *value);
  * @param range Range of values to append.
  * @ingroup OCArray
  */
-void OCArrayAppendArray(OCMutableArrayRef theArray, OCArrayRef otherArray, OCRange range);
+bool OCArrayAppendArray(OCMutableArrayRef theArray, OCArrayRef otherArray, OCRange range);
 
 /**
  * @brief Finds the first index of a value.
@@ -186,7 +198,7 @@ bool OCArrayContainsValue(OCArrayRef theArray, const void *value);
  * @param index Index to remove.
  * @ingroup OCArray
  */
-void OCArrayRemoveValueAtIndex(OCMutableArrayRef theArray, uint64_t index);
+bool OCArrayRemoveValueAtIndex(OCMutableArrayRef theArray, uint64_t index);
 
 /**
  * @brief Inserts a value at a given index.
@@ -196,7 +208,7 @@ void OCArrayRemoveValueAtIndex(OCMutableArrayRef theArray, uint64_t index);
  * @param value The value to insert.
  * @ingroup OCArray
  */
-void OCArrayInsertValueAtIndex(OCMutableArrayRef theArray, uint64_t index, const void *value);
+bool OCArrayInsertValueAtIndex(OCMutableArrayRef theArray, uint64_t index, const void *value);
 
 /**
  * @brief Sorts values in an array.
