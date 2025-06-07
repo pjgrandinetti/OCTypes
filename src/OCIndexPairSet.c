@@ -60,7 +60,7 @@ static void *__OCIndexPairSetDeepCopy(const void *obj) {
     }
 
     copy->indexPairs = copiedData;
-    return (OCIndexPairSetRef)copy;
+    return (void *) copy;
 }
 
 static void *__OCIndexPairSetDeepCopyMutable(const void *obj) {
@@ -108,10 +108,19 @@ OCMutableIndexPairSetRef OCIndexPairSetCreateMutable(void) {
 }
 
 OCIndexPairSetRef OCIndexPairSetCreateWithIndexPairArray(OCIndexPair *array, int count) {
+    // Defensive check: invalid input if count > 0 but array is NULL
+    if (count > 0 && array == NULL) return NULL;
+
     OCMutableIndexPairSetRef s = OCIndexPairSetAllocate();
     if (!s) return NULL;
 
-    s->indexPairs = OCDataCreate((const uint8_t *)array, count * sizeof(OCIndexPair));
+    if (count == 0) {
+        // Allocate empty OCData (not NULL, to allow valid GetCount and safety downstream)
+        s->indexPairs = OCDataCreate(NULL, 0);
+    } else {
+        s->indexPairs = OCDataCreate((const uint8_t *)array, count * sizeof(OCIndexPair));
+    }
+
     if (!s->indexPairs) {
         OCRelease(s);
         return NULL;

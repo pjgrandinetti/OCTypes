@@ -106,7 +106,7 @@ static void *__OCDictionaryDeepCopy(const void *obj)
         OCStringRef keyCopy = (OCStringRef)OCTypeDeepCopy(src->keys[i]);
         if (!keyCopy)
         {
-            OCRelease(copy);
+            OCRelease(copy); // Will trigger finalizer to clean up all added keys/values
             return NULL;
         }
 
@@ -118,8 +118,15 @@ static void *__OCDictionaryDeepCopy(const void *obj)
             return NULL;
         }
 
-        OCDictionaryAddValue(copy, keyCopy, valCopy);
-        OCRelease(keyCopy); // OCDictionaryAddValue retains key/value
+        if (!OCDictionaryAddValue(copy, keyCopy, valCopy)) {
+            // Defensive: handle allocation failure inside AddValue (e.g., realloc failure)
+            OCRelease(keyCopy);
+            OCRelease(valCopy);
+            OCRelease(copy);
+            return NULL;
+        }
+
+        OCRelease(keyCopy); // AddValue retains both
         OCRelease(valCopy);
     }
 
@@ -303,14 +310,10 @@ bool OCDictionaryContainsValue(OCDictionaryRef theDictionary, const void *value)
     return false;
 }
 
-void OCDictionaryAddValue(OCMutableDictionaryRef theDictionary, OCStringRef key, const void *value)
+bool OCDictionaryAddValue(OCMutableDictionaryRef theDictionary, OCStringRef key, const void *value)
 {
-    if (NULL == theDictionary)
-        return;
-    if (NULL == key)
-        return;
-    if (NULL == value)
-        return;
+    if (!theDictionary || !key || !value)
+        return false;
 
     // Check if the key already exists
     int64_t existingKeyIndex = OCDictionaryIndexOfKey(theDictionary, key);
@@ -321,115 +324,122 @@ void OCDictionaryAddValue(OCMutableDictionaryRef theDictionary, OCStringRef key,
         OCTypeRef type = (OCTypeRef)value;
         theDictionary->values[existingKeyIndex] = type;
         OCRetain(type);
-        return;
+        return true;
     }
 
-    // Key doesn't exist, add a new entry
-    OCTypeRef type = (OCTypeRef)value;
+    // Expand storage if necessary
     if (theDictionary->capacity == 0 || theDictionary->count == theDictionary->capacity)
     {
-        if (NULL == theDictionary->values)
+        OCTypeRef *newValues = NULL;
+        OCStringRef *newKeys = NULL;
+
+        uint64_t newCapacity = theDictionary->capacity == 0 ? 1 : theDictionary->capacity * 2;
+
+        newValues = (OCTypeRef *)realloc(theDictionary->values, newCapacity * sizeof(OCTypeRef));
+        if (!newValues)
         {
-            theDictionary->values = (OCTypeRef *)calloc(1, sizeof(OCTypeRef));
-            if (NULL == theDictionary->values)
-            {
-                fprintf(stderr, "OCDictionaryAddValue: Memory allocation for values failed.\n");
-                return;
-            }
-        }
-        else
-        {
-            theDictionary->values = (OCTypeRef *)realloc(theDictionary->values, (theDictionary->count + 1) * sizeof(OCTypeRef));
-            if (NULL == theDictionary->values)
-            {
-                fprintf(stderr, "OCDictionaryAddValue: Memory reallocation for values failed.\n");
-                return;
-            }
+            fprintf(stderr, "OCDictionaryAddValue: Memory reallocation for values failed.\n");
+            return false;
         }
 
-        if (NULL == theDictionary->keys)
+        newKeys = (OCStringRef *)realloc(theDictionary->keys, newCapacity * sizeof(OCStringRef));
+        if (!newKeys)
         {
-            theDictionary->keys = (OCStringRef *)calloc(1, sizeof(OCStringRef));
-            if (NULL == theDictionary->keys)
-            {
-                fprintf(stderr, "OCDictionaryAddValue: Memory allocation for keys failed.\n");
-                free(theDictionary->values);
-                return;
-            }
-        }
-        else
-        {
-            theDictionary->keys = (OCStringRef *)realloc(theDictionary->keys, (theDictionary->count + 1) * sizeof(OCStringRef));
-            if (NULL == theDictionary->keys)
-            {
-                fprintf(stderr, "OCDictionaryAddValue: Memory reallocation for keys failed.\n");
-                free(theDictionary->values);
-                return;
-            }
+            fprintf(stderr, "OCDictionaryAddValue: Memory reallocation for keys failed.\n");
+            return false;
         }
 
-        theDictionary->capacity = theDictionary->count + 1;
+        theDictionary->values = newValues;
+        theDictionary->keys = newKeys;
+        theDictionary->capacity = newCapacity;
+    }
+
+    OCTypeRef type = (OCTypeRef)value;
+    OCStringRef keyCopy = OCStringCreateCopy(key);
+    if (!keyCopy)
+    {
+        fprintf(stderr, "OCDictionaryAddValue: Failed to copy key string.\n");
+        return false;
     }
 
     theDictionary->values[theDictionary->count] = type;
     OCRetain(type);
-    theDictionary->keys[theDictionary->count] = OCStringCreateCopy(key);
+    theDictionary->keys[theDictionary->count] = keyCopy;
     theDictionary->count++;
+
+    return true;
 }
-void OCDictionaryGetKeysAndValues(OCDictionaryRef theDictionary, const void **keys, const void **values)
+
+
+bool OCDictionaryGetKeysAndValues(OCDictionaryRef theDictionary, const void **keys, const void **values)
 {
+    if (!theDictionary || !keys || !values)
+        return false;
+
     OCStringRef *outKeys = (OCStringRef *)keys;
     OCTypeRef *outValues = (OCTypeRef *)values;
 
-    for (uint64_t index = 0; index < theDictionary->count; index++)
-    {
+    for (uint64_t index = 0; index < theDictionary->count; index++) {
         outKeys[index] = theDictionary->keys[index];
         outValues[index] = theDictionary->values[index];
     }
+
+    return true;
 }
 
-void OCDictionarySetValue(OCMutableDictionaryRef theDictionary, OCStringRef key, const void *value)
+bool OCDictionarySetValue(OCMutableDictionaryRef theDictionary, OCStringRef key, const void *value)
 {
+    if (!theDictionary || !key || !value)
+        return false;
+
     int64_t index = OCDictionaryIndexOfKey(theDictionary, key);
 
     if (index < 0)
-    {
-        OCDictionaryAddValue(theDictionary, key, value);
-        return;
-    }
+        return OCDictionaryAddValue(theDictionary, key, value);
+
     OCRelease(theDictionary->values[index]);
     theDictionary->values[index] = (OCTypeRef)OCRetain(value);
+    return true;
 }
 
-void OCDictionaryReplaceValue(OCMutableDictionaryRef theDictionary, OCStringRef key, const void *value)
+bool OCDictionaryReplaceValue(OCMutableDictionaryRef theDictionary, OCStringRef key, const void *value)
 {
+    if (!theDictionary || !key || !value)
+        return false;
+
     int64_t index = OCDictionaryIndexOfKey(theDictionary, key);
     if (index < 0)
-        return;
+        return false;
+
     OCRelease(theDictionary->values[index]);
     theDictionary->values[index] = (OCTypeRef)OCRetain(value);
+    return true;
 }
 
-void OCDictionaryRemoveValue(OCMutableDictionaryRef theDictionary, OCStringRef key)
+bool OCDictionaryRemoveValue(OCMutableDictionaryRef theDictionary, OCStringRef key)
 {
+    if (!theDictionary || !key)
+        return false;
+
     int64_t indexOfKey = OCDictionaryIndexOfKey(theDictionary, key);
     if (indexOfKey < 0)
-        return; // Key not found
+        return false; // Key not found
 
     // Release the key and value being removed
     OCRelease(theDictionary->keys[indexOfKey]);
     OCRelease(theDictionary->values[indexOfKey]);
 
     // Shift subsequent elements down.
-    // The loop should go up to count - 1 because we are accessing index and index + 1.
     for (uint64_t index = indexOfKey; index < theDictionary->count - 1; index++)
     {
         theDictionary->keys[index] = theDictionary->keys[index + 1];
         theDictionary->values[index] = theDictionary->values[index + 1];
     }
-    // After shifting, decrement the count.
-    // The elements beyond the new count are effectively garbage and won't be accessed.
+
+    // Decrement count
     theDictionary->count--;
+
+    return true;
 }
 
 uint64_t OCDictionaryGetCountOfValue(OCMutableDictionaryRef theDictionary, const void *value)

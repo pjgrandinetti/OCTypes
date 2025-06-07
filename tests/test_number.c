@@ -241,6 +241,23 @@ bool numberTest0(void) {
         OCRelease(n);
     }
 
+    // --- Deep copy tests ---
+    {
+        OCNumberRef original = OCNumberCreateWithDouble(123.456);
+        OCNumberRef copy = (OCNumberRef)OCTypeDeepCopy(original);
+        if (!copy || !OCTypeEqual(original, copy) || original == copy) {
+            fprintf(stderr, "DEBUG: Deep copy failed (equality or independence)\n");
+            if (copy) OCRelease(copy);
+            OCRelease(original);
+            PRINTERROR;
+        }
+
+        OCRelease(copy);
+        OCRelease(original);
+    }
+
+
     fprintf(stderr, "%s end...without problems\n", __func__);
     return true;
 }
+

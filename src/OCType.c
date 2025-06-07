@@ -233,13 +233,13 @@ const void *OCRetain(const void *ptr)
 void *OCTypeDeepCopy(const void *obj) {
     if (!obj) return NULL;
     const struct __OCType *type = (const struct __OCType *)obj;
-    return type->_base.deepCopy ? type->_base.deepCopy(obj) : NULL;
+    return type->_base.copyDeep ? type->_base.copyDeep(obj) : NULL;
 }
 
 void *OCTypeDeepCopyMutable(const void *obj) {
     if (!obj) return NULL;
     const struct __OCType *type = (const struct __OCType *)obj;
-    return type->_base.deepCopyMutable ? type->_base.deepCopyMutable(obj) : NULL;
+    return type->_base.copyDeepMutable ? type->_base.copyDeepMutable(obj) : NULL;
 }
 
 
@@ -279,6 +279,7 @@ void *OCTypeAllocate(size_t size,
                      bool (*equal)(const void *, const void *),
                      OCStringRef (*copyDesc)(OCTypeRef),
                      void *(*copyDeep)(const void *),
+                     void *(*copyDeepMutable)(const void *),
                      const char *file, 
                      int line)
 {
@@ -293,7 +294,8 @@ void *OCTypeAllocate(size_t size,
     object->_base.finalize = finalize;
     object->_base.equal = equal;
     object->_base.copyFormattingDesc = copyDesc;
-    object->_base.copyDeep = copyDeep;  // ← Store it
+    object->_base.copyDeep = copyDeep;
+    object->_base.copyDeepMutable = copyDeepMutable; 
     object->_base.static_instance = false;
     object->_base.finalized = false;
 

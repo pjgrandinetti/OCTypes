@@ -36,11 +36,55 @@ void __OCIndexSetFinalize(const void *obj) {
     s->indexes = NULL;
 }
 
-OCStringRef __OCIndexSetCopyFormattingDesc(OCTypeRef cf) {
-    (void)cf;
-    return NULL;
+static OCStringRef __OCIndexSetCopyFormattingDesc(OCTypeRef cf) {
+    if (!cf) return NULL;
+    OCIndexSetRef set = (OCIndexSetRef)cf;
+    OCMutableStringRef desc = OCStringCreateMutable(0);
+    OCStringAppendCString(desc, "<OCIndexSet: ");
+    OCIndex count = OCIndexSetGetCount(set);
+    for (OCIndex i = 0; i < count; i++) {
+        if (i > 0) OCStringAppendCString(desc, ", ");
+        OCStringAppendFormat(desc, STR("%ld"), OCIndexSetGetBytePtr(set)[i]);
+    }
+    OCStringAppendCString(desc, ">");
+    return desc;
 }
 
+OCMutableIndexSetRef OCIndexSetAllocate(void);
+
+static void *__OCIndexSetDeepCopy(const void *obj) {
+    OCIndexSetRef src = (OCIndexSetRef)obj;
+    if (!src || !src->indexes) return NULL;
+
+    OCDataRef copyData = OCDataCreateCopy(src->indexes);
+    if (!copyData) return NULL;
+
+    OCMutableIndexSetRef copy = OCIndexSetAllocate();
+    if (!copy) {
+        OCRelease(copyData);
+        return NULL;
+    }
+
+    copy->indexes = copyData;
+    return copy;
+}
+
+static void *__OCIndexSetDeepCopyMutable(const void *obj) {
+    OCIndexSetRef src = (OCIndexSetRef)obj;
+    if (!src || !src->indexes) return NULL;
+
+    OCMutableDataRef copyData = OCDataCreateMutableCopy(OCDataGetLength(src->indexes), src->indexes);
+    if (!copyData) return NULL;
+
+    OCMutableIndexSetRef copy = OCIndexSetAllocate();
+    if (!copy) {
+        OCRelease(copyData);
+        return NULL;
+    }
+
+    copy->indexes = copyData;
+    return copy;
+}
 // -- Type Registration --
 OCTypeID OCIndexSetGetTypeID(void) {
     if (kOCIndexSetID == _kOCNotATypeID)
@@ -55,7 +99,10 @@ OCMutableIndexSetRef OCIndexSetAllocate(void) {
         OCIndexSetGetTypeID(),
         __OCIndexSetFinalize,
         __OCIndexSetEqual,
-        __OCIndexSetCopyFormattingDesc);
+        __OCIndexSetCopyFormattingDesc,
+        __OCIndexSetDeepCopy,
+        __OCIndexSetDeepCopyMutable
+    );
 }
 
 // -- Constructors --

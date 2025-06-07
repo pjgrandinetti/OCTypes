@@ -30,7 +30,7 @@ bool OCIndexPairSetCreation_test(void) {
     success &= nullSet && OCIndexPairSetGetCount(nullSet) == 0;
     if (nullSet) OCRelease(nullSet);
 
-    fprintf(stderr, "%s end...%s\n", __func__, success ? "without problems" : "with errors");
+    fprintf(stderr, "%s end...%s\n", __func__, success ? "without problems" : "with errors ***");
     return success;
 }
 
@@ -55,7 +55,7 @@ bool OCIndexPairSetAddAndContains_test(void) {
         OCRelease(set);
     }
 
-    fprintf(stderr, "%s end...%s\n", __func__, success ? "without problems" : "with errors");
+    fprintf(stderr, "%s end...%s\n", __func__, success ? "without problems" : "with errors ***");
     return success;
 }
 
@@ -76,7 +76,7 @@ bool OCIndexPairSetValueLookup_test(void) {
         OCRelease(set);
     }
 
-    fprintf(stderr, "%s end...%s\n", __func__, success ? "without problems" : "with errors");
+    fprintf(stderr, "%s end...%s\n", __func__, success ? "without problems" : "with errors ***");
     return success;
 }
 
@@ -95,7 +95,7 @@ bool OCIndexPairSetEquality_test(void) {
     if (b) OCRelease(b);
     if (c) OCRelease(c);
 
-    fprintf(stderr, "%s end...%s\n", __func__, success ? "without problems" : "with errors");
+    fprintf(stderr, "%s end...%s\n", __func__, success ? "without problems" : "with errors ***");
     return success;
 }
 
@@ -116,6 +116,33 @@ bool OCIndexPairSetShow_test(void) {
         OCRelease(set);
     }
 
-    fprintf(stderr, "%s end...%s\n", __func__, success ? "without problems" : "with errors");
+    fprintf(stderr, "%s end...%s\n", __func__, success ? "without problems" : "with errors ***");
+    return success;
+}
+
+bool OCIndexPairSetDeepCopy_test(void) {
+    fprintf(stderr, "%s begin...\n", __func__);
+    bool success = true;
+
+    OCMutableIndexPairSetRef original = OCIndexPairSetCreateMutable();
+    OCIndexPairSetAddIndexPair(original, 5, 50);
+    OCIndexPairSetAddIndexPair(original, 10, 100);
+
+    OCIndexPairSetRef copy = OCTypeDeepCopy(original);
+    success &= copy != NULL;
+    success &= OCTypeEqual(original, copy);
+
+    // Shallow copy check — the internal pointers should not be identical
+    success &= (original != copy);
+
+    // Mutate the copy to ensure original is unaffected
+    OCIndexPairSetAddIndexPair((OCMutableIndexPairSetRef)copy, 20, 200);
+    success &= (OCIndexPairSetGetCount(copy) == 3);
+    success &= (OCIndexPairSetGetCount(original) == 2);
+
+    OCRelease(original);
+    OCRelease(copy);
+
+    fprintf(stderr, "%s end...%s\n", __func__, success ? "without problems" : "with errors ***");
     return success;
 }

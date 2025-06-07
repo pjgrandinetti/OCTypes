@@ -65,6 +65,33 @@ static OCStringRef __OCSetCopyFormattingDesc(OCTypeRef cf)
     return result;
 }
 
+static void *__OCSetDeepCopy(const void *obj) {
+    OCSetRef src = (OCSetRef)obj;
+    if (!src || !src->elements) return NULL;
+
+    OCMutableSetRef copy = OCSetCreateMutable(0);
+    if (!copy) return NULL;
+
+    OCIndex count = OCArrayGetCount(src->elements);
+    for (OCIndex i = 0; i < count; i++) {
+        OCTypeRef original = OCArrayGetValueAtIndex(src->elements, i);
+        void *cloned = OCTypeDeepCopy(original);
+        if (!cloned) {
+            OCRelease(copy);
+            return NULL;
+        }
+        OCSetAddValue(copy, cloned);
+        OCRelease(cloned); // AddValue retains it
+    }
+
+    return (void *)copy;
+}
+
+static void *__OCSetDeepCopyMutable(const void *obj) {
+    // OCSet is mutable, so same as deep copy
+    return __OCSetDeepCopy(obj);
+}
+
 OCTypeID OCSetGetTypeID(void)
 {
     if (kOCSetID == _kOCNotATypeID) {
@@ -80,10 +107,12 @@ static struct __OCSet *OCSetAllocate(void)
         OCSetGetTypeID(),
         __OCSetFinalize,
         __OCSetEqual,
-        __OCSetCopyFormattingDesc);
+        __OCSetCopyFormattingDesc,
+        __OCSetDeepCopy,
+        __OCSetDeepCopyMutable
+    );
 
     set->elements = OCArrayCreateMutable(0, &kOCTypeArrayCallBacks);
-
     return set;
 }
 

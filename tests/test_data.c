@@ -86,3 +86,36 @@ bool dataTest1(void) {
     fprintf(stderr, "%s end...without problems\n", __func__);
     return true;
 }
+
+bool dataTest_deepcopy(void) {
+    fprintf(stderr, "%s begin...\n", __func__);
+
+    uint8_t bytes[] = {0xDE, 0xAD, 0xBE, 0xEF};
+    OCDataRef orig = OCDataCreate(bytes, sizeof(bytes));
+    if (!orig) PRINTERROR;
+
+    // Immutable deep copy
+    OCDataRef copy = (OCDataRef)OCTypeDeepCopy(orig);
+    ASSERT_NOT_NULL(copy, "OCTypeDeepCopy should not return NULL");
+    ASSERT_TRUE(OCTypeEqual(orig, copy), "OCTypeDeepCopy should return equal data");
+    ASSERT_TRUE(OCDataGetBytePtr(orig) != OCDataGetBytePtr(copy), "OCTypeDeepCopy should return different memory");
+    OCRelease(copy);
+
+    // Mutable deep copy
+    OCMutableDataRef mcopy = (OCMutableDataRef)OCTypeDeepCopyMutable(orig);
+    ASSERT_NOT_NULL(mcopy, "OCTypeDeepCopyMutable should not return NULL");
+    ASSERT_TRUE(OCTypeEqual(orig, mcopy), "OCTypeDeepCopyMutable should return equal data");
+    ASSERT_TRUE(OCDataGetBytePtr(orig) != OCDataGetBytePtr(mcopy), "OCTypeDeepCopyMutable should return different memory");
+
+    // Try modifying
+    uint8_t *ptr = OCDataGetMutableBytePtr(mcopy);
+    ptr[0] = 0xAB;
+    ASSERT_TRUE(OCDataGetBytePtr(mcopy)[0] == 0xAB, "Modified byte should be reflected in mutable deep copy");
+    ASSERT_TRUE(OCDataGetBytePtr(orig)[0] != 0xAB, "Original should remain unchanged");
+
+    OCRelease(orig);
+    OCRelease(mcopy);
+
+    fprintf(stderr, "%s end...without problems\n", __func__);
+    return true;
+}

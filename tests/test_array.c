@@ -85,6 +85,8 @@ cleanup:
     return success;
 }
 
+#define SAFE_RELEASE(x) do { if (x) { OCRelease(x); x = NULL; } } while(0)
+
 bool arrayTest1_creation(void) {
     fprintf(stderr, "%s begin...\n", __func__);
     bool success = false;
@@ -133,7 +135,7 @@ bool arrayTest1_creation(void) {
         fprintf(stderr, "Error: empty OCArrayCreate with non-null pointer failed\n");
         goto cleanup;
     }
-    OCRelease(arr_empty_non_null_ptr); arr_empty_non_null_ptr = NULL;
+    SAFE_RELEASE(arr_empty_non_null_ptr);
 
     arr1_copy = OCArrayCreateCopy(arr1);
     if (!arr1_copy || OCArrayGetCount(arr1_copy) != 2 ||
@@ -143,7 +145,7 @@ bool arrayTest1_creation(void) {
         fprintf(stderr, "Error: OCArrayCreateCopy validation failed\n");
         goto cleanup;
     }
-    OCRelease(arr1_copy); arr1_copy = NULL;
+    SAFE_RELEASE(arr1_copy);
 
     marr1 = OCArrayCreateMutable(5, &kOCTypeArrayCallBacks);
     if (!marr1 || OCArrayGetCount(marr1) != 0) {
@@ -158,7 +160,7 @@ bool arrayTest1_creation(void) {
         fprintf(stderr, "Error: OCArrayCreateMutableCopy failed\n");
         goto cleanup;
     }
-    OCRelease(marr1_copy); marr1_copy = NULL;
+    SAFE_RELEASE(marr1_copy);
 
     OCArrayAppendValue(marr1, s1);
     marr1_mcopy = OCArrayCreateMutableCopy(marr1);
@@ -167,7 +169,7 @@ bool arrayTest1_creation(void) {
         fprintf(stderr, "Error: OCArrayCreateMutableCopy from mutable failed\n");
         goto cleanup;
     }
-    OCRelease(marr1_mcopy); marr1_mcopy = NULL;
+    SAFE_RELEASE(marr1_mcopy);
 
     arr_empty = OCArrayCreate(NULL, 0, &kOCTypeArrayCallBacks);
     arr_empty_copy = OCArrayCreateCopy(arr_empty_explicit_null);
@@ -175,8 +177,8 @@ bool arrayTest1_creation(void) {
         fprintf(stderr, "Error: empty array copy failed\n");
         goto cleanup;
     }
-    OCRelease(arr_empty); arr_empty = NULL;
-    OCRelease(arr_empty_copy); arr_empty_copy = NULL;
+    SAFE_RELEASE(arr_empty);
+    SAFE_RELEASE(arr_empty_copy);
 
     marr_zero_cap = OCArrayCreateMutable(0, &kOCTypeArrayCallBacks);
     OCArrayAppendValue(marr_zero_cap, s1);
@@ -185,14 +187,14 @@ bool arrayTest1_creation(void) {
         fprintf(stderr, "Error: OCArrayCreateMutable with 0 capacity test failed\n");
         goto cleanup;
     }
-    OCRelease(marr_zero_cap); marr_zero_cap = NULL;
+    SAFE_RELEASE(marr_zero_cap);
 
     marr_empty_copy2 = OCArrayCreateMutableCopy(arr_empty_explicit_null);
     if (!marr_empty_copy2 || OCArrayGetCount(marr_empty_copy2) != 0) {
         fprintf(stderr, "Error: OCArrayCreateMutableCopy empty test failed\n");
         goto cleanup;
     }
-    OCRelease(marr_empty_copy2); marr_empty_copy2 = NULL;
+    SAFE_RELEASE(marr_empty_copy2);
 
     // Deep copy test
     deep_original = OCArrayCreateMutable(0, &kOCTypeArrayCallBacks);
@@ -204,6 +206,8 @@ bool arrayTest1_creation(void) {
     deep_copy = OCTypeDeepCopy(deep_original);
     if (!deep_copy) {
         fprintf(stderr, "Error: OCTypeDeepCopy returned NULL\n");
+        OCRelease(deepStr);
+        OCRelease(deepNum);
         goto cleanup;
     }
 
@@ -224,35 +228,35 @@ bool arrayTest1_creation(void) {
 
     OCRelease(deepStr);
     OCRelease(deepNum);
-    OCRelease(deep_original);
-    OCRelease(deep_copy);
+    SAFE_RELEASE(deep_original);
+    SAFE_RELEASE(deep_copy);
 
     fprintf(stderr, "%s end...without problems\n", __func__);
     success = true;
 
 cleanup:
-    if (s1) OCRelease(s1);
-    if (s2) OCRelease(s2);
-    if (arr1) OCRelease(arr1);
-    if (arr_empty_explicit_null) OCRelease(arr_empty_explicit_null);
-    if (arr_empty_non_null_ptr) OCRelease(arr_empty_non_null_ptr);
-    if (arr1_copy) OCRelease(arr1_copy);
-    if (marr1) OCRelease(marr1);
-    if (marr1_copy) OCRelease(marr1_copy);
-    if (marr1_mcopy) OCRelease(marr1_mcopy);
-    if (arr_empty) OCRelease(arr_empty);
-    if (arr_empty_copy) OCRelease(arr_empty_copy);
-    if (marr_zero_cap) OCRelease(marr_zero_cap);
-    if (marr_empty_copy2) OCRelease(marr_empty_copy2);
-    if (deep_original) OCRelease(deep_original);
-    if (deep_copy) OCRelease(deep_copy);
+    SAFE_RELEASE(s1);
+    SAFE_RELEASE(s2);
+    SAFE_RELEASE(arr1);
+    SAFE_RELEASE(arr_empty_explicit_null);
+    SAFE_RELEASE(arr_empty_non_null_ptr);
+    SAFE_RELEASE(arr1_copy);
+    SAFE_RELEASE(marr1);
+    SAFE_RELEASE(marr1_copy);
+    SAFE_RELEASE(marr1_mcopy);
+    SAFE_RELEASE(arr_empty);
+    SAFE_RELEASE(arr_empty_copy);
+    SAFE_RELEASE(marr_zero_cap);
+    SAFE_RELEASE(marr_empty_copy2);
+    SAFE_RELEASE(deep_original);
+    SAFE_RELEASE(deep_copy);
 
     if (!success) {
         fprintf(stderr, "Test %s FAILED\n", __func__);
     }
+
     return success;
 }
-
 
 bool arrayTest2_access(void) {
     fprintf(stderr, "%s begin...\n", __func__);

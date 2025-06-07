@@ -18,6 +18,7 @@ bool OCIndexArrayGetValueAtIndex_test(void);
 bool OCIndexArraySetValueAtIndex_test(void);
 bool OCIndexArrayRemoveValueAtIndex_test(void);
 bool OCIndexArrayRemoveValuesAtIndexes_test(void);
+bool OCIndexArrayDeepCopy_test(void);
 
 #ifdef __cplusplus
 }

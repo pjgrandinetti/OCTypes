@@ -727,26 +727,34 @@ bool OCDictionaryTestDeepCopy(void) {
     OCStringRef key1 = OCStringCreateWithCString("alpha");
     OCStringRef key2 = OCStringCreateWithCString("beta");
     OCNumberRef val1 = OCNumberCreateWithDouble(3.14);
-    OCNumberRef val2 = OCNumberCreateWithInt64(42);
+    OCNumberRef val2 = OCNumberCreateWithSInt64(42);
+
+    OCMutableDictionaryRef dict = NULL;
+    OCMutableDictionaryRef copy = NULL;
 
     if (!key1 || !key2 || !val1 || !val2) {
         fprintf(stderr, "Error: Failed to create test keys/values.\n");
         goto cleanup;
     }
 
-    // Create original dictionary
-    OCMutableDictionaryRef dict = OCDictionaryCreateMutable(2);
-    OCDictionaryAddValue(dict, key1, val1);
-    OCDictionaryAddValue(dict, key2, val2);
+    dict = OCDictionaryCreateMutable(2);
+    if (!dict) {
+        fprintf(stderr, "Error: Failed to create dictionary.\n");
+        goto cleanup;
+    }
 
-    // Deep copy
-    OCMutableDictionaryRef copy = (OCMutableDictionaryRef)OCTypeDeepCopy(dict);
+    if (!OCDictionaryAddValue(dict, key1, val1) ||
+        !OCDictionaryAddValue(dict, key2, val2)) {
+        fprintf(stderr, "Error: Failed to add key/value to dictionary.\n");
+        goto cleanup;
+    }
+
+    copy = (OCMutableDictionaryRef)OCTypeDeepCopy(dict);
     if (!copy) {
         fprintf(stderr, "Error: OCTypeDeepCopy returned NULL.\n");
         goto cleanup;
     }
 
-    // Ensure same keys and values by content
     const void *val1Copy = OCDictionaryGetValue(copy, key1);
     const void *val2Copy = OCDictionaryGetValue(copy, key2);
 
@@ -760,15 +768,22 @@ bool OCDictionaryTestDeepCopy(void) {
         goto cleanup;
     }
 
-    // Check that it's not a shallow copy
     if (val1 == val1Copy || val2 == val2Copy) {
         fprintf(stderr, "Error: Deep copy is shallow (value pointer matches).\n");
         goto cleanup;
     }
 
-    // Modify the copy and ensure original is unaffected
     OCNumberRef newVal = OCNumberCreateWithDouble(999.9);
-    OCDictionarySetValue(copy, key1, newVal);
+    if (!newVal) {
+        fprintf(stderr, "Error: Failed to create new value.\n");
+        goto cleanup;
+    }
+
+    if (!OCDictionarySetValue(copy, key1, newVal)) {
+        fprintf(stderr, "Error: Failed to set value in copied dictionary.\n");
+        OCRelease(newVal);
+        goto cleanup;
+    }
     OCRelease(newVal);
 
     const void *originalVal1 = OCDictionaryGetValue(dict, key1);

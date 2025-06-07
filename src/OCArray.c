@@ -109,7 +109,7 @@ static void _OCArrayRetainValues(OCArrayRef theArray)
     }
 }
 
-static void * __OCArrayDeepCopy(const void *obj) {
+static void *__OCArrayDeepCopy(const void *obj) {
     const OCArrayRef src = (const OCArrayRef)obj;
     if (!src) return NULL;
 
@@ -121,24 +121,24 @@ static void * __OCArrayDeepCopy(const void *obj) {
         const void *copied = NULL;
 
         if (src->callBacks == &kOCTypeArrayCallBacks) {
-            copied = OCTypeDeepCopy(value);  // Recursive deep copy
+            copied = OCTypeDeepCopy(value);
         } else if (src->callBacks && src->callBacks->retain) {
-            copied = src->callBacks->retain(value);  // Shallow copy fallback
+            copied = src->callBacks->retain(value);  // fallback
         } else {
-            copied = value; // Just copy the pointer
+            copied = value;
         }
 
         OCArrayAppendValue(copy, copied);
 
-        // Release extra retain if we retained and append also retained
-        if (src->callBacks && src->callBacks->retain &&
-            src->callBacks != &kOCTypeArrayCallBacks) {
+        // Release manually if we retained and append retains again
+        if (src->callBacks == &kOCTypeArrayCallBacks || src->callBacks->retain) {
             OCRelease(copied);
         }
     }
 
     return copy;
 }
+
 
 static void *__OCArrayDeepCopyMutable(const void *obj) {
     return __OCArrayDeepCopy(obj);  // already returns a mutable copy
@@ -285,36 +285,6 @@ OCArrayRef OCArrayCreateCopy(OCArrayRef theArray)
     return (OCArrayRef) OCArrayCreate((const void **) theArray->data, theArray->count, theArray->callBacks);
 }
 
-static void * __OCArrayDeepCopy(const void *obj) {
-    const OCArrayRef src = (const OCArrayRef)obj;
-    if (!src) return NULL;
-
-    OCMutableArrayRef copy = OCArrayCreateMutable(src->count, src->callBacks);
-    if (!copy) return NULL;
-
-    for (uint64_t i = 0; i < src->count; ++i) {
-        const void *value = src->data[i];
-        const void *copied = NULL;
-
-        if (src->callBacks == &kOCTypeArrayCallBacks) {
-            copied = OCTypeDeepCopy(value);  // Recursive deep copy
-        } else if (src->callBacks && src->callBacks->retain) {
-            copied = src->callBacks->retain(value);  // Shallow copy fallback
-        } else {
-            copied = value; // Just copy the pointer
-        }
-
-        OCArrayAppendValue(copy, copied);
-
-        // Release extra retain if we retained and append also retained
-        if (src->callBacks && src->callBacks->retain &&
-            src->callBacks != &kOCTypeArrayCallBacks) {
-            OCRelease(copied);
-        }
-    }
-
-    return copy;
-}
 OCMutableArrayRef OCArrayCreateMutable(uint64_t capacity, const OCArrayCallBacks *callBacks)
 {
     struct __OCArray *newArray = OCArrayAllocate();
