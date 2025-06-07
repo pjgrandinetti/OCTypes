@@ -123,6 +123,17 @@ static OCStringRef __OCNumberCopyFormattingDesc(OCTypeRef theType)
     return NULL;
 }
 
+static void *__OCNumberDeepCopy(const void *obj) {
+    const OCNumberRef src = (const OCNumberRef)obj;
+    if (!src) return NULL;
+    return (void *)OCNumberCreate(src->type, (void *)&src->value);
+}
+
+static void *__OCNumberDeepCopyMutable(const void *obj) {
+    // OCNumber is immutable by design, so mutable deep copy is the same.
+    return __OCNumberDeepCopy(obj);
+}
+
 static struct __OCNumber *OCNumberAllocate(void)
 {
     return OCTypeAlloc(
@@ -130,9 +141,11 @@ static struct __OCNumber *OCNumberAllocate(void)
         OCNumberGetTypeID(),
         __OCNumberFinalize,
         __OCNumberEqual,
-        __OCNumberCopyFormattingDesc);
+        __OCNumberCopyFormattingDesc,
+        __OCNumberDeepCopy,
+        __OCNumberDeepCopyMutable
+    );
 }
-
 
 OCNumberRef OCNumberCreate(const OCNumberType type, void *value)
 {

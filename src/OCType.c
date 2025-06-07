@@ -183,11 +183,9 @@ void OCRelease(const void * ptr)
             theType->_base.finalize(theType);  // Clean up internal fields only
         }
 
-#ifdef DEBUG
         if (theType->_base.tracked) {
             _OCUntrack(theType);
         }
-#endif
 
         free((void *)theType);
         return;
@@ -232,6 +230,19 @@ const void *OCRetain(const void *ptr)
     return ptr;
 }
 
+void *OCTypeDeepCopy(const void *obj) {
+    if (!obj) return NULL;
+    const struct __OCType *type = (const struct __OCType *)obj;
+    return type->_base.copyDeep ? type->_base.copyDeep(obj) : NULL;
+}
+
+void *OCTypeDeepCopyMutable(const void *obj) {
+    if (!obj) return NULL;
+    const struct __OCType *type = (const struct __OCType *)obj;
+    return type->_base.copyDeepMutable ? type->_base.copyDeepMutable(obj) : NULL;
+}
+
+
 // Returns a formatted description of the object.
 OCStringRef OCTypeCopyFormattingDesc(const void * ptr)
 {
@@ -263,12 +274,14 @@ OCStringRef OCCopyDescription(const void * ptr)
 
 
 void *OCTypeAllocate(size_t size, 
-                    OCTypeID typeID,
-                    void (*finalize)(const void *),
-                    bool (*equal)(const void *, const void *),
-                    OCStringRef (*copyDesc)(OCTypeRef),
-                    const char *file, 
-                    int line)
+                     OCTypeID typeID,
+                     void (*finalize)(const void *),
+                     bool (*equal)(const void *, const void *),
+                     OCStringRef (*copyDesc)(OCTypeRef),
+                     void *(*copyDeep)(const void *),
+                     void *(*copyDeepMutable)(const void *),
+                     const char *file, 
+                     int line)
 {
     struct __OCType *object = calloc(1, size);
     if (!object) {
@@ -281,15 +294,15 @@ void *OCTypeAllocate(size_t size,
     object->_base.finalize = finalize;
     object->_base.equal = equal;
     object->_base.copyFormattingDesc = copyDesc;
+    object->_base.copyDeep = copyDeep;
+    object->_base.copyDeepMutable = copyDeepMutable; 
     object->_base.static_instance = false;
     object->_base.finalized = false;
 
-#ifdef DEBUG
     object->_base.allocFile = file;
     object->_base.allocLine = line;
     object->_base.tracked = true;
     _OCTrackDebug(object, file, line);
-#endif
 
     return object;
 }

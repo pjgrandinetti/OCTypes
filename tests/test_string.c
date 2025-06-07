@@ -692,3 +692,52 @@ bool stringTest11(void) {
     fprintf(stderr, "%s %s.\n", __func__, ok ? "passed" : "FAILED");
     return ok;
 }
+
+
+bool stringTest_deepcopy(void) {
+    fprintf(stderr, "%s begin...\n", __func__);
+    bool ok = true;
+
+    OCStringRef original = STR("deepcopy test ✓");
+    OCStringRef copy = (OCStringRef)OCTypeDeepCopy(original);
+
+    if (!copy) {
+        fprintf(stderr, "ERROR: OCTypeDeepCopy returned NULL\n");
+        return false;
+    }
+
+    // Equal in value but not pointer
+    if (!OCTypeEqual(original, copy)) {
+        fprintf(stderr, "ERROR: Deep copy not equal to original\n");
+        ok = false;
+    }
+    if (original == copy) {
+        fprintf(stderr, "ERROR: Deep copy is pointer-identical (shallow)\n");
+        ok = false;
+    }
+
+    OCRelease(copy);
+
+    // Test mutable copy
+    OCMutableStringRef mut_copy = (OCMutableStringRef)OCTypeDeepCopyMutable(original);
+    if (!mut_copy) {
+        fprintf(stderr, "ERROR: OCTypeDeepCopyMutable returned NULL\n");
+        return false;
+    }
+
+    if (!OCTypeEqual(original, mut_copy)) {
+        fprintf(stderr, "ERROR: Mutable deep copy not equal to original\n");
+        ok = false;
+    }
+
+    // Modify the mutable copy and ensure original is unaffected
+    OCStringAppendCString(mut_copy, "!");
+    if (OCTypeEqual(original, mut_copy)) {
+        fprintf(stderr, "ERROR: Original affected by mutable copy modification\n");
+        ok = false;
+    }
+
+    OCRelease(mut_copy);
+    fprintf(stderr, "%s %s.\n", __func__, ok ? "passed" : "FAILED");
+    return ok;
+}

@@ -75,6 +75,34 @@ typedef void (*OCFinalizerFunc)(const void *);
 bool OCTypeEqual(const void *theType1, const void *theType2);
 
 /**
+ * @brief Performs a deep copy of an OCType object.
+ *
+ * Allocates and returns a new immutable instance that is semantically 
+ * equal to the original but independent in memory.
+ *
+ * The returned object must be released with OCRelease().
+ *
+ * @param obj The OCType object to copy.
+ * @return A new deep-copied object, or NULL on failure.
+ * @ingroup OCType
+ */
+void *OCTypeDeepCopy(const void *obj);
+
+/**
+ * @brief Performs a deep copy of an OCType object, returning a mutable copy.
+ *
+ * Allocates and returns a new mutable instance that is semantically equal 
+ * to the original but allows modification and is independent in memory.
+ *
+ * The returned object must be released with OCRelease().
+ *
+ * @param obj The OCType object to copy.
+ * @return A new mutable deep-copied object, or NULL on failure.
+ * @ingroup OCType
+ */
+void *OCTypeDeepCopyMutable(const void *obj);
+
+/**
  * @brief Registers a new OCType with the system.
  * @param typeName A null-terminated C string representing the type name.
  * @return The OCTypeID assigned, or _kOCNotATypeID on failure.
@@ -173,24 +201,24 @@ const char *OCTypeNameFromTypeID(OCTypeID typeID);
 
 /** \cond INTERNAL */
 
-/**
- * @brief Base structure shared by all OCType-compatible objects.
- * Not intended for direct use outside the type system.
- */
 typedef struct __OCBase {
     OCTypeID typeID;
     uint32_t retainCount;
-    OCFinalizerFunc finalize;
-    bool finalized;
-    bool (*equal)(const void *, const void *);
-    OCStringRef (*copyFormattingDesc)(OCTypeRef cf);
     bool static_instance;
+    bool finalized;
 
-#ifdef DEBUG
-    const char *allocFile;  /**< Source file of allocation (debug only) */
-    int allocLine;          /**< Source line of allocation (debug only) */
-    bool tracked;           /**< Is this object tracked for leak detection? */
-#endif
+    // Virtual methods
+    void (*finalize)(const void *);
+    bool (*equal)(const void *, const void *);
+    OCStringRef (*copyFormattingDesc)(OCTypeRef);
+
+    void *(*copyDeep)(const void *);
+    void *(*copyDeepMutable)(const void *);
+
+    // Debug info
+    const char *allocFile;
+    int allocLine;
+    bool tracked;
 
 } OCBase;
 
@@ -204,26 +232,25 @@ typedef struct __OCBase {
  * @param finalize Optional finalizer function.
  * @param equal Optional equality comparator.
  * @param copyDesc Optional formatting function.
+ * @param copyDeep Optional deep copy function.
  * @param file Source file for tracking (use __FILE__).
  * @param line Source line for tracking (use __LINE__).
  * @return Pointer to a fully initialized structure.
  */
-void *OCTypeAllocate(size_t size,
+void *OCTypeAllocate(size_t size, 
                      OCTypeID typeID,
                      OCFinalizerFunc finalize,
                      bool (*equal)(const void *, const void *),
-                     OCStringRef (*copyDesc)(OCTypeRef cf),
-                     const char *file,
-                     int line);
-
+                     OCStringRef (*descFn)(OCTypeRef),
+                     void *(*deepCopy)(const void *),
+                     void *(*deepCopyMutable)(const void *),
+                     const char *file, int line);
 /**
  * @brief Macro for typed allocation of OCType-compatible objects.
  * Automatically injects debug information.
  */
-#define OCTypeAlloc(TYPE, TYPEID, FINALIZER, EQUAL_FN, DESC_FN) \
-    (TYPE *)OCTypeAllocate(sizeof(TYPE), TYPEID, FINALIZER, EQUAL_FN, DESC_FN, __FILE__, __LINE__)
-
-
+#define OCTypeAlloc(TYPE, TYPEID, FINALIZE, EQUAL_FN, DESC_FN, COPY_FN, MUTABLE_COPY_FN) \
+    (TYPE *)OCTypeAllocate(sizeof(TYPE), TYPEID, FINALIZE, EQUAL_FN, DESC_FN, COPY_FN, MUTABLE_COPY_FN, __FILE__, __LINE__)
 /**
  * @brief Finalizes and cleans up resources used by the OCTypes library.
  *

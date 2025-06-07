@@ -19,7 +19,7 @@ bool OCIndexArrayCreateAndCount_test(void) {
     OCIndexArrayRef bad = OCIndexArrayCreate(NULL, 5);
     success &= (bad == NULL);
 
-    fprintf(stderr, "%s end...%s\n", __func__, success ? "without problems" : "with errors");
+    fprintf(stderr, "%s end...%s\n", __func__, success ? "without problems" : "with errors ***");
     return success;
 }
 
@@ -36,7 +36,7 @@ bool OCIndexArrayGetValueAtIndex_test(void) {
                    (OCIndexArrayGetValueAtIndex(array, 99) == kOCNotFound);
 
     OCRelease(array);
-    fprintf(stderr, "%s end...%s\n", __func__, success ? "without problems" : "with errors");
+    fprintf(stderr, "%s end...%s\n", __func__, success ? "without problems" : "with errors ***");
     return success;
 }
 
@@ -52,7 +52,7 @@ bool OCIndexArraySetValueAtIndex_test(void) {
                    (OCIndexArrayGetValueAtIndex(array, 0) == 99);
 
     OCRelease(array);
-    fprintf(stderr, "%s end...%s\n", __func__, success ? "without problems" : "with errors");
+    fprintf(stderr, "%s end...%s\n", __func__, success ? "without problems" : "with errors ***");
     return success;
 }
 
@@ -74,7 +74,7 @@ bool OCIndexArrayRemoveValueAtIndex_test(void) {
                       (OCIndexArrayGetValueAtIndex(array, 1) == 15);
 
     OCRelease(array);
-    fprintf(stderr, "%s end...%s\n", __func__, success ? "without problems" : "with errors");
+    fprintf(stderr, "%s end...%s\n", __func__, success ? "without problems" : "with errors ***");
     return success;
 }
 
@@ -107,6 +107,40 @@ bool OCIndexArrayRemoveValuesAtIndexes_test(void) {
 
     OCRelease(indexSet);
     OCRelease(array);
-    fprintf(stderr, "%s end...%s\n", __func__, success ? "without problems" : "with errors");
+    fprintf(stderr, "%s end...%s\n", __func__, success ? "without problems" : "with errors ***");
+    return success;
+}
+
+
+bool OCIndexArrayDeepCopy_test(void) {
+    fprintf(stderr, "%s begin...\n", __func__);
+
+    OCIndex values[] = {1, 2, 3};
+    OCIndexArrayRef orig = OCIndexArrayCreate(values, 3);
+    if (!orig) return false;
+
+    OCIndexArrayRef copy = (OCIndexArrayRef)OCTypeDeepCopy(orig);
+    if (!copy) {
+        OCRelease(orig);
+        fprintf(stderr, "Deep copy returned NULL\n");
+        return false;
+    }
+
+    bool equalContent = true;
+    for (uint64_t i = 0; i < OCIndexArrayGetCount(orig); i++) {
+        if (OCIndexArrayGetValueAtIndex(orig, i) != OCIndexArrayGetValueAtIndex(copy, i)) {
+            equalContent = false;
+            break;
+        }
+    }
+
+    // Optional: If you can test identity — confirm not same object
+    bool distinct = (orig != copy);
+
+    OCRelease(orig);
+    OCRelease(copy);
+
+    bool success = equalContent && distinct;
+    fprintf(stderr, "%s end...%s\n", __func__, success ? "without problems" : "with errors ***");
     return success;
 }

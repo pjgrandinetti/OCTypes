@@ -50,10 +50,13 @@ int main(int argc, const char * argv[]) {
     if (!autoreleasePoolTest1()) failures++;  // New: test Oak jon pool drain
     if (!typeTest0())            failures++;
     if (!typeTest1())            failures++;  // New: type description tests
+    if (!typeTest2())            failures++;  // New: type description tests
     if (!mathTest0())            failures++;
     if (!mathTest1())            failures++;  // New: extra math API tests
     if (!dataTest0())            failures++;
     if (!dataTest1())            failures++;  // New: mutable-data API tests
+    if (!dataTest_deepcopy())    failures++;  // New: OCData deep copy tests
+
     if (!booleanTest0())         failures++;
     if (!numberTest0())          failures++;  // ← New: Invoke OCNumber tests
     if (!dictionaryTest0())      failures++;  // ← Invoke OCDictionary tests
@@ -62,6 +65,7 @@ int main(int argc, const char * argv[]) {
     if (!dictionaryTest3())      failures++;  // ← Invoke OCDictionary mixed type tests
     if (!dictionaryTest4())      failures++;  // ← New: Invoke OCDictionary extreme cases tests
     if (!dictionaryTest5())      failures++;  // ← New: Invoke OCDictionary deep nesting tests
+    if (!OCDictionaryTestDeepCopy()) failures++;  // ← New: Invoke OCDictionary deep copy tests
     if (!arrayTest0())           failures++;
     if (!arrayTest1_creation())  failures++;
     if (!arrayTest2_access())    failures++;
@@ -78,7 +82,9 @@ int main(int argc, const char * argv[]) {
     if (!stringTest8())          failures++;
     if (!stringTest9())          failures++;
     if (!stringTest10())         failures++;
-    if (!stringTest11())         failures++;  // ← Invoke stringTest11
+    if (!stringTest11())         failures++;
+    if (!stringTest_deepcopy())  failures++;
+
 
     if (!complex_parser_Test0())          failures++;
 
@@ -88,17 +94,20 @@ int main(int argc, const char * argv[]) {
     if (!OCIndexArraySetValueAtIndex_test())      failures++;
     if (!OCIndexArrayRemoveValueAtIndex_test())   failures++;
     if (!OCIndexArrayRemoveValuesAtIndexes_test())failures++;
+    if (!OCIndexArrayDeepCopy_test())             failures++;
 
     if (!OCIndexSetCreateAndAccess_test())        failures++;
     if (!OCIndexSetAddAndContains_test())         failures++;
     if (!OCIndexSetRangeAndBounds_test())         failures++;
     if (!OCIndexSetSerialization_test())          failures++;
+    if (!OCIndexSetDeepCopy_test())              failures++;
 
     if (!OCIndexPairSetCreation_test())             failures++;
     if (!OCIndexPairSetAddAndContains_test())       failures++;
     if (!OCIndexPairSetValueLookup_test())          failures++;
     if (!OCIndexPairSetEquality_test())             failures++;
     if (!OCIndexPairSetShow_test())                 failures++;
+    if (!OCIndexPairSetDeepCopy_test())           failures++;
 
     if (failures) {
         fprintf(stderr, "\n%d test(s) failed.\n", failures);

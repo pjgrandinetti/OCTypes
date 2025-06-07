@@ -32,6 +32,16 @@
  */
 OCTypeID OCDictionaryGetTypeID(void);
 
+
+/**
+ * @brief Creates a new dictionary with initial capacity.
+ *
+ * @param capacity Number of key-value pairs to allocate space for initially.
+ * @return New OCDictionaryRef or NULL on failure.
+ * @ingroup OCDictionary
+ */
+OCDictionaryRef OCDictionaryCreate(const void **keys, const void **values, uint64_t numValues);
+
 /**
  * @brief Creates a new mutable dictionary with initial capacity.
  *
@@ -104,9 +114,10 @@ bool OCDictionaryContainsValue(OCDictionaryRef theDictionary, const void *value)
  * @param theDictionary Dictionary to modify.
  * @param key Key to add or update.
  * @param value Value to associate with the key.
+ * @return true on success, false on failure.
  * @ingroup OCDictionary
  */
-void OCDictionaryAddValue(OCMutableDictionaryRef theDictionary, OCStringRef key, const void *value);
+bool OCDictionaryAddValue(OCMutableDictionaryRef theDictionary, OCStringRef key, const void *value);
 
 /**
  * @brief Sets the value for a key.
@@ -117,30 +128,33 @@ void OCDictionaryAddValue(OCMutableDictionaryRef theDictionary, OCStringRef key,
  * @param theDictionary Dictionary to modify.
  * @param key Key to set.
  * @param value Value to assign.
+ * @return true on success (inserted or updated), false on failure.
  * @ingroup OCDictionary
  */
-void OCDictionarySetValue(OCMutableDictionaryRef theDictionary, OCStringRef key, const void *value);
+bool OCDictionarySetValue(OCMutableDictionaryRef theDictionary, OCStringRef key, const void *value);
 
 /**
- * @brief Replaces the value for an existing key.
+ * @brief OCDictionaryReplaceValue replaces the value for an existing key.
  *
  * Does nothing if the key is not present.
  *
  * @param theDictionary Dictionary to modify.
  * @param key Key whose value is to be replaced.
  * @param value New value to assign.
+ * @return true if the key existed and was replaced, false otherwise.
  * @ingroup OCDictionary
  */
-void OCDictionaryReplaceValue(OCMutableDictionaryRef theDictionary, OCStringRef key, const void *value);
+bool OCDictionaryReplaceValue(OCMutableDictionaryRef theDictionary, OCStringRef key, const void *value);
 
 /**
  * @brief Removes a key-value pair from the dictionary.
  *
  * @param theDictionary Dictionary to modify.
  * @param key Key to remove.
+ * @return true if the key was found and removed, false if not found.
  * @ingroup OCDictionary
  */
-void OCDictionaryRemoveValue(OCMutableDictionaryRef theDictionary, OCStringRef key);
+bool OCDictionaryRemoveValue(OCMutableDictionaryRef theDictionary, OCStringRef key);
 
 /**
  * @brief Counts how many times a value appears in the dictionary.
@@ -156,11 +170,12 @@ uint64_t OCDictionaryGetCountOfValue(OCMutableDictionaryRef theDictionary, const
  * @brief Retrieves all keys and values into parallel arrays.
  *
  * @param theDictionary Dictionary to query.
- * @param keys Output array of keys.
- * @param values Output array of values.
+ * @param keys Output array of keys (must have space for at least count entries).
+ * @param values Output array of values (must have space for at least count entries).
+ * @return true if keys and values were successfully written, false on error.
  * @ingroup OCDictionary
  */
-void OCDictionaryGetKeysAndValues(OCDictionaryRef theDictionary, const void **keys, const void **values);
+bool OCDictionaryGetKeysAndValues(OCDictionaryRef theDictionary, const void **keys, const void **values);
 
 /**
  * @brief Creates an array containing all keys in the dictionary.

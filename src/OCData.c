@@ -33,6 +33,40 @@ static bool __OCDataEqual(const void *a_, const void *b_) {
     return memcmp(a->bytes, b->bytes, a->length) == 0;
 }
 
+static void *__OCDataDeepCopy(const void *obj) {
+    OCDataRef source = (OCDataRef)obj;
+    if (!source) return NULL;
+    return (void *)OCDataCreate(source->bytes, source->length);
+}
+
+static void *__OCDataDeepCopyMutable(const void *obj) {
+    OCDataRef source = (OCDataRef)obj;
+    if (!source) return NULL;
+    return (void *)OCDataCreateMutableCopy(source->length, source);
+}
+
+
+OCDataRef OCDataCreateCopy(OCDataRef source) {
+    return source ? OCDataCreate(source->bytes, source->length) : NULL;
+}
+
+OCMutableDataRef OCDataCreateMutableCopy(uint64_t capacity, OCDataRef source) {
+    if (!source) return NULL;
+    uint64_t actualCap = (capacity > source->length) ? capacity : source->length;
+    OCMutableDataRef result = OCDataCreateMutable(actualCap);
+    if (!result) return NULL;
+
+    if (source->length > 0) {
+        if (!OCDataAppendBytes(result, source->bytes, source->length)) {
+            OCRelease(result);
+            return NULL;
+        }
+    }
+
+    return result;
+}
+
+
 OCStringRef OCDataCopyFormattingDesc(OCTypeRef cf) {
     if (!cf) return NULL;
     OCDataRef data = (OCDataRef)cf;
@@ -41,10 +75,16 @@ OCStringRef OCDataCopyFormattingDesc(OCTypeRef cf) {
     size_t bufferSize = 64 + previewLen * 3;
     char *buffer = calloc(1, bufferSize);
     if (!buffer) return NULL;
+
     int offset = snprintf(buffer, bufferSize, "<OCData: %llu bytes, preview: ",
                           (unsigned long long)data->length);
-    for (size_t i = 0; i < previewLen && offset < (int)(bufferSize - 4); ++i)
-        offset += snprintf(buffer + offset, bufferSize - offset, "%02X ", data->bytes[i]);
+
+    if (data->bytes) {
+        for (size_t i = 0; i < previewLen && offset < (int)(bufferSize - 4); ++i) {
+            offset += snprintf(buffer + offset, bufferSize - offset, "%02X ", data->bytes[i]);
+        }
+    }
+
     snprintf(buffer + offset, bufferSize - offset, data->length > maxPreview ? "…>" : ">");
     OCStringRef result = OCStringCreateWithCString(buffer);
     free(buffer);
@@ -58,27 +98,36 @@ static void __OCDataFinalize(const void *obj) {
 
 static struct __OCData *OCDataAllocate() {
     return OCTypeAlloc(struct __OCData,
-                       OCDataGetTypeID(),
-                       __OCDataFinalize,
-                       __OCDataEqual,
-                       OCDataCopyFormattingDesc);
+                   OCDataGetTypeID(),
+                   __OCDataFinalize,
+                   __OCDataEqual,
+                   OCDataCopyFormattingDesc,
+                   __OCDataDeepCopy,   
+                   __OCDataDeepCopyMutable);           
+
 }
 
 OCDataRef OCDataCreate(const uint8_t *bytes, uint64_t length) {
-    if (!bytes || length == 0) return NULL;
     struct __OCData *data = OCDataAllocate();
     if (!data) return NULL;
-    data->bytes = malloc(length);
-    if (!data->bytes) {
-        fprintf(stderr, "OCDataCreate: malloc failed\n");
-        OCRelease(data);
-        return NULL;
+
+    if (length > 0) {
+        data->bytes = malloc(length);
+        if (!data->bytes) {
+            fprintf(stderr, "OCDataCreate: malloc failed\n");
+            OCRelease(data);
+            return NULL;
+        }
+        memcpy(data->bytes, bytes, length);
+    } else {
+        data->bytes = NULL;
     }
-    memcpy(data->bytes, bytes, length);
+
     data->length = length;
     data->capacity = length;
     return data;
 }
+
 
 OCDataRef OCDataCreateWithBytesNoCopy(const uint8_t *bytes, uint64_t length) {
     if (!bytes) return NULL;
@@ -87,10 +136,6 @@ OCDataRef OCDataCreateWithBytesNoCopy(const uint8_t *bytes, uint64_t length) {
     data->length = length;
     data->capacity = length;
     return data;
-}
-
-OCDataRef OCDataCreateCopy(OCDataRef source) {
-    return source ? OCDataCreate(source->bytes, source->length) : NULL;
 }
 
 OCMutableDataRef OCDataCreateMutable(uint64_t capacity) {
@@ -105,10 +150,6 @@ OCMutableDataRef OCDataCreateMutable(uint64_t capacity) {
     data->length = 0;
     data->capacity = capacity;
     return data;
-}
-
-OCMutableDataRef OCDataCreateMutableCopy(uint64_t capacity, OCDataRef source) {
-    return source ? (OCMutableDataRef)OCDataCreate(source->bytes, source->length) : NULL;
 }
 
 uint64_t OCDataGetLength(OCDataRef data) {
@@ -131,27 +172,38 @@ bool OCDataGetBytes(OCDataRef data, OCRange range, uint8_t *buffer) {
     return true;
 }
 
-bool OCDataSetLength(OCMutableDataRef data, uint64_t length) {
-    if (!data) return false;
-    if (length == data->length) return true;
+bool OCDataSetLength(OCMutableDataRef data, uint64_t newLength) {
+    if (!data) {
+        fprintf(stderr, "OCDataSetLength: data is NULL\n");
+        return false;
+    }
 
-    if (length > data->capacity) {
-        void *newBytes = realloc(data->bytes, length);
+    if (newLength == data->length) {
+        return true; // No change needed
+    }
+
+    // If expanding, reallocate if necessary
+    if (newLength > data->capacity) {
+        uint8_t *newBytes = realloc(data->bytes, newLength);
         if (!newBytes) {
-            fprintf(stderr, "OCDataSetLength: realloc failed\n");
+            fprintf(stderr, "OCDataSetLength: realloc failed for newLength = %llu\n",
+                    (unsigned long long)newLength);
             return false;
         }
         data->bytes = newBytes;
-        data->capacity = length;
+        data->capacity = newLength;
     }
 
-    if (length > data->length) {
-        memset((uint8_t *)data->bytes + data->length, 0, length - data->length);
+    // Zero new region if expanding
+    if (newLength > data->length && data->bytes) {
+        memset(data->bytes + data->length, 0, newLength - data->length);
     }
 
-    data->length = length;
+    // Shrink or grow the logical length
+    data->length = newLength;
     return true;
 }
+
 
 bool OCDataIncreaseLength(OCMutableDataRef data, uint64_t extraLength) {
     if (!data) return false;

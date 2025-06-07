@@ -280,6 +280,18 @@ static OCStringRef __OCStringCopyFormattingDesc(OCTypeRef cf)
     return OCStringCreateCopy((OCStringRef)cf);
 }
 
+static void *__OCStringDeepCopy(const void *obj) {
+    OCStringRef src = (OCStringRef)obj;
+    if (!src) return NULL;
+    return (void *)OCStringCreateCopy(src); // Safe cast, as OCStringCreateCopy allocates
+}
+
+static void *__OCStringDeepCopyMutable(const void *obj) {
+    OCStringRef src = (OCStringRef)obj;
+    if (!src) return NULL;
+    return OCStringCreateMutableCopy(src); // Returns OCMutableStringRef
+}
+
 OCTypeID OCStringGetTypeID(void)
 {
     if(kOCStringID == _kOCNotATypeID) kOCStringID = OCRegisterType("OCString");
@@ -292,39 +304,16 @@ static struct __OCString *OCStringAllocate()
                                          OCStringGetTypeID(),
                                          __OCStringFinalize,
                                          __OCStringEqual,
-                                         __OCStringCopyFormattingDesc);
+                                         __OCStringCopyFormattingDesc,
+                                         __OCStringDeepCopy,
+                                         __OCStringDeepCopyMutable);
 
-    // Initialize type-specific fields
     obj->string = NULL;
     obj->length = 0;
     obj->capacity = 0;
 
     return obj;
 }
-
-
-// static struct __OCString *OCStringAllocate()
-// {
-//     struct __OCString *obj = malloc(sizeof(struct __OCString));
-//     if(NULL == obj) {
-//         fprintf(stderr, "OCStringAllocate: Memory allocation failed.\n");
-//         return NULL;
-//     }
-//     obj->_base.typeID = OCStringGetTypeID();
-//     obj->_base.static_instance = false; // Not static
-//     obj->_base.finalize = __OCStringFinalize;
-//     obj->_base.equal = __OCStringEqual;
-//     obj->_base.copyFormattingDesc = __OCStringCopyFormattingDesc;
-//     obj->_base.retainCount = 1;
-//     obj->_base.finalized = false;
-
-//     obj->string = NULL;
-//     obj->length = 0;
-//     obj->capacity = 0;
-
-//     return obj;
-// }
-
 
 
 // -----------------------------------------------------------------------------

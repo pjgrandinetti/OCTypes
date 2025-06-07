@@ -192,7 +192,7 @@ OCMutableStringRef OCMutableStringCreateWithCString(const char *cString);
 
 /**
  * @brief Returns a C string representation of an immutable OCString.
- * @param theString Immutable OCString.
+ * @param theString Immutable OfCString.
  * @return Null-terminated UTF-8 C string.
  * @ingroup OCString
  * 

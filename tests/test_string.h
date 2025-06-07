@@ -18,4 +18,6 @@ bool stringTest9(void);
 bool stringTest10(void);
 bool stringTest11(void);
 
+bool stringTest_deepcopy(void);
+
 #endif // TEST_STRING_H

@@ -22,7 +22,7 @@ bool OCIndexSetCreateAndAccess_test(void) {
     OCRelease(single);
     OCRelease(range);
 
-    fprintf(stderr, "%s end...%s\n", __func__, success ? "without problems" : "with errors");
+    fprintf(stderr, "%s end...%s\n", __func__, success ? "without problems" : "with errors ***");
     return success;
 }
 
@@ -42,7 +42,7 @@ bool OCIndexSetAddAndContains_test(void) {
     success &= !OCIndexSetContainsIndex(set, 99);
 
     OCRelease(set);
-    fprintf(stderr, "%s end...%s\n", __func__, success ? "without problems" : "with errors");
+    fprintf(stderr, "%s end...%s\n", __func__, success ? "without problems" : "with errors ***");
     return success;
 }
 
@@ -62,7 +62,7 @@ bool OCIndexSetRangeAndBounds_test(void) {
     success &= (OCIndexSetIndexGreaterThanIndex(set, 25) == 30);
 
     OCRelease(set);
-    fprintf(stderr, "%s end...%s\n", __func__, success ? "without problems" : "with errors");
+    fprintf(stderr, "%s end...%s\n", __func__, success ? "without problems" : "with errors ***");
     return success;
 }
 
@@ -84,6 +84,31 @@ bool OCIndexSetSerialization_test(void) {
     OCRelease(dict);
     OCRelease(restored);
 
-    fprintf(stderr, "%s end...%s\n", __func__, success ? "without problems" : "with errors");
+    fprintf(stderr, "%s end...%s\n", __func__, success ? "without problems" : "with errors ***");
+    return success;
+}
+
+bool OCIndexSetDeepCopy_test(void) {
+    fprintf(stderr, "%s begin...\n", __func__);
+    bool success = true;
+
+    OCMutableIndexSetRef original = OCIndexSetCreateMutable();
+    OCIndexSetAddIndex(original, 10);
+    OCIndexSetAddIndex(original, 20);
+
+    OCIndexSetRef copy = (OCIndexSetRef)OCTypeDeepCopy(original);
+    success &= (copy != NULL);
+    success &= OCIndexSetEqual(original, copy);
+    success &= (original != copy); // pointer inequality
+
+    // Mutate the copy and check the original is unaffected
+    OCIndexSetAddIndex((OCMutableIndexSetRef)copy, 30);
+    success &= (OCIndexSetGetCount(copy) == 3);
+    success &= (OCIndexSetGetCount(original) == 2);
+
+    OCRelease(original);
+    OCRelease(copy);
+
+    fprintf(stderr, "%s end...%s\n", __func__, success ? "without problems" : "with errors ***");
     return success;
 }

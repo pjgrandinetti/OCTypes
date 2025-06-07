@@ -8,5 +8,6 @@ bool OCIndexPairSetAddAndContains_test(void);
 bool OCIndexPairSetValueLookup_test(void);
 bool OCIndexPairSetEquality_test(void);
 bool OCIndexPairSetShow_test(void);
+bool OCIndexPairSetDeepCopy_test(void);
 
 #endif /* TEST_OCINDEXPAIRSET_H */
