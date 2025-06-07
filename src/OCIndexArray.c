@@ -36,6 +36,16 @@ static bool __OCIndexArrayEqual(const void *a_, const void *b_) {
     return true;
 }
 
+static void *__OCIndexArrayDeepCopy(const void *obj) {
+    OCIndexArrayRef src = (OCIndexArrayRef)obj;
+    return src ? (void *)OCIndexArrayCreateCopy(src) : NULL;
+}
+
+static void *__OCIndexArrayDeepCopyMutable(const void *obj) {
+    OCIndexArrayRef src = (OCIndexArrayRef)obj;
+    return src ? (void *)OCIndexArrayCreateMutableCopy(src) : NULL;
+}
+
 static void __OCIndexArrayFinalize(const void *obj) {
     OCMutableIndexArrayRef array = (OCMutableIndexArrayRef)obj;
     if (array->indexes) OCRelease(array->indexes);
@@ -52,7 +62,10 @@ static OCMutableIndexArrayRef OCIndexArrayAllocate(void) {
         OCIndexArrayGetTypeID(),
         __OCIndexArrayFinalize,
         __OCIndexArrayEqual,
-        __OCIndexArrayCopyFormattingDesc);
+        __OCIndexArrayCopyFormattingDesc,
+        __OCIndexArrayDeepCopy,
+        __OCIndexArrayDeepCopyMutable
+    );
 }
 
 OCIndexArrayRef OCIndexArrayCreate(OCIndex *values, OCIndex count) {

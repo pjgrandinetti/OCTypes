@@ -32,6 +32,16 @@
  */
 OCTypeID OCDictionaryGetTypeID(void);
 
+
+/**
+ * @brief Creates a new dictionary with initial capacity.
+ *
+ * @param capacity Number of key-value pairs to allocate space for initially.
+ * @return New OCDictionaryRef or NULL on failure.
+ * @ingroup OCDictionary
+ */
+OCDictionaryRef OCDictionaryCreate(const void **keys, const void **values, uint64_t numValues);
+
 /**
  * @brief Creates a new mutable dictionary with initial capacity.
  *

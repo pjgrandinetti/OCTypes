@@ -102,77 +102,130 @@ bool arrayTest1_creation(void) {
     OCArrayRef arr_empty_copy = NULL;
     OCMutableArrayRef marr_zero_cap = NULL;
     OCMutableArrayRef marr_empty_copy2 = NULL;
+    OCMutableArrayRef deep_original = NULL;
+    OCMutableArrayRef deep_copy = NULL;
 
     s1 = OCStringCreateWithCString("hello");
-    if (!s1) { fprintf(stderr, "Error: OCStringCreateWithCString(\"hello\") failed in %s\n", __func__); goto cleanup; }
     s2 = OCStringCreateWithCString("world");
-    if (!s2) { fprintf(stderr, "Error: OCStringCreateWithCString(\"world\") failed in %s\n", __func__); goto cleanup; }
+    if (!s1 || !s2) {
+        fprintf(stderr, "Error: OCStringCreateWithCString failed\n");
+        goto cleanup;
+    }
 
     const void *values[] = {s1, s2};
     arr1 = OCArrayCreate(values, 2, &kOCTypeArrayCallBacks);
-    if (!arr1) { fprintf(stderr, "Error: OCArrayCreate failed in %s\n", __func__); goto cleanup; }
-    if (!(OCArrayGetCount(arr1) == 2)) { fprintf(stderr, "Assertion failed: OCArrayCreate count mismatch in %s\n", __func__); goto cleanup; }
-    if (!(OCTypeEqual(OCArrayGetValueAtIndex(arr1, 0), s1))) { fprintf(stderr, "Assertion failed: OCArrayCreate value mismatch at index 0 in %s\n", __func__); goto cleanup; }
-    if (!(OCTypeEqual(OCArrayGetValueAtIndex(arr1, 1), s2))) { fprintf(stderr, "Assertion failed: OCArrayCreate value mismatch at index 1 in %s\n", __func__); goto cleanup; }
+    if (!arr1 || OCArrayGetCount(arr1) != 2 ||
+        !OCTypeEqual(OCArrayGetValueAtIndex(arr1, 0), s1) ||
+        !OCTypeEqual(OCArrayGetValueAtIndex(arr1, 1), s2)) {
+        fprintf(stderr, "Error: OCArrayCreate validation failed\n");
+        goto cleanup;
+    }
 
     arr_empty_explicit_null = OCArrayCreate(NULL, 0, &kOCTypeArrayCallBacks);
-    if (!arr_empty_explicit_null) { fprintf(stderr, "Error: OCArrayCreate with NULL values and count 0 failed in %s\n", __func__); goto cleanup; }
-    if (!(OCArrayGetCount(arr_empty_explicit_null) == 0)) { fprintf(stderr, "Assertion failed: OCArrayCreate with NULL values and count 0: count mismatch in %s\n", __func__); goto cleanup; }
+    if (!arr_empty_explicit_null || OCArrayGetCount(arr_empty_explicit_null) != 0) {
+        fprintf(stderr, "Error: empty OCArrayCreate failed\n");
+        goto cleanup;
+    }
 
     const void *empty_values_ptr[] = {NULL};
     arr_empty_non_null_ptr = OCArrayCreate(empty_values_ptr, 0, &kOCTypeArrayCallBacks);
-    if (!arr_empty_non_null_ptr) { fprintf(stderr, "Error: OCArrayCreate with non-NULL values pointer and count 0 failed in %s\n", __func__); goto cleanup; }
-    if (!(OCArrayGetCount(arr_empty_non_null_ptr) == 0)) { fprintf(stderr, "Assertion failed: OCArrayCreate with non-NULL values pointer and count 0: count mismatch in %s\n", __func__); goto cleanup; }
+    if (!arr_empty_non_null_ptr || OCArrayGetCount(arr_empty_non_null_ptr) != 0) {
+        fprintf(stderr, "Error: empty OCArrayCreate with non-null pointer failed\n");
+        goto cleanup;
+    }
     OCRelease(arr_empty_non_null_ptr); arr_empty_non_null_ptr = NULL;
 
     arr1_copy = OCArrayCreateCopy(arr1);
-    if (!arr1_copy) { fprintf(stderr, "Error: OCArrayCreateCopy failed in %s\n", __func__); goto cleanup; }
-    if (!(OCArrayGetCount(arr1_copy) == 2)) { fprintf(stderr, "Assertion failed: OCArrayCreateCopy count mismatch in %s\n", __func__); goto cleanup; }
-    if (!(OCTypeEqual(OCArrayGetValueAtIndex(arr1_copy, 0), s1))) { fprintf(stderr, "Assertion failed: OCArrayCreateCopy value mismatch at index 0 in %s\n", __func__); goto cleanup; }
-    if (!(OCTypeEqual(OCArrayGetValueAtIndex(arr1_copy, 1), s2))) { fprintf(stderr, "Assertion failed: OCArrayCreateCopy value mismatch at index 1 in %s\n", __func__); goto cleanup; }
-    if (!((void*)arr1 != (void*)arr1_copy)) { fprintf(stderr, "Assertion failed: OCArrayCreateCopy should create a new instance in %s\n", __func__); goto cleanup; } // Cast to void* for pointer comparison if necessary
+    if (!arr1_copy || OCArrayGetCount(arr1_copy) != 2 ||
+        !OCTypeEqual(OCArrayGetValueAtIndex(arr1_copy, 0), s1) ||
+        !OCTypeEqual(OCArrayGetValueAtIndex(arr1_copy, 1), s2) ||
+        arr1_copy == arr1) {
+        fprintf(stderr, "Error: OCArrayCreateCopy validation failed\n");
+        goto cleanup;
+    }
     OCRelease(arr1_copy); arr1_copy = NULL;
 
     marr1 = OCArrayCreateMutable(5, &kOCTypeArrayCallBacks);
-    if (!marr1) { fprintf(stderr, "Error: OCArrayCreateMutable failed in %s\n", __func__); goto cleanup; }
-    if (!(OCArrayGetCount(marr1) == 0)) { fprintf(stderr, "Assertion failed: OCArrayCreateMutable initial count should be 0 in %s\n", __func__); goto cleanup; }
+    if (!marr1 || OCArrayGetCount(marr1) != 0) {
+        fprintf(stderr, "Error: OCArrayCreateMutable failed\n");
+        goto cleanup;
+    }
 
     marr1_copy = OCArrayCreateMutableCopy(arr1);
-    if (!marr1_copy) { fprintf(stderr, "Error: OCArrayCreateMutableCopy from immutable failed in %s\n", __func__); goto cleanup; }
-    if (!(OCArrayGetCount(marr1_copy) == 2)) { fprintf(stderr, "Assertion failed: OCArrayCreateMutableCopy (from immutable) count mismatch in %s\n", __func__); goto cleanup; }
-    if (!(OCTypeEqual(OCArrayGetValueAtIndex(marr1_copy, 0), s1))) { fprintf(stderr, "Assertion failed: OCArrayCreateMutableCopy (from immutable) value mismatch at index 0 in %s\n", __func__); goto cleanup; }
-    if (!(OCTypeEqual(OCArrayGetValueAtIndex(marr1_copy, 1), s2))) { fprintf(stderr, "Assertion failed: OCArrayCreateMutableCopy (from immutable) value mismatch at index 1 in %s\n", __func__); goto cleanup; }
+    if (!marr1_copy || OCArrayGetCount(marr1_copy) != 2 ||
+        !OCTypeEqual(OCArrayGetValueAtIndex(marr1_copy, 0), s1) ||
+        !OCTypeEqual(OCArrayGetValueAtIndex(marr1_copy, 1), s2)) {
+        fprintf(stderr, "Error: OCArrayCreateMutableCopy failed\n");
+        goto cleanup;
+    }
     OCRelease(marr1_copy); marr1_copy = NULL;
 
-    OCArrayAppendValue(marr1, s1); // s1 is already checked for NULL
+    OCArrayAppendValue(marr1, s1);
     marr1_mcopy = OCArrayCreateMutableCopy(marr1);
-    if (!marr1_mcopy) { fprintf(stderr, "Error: OCArrayCreateMutableCopy from mutable failed in %s\n", __func__); goto cleanup; }
-    if (!(OCArrayGetCount(marr1_mcopy) == 1)) { fprintf(stderr, "Assertion failed: OCArrayCreateMutableCopy (from mutable) count mismatch in %s\n", __func__); goto cleanup; }
-    if (!(OCTypeEqual(OCArrayGetValueAtIndex(marr1_mcopy, 0), s1))) { fprintf(stderr, "Assertion failed: OCArrayCreateMutableCopy (from mutable) value mismatch at index 0 in %s\n", __func__); goto cleanup; }
+    if (!marr1_mcopy || OCArrayGetCount(marr1_mcopy) != 1 ||
+        !OCTypeEqual(OCArrayGetValueAtIndex(marr1_mcopy, 0), s1)) {
+        fprintf(stderr, "Error: OCArrayCreateMutableCopy from mutable failed\n");
+        goto cleanup;
+    }
     OCRelease(marr1_mcopy); marr1_mcopy = NULL;
 
     arr_empty = OCArrayCreate(NULL, 0, &kOCTypeArrayCallBacks);
-    if (!arr_empty) { fprintf(stderr, "Error: OCArrayCreate with 0 values failed in %s\n", __func__); goto cleanup; }
-    if (!(OCArrayGetCount(arr_empty) == 0)) { fprintf(stderr, "Assertion failed: OCArrayCreate with 0 values count mismatch in %s\n", __func__); goto cleanup; }
-    OCRelease(arr_empty); arr_empty = NULL;
-
     arr_empty_copy = OCArrayCreateCopy(arr_empty_explicit_null);
-    if (!arr_empty_copy) { fprintf(stderr, "Error: OCArrayCreateCopy with empty array failed in %s\n", __func__); goto cleanup; }
-    if (!(OCArrayGetCount(arr_empty_copy) == 0)) { fprintf(stderr, "Assertion failed: OCArrayCreateCopy with empty array count mismatch in %s\n", __func__); goto cleanup; }
+    if (!arr_empty || !arr_empty_copy || OCArrayGetCount(arr_empty_copy) != 0) {
+        fprintf(stderr, "Error: empty array copy failed\n");
+        goto cleanup;
+    }
+    OCRelease(arr_empty); arr_empty = NULL;
     OCRelease(arr_empty_copy); arr_empty_copy = NULL;
 
     marr_zero_cap = OCArrayCreateMutable(0, &kOCTypeArrayCallBacks);
-    if (!marr_zero_cap) { fprintf(stderr, "Error: OCArrayCreateMutable with 0 capacity failed in %s\n", __func__); goto cleanup; }
-    if (!(OCArrayGetCount(marr_zero_cap) == 0)) { fprintf(stderr, "Assertion failed: OCArrayCreateMutable with 0 capacity count mismatch in %s\n", __func__); goto cleanup; }
     OCArrayAppendValue(marr_zero_cap, s1);
-    if (!(OCArrayGetCount(marr_zero_cap) == 1)) { fprintf(stderr, "Assertion failed: OCArrayCreateMutable with 0 capacity: count after append mismatch in %s\n", __func__); goto cleanup; }
-    if (!(OCTypeEqual(OCArrayGetValueAtIndex(marr_zero_cap, 0), s1))) { fprintf(stderr, "Assertion failed: OCArrayCreateMutable with 0 capacity: value after append mismatch in %s\n", __func__); goto cleanup; }
+    if (!marr_zero_cap || OCArrayGetCount(marr_zero_cap) != 1 ||
+        !OCTypeEqual(OCArrayGetValueAtIndex(marr_zero_cap, 0), s1)) {
+        fprintf(stderr, "Error: OCArrayCreateMutable with 0 capacity test failed\n");
+        goto cleanup;
+    }
     OCRelease(marr_zero_cap); marr_zero_cap = NULL;
 
     marr_empty_copy2 = OCArrayCreateMutableCopy(arr_empty_explicit_null);
-    if (!marr_empty_copy2) { fprintf(stderr, "Error: OCArrayCreateMutableCopy with empty array failed in %s\n", __func__); goto cleanup; }
-    if (!(OCArrayGetCount(marr_empty_copy2) == 0)) { fprintf(stderr, "Assertion failed: OCArrayCreateMutableCopy with empty array count mismatch in %s\n", __func__); goto cleanup; }
+    if (!marr_empty_copy2 || OCArrayGetCount(marr_empty_copy2) != 0) {
+        fprintf(stderr, "Error: OCArrayCreateMutableCopy empty test failed\n");
+        goto cleanup;
+    }
     OCRelease(marr_empty_copy2); marr_empty_copy2 = NULL;
+
+    // Deep copy test
+    deep_original = OCArrayCreateMutable(0, &kOCTypeArrayCallBacks);
+    OCStringRef deepStr = OCStringCreateWithCString("deep");
+    OCNumberRef deepNum = OCNumberCreateWithDouble(42.0);
+    OCArrayAppendValue(deep_original, deepStr);
+    OCArrayAppendValue(deep_original, deepNum);
+
+    deep_copy = OCTypeDeepCopy(deep_original);
+    if (!deep_copy) {
+        fprintf(stderr, "Error: OCTypeDeepCopy returned NULL\n");
+        goto cleanup;
+    }
+
+    const void *origStr = OCArrayGetValueAtIndex(deep_original, 0);
+    const void *copyStr = OCArrayGetValueAtIndex(deep_copy, 0);
+    const void *origNum = OCArrayGetValueAtIndex(deep_original, 1);
+    const void *copyNum = OCArrayGetValueAtIndex(deep_copy, 1);
+
+    if (!OCTypeEqual(origStr, copyStr) || !OCTypeEqual(origNum, copyNum)) {
+        fprintf(stderr, "Error: OCTypeDeepCopy semantic equality failed\n");
+        goto cleanup;
+    }
+
+    if (origStr == copyStr || origNum == copyNum) {
+        fprintf(stderr, "Error: OCTypeDeepCopy returned shallow copies\n");
+        goto cleanup;
+    }
+
+    OCRelease(deepStr);
+    OCRelease(deepNum);
+    OCRelease(deep_original);
+    OCRelease(deep_copy);
 
     fprintf(stderr, "%s end...without problems\n", __func__);
     success = true;
@@ -182,21 +235,24 @@ cleanup:
     if (s2) OCRelease(s2);
     if (arr1) OCRelease(arr1);
     if (arr_empty_explicit_null) OCRelease(arr_empty_explicit_null);
-    if (arr_empty_non_null_ptr) OCRelease(arr_empty_non_null_ptr); // Should be NULL if released mid-function
-    if (arr1_copy) OCRelease(arr1_copy); // Should be NULL if released mid-function
+    if (arr_empty_non_null_ptr) OCRelease(arr_empty_non_null_ptr);
+    if (arr1_copy) OCRelease(arr1_copy);
     if (marr1) OCRelease(marr1);
-    if (marr1_copy) OCRelease(marr1_copy); // Should be NULL if released mid-function
-    if (marr1_mcopy) OCRelease(marr1_mcopy); // Should be NULL if released mid-function
-    if (arr_empty) OCRelease(arr_empty); // Should be NULL if released mid-function
-    if (arr_empty_copy) OCRelease(arr_empty_copy); // Should be NULL if released mid-function
-    if (marr_zero_cap) OCRelease(marr_zero_cap); // Should be NULL if released mid-function
-    if (marr_empty_copy2) OCRelease(marr_empty_copy2); // Should be NULL if released mid-function
+    if (marr1_copy) OCRelease(marr1_copy);
+    if (marr1_mcopy) OCRelease(marr1_mcopy);
+    if (arr_empty) OCRelease(arr_empty);
+    if (arr_empty_copy) OCRelease(arr_empty_copy);
+    if (marr_zero_cap) OCRelease(marr_zero_cap);
+    if (marr_empty_copy2) OCRelease(marr_empty_copy2);
+    if (deep_original) OCRelease(deep_original);
+    if (deep_copy) OCRelease(deep_copy);
 
     if (!success) {
-      fprintf(stderr, "Test %s FAILED (due to prior error or assertion failure) in file %s\n", __func__, __FILE__);
+        fprintf(stderr, "Test %s FAILED\n", __func__);
     }
     return success;
 }
+
 
 bool arrayTest2_access(void) {
     fprintf(stderr, "%s begin...\n", __func__);

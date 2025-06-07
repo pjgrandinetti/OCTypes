@@ -719,3 +719,79 @@ bool dictionaryTest5(void) {
     printf("dictionaryTest5 %s.\n", success ? "passed" : "FAILED");
     return success;
 }
+
+bool OCDictionaryTestDeepCopy(void) {
+    fprintf(stderr, "%s begin...\n", __func__);
+    bool success = false;
+
+    OCStringRef key1 = OCStringCreateWithCString("alpha");
+    OCStringRef key2 = OCStringCreateWithCString("beta");
+    OCNumberRef val1 = OCNumberCreateWithDouble(3.14);
+    OCNumberRef val2 = OCNumberCreateWithInt64(42);
+
+    if (!key1 || !key2 || !val1 || !val2) {
+        fprintf(stderr, "Error: Failed to create test keys/values.\n");
+        goto cleanup;
+    }
+
+    // Create original dictionary
+    OCMutableDictionaryRef dict = OCDictionaryCreateMutable(2);
+    OCDictionaryAddValue(dict, key1, val1);
+    OCDictionaryAddValue(dict, key2, val2);
+
+    // Deep copy
+    OCMutableDictionaryRef copy = (OCMutableDictionaryRef)OCTypeDeepCopy(dict);
+    if (!copy) {
+        fprintf(stderr, "Error: OCTypeDeepCopy returned NULL.\n");
+        goto cleanup;
+    }
+
+    // Ensure same keys and values by content
+    const void *val1Copy = OCDictionaryGetValue(copy, key1);
+    const void *val2Copy = OCDictionaryGetValue(copy, key2);
+
+    if (!val1Copy || !val2Copy) {
+        fprintf(stderr, "Error: Deep copy missing keys.\n");
+        goto cleanup;
+    }
+
+    if (!OCTypeEqual(val1, val1Copy) || !OCTypeEqual(val2, val2Copy)) {
+        fprintf(stderr, "Error: Deep copied values not equal.\n");
+        goto cleanup;
+    }
+
+    // Check that it's not a shallow copy
+    if (val1 == val1Copy || val2 == val2Copy) {
+        fprintf(stderr, "Error: Deep copy is shallow (value pointer matches).\n");
+        goto cleanup;
+    }
+
+    // Modify the copy and ensure original is unaffected
+    OCNumberRef newVal = OCNumberCreateWithDouble(999.9);
+    OCDictionarySetValue(copy, key1, newVal);
+    OCRelease(newVal);
+
+    const void *originalVal1 = OCDictionaryGetValue(dict, key1);
+    const void *modifiedVal1 = OCDictionaryGetValue(copy, key1);
+
+    if (OCTypeEqual(originalVal1, modifiedVal1)) {
+        fprintf(stderr, "Error: Modification of deep copy affected original.\n");
+        goto cleanup;
+    }
+
+    fprintf(stderr, "%s passed.\n", __func__);
+    success = true;
+
+cleanup:
+    if (key1) OCRelease(key1);
+    if (key2) OCRelease(key2);
+    if (val1) OCRelease(val1);
+    if (val2) OCRelease(val2);
+    if (dict) OCRelease(dict);
+    if (copy) OCRelease(copy);
+
+    if (!success) {
+        fprintf(stderr, "%s FAILED\n", __func__);
+    }
+    return success;
+}

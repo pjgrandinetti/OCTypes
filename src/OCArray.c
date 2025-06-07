@@ -109,6 +109,41 @@ static void _OCArrayRetainValues(OCArrayRef theArray)
     }
 }
 
+static void * __OCArrayDeepCopy(const void *obj) {
+    const OCArrayRef src = (const OCArrayRef)obj;
+    if (!src) return NULL;
+
+    OCMutableArrayRef copy = OCArrayCreateMutable(src->count, src->callBacks);
+    if (!copy) return NULL;
+
+    for (uint64_t i = 0; i < src->count; ++i) {
+        const void *value = src->data[i];
+        const void *copied = NULL;
+
+        if (src->callBacks == &kOCTypeArrayCallBacks) {
+            copied = OCTypeDeepCopy(value);  // Recursive deep copy
+        } else if (src->callBacks && src->callBacks->retain) {
+            copied = src->callBacks->retain(value);  // Shallow copy fallback
+        } else {
+            copied = value; // Just copy the pointer
+        }
+
+        OCArrayAppendValue(copy, copied);
+
+        // Release extra retain if we retained and append also retained
+        if (src->callBacks && src->callBacks->retain &&
+            src->callBacks != &kOCTypeArrayCallBacks) {
+            OCRelease(copied);
+        }
+    }
+
+    return copy;
+}
+
+static void *__OCArrayDeepCopyMutable(const void *obj) {
+    return __OCArrayDeepCopy(obj);  // already returns a mutable copy
+}
+
 uint64_t OCArrayGetCount(OCArrayRef theArray)
 {
     if(NULL == theArray) return 0;
@@ -196,16 +231,15 @@ OCTypeID OCArrayGetTypeID(void)
     return kOCArrayID;
 }
 
-// NOTE: Uses OCTypeAlloc — object will be tracked for memory leaks and
-// must be released via OCRelease when no longer needed.
-static struct __OCArray *OCArrayAllocate()
-{
+static struct __OCArray *OCArrayAllocate() {
     struct __OCArray *obj = OCTypeAlloc(
         struct __OCArray,
         OCArrayGetTypeID(),
         __OCArrayFinalize,
         __OCArrayEqual,
-        OCArrayCopyFormattingDesc 
+        OCArrayCopyFormattingDesc,
+        __OCArrayDeepCopy,
+        __OCArrayDeepCopyMutable  // ← NEW!
     );
 
     obj->callBacks = &__kOCNullArrayCallBacks;
@@ -215,30 +249,6 @@ static struct __OCArray *OCArrayAllocate()
 
     return obj;
 }
-
-// static struct __OCArray *OCArrayAllocate()
-// {
-//     struct __OCArray *obj = malloc(sizeof(struct __OCArray));
-//     if(NULL == obj) {
-//         fprintf(stderr, "OCArrayAllocate: Memory allocation failed.\n");
-//         return NULL;
-//     }
-
-//     obj->_base.typeID = OCArrayGetTypeID();
-//     obj->_base.finalize = __OCArrayFinalize;
-//     obj->_base.equal = __OCArrayEqual;
-//     obj->_base.static_instance = false; // Not static
-//     obj->_base.finalized = false;
-//     obj->_base.copyFormattingDesc = NULL; // Or provide a suitable function
-//     obj->_base.retainCount = 1;
-
-//     obj->callBacks = &__kOCNullArrayCallBacks; // Default, can be overridden
-//     obj->count = 0;
-//     obj->capacity = 0;
-//     obj->data = NULL; // Initialize data pointer
-
-//     return obj;
-// }
 
 OCArrayRef OCArrayCreate(const void **values, uint64_t numValues, const OCArrayCallBacks *callBacks)
 {
@@ -275,6 +285,36 @@ OCArrayRef OCArrayCreateCopy(OCArrayRef theArray)
     return (OCArrayRef) OCArrayCreate((const void **) theArray->data, theArray->count, theArray->callBacks);
 }
 
+static void * __OCArrayDeepCopy(const void *obj) {
+    const OCArrayRef src = (const OCArrayRef)obj;
+    if (!src) return NULL;
+
+    OCMutableArrayRef copy = OCArrayCreateMutable(src->count, src->callBacks);
+    if (!copy) return NULL;
+
+    for (uint64_t i = 0; i < src->count; ++i) {
+        const void *value = src->data[i];
+        const void *copied = NULL;
+
+        if (src->callBacks == &kOCTypeArrayCallBacks) {
+            copied = OCTypeDeepCopy(value);  // Recursive deep copy
+        } else if (src->callBacks && src->callBacks->retain) {
+            copied = src->callBacks->retain(value);  // Shallow copy fallback
+        } else {
+            copied = value; // Just copy the pointer
+        }
+
+        OCArrayAppendValue(copy, copied);
+
+        // Release extra retain if we retained and append also retained
+        if (src->callBacks && src->callBacks->retain &&
+            src->callBacks != &kOCTypeArrayCallBacks) {
+            OCRelease(copied);
+        }
+    }
+
+    return copy;
+}
 OCMutableArrayRef OCArrayCreateMutable(uint64_t capacity, const OCArrayCallBacks *callBacks)
 {
     struct __OCArray *newArray = OCArrayAllocate();

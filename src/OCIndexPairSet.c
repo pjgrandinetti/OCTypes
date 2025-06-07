@@ -29,13 +29,55 @@ static bool __OCIndexPairSetEqual(const void *a_, const void *b_) {
 }
 
 static void __OCIndexPairSetFinalize(const void *obj) {
-    OCIndexPairSetRef set = (OCIndexPairSetRef)obj;
-    if (set->indexPairs) OCRelease(set->indexPairs);
+    OCIndexPairSetRef constSet = (OCIndexPairSetRef)obj;
+    OCMutableIndexPairSetRef set = (OCMutableIndexPairSetRef)constSet;
+
+    if (set->indexPairs) {
+        OCRelease(set->indexPairs);
+        set->indexPairs = NULL; // 
+    }
 }
 
 static OCStringRef __OCIndexPairSetCopyFormattingDesc(OCTypeRef cf) {
     if (!cf) return NULL;
     return OCStringCreateWithCString("<OCIndexPairSet>");
+}
+
+static OCMutableIndexPairSetRef OCIndexPairSetAllocate(void);
+
+static void *__OCIndexPairSetDeepCopy(const void *obj) {
+    OCIndexPairSetRef src = (OCIndexPairSetRef)obj;
+    if (!src || !src->indexPairs) return NULL;
+
+    // Deep copy underlying OCDataRef
+    OCDataRef copiedData = OCDataCreateCopy(src->indexPairs);
+    if (!copiedData) return NULL;
+
+    OCMutableIndexPairSetRef copy = OCIndexPairSetAllocate();
+    if (!copy) {
+        OCRelease(copiedData);
+        return NULL;
+    }
+
+    copy->indexPairs = copiedData;
+    return (OCIndexPairSetRef)copy;
+}
+
+static void *__OCIndexPairSetDeepCopyMutable(const void *obj) {
+    OCIndexPairSetRef src = (OCIndexPairSetRef)obj;
+    if (!src || !src->indexPairs) return NULL;
+
+    OCMutableDataRef copied = OCDataCreateMutableCopy(OCDataGetLength(src->indexPairs), src->indexPairs);
+    if (!copied) return NULL;
+
+    OCMutableIndexPairSetRef copy = OCIndexPairSetAllocate();
+    if (!copy) {
+        OCRelease(copied);
+        return NULL;
+    }
+
+    copy->indexPairs = copied;
+    return copy;
 }
 
 static OCMutableIndexPairSetRef OCIndexPairSetAllocate(void) {
@@ -44,8 +86,13 @@ static OCMutableIndexPairSetRef OCIndexPairSetAllocate(void) {
         OCIndexPairSetGetTypeID(),
         __OCIndexPairSetFinalize,
         __OCIndexPairSetEqual,
-        __OCIndexPairSetCopyFormattingDesc);
+        __OCIndexPairSetCopyFormattingDesc,
+        __OCIndexPairSetDeepCopy,
+        __OCIndexPairSetDeepCopyMutable
+    );
 }
+
+
 
 OCIndexPairSetRef OCIndexPairSetCreate(void) {
     OCMutableIndexPairSetRef s = OCIndexPairSetAllocate();
@@ -55,13 +102,21 @@ OCIndexPairSetRef OCIndexPairSetCreate(void) {
 
 OCMutableIndexPairSetRef OCIndexPairSetCreateMutable(void) {
     OCMutableIndexPairSetRef s = OCIndexPairSetAllocate();
-    s->indexPairs = NULL;
+    if (!s) return NULL;
+    s->indexPairs = OCDataCreateMutable(0);
     return s;
 }
 
 OCIndexPairSetRef OCIndexPairSetCreateWithIndexPairArray(OCIndexPair *array, int count) {
     OCMutableIndexPairSetRef s = OCIndexPairSetAllocate();
+    if (!s) return NULL;
+
     s->indexPairs = OCDataCreate((const uint8_t *)array, count * sizeof(OCIndexPair));
+    if (!s->indexPairs) {
+        OCRelease(s);
+        return NULL;
+    }
+
     return s;
 }
 

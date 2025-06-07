@@ -62,6 +62,7 @@ int main(int argc, const char * argv[]) {
     if (!dictionaryTest3())      failures++;  // ← Invoke OCDictionary mixed type tests
     if (!dictionaryTest4())      failures++;  // ← New: Invoke OCDictionary extreme cases tests
     if (!dictionaryTest5())      failures++;  // ← New: Invoke OCDictionary deep nesting tests
+    if (!OCDictionaryTestDeepCopy()) failures++;  // ← New: Invoke OCDictionary deep copy tests
     if (!arrayTest0())           failures++;
     if (!arrayTest1_creation())  failures++;
     if (!arrayTest2_access())    failures++;
