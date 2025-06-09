@@ -82,6 +82,10 @@ bool OCBooleanGetValue(OCBooleanRef b) {
     return (b == kOCBooleanTrue);
 }
 
+OCBooleanRef OCBooleanGetWithBool(bool value) {
+    return value ? kOCBooleanTrue : kOCBooleanFalse;
+}
+
 OCStringRef OCBooleanCreateStringValue(OCBooleanRef boolean) {
     return OCStringCreateWithCString(OCBooleanGetValue(boolean) ? "true" : "false");
 }

@@ -59,6 +59,14 @@ extern const OCBooleanRef kOCBooleanFalse;
  */
 bool OCBooleanGetValue(OCBooleanRef boolean);
 
+/*!
+ * @brief  Return the OCBoolean singleton corresponding to the given C bool.
+ *         No ownership is transferred.
+ *
+ * @param  value  A C bool.
+ * @return kOCBooleanTrue if value is true, else kOCBooleanFalse.
+ */
+OCBooleanRef OCBooleanGetWithBool(bool value);
 
 /**
  * @brief Returns a new OCStringRef representing the Boolean value ("true" or "false").
