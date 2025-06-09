@@ -294,10 +294,10 @@ OCStringRef OCNumberCreateStringValue(OCNumberRef n)
     return NULL;
 }
 
-void OCNumberGetValue(OCNumberRef number, OCNumberType type, void *valuePtr) {
+bool OCNumberGetValue(OCNumberRef number, OCNumberType type, void *valuePtr) {
     if (!number || !valuePtr) {
         // Consider logging an error or asserting for debug builds
-        return;
+        return false;
     }
 
     // Current implementation requires the requested type to match the internal type.
@@ -307,7 +307,7 @@ void OCNumberGetValue(OCNumberRef number, OCNumberType type, void *valuePtr) {
         // For now, the function will simply not copy the value if types don't match.
         // The caller must be aware that valuePtr might not be updated.
         // A robust solution might involve returning a status code.
-        return;
+        return false;
     }
 
     switch (number->type) {
@@ -326,4 +326,5 @@ void OCNumberGetValue(OCNumberRef number, OCNumberType type, void *valuePtr) {
         // No default needed as we check number->type == type above,
         // and assume number->type is always a valid OCNumberType.
     }
+    return true;
 }

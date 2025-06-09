@@ -154,7 +154,7 @@ OCStringRef OCNumberCopyFormattingDesc(OCNumberRef theNumber);
  * @param outValue Destination buffer (must match type).
  * @ingroup OCNumber
  */
-void OCNumberGetValue(OCNumberRef number, OCNumberType type, void *outValue);
+bool OCNumberGetValue(OCNumberRef number, OCNumberType type, void *valuePtr);
 
 /**
  * @brief Returns the size in bytes of the C type corresponding to the given OCNumberType.
