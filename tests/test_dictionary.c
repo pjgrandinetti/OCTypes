@@ -14,9 +14,6 @@
 #include "../src/OCArray.h"
 #include "../src/OCDictionary.h"
 
-// pull in the getter for numbers (was missing from OCNumber.h)
-extern void OCNumberGetValue(OCNumberRef number, OCNumberType type, void *outValue);
-
 bool dictionaryTest0(void) {
 
     // Test 1: empty mutable dict

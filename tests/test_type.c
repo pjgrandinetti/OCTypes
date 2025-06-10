@@ -41,38 +41,32 @@ bool typeTest1(void) {
 
 // after typeTest1, add:
 
-/// @brief Verify OCTypeDeepCopy / OCTypeDeepCopyMutable produce true deep copies
 bool typeTest2(void) {
     fprintf(stderr, "%s begin...\n", __func__);
-    bool success = false;
+    bool success = true;
 
-    // 1) immutable deep copy of an OCString
     OCStringRef orig = OCStringCreateWithCString("deepcopy!");
-    ASSERT_NOT_NULL(orig, "OCStringCreateWithCString");
+    if (!orig) return false;
 
     OCStringRef copy = (OCStringRef)OCTypeDeepCopy(orig);
-    ASSERT_NOT_NULL(copy,        "OCTypeDeepCopy should not return NULL");
-    // pointers differ...
-    ASSERT_TRUE(copy != orig,    "OCTypeDeepCopy must give a new instance");
-    // but content is equal
-    ASSERT_TRUE(OCTypeEqual(copy, orig), "OCTypeDeepCopy content must match");
+    if (!copy || copy == orig || !OCTypeEqual(copy, orig)) {
+        success = false;
+    }
     OCRelease(copy);
 
-    // 2) mutable deep copy of the same string
     OCMutableStringRef mcopy = (OCMutableStringRef)OCTypeDeepCopyMutable(orig);
-    ASSERT_NOT_NULL(mcopy,       "OCTypeDeepCopyMutable should not return NULL");
-    ASSERT_TRUE((OCStringRef)mcopy != orig,  "OCTypeDeepCopyMutable gives new instance");
-    ASSERT_TRUE(OCTypeEqual(mcopy, orig),    "OCTypeDeepCopyMutable content must match");
+    if (!mcopy || (OCStringRef)mcopy == orig || !OCTypeEqual(mcopy, orig)) {
+        success = false;
+    }
 
-    // do an in-place mutation on the mutable copy and
-    // make sure the original is untouched
     OCStringAppendCString(mcopy, "?");
-    ASSERT_TRUE(!OCTypeEqual(mcopy, orig),
-                "mutating the deep-mutable copy must not affect the original");
+    if (OCTypeEqual(mcopy, orig)) {
+        success = false;
+    }
 
     OCRelease(mcopy);
     OCRelease(orig);
 
-    fprintf(stderr, "%s end...without problems\n", __func__);
-    return true;
+    fprintf(stderr, "%s end...%s\n", __func__, success ? "without problems" : "with failures");
+    return success;
 }
