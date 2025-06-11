@@ -93,40 +93,37 @@ OCStringRef OCDictionaryCopyFormattingDesc(OCTypeRef cf)
 
 static void *impl_OCDictionaryDeepCopy(const void *obj)
 {
-    OCDictionaryRef src = (OCDictionaryRef)obj;
-    if (!src || src->count == 0)
+    const OCDictionaryRef src = (OCDictionaryRef)obj;
+    if (!src) 
         return NULL;
 
+    // Always create a new mutable dictionary, even if src->count == 0
     OCMutableDictionaryRef copy = OCDictionaryCreateMutable(src->count);
     if (!copy)
         return NULL;
 
-    for (uint64_t i = 0; i < src->count; ++i)
-    {
+    for (uint64_t i = 0; i < src->count; ++i) {
+        // deep-copy the key
         OCStringRef keyCopy = (OCStringRef)OCTypeDeepCopy(src->keys[i]);
-        if (!keyCopy)
-        {
-            OCRelease(copy); // Will trigger finalizer to clean up all added keys/values
+        if (!keyCopy) {
+            OCRelease(copy);
             return NULL;
         }
-
+        // deep-copy the value
         void *valCopy = OCTypeDeepCopy(src->values[i]);
-        if (!valCopy)
-        {
+        if (!valCopy) {
             OCRelease(keyCopy);
             OCRelease(copy);
             return NULL;
         }
-
+        // insert (AddValue retains both)
         if (!OCDictionaryAddValue(copy, keyCopy, valCopy)) {
-            // Defensive: handle allocation failure inside AddValue (e.g., realloc failure)
             OCRelease(keyCopy);
             OCRelease(valCopy);
             OCRelease(copy);
             return NULL;
         }
-
-        OCRelease(keyCopy); // AddValue retains both
+        OCRelease(keyCopy);
         OCRelease(valCopy);
     }
 
@@ -147,14 +144,6 @@ static void impl_OCDictionaryReleaseValues(OCDictionaryRef dict)
     }
 }
 
-static void impl_OCDictionaryRetainValues(OCDictionaryRef dict)
-{
-    for (uint64_t i = 0; i < dict->count; i++)
-    {
-        OCRetain(dict->keys[i]);
-        OCRetain(dict->values[i]);
-    }
-}
 static void impl_OCDictionaryFinalize(const void *theType)
 {
     if (NULL == theType)
@@ -201,60 +190,55 @@ uint64_t OCDictionaryGetCount(OCDictionaryRef theDictionary)
     return theDictionary->count;
 }
 
-OCDictionaryRef OCDictionaryCreate(const void **keys, const void **values, uint64_t numValues)
+OCDictionaryRef OCDictionaryCreate(const void **keys,
+                                   const void **values,
+                                   uint64_t      numValues)
 {
-    if (NULL == keys || NULL == values)
-        return NULL;
+    if (!keys || !values) return NULL;
 
-    struct impl_OCDictionary *theDictionary = OCDictionaryAllocate();
-    if (NULL == theDictionary)
-        return NULL;
-    theDictionary->values = (OCTypeRef *)calloc(numValues, sizeof(OCTypeRef));
-    if (NULL == theDictionary->values)
-    {
-        fprintf(stderr, "OCDictionaryCreate: Memory allocation for values failed.\n");
-        OCRelease(theDictionary);
-        return NULL;
-    }
-    memcpy((void *)theDictionary->values, (const void *)values, numValues * sizeof(void *));
-    theDictionary->keys = (OCStringRef *)calloc(numValues, sizeof(OCStringRef));
-    if (NULL == theDictionary->keys)
-    {
-        fprintf(stderr, "OCDictionaryCreate: Memory allocation for keys failed.\n");
-        free(theDictionary->values);
-        OCRelease(theDictionary);
-        return NULL;
-    }
-    memcpy((char *)theDictionary->keys, (const char *)keys, numValues * sizeof(char *));
-    theDictionary->count = numValues;
-    theDictionary->capacity = numValues;
-    impl_OCDictionaryRetainValues(theDictionary);
+    // Normalize zero → at least one slot
+    uint64_t allocCap = (numValues > 0 ? numValues : 1);
+    OCMutableDictionaryRef dict = OCDictionaryCreateMutable(allocCap);
+    if (!dict) return NULL;
 
-    return theDictionary;
+    // If there really are no entries, we’re done:
+    if (numValues == 0) {
+        return dict;
+    }
+
+    // Otherwise copy keys & values as before...
+    dict->count = numValues; // safe because allocCap >= numValues
+    for (uint64_t i = 0; i < numValues; i++) {
+        dict->keys[i]   = OCStringCreateCopy((OCStringRef)keys[i]);
+        dict->values[i] = (OCTypeRef)OCRetain(values[i]);
+    }
+    return dict;
 }
 
 OCMutableDictionaryRef OCDictionaryCreateMutable(uint64_t capacity)
 {
     struct impl_OCDictionary *theDictionary = OCDictionaryAllocate();
-    if (NULL == theDictionary)
-        return NULL;
-    theDictionary->values = (OCTypeRef *)calloc(capacity, sizeof(OCTypeRef));
-    if (NULL == theDictionary->values)
-    {
+    if (!theDictionary) return NULL;
+
+    // Normalize zero capacity → at least one slot
+    uint64_t allocCap = (capacity > 0 ? capacity : 1);
+
+    theDictionary->values = (OCTypeRef *)calloc(allocCap, sizeof(OCTypeRef));
+    if (!theDictionary->values) {
         fprintf(stderr, "OCDictionaryCreateMutable: Memory allocation for values failed.\n");
         OCRelease(theDictionary);
         return NULL;
     }
-    theDictionary->keys = (OCStringRef *)calloc(capacity, sizeof(OCStringRef));
-    if (NULL == theDictionary->keys)
-    {
+    theDictionary->keys = (OCStringRef *)calloc(allocCap, sizeof(OCStringRef));
+    if (!theDictionary->keys) {
         fprintf(stderr, "OCDictionaryCreateMutable: Memory allocation for keys failed.\n");
         free(theDictionary->values);
         OCRelease(theDictionary);
         return NULL;
     }
-    theDictionary->count = 0;
-    theDictionary->capacity = capacity;
+
+    theDictionary->count    = 0;
+    theDictionary->capacity = allocCap;
     return theDictionary;
 }
 

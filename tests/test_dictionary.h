@@ -11,5 +11,6 @@ bool dictionaryTest3(void);
 bool dictionaryTest4(void);  // Test for extreme cases and capacity handling
 bool dictionaryTest5(void);  // Test for iteration performance and deep nesting
 bool OCDictionaryTestDeepCopy(void);
+bool test_OCDictionary_deepcopy2(void);
 
 #endif /* TEST_DICTIONARY_H */

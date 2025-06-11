@@ -807,3 +807,82 @@ cleanup:
     }
     return success;
 }
+
+
+bool test_OCDictionary_deepcopy2(void) {
+    // (1) Empty dictionary
+    OCMutableDictionaryRef empty = OCDictionaryCreateMutable(0);
+    ASSERT_NOT_NULL(empty, "failed to create empty mutable dictionary");
+
+    OCDictionaryRef emptyCopy = (OCDictionaryRef)OCTypeDeepCopy(empty);
+    ASSERT_NOT_NULL(emptyCopy, "deep copy of empty dictionary returned NULL");
+    ASSERT_EQUAL(
+        OCDictionaryGetCount(emptyCopy),
+        0,
+        "empty copy should have count 0"
+    );
+
+    OCRelease(emptyCopy);
+    OCRelease(empty);
+
+    // (2) Non-empty dictionary
+    // Build a small dict { "k1":"v1", "k2":"v2" }
+    OCStringRef k1 = STR("k1");
+    OCStringRef k2 = STR("k2");
+    OCStringRef v1 = STR("v1");
+    OCStringRef v2 = STR("v2");
+    const void *keys[]   = { k1, k2 };
+    const void *values[] = { v1, v2 };
+
+    OCDictionaryRef dict = OCDictionaryCreate(keys, values, 2);
+    ASSERT_NOT_NULL(dict, "failed to create dictionary");
+    ASSERT_EQUAL(
+        OCDictionaryGetCount(dict),
+        2,
+        "original dictionary count should be 2"
+    );
+
+    // Deep-copy
+    OCDictionaryRef dictCopy = (OCDictionaryRef)OCTypeDeepCopy(dict);
+    ASSERT_NOT_NULL(dictCopy, "deep copy returned NULL");
+    ASSERT_EQUAL(
+        OCDictionaryGetCount(dictCopy),
+        2,
+        "deep-copy dictionary count should be 2"
+    );
+
+    // Values under each key should initially be equal
+    OCTypeRef orig_v1 = (OCTypeRef)OCDictionaryGetValue(dict, k1);
+    OCTypeRef copy_v1 = (OCTypeRef)OCDictionaryGetValue(dictCopy, k1);
+    ASSERT_TRUE(
+        OCTypeEqual(orig_v1, copy_v1),
+        "value for k1 should match after deepcopy"
+    );
+
+    OCTypeRef orig_v2 = (OCTypeRef)OCDictionaryGetValue(dict, k2);
+    OCTypeRef copy_v2 = (OCTypeRef)OCDictionaryGetValue(dictCopy, k2);
+    ASSERT_TRUE(
+        OCTypeEqual(orig_v2, copy_v2),
+        "value for k2 should match after deepcopy"
+    );
+
+    // Mutate original: change "k1" → "new"
+    OCStringRef newVal = STR("new");
+    ASSERT_TRUE(
+        OCDictionarySetValue((OCMutableDictionaryRef)dict, k1, newVal),
+        "failed to set new value for k1"
+    );
+
+    // Now original and copy must differ at k1
+    OCTypeRef mutated_v1 = (OCTypeRef)OCDictionaryGetValue(dict, k1);
+    OCTypeRef still_v1   = (OCTypeRef)OCDictionaryGetValue(dictCopy, k1);
+    ASSERT_FALSE(
+        OCTypeEqual(mutated_v1, still_v1),
+        "after mutation, original[k1] should differ from copy[k1]"
+    );
+
+    // Cleanup
+    OCRelease(dictCopy);
+    OCRelease(dict);
+    return true;
+}

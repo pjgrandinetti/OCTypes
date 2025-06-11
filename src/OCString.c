@@ -9,6 +9,8 @@
 #include "OCString.h"
 #include "OCDictionary.h"   // for OCMutableDictionaryRef, OCDictionaryCreateMutable, etc.
 
+static OCMutableDictionaryRef impl_constantStringTable = NULL;
+
 // Forward declaration for OCStringFindWithOptions
 bool OCStringFindWithOptions(OCStringRef string, OCStringRef stringToFind, OCRange rangeToSearch, OCOptionFlags compareOptions, OCRange *result);
 
@@ -323,28 +325,27 @@ static struct impl_OCString *OCStringAllocate()
 
 // A single mutable dictionary to intern all constant strings
 void cleanupConstantStringTable(void) {
-    OCMutableDictionaryRef table = getConstantStringTable();
-    if (table) {
-        OCArrayRef keys = OCDictionaryCreateArrayWithAllKeys(table);
-        for(long index = 0; index < OCArrayGetCount(keys); index++) {
-            OCStringRef key = (OCStringRef)OCArrayGetValueAtIndex(keys, index);
-            OCStringRef value = (OCStringRef)OCDictionaryGetValue(table, key);
-            OCDictionaryRemoveValue(table, key);
-            OCTypeSetStaticInstance(value, false);
-            OCRelease(value);
-           }
-        OCRelease(keys);
-        OCRelease(table);
-        }
+    if (!impl_constantStringTable) return;
+    OCArrayRef keys = OCDictionaryCreateArrayWithAllKeys(impl_constantStringTable);
+    for (size_t i = 0; i < OCArrayGetCount(keys); ++i) {
+        OCStringRef key   = (OCStringRef)OCArrayGetValueAtIndex(keys, i);
+        OCStringRef value = (OCStringRef)OCDictionaryGetValue(impl_constantStringTable, key);
+        OCDictionaryRemoveValue(impl_constantStringTable, key);
+        OCTypeSetStaticInstance(value, false);
+        OCRelease(value);
+    }
+    OCRelease(keys);
+    OCRelease(impl_constantStringTable);
+    impl_constantStringTable = NULL;    // ← clear the global cache
 }
 
 static OCMutableDictionaryRef getConstantStringTable(void) {
-    static OCMutableDictionaryRef table = NULL;
-    if (table == NULL) {
-        table = OCDictionaryCreateMutable(0);
+    if (!impl_constantStringTable) {
+        impl_constantStringTable = OCDictionaryCreateMutable(0);
     }
-    return table;
+    return impl_constantStringTable;
 }
+
 
 OCStringRef impl_OCStringMakeConstantString(const char *cStr)
 {
