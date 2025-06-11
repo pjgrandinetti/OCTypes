@@ -7,41 +7,41 @@
 //
 #include <stdio.h>
 #include "OCLibrary.h"
-#include "OCType.h" // for OCRegisterType, OCTypeID, _kOCNotATypeID
+#include "OCType.h" // for OCRegisterType, OCTypeID, kOCNotATypeID
 
 // Static storage of the boolean type’s OCTypeID
-static OCTypeID kOCBooleanTypeID = _kOCNotATypeID;
+static OCTypeID kOCBooleanTypeID = kOCNotATypeID;
 
 // Our two singletons
-struct __OCBoolean {
-    OCBase _base;
+struct impl_OCBoolean {
+    OCBase base;
 };
 
-static struct __OCBoolean __kOCBooleanTrue = {
-    ._base = {
-        _kOCNotATypeID, 0, NULL, NULL, NULL
+static struct impl_OCBoolean impl_kOCBooleanTrue = {
+    .base = {
+        kOCNotATypeID, 0, NULL, NULL, NULL
     }
 };
-static struct __OCBoolean __kOCBooleanFalse = {
-    ._base = {
-        _kOCNotATypeID, 0, NULL, NULL, NULL
+static struct impl_OCBoolean impl_kOCBooleanFalse = {
+    .base = {
+        kOCNotATypeID, 0, NULL, NULL, NULL
     }
 };
 
-const OCBooleanRef kOCBooleanTrue  = &__kOCBooleanTrue;
-const OCBooleanRef kOCBooleanFalse = &__kOCBooleanFalse;
+const OCBooleanRef kOCBooleanTrue  = &impl_kOCBooleanTrue;
+const OCBooleanRef kOCBooleanFalse = &impl_kOCBooleanFalse;
 
 // Equality callback: same pointer
-static bool __OCBooleanEqual(const void *v1, const void *v2) {
+static bool impl_OCBooleanEqual(const void *v1, const void *v2) {
     return v1 == v2;
 }
 
 // No-op finalizer
-static void __OCBooleanFinalize(const void *unused) {
+static void impl_OCBooleanFinalize(const void *unused) {
     (void)unused;
 }
 
-static OCStringRef __OCBooleanCopyFormattingDesc(OCTypeRef cf)
+static OCStringRef impl_OCBooleanCopyFormattingDesc(OCTypeRef cf)
 {
     if (!cf) return NULL;
     OCBase *base = (OCBase *)cf;
@@ -59,18 +59,18 @@ static OCStringRef __OCBooleanCopyFormattingDesc(OCTypeRef cf)
 void _OCBooleanInitialize(void) {
     kOCBooleanTypeID = OCRegisterType("OCBoolean");
 
-    __kOCBooleanTrue._base.typeID   = kOCBooleanTypeID;
-    __kOCBooleanTrue._base.finalize = __OCBooleanFinalize;
-    __kOCBooleanTrue._base.equal    = __OCBooleanEqual;
-    __kOCBooleanTrue._base.copyFormattingDesc = __OCBooleanCopyFormattingDesc;
-    __kOCBooleanTrue._base.finalized = false;
+    impl_kOCBooleanTrue.base.typeID   = kOCBooleanTypeID;
+    impl_kOCBooleanTrue.base.finalize = impl_OCBooleanFinalize;
+    impl_kOCBooleanTrue.base.equal    = impl_OCBooleanEqual;
+    impl_kOCBooleanTrue.base.copyFormattingDesc = impl_OCBooleanCopyFormattingDesc;
+    impl_kOCBooleanTrue.base.finalized = false;
     OCTypeSetStaticInstance(kOCBooleanTrue, true);
 
-    __kOCBooleanFalse._base.typeID   = kOCBooleanTypeID;
-    __kOCBooleanFalse._base.finalize = __OCBooleanFinalize;
-    __kOCBooleanFalse._base.equal    = __OCBooleanEqual;
-    __kOCBooleanFalse._base.copyFormattingDesc = __OCBooleanCopyFormattingDesc;
-    __kOCBooleanFalse._base.finalized = false;
+    impl_kOCBooleanFalse.base.typeID   = kOCBooleanTypeID;
+    impl_kOCBooleanFalse.base.finalize = impl_OCBooleanFinalize;
+    impl_kOCBooleanFalse.base.equal    = impl_OCBooleanEqual;
+    impl_kOCBooleanFalse.base.copyFormattingDesc = impl_OCBooleanCopyFormattingDesc;
+    impl_kOCBooleanFalse.base.finalized = false;
     OCTypeSetStaticInstance(kOCBooleanFalse, true);
 }
 

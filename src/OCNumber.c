@@ -5,27 +5,27 @@
 #include <inttypes.h>
 #include "OCLibrary.h"
 
-static OCTypeID kOCNumberID = _kOCNotATypeID;
+static OCTypeID kOCNumberID = kOCNotATypeID;
 
-struct __OCNumber {
-    OCBase _base;
+struct impl_OCNumber {
+    OCBase base;
     OCNumberType type;
     __Number value;
 };
 
 OCTypeID OCNumberGetTypeID(void)
 {
-    if (kOCNumberID == _kOCNotATypeID)
+    if (kOCNumberID == kOCNotATypeID)
         kOCNumberID = OCRegisterType("OCNumber");
     return kOCNumberID;
 }
 
-static bool __OCNumberEqual(const void *a_, const void *b_)
+static bool impl_OCNumberEqual(const void *a_, const void *b_)
 {
     OCNumberRef a = (OCNumberRef)a_;
     OCNumberRef b = (OCNumberRef)b_;
     if (a == b) return true;
-    if (!a || !b || a->_base.typeID != b->_base.typeID) return false;
+    if (!a || !b || a->base.typeID != b->base.typeID) return false;
 
     double ar, ai = 0.0, br, bi = 0.0;
     bool ac = false, bc = false;
@@ -82,14 +82,14 @@ static bool __OCNumberEqual(const void *a_, const void *b_)
     return ar == br;
 }
 
-static void __OCNumberFinalize(const void *theType)
+static void impl_OCNumberFinalize(const void *theType)
 {
     (void)theType;
 }
 
 #include <inttypes.h>
 
-static OCStringRef __OCNumberCopyFormattingDesc(OCTypeRef theType)
+static OCStringRef impl_OCNumberCopyFormattingDesc(OCTypeRef theType)
 {
     if (!theType) return NULL;
     OCBase *base = (OCBase *)theType;
@@ -123,33 +123,33 @@ static OCStringRef __OCNumberCopyFormattingDesc(OCTypeRef theType)
     return NULL;
 }
 
-static void *__OCNumberDeepCopy(const void *obj) {
+static void *impl_OCNumberDeepCopy(const void *obj) {
     const OCNumberRef src = (const OCNumberRef)obj;
     if (!src) return NULL;
     return (void *)OCNumberCreate(src->type, (void *)&src->value);
 }
 
-static void *__OCNumberDeepCopyMutable(const void *obj) {
+static void *impl_OCNumberDeepCopyMutable(const void *obj) {
     // OCNumber is immutable by design, so mutable deep copy is the same.
-    return __OCNumberDeepCopy(obj);
+    return impl_OCNumberDeepCopy(obj);
 }
 
-static struct __OCNumber *OCNumberAllocate(void)
+static struct impl_OCNumber *OCNumberAllocate(void)
 {
     return OCTypeAlloc(
-        struct __OCNumber,
+        struct impl_OCNumber,
         OCNumberGetTypeID(),
-        __OCNumberFinalize,
-        __OCNumberEqual,
-        __OCNumberCopyFormattingDesc,
-        __OCNumberDeepCopy,
-        __OCNumberDeepCopyMutable
+        impl_OCNumberFinalize,
+        impl_OCNumberEqual,
+        impl_OCNumberCopyFormattingDesc,
+        impl_OCNumberDeepCopy,
+        impl_OCNumberDeepCopyMutable
     );
 }
 
 OCNumberRef OCNumberCreate(const OCNumberType type, void *value)
 {
-    struct __OCNumber *n = OCNumberAllocate();
+    struct impl_OCNumber *n = OCNumberAllocate();
     if (!n) return NULL;
     n->type = type;
     switch (type) {

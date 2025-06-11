@@ -3,9 +3,9 @@
 /* Prevent flex from including unistd.h automatically */
 %option nounistd
 %{
-    typedef const struct __complexNode * ComplexNodeRef;
-    typedef const struct __complexNumberValue * ComplexNumberRef;
-    typedef const struct __complexNodeFunction * ComplexNumberFunctionRef;
+    typedef const struct impl_complexNode * ComplexNodeRef;
+    typedef const struct impl_complexNumberValue * ComplexNumberRef;
+    typedef const struct impl_complexNodeFunction * ComplexNumberFunctionRef;
     typedef enum builtInMathFunctions {
         BM_sqrt = 1,
         BM_cbrt,

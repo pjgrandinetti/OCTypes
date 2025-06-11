@@ -9,26 +9,26 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-static OCTypeID kOCIndexPairSetID = _kOCNotATypeID;
+static OCTypeID kOCIndexPairSetID = kOCNotATypeID;
 
-struct __OCIndexPairSet {
-    OCBase _base;
+struct impl_OCIndexPairSet {
+    OCBase base;
     OCDataRef indexPairs;
 };
 
 OCTypeID OCIndexPairSetGetTypeID(void) {
-    if (kOCIndexPairSetID == _kOCNotATypeID)
+    if (kOCIndexPairSetID == kOCNotATypeID)
         kOCIndexPairSetID = OCRegisterType("OCIndexPairSet");
     return kOCIndexPairSetID;
 }
 
-static bool __OCIndexPairSetEqual(const void *a_, const void *b_) {
+static bool impl_OCIndexPairSetEqual(const void *a_, const void *b_) {
     OCIndexPairSetRef a = (OCIndexPairSetRef)a_;
     OCIndexPairSetRef b = (OCIndexPairSetRef)b_;
     return OCTypeEqual(a->indexPairs, b->indexPairs);
 }
 
-static void __OCIndexPairSetFinalize(const void *obj) {
+static void impl_OCIndexPairSetFinalize(const void *obj) {
     OCIndexPairSetRef constSet = (OCIndexPairSetRef)obj;
     OCMutableIndexPairSetRef set = (OCMutableIndexPairSetRef)constSet;
 
@@ -38,14 +38,14 @@ static void __OCIndexPairSetFinalize(const void *obj) {
     }
 }
 
-static OCStringRef __OCIndexPairSetCopyFormattingDesc(OCTypeRef cf) {
+static OCStringRef impl_OCIndexPairSetCopyFormattingDesc(OCTypeRef cf) {
     if (!cf) return NULL;
     return OCStringCreateWithCString("<OCIndexPairSet>");
 }
 
 static OCMutableIndexPairSetRef OCIndexPairSetAllocate(void);
 
-static void *__OCIndexPairSetDeepCopy(const void *obj) {
+static void *impl_OCIndexPairSetDeepCopy(const void *obj) {
     OCIndexPairSetRef src = (OCIndexPairSetRef)obj;
     if (!src || !src->indexPairs) return NULL;
 
@@ -63,7 +63,7 @@ static void *__OCIndexPairSetDeepCopy(const void *obj) {
     return (void *) copy;
 }
 
-static void *__OCIndexPairSetDeepCopyMutable(const void *obj) {
+static void *impl_OCIndexPairSetDeepCopyMutable(const void *obj) {
     OCIndexPairSetRef src = (OCIndexPairSetRef)obj;
     if (!src || !src->indexPairs) return NULL;
 
@@ -82,13 +82,13 @@ static void *__OCIndexPairSetDeepCopyMutable(const void *obj) {
 
 static OCMutableIndexPairSetRef OCIndexPairSetAllocate(void) {
     return (OCMutableIndexPairSetRef)OCTypeAlloc(
-        struct __OCIndexPairSet,
+        struct impl_OCIndexPairSet,
         OCIndexPairSetGetTypeID(),
-        __OCIndexPairSetFinalize,
-        __OCIndexPairSetEqual,
-        __OCIndexPairSetCopyFormattingDesc,
-        __OCIndexPairSetDeepCopy,
-        __OCIndexPairSetDeepCopyMutable
+        impl_OCIndexPairSetFinalize,
+        impl_OCIndexPairSetEqual,
+        impl_OCIndexPairSetCopyFormattingDesc,
+        impl_OCIndexPairSetDeepCopy,
+        impl_OCIndexPairSetDeepCopyMutable
     );
 }
 

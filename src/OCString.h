@@ -35,7 +35,7 @@
  * // Do NOT release STR strings
  * @endcode
  */
-#define STR(cStr)  __OCStringMakeConstantString("" cStr "")
+#define STR(cStr)  impl_OCStringMakeConstantString("" cStr "")
 
 /**
  * @brief Returns the unique type identifier for OCString objects.
@@ -772,7 +772,7 @@ void OCStringAppendFormat(OCMutableStringRef theString, OCStringRef format, ...)
  * @param cStr C string literal.
  * @return A compile-time constant OCStringRef; do not release.
  */
-OCStringRef __OCStringMakeConstantString(const char *cStr);
+OCStringRef impl_OCStringMakeConstantString(const char *cStr);
 /** \endcond */
 
 /**

@@ -57,7 +57,7 @@ enum CommonConstants {
  * @ingroup OCType
  */
 enum SpecialTypeIDs {
-    _kOCNotATypeID = 0  /**< Represents an invalid or uninitialized OCTypeID. */
+    kOCNotATypeID = 0  /**< Represents an invalid or uninitialized OCTypeID. */
 };
 
 /**
@@ -105,7 +105,7 @@ void *OCTypeDeepCopyMutable(const void *obj);
 /**
  * @brief Registers a new OCType with the system.
  * @param typeName A null-terminated C string representing the type name.
- * @return The OCTypeID assigned, or _kOCNotATypeID on failure.
+ * @return The OCTypeID assigned, or kOCNotATypeID on failure.
  * @ingroup OCType
  */
 OCTypeID OCRegisterType(char *typeName);
@@ -184,7 +184,7 @@ bool OCTypeGetFinalized(const void * ptr);
 /**
  * @brief Returns the type ID of an OCType instance.
  * @param ptr Pointer to the instance.
- * @return A valid OCTypeID or _kOCNotATypeID.
+ * @return A valid OCTypeID or kOCNotATypeID.
  * @ingroup OCType
  */
 OCTypeID OCGetTypeID(const void *ptr);
@@ -201,7 +201,7 @@ const char *OCTypeNameFromTypeID(OCTypeID typeID);
 
 /** \cond INTERNAL */
 
-typedef struct __OCBase {
+typedef struct impl_OCBase {
     OCTypeID typeID;
     uint32_t retainCount;
     bool static_instance;

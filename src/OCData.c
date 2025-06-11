@@ -10,36 +10,36 @@
 #include <string.h>
 #include "OCLibrary.h"
 
-static OCTypeID kOCDataID = _kOCNotATypeID;
+static OCTypeID kOCDataID = kOCNotATypeID;
 
-struct __OCData {
-    OCBase _base;
+struct impl_OCData {
+    OCBase base;
     uint8_t *bytes;
     uint64_t length;
     uint64_t capacity;
 };
 
 OCTypeID OCDataGetTypeID(void) {
-    if (kOCDataID == _kOCNotATypeID) kOCDataID = OCRegisterType("OCData");
+    if (kOCDataID == kOCNotATypeID) kOCDataID = OCRegisterType("OCData");
     return kOCDataID;
 }
 
-static bool __OCDataEqual(const void *a_, const void *b_) {
+static bool impl_OCDataEqual(const void *a_, const void *b_) {
     OCDataRef a = (OCDataRef)a_;
     OCDataRef b = (OCDataRef)b_;
-    if (a->_base.typeID != b->_base.typeID) return false;
+    if (a->base.typeID != b->base.typeID) return false;
     if (a == b) return true;
     if (a->length != b->length) return false;
     return memcmp(a->bytes, b->bytes, a->length) == 0;
 }
 
-static void *__OCDataDeepCopy(const void *obj) {
+static void *impl_OCDataDeepCopy(const void *obj) {
     OCDataRef source = (OCDataRef)obj;
     if (!source) return NULL;
     return (void *)OCDataCreate(source->bytes, source->length);
 }
 
-static void *__OCDataDeepCopyMutable(const void *obj) {
+static void *impl_OCDataDeepCopyMutable(const void *obj) {
     OCDataRef source = (OCDataRef)obj;
     if (!source) return NULL;
     return (void *)OCDataCreateMutableCopy(source->length, source);
@@ -91,24 +91,24 @@ OCStringRef OCDataCopyFormattingDesc(OCTypeRef cf) {
     return result;
 }
 
-static void __OCDataFinalize(const void *obj) {
+static void impl_OCDataFinalize(const void *obj) {
     OCDataRef data = (OCDataRef)obj;
     if (data->bytes) free(data->bytes);
 }
 
-static struct __OCData *OCDataAllocate() {
-    return OCTypeAlloc(struct __OCData,
+static struct impl_OCData *OCDataAllocate() {
+    return OCTypeAlloc(struct impl_OCData,
                    OCDataGetTypeID(),
-                   __OCDataFinalize,
-                   __OCDataEqual,
+                   impl_OCDataFinalize,
+                   impl_OCDataEqual,
                    OCDataCopyFormattingDesc,
-                   __OCDataDeepCopy,   
-                   __OCDataDeepCopyMutable);           
+                   impl_OCDataDeepCopy,   
+                   impl_OCDataDeepCopyMutable);           
 
 }
 
 OCDataRef OCDataCreate(const uint8_t *bytes, uint64_t length) {
-    struct __OCData *data = OCDataAllocate();
+    struct impl_OCData *data = OCDataAllocate();
     if (!data) return NULL;
 
     if (length > 0) {
@@ -131,7 +131,7 @@ OCDataRef OCDataCreate(const uint8_t *bytes, uint64_t length) {
 
 OCDataRef OCDataCreateWithBytesNoCopy(const uint8_t *bytes, uint64_t length) {
     if (!bytes) return NULL;
-    struct __OCData *data = OCDataAllocate();
+    struct impl_OCData *data = OCDataAllocate();
     data->bytes = (uint8_t *)bytes;
     data->length = length;
     data->capacity = length;
@@ -139,7 +139,7 @@ OCDataRef OCDataCreateWithBytesNoCopy(const uint8_t *bytes, uint64_t length) {
 }
 
 OCMutableDataRef OCDataCreateMutable(uint64_t capacity) {
-    struct __OCData *data = OCDataAllocate();
+    struct impl_OCData *data = OCDataAllocate();
     if (!data) return NULL;
     data->bytes = (capacity > 0) ? calloc(capacity, sizeof(uint8_t)) : NULL;
     if (capacity > 0 && !data->bytes) {

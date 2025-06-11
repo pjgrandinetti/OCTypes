@@ -1,12 +1,12 @@
 #include "test_type.h"
-#include "../src/OCType.h" // For OCRegisterType, _kOCNotATypeID
+#include "../src/OCType.h" // For OCRegisterType, kOCNotATypeID
 #include <string.h> // for strcmp needed below
 
 // Original typeTest0 implementation
 bool typeTest0(void) {
     fprintf(stderr, "%s begin...\n", __func__);
     OCTypeID tid = OCRegisterType("MyType");
-    if (tid == _kOCNotATypeID) PRINTERROR;
+    if (tid == kOCNotATypeID) PRINTERROR;
     fprintf(stderr, "%s end...without problems\n", __func__);
     return true;
 }
@@ -18,7 +18,7 @@ bool typeTest1(void) {
     OCStringRef s = OCStringCreateWithCString("testdesc");
     ASSERT_NOT_NULL(s, "OCStringCreateWithCString should not return NULL");
     OCTypeID tid1 = OCGetTypeID(s);
-    ASSERT_TRUE(tid1 != _kOCNotATypeID, "OCGetTypeID should return valid ID");
+    ASSERT_TRUE(tid1 != kOCNotATypeID, "OCGetTypeID should return valid ID");
     OCStringRef desc1 = OCTypeCopyFormattingDesc((void*)s);
     ASSERT_NOT_NULL(desc1, "OCTypeCopyFormattingDesc should not return NULL");
     OCStringRef desc2 = OCCopyDescription((void*)s);

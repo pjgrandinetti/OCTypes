@@ -4,25 +4,25 @@
 #include <stdio.h>
 #include "OCLibrary.h"
 
-static OCTypeID kOCDictionaryID = _kOCNotATypeID;
+static OCTypeID kOCDictionaryID = kOCNotATypeID;
 
 // OCDictionary Opaque Type
-struct __OCDictionary
+struct impl_OCDictionary
 {
-    OCBase _base;
+    OCBase base;
     uint64_t count;
     uint64_t capacity;
     OCStringRef *keys;
     OCTypeRef *values;
 };
 
-static bool __OCDictionaryEqual(const void *theType1, const void *theType2)
+static bool impl_OCDictionaryEqual(const void *theType1, const void *theType2)
 {
     OCDictionaryRef d1 = (OCDictionaryRef)theType1;
     OCDictionaryRef d2 = (OCDictionaryRef)theType2;
     if (d1 == d2)
         return true;
-    if (!d1 || !d2 || d1->_base.typeID != d2->_base.typeID)
+    if (!d1 || !d2 || d1->base.typeID != d2->base.typeID)
         return false;
     if (d1->count != d2->count)
         return false;
@@ -91,7 +91,7 @@ OCStringRef OCDictionaryCopyFormattingDesc(OCTypeRef cf)
     return result;
 }
 
-static void *__OCDictionaryDeepCopy(const void *obj)
+static void *impl_OCDictionaryDeepCopy(const void *obj)
 {
     OCDictionaryRef src = (OCDictionaryRef)obj;
     if (!src || src->count == 0)
@@ -133,12 +133,12 @@ static void *__OCDictionaryDeepCopy(const void *obj)
     return (void *)copy;
 }
 
-static void *__OCDictionaryDeepCopyMutable(const void *obj)
+static void *impl_OCDictionaryDeepCopyMutable(const void *obj)
 {
-    return __OCDictionaryDeepCopy(obj);
+    return impl_OCDictionaryDeepCopy(obj);
 }
 
-static void __OCDictionaryReleaseValues(OCDictionaryRef dict)
+static void impl_OCDictionaryReleaseValues(OCDictionaryRef dict)
 {
     for (uint64_t i = 0; i < dict->count; i++)
     {
@@ -147,7 +147,7 @@ static void __OCDictionaryReleaseValues(OCDictionaryRef dict)
     }
 }
 
-static void __OCDictionaryRetainValues(OCDictionaryRef dict)
+static void impl_OCDictionaryRetainValues(OCDictionaryRef dict)
 {
     for (uint64_t i = 0; i < dict->count; i++)
     {
@@ -155,7 +155,7 @@ static void __OCDictionaryRetainValues(OCDictionaryRef dict)
         OCRetain(dict->values[i]);
     }
 }
-static void __OCDictionaryFinalize(const void *theType)
+static void impl_OCDictionaryFinalize(const void *theType)
 {
     if (NULL == theType)
     {
@@ -163,7 +163,7 @@ static void __OCDictionaryFinalize(const void *theType)
         return;
     }
     OCDictionaryRef dict = (OCDictionaryRef)theType;
-    __OCDictionaryReleaseValues(dict);
+    impl_OCDictionaryReleaseValues(dict);
 
     if (dict->keys)
     {
@@ -177,21 +177,21 @@ static void __OCDictionaryFinalize(const void *theType)
 
 OCTypeID OCDictionaryGetTypeID(void)
 {
-    if (kOCDictionaryID == _kOCNotATypeID)
+    if (kOCDictionaryID == kOCNotATypeID)
         kOCDictionaryID = OCRegisterType("OCDictionary");
     return kOCDictionaryID;
 }
 
-static struct __OCDictionary *OCDictionaryAllocate()
+static struct impl_OCDictionary *OCDictionaryAllocate()
 {
     return OCTypeAlloc(
-        struct __OCDictionary,
+        struct impl_OCDictionary,
         OCDictionaryGetTypeID(),
-        __OCDictionaryFinalize,
-        __OCDictionaryEqual,
+        impl_OCDictionaryFinalize,
+        impl_OCDictionaryEqual,
         OCDictionaryCopyFormattingDesc,
-        __OCDictionaryDeepCopy,
-        __OCDictionaryDeepCopyMutable);
+        impl_OCDictionaryDeepCopy,
+        impl_OCDictionaryDeepCopyMutable);
 }
 
 uint64_t OCDictionaryGetCount(OCDictionaryRef theDictionary)
@@ -206,7 +206,7 @@ OCDictionaryRef OCDictionaryCreate(const void **keys, const void **values, uint6
     if (NULL == keys || NULL == values)
         return NULL;
 
-    struct __OCDictionary *theDictionary = OCDictionaryAllocate();
+    struct impl_OCDictionary *theDictionary = OCDictionaryAllocate();
     if (NULL == theDictionary)
         return NULL;
     theDictionary->values = (OCTypeRef *)calloc(numValues, sizeof(OCTypeRef));
@@ -228,14 +228,14 @@ OCDictionaryRef OCDictionaryCreate(const void **keys, const void **values, uint6
     memcpy((char *)theDictionary->keys, (const char *)keys, numValues * sizeof(char *));
     theDictionary->count = numValues;
     theDictionary->capacity = numValues;
-    __OCDictionaryRetainValues(theDictionary);
+    impl_OCDictionaryRetainValues(theDictionary);
 
     return theDictionary;
 }
 
 OCMutableDictionaryRef OCDictionaryCreateMutable(uint64_t capacity)
 {
-    struct __OCDictionary *theDictionary = OCDictionaryAllocate();
+    struct impl_OCDictionary *theDictionary = OCDictionaryAllocate();
     if (NULL == theDictionary)
         return NULL;
     theDictionary->values = (OCTypeRef *)calloc(capacity, sizeof(OCTypeRef));

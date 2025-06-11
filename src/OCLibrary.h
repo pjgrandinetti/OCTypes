@@ -30,26 +30,26 @@
 #define OCLIB_TYPES_COUNT 10 // Total number of types in OCTypes
 
 // Forward declarations for all opaque struct types
-struct __OCType; // Abstract base type for all OCTypes objects
-struct __OCString;
-struct __OCArray;
-struct __OCSet;
-struct __OCDictionary;
-struct __OCBoolean;
-struct __OCData;
-struct __OCNumber;
-struct __OCIndexSet;
-struct __OCIndexArray;
-struct __OCIndexPairSet;
+struct impl_OCType; // Abstract base type for all OCTypes objects
+struct impl_OCString;
+struct impl_OCArray;
+struct impl_OCSet;
+struct impl_OCDictionary;
+struct impl_OCBoolean;
+struct impl_OCData;
+struct impl_OCNumber;
+struct impl_OCIndexSet;
+struct impl_OCIndexArray;
+struct impl_OCIndexPairSet;
 
 // OCAutoreleasePoolRef is already a typedef to a pointer to a non-const struct,
 // so it doesn't follow the same "Ref" pattern for const structs.
-// No forward declaration needed here for __OCAutoreleasePool if OCAutoreleasePoolRef
-// is defined as 'typedef struct _OCAutoreleasePool *OCAutoreleasePoolRef;'
-// However, if it were 'typedef const struct __OCAutoreleasePool *OCAutoreleasePoolRef;',
-// then 'struct __OCAutoreleasePool;' would be needed.
-// Based on OCAutoreleasePool.h, it's 'typedef struct _OCAutoreleasePool *OCAutoreleasePoolRef;'
-// so we don't add a forward declaration for __OCAutoreleasePool here.
+// No forward declaration needed here for implimpl_OCAutoreleasePool if OCAutoreleasePoolRef
+// is defined as 'typedef struct impl_OCAutoreleasePool *OCAutoreleasePoolRef;'
+// However, if it were 'typedef const struct implimpl_OCAutoreleasePool *OCAutoreleasePoolRef;',
+// then 'struct implimpl_OCAutoreleasePool;' would be needed.
+// Based on OCAutoreleasePool.h, it's 'typedef struct impl_OCAutoreleasePool *OCAutoreleasePoolRef;'
+// so we don't add a forward declaration for implimpl_OCAutoreleasePool here.
 
 /**
  * @defgroup OCLibrary OCLibrary
@@ -267,29 +267,29 @@ typedef signed long OCIndex;
 
 /** @cond INTERNAL */
 // Centralized Ref typedefs
-typedef const struct __OCType *OCTypeRef;
-typedef const struct __OCString *OCStringRef;
-typedef const struct __OCArray *OCArrayRef;
-typedef const struct __OCSet *OCSetRef;
-typedef const struct __OCDictionary *OCDictionaryRef;
-typedef const struct __OCBoolean *OCBooleanRef;
-typedef const struct __OCData *OCDataRef;
-typedef const struct __OCNumber *OCNumberRef;
-typedef const struct __OCIndexSet *OCIndexSetRef;
-typedef const struct __OCIndexArray *OCIndexArrayRef;
-typedef const struct __OCIndexPairSet *OCIndexPairSetRef;
-// OCAutoreleasePoolRef is typically 'typedef struct _OCAutoreleasePool *OCAutoreleasePoolRef;'
+typedef const struct impl_OCType *OCTypeRef;
+typedef const struct impl_OCString *OCStringRef;
+typedef const struct impl_OCArray *OCArrayRef;
+typedef const struct impl_OCSet *OCSetRef;
+typedef const struct impl_OCDictionary *OCDictionaryRef;
+typedef const struct impl_OCBoolean *OCBooleanRef;
+typedef const struct impl_OCData *OCDataRef;
+typedef const struct impl_OCNumber *OCNumberRef;
+typedef const struct impl_OCIndexSet *OCIndexSetRef;
+typedef const struct impl_OCIndexArray *OCIndexArrayRef;
+typedef const struct impl_OCIndexPairSet *OCIndexPairSetRef;
+// OCAutoreleasePoolRef is typically 'typedef struct impl_OCAutoreleasePool *OCAutoreleasePoolRef;'
 // and not a 'const struct'. So, it's usually defined directly in OCAutoreleasePool.h.
 
 // Mutable Ref typedefs
-typedef struct __OCArray *OCMutableArrayRef;
-typedef struct __OCSet *OCMutableSetRef;
-typedef struct __OCData *OCMutableDataRef;
-typedef struct __OCDictionary *OCMutableDictionaryRef;
-typedef struct __OCString *OCMutableStringRef;
-typedef struct __OCIndexSet *OCMutableIndexSetRef;
-typedef struct __OCIndexArray *OCMutableIndexArrayRef;
-typedef struct __OCIndexPairSet *OCMutableIndexPairSetRef;
+typedef struct impl_OCArray *OCMutableArrayRef;
+typedef struct impl_OCSet *OCMutableSetRef;
+typedef struct impl_OCData *OCMutableDataRef;
+typedef struct impl_OCDictionary *OCMutableDictionaryRef;
+typedef struct impl_OCString *OCMutableStringRef;
+typedef struct impl_OCIndexSet *OCMutableIndexSetRef;
+typedef struct impl_OCIndexArray *OCMutableIndexArrayRef;
+typedef struct impl_OCIndexPairSet *OCMutableIndexPairSetRef;
 /** @endcond */
 
 /**
@@ -408,7 +408,7 @@ OC_INLINE OCRange OCRangeMake(uint64_t loc, uint64_t len) {
     return r;
 }
 #else
-#define OCRangeMake(LOC, LEN) __OCRangeMake(LOC, LEN)
+#define OCRangeMake(LOC, LEN) impl_OCRangeMake(LOC, LEN)
 #endif
 
 // Expose cleanup functions for master cleanup

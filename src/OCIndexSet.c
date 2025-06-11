@@ -10,15 +10,15 @@
 #include <stdlib.h>
 #include <string.h>
 
-static OCTypeID kOCIndexSetID = _kOCNotATypeID;
+static OCTypeID kOCIndexSetID = kOCNotATypeID;
 
-struct __OCIndexSet {
-    OCBase _base;
+struct impl_OCIndexSet {
+    OCBase base;
     OCDataRef indexes;
 };
 
 // -- Equality --
-bool __OCIndexSetEqual(const void *a_, const void *b_) {
+bool impl_OCIndexSetEqual(const void *a_, const void *b_) {
     OCIndexSetRef a = (OCIndexSetRef)a_;
     OCIndexSetRef b = (OCIndexSetRef)b_;
     if (!a || !b) return false;
@@ -30,13 +30,13 @@ bool __OCIndexSetEqual(const void *a_, const void *b_) {
 }
 
 // -- Finalization --
-void __OCIndexSetFinalize(const void *obj) {
+void impl_OCIndexSetFinalize(const void *obj) {
     OCMutableIndexSetRef s = (OCMutableIndexSetRef)obj;
     if (s->indexes) OCRelease(s->indexes);
     s->indexes = NULL;
 }
 
-static OCStringRef __OCIndexSetCopyFormattingDesc(OCTypeRef cf) {
+static OCStringRef impl_OCIndexSetCopyFormattingDesc(OCTypeRef cf) {
     if (!cf) return NULL;
     OCIndexSetRef set = (OCIndexSetRef)cf;
     OCMutableStringRef desc = OCStringCreateMutable(0);
@@ -52,7 +52,7 @@ static OCStringRef __OCIndexSetCopyFormattingDesc(OCTypeRef cf) {
 
 OCMutableIndexSetRef OCIndexSetAllocate(void);
 
-static void *__OCIndexSetDeepCopy(const void *obj) {
+static void *impl_OCIndexSetDeepCopy(const void *obj) {
     OCIndexSetRef src = (OCIndexSetRef)obj;
     if (!src || !src->indexes) return NULL;
 
@@ -69,7 +69,7 @@ static void *__OCIndexSetDeepCopy(const void *obj) {
     return copy;
 }
 
-static void *__OCIndexSetDeepCopyMutable(const void *obj) {
+static void *impl_OCIndexSetDeepCopyMutable(const void *obj) {
     OCIndexSetRef src = (OCIndexSetRef)obj;
     if (!src || !src->indexes) return NULL;
 
@@ -87,7 +87,7 @@ static void *__OCIndexSetDeepCopyMutable(const void *obj) {
 }
 // -- Type Registration --
 OCTypeID OCIndexSetGetTypeID(void) {
-    if (kOCIndexSetID == _kOCNotATypeID)
+    if (kOCIndexSetID == kOCNotATypeID)
         kOCIndexSetID = OCRegisterType("OCIndexSet");
     return kOCIndexSetID;
 }
@@ -95,13 +95,13 @@ OCTypeID OCIndexSetGetTypeID(void) {
 // -- Allocation --
 OCMutableIndexSetRef OCIndexSetAllocate(void) {
     return (OCMutableIndexSetRef)OCTypeAlloc(
-        struct __OCIndexSet,
+        struct impl_OCIndexSet,
         OCIndexSetGetTypeID(),
-        __OCIndexSetFinalize,
-        __OCIndexSetEqual,
-        __OCIndexSetCopyFormattingDesc,
-        __OCIndexSetDeepCopy,
-        __OCIndexSetDeepCopyMutable
+        impl_OCIndexSetFinalize,
+        impl_OCIndexSetEqual,
+        impl_OCIndexSetCopyFormattingDesc,
+        impl_OCIndexSetDeepCopy,
+        impl_OCIndexSetDeepCopyMutable
     );
 }
 
@@ -255,7 +255,7 @@ bool OCIndexSetAddIndex(OCMutableIndexSetRef set, OCIndex index) {
 }
 
 bool OCIndexSetEqual(OCIndexSetRef a, OCIndexSetRef b) {
-    return __OCIndexSetEqual(a, b);
+    return impl_OCIndexSetEqual(a, b);
 }
 
 OCArrayRef OCIndexSetCreateOCNumberArray(OCIndexSetRef set) {

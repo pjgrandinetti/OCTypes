@@ -15,7 +15,7 @@ bool numberTest0(void) {
 
     // everyone should share the same TypeID
     OCTypeID numTypeID = OCNumberGetTypeID();
-    if (numTypeID == _kOCNotATypeID) PRINTERROR;
+    if (numTypeID == kOCNotATypeID) PRINTERROR;
 
     // --- signed integers ---
     struct { int64_t v; OCNumberType t; const char *s; } signed_tests[] = {

@@ -34,24 +34,24 @@
 #include "OCLibrary.h"  // Should be included after system headers if it also includes them,
                         // or ensure OCLibrary.h doesn't conflict with _GNU_SOURCE etc.
                         // Given OCLibrary.h includes stdlib.h, stdio.h etc., defining _GNU_SOURCE first is correct.
-static OCTypeID kOCArrayID = _kOCNotATypeID;
+static OCTypeID kOCArrayID = kOCNotATypeID;
 const OCArrayCallBacks kOCTypeArrayCallBacks = {0, OCRetain, OCRelease, OCTypeCopyFormattingDesc, OCTypeEqual};
 static const OCArrayCallBacks __kOCNullArrayCallBacks = {0, NULL, NULL, NULL, NULL};
 // OCArray Opaque Type
-struct __OCArray {
-    OCBase _base;
+struct impl_OCArray {
+    OCBase base;
     // OCArray Type attributes  - order of declaration is essential
     const OCArrayCallBacks *callBacks;
     uint64_t count;     // Changed from u_int64_t
     uint64_t capacity;  // Changed from u_int64_t
     const void **data;
 };
-static bool __OCArrayEqual(const void *theType1, const void *theType2) {
+static bool impl_OCArrayEqual(const void *theType1, const void *theType2) {
     OCArrayRef a1 = (OCArrayRef)theType1;
     OCArrayRef a2 = (OCArrayRef)theType2;
     if (!a1 || !a2) return false;
     if (a1 == a2) return true;
-    if (a1->_base.typeID != a2->_base.typeID) return false;
+    if (a1->base.typeID != a2->base.typeID) return false;
     if (a1->count != a2->count) return false;
     if (a1->callBacks != a2->callBacks) return false;
     OCArrayEqualCallBack equalFn = NULL;
@@ -80,7 +80,7 @@ static void _OCArrayReleaseValues(OCArrayRef theArray) {
         }
     }
 }
-static void _OCArrayRetainValues(OCArrayRef theArray) {
+static void impl_OCArrayRetainValues(OCArrayRef theArray) {
     if (theArray && theArray->callBacks && theArray->callBacks->retain) {
         for (uint64_t index = 0; index < theArray->count; index++) {
             if (theArray->data[index]) {  // Add a NULL check for safety
@@ -89,7 +89,7 @@ static void _OCArrayRetainValues(OCArrayRef theArray) {
         }
     }
 }
-static void *__OCArrayDeepCopy(const void *obj) {
+static void *impl_OCArrayDeepCopy(const void *obj) {
     const OCArrayRef src = (const OCArrayRef)obj;
     if (!src) return NULL;
     OCMutableArrayRef copy = OCArrayCreateMutable(src->count, src->callBacks);
@@ -112,8 +112,8 @@ static void *__OCArrayDeepCopy(const void *obj) {
     }
     return copy;
 }
-static void *__OCArrayDeepCopyMutable(const void *obj) {
-    return __OCArrayDeepCopy(obj);  // already returns a mutable copy
+static void *impl_OCArrayDeepCopyMutable(const void *obj) {
+    return impl_OCArrayDeepCopy(obj);  // already returns a mutable copy
 }
 uint64_t OCArrayGetCount(OCArrayRef theArray) {
     if (NULL == theArray) return 0;
@@ -156,9 +156,9 @@ OCStringRef OCArrayCopyFormattingDesc(OCTypeRef cf) {
     OCStringAppendCString(result, "]>");
     return result;
 }
-static void __OCArrayFinalize(const void *theType) {
+static void impl_OCArrayFinalize(const void *theType) {
     if (NULL == theType) return;
-    struct __OCArray *theArray = (struct __OCArray *)theType;
+    struct impl_OCArray *theArray = (struct impl_OCArray *)theType;
     _OCArrayReleaseValues(theArray);
     // Only free non-NULL data
     if (theArray->data) {
@@ -176,18 +176,18 @@ static void __OCArrayFinalize(const void *theType) {
     }
 }
 OCTypeID OCArrayGetTypeID(void) {
-    if (kOCArrayID == _kOCNotATypeID) kOCArrayID = OCRegisterType("OCArray");
+    if (kOCArrayID == kOCNotATypeID) kOCArrayID = OCRegisterType("OCArray");
     return kOCArrayID;
 }
-static struct __OCArray *OCArrayAllocate() {
-    struct __OCArray *obj = OCTypeAlloc(
-        struct __OCArray,
+static struct impl_OCArray *OCArrayAllocate() {
+    struct impl_OCArray *obj = OCTypeAlloc(
+        struct impl_OCArray,
         OCArrayGetTypeID(),
-        __OCArrayFinalize,
-        __OCArrayEqual,
+        impl_OCArrayFinalize,
+        impl_OCArrayEqual,
         OCArrayCopyFormattingDesc,
-        __OCArrayDeepCopy,
-        __OCArrayDeepCopyMutable  // ← NEW!
+        impl_OCArrayDeepCopy,
+        impl_OCArrayDeepCopyMutable  // ← NEW!
     );
     obj->callBacks = &__kOCNullArrayCallBacks;
     obj->count = 0;
@@ -198,7 +198,7 @@ static struct __OCArray *OCArrayAllocate() {
 OCArrayRef OCArrayCreate(const void **values, uint64_t numValues, const OCArrayCallBacks *callBacks) {
     // Allow creation of an empty array even if values is NULL, as long as numValues is 0.
     if (numValues > 0 && NULL == values) return NULL;
-    struct __OCArray *newArray = OCArrayAllocate();
+    struct impl_OCArray *newArray = OCArrayAllocate();
     if (NULL == newArray) return NULL;
     if (numValues > 0) {
         newArray->data = (const void **)calloc(numValues, sizeof(const void *));
@@ -214,7 +214,7 @@ OCArrayRef OCArrayCreate(const void **values, uint64_t numValues, const OCArrayC
     newArray->count = numValues;
     newArray->capacity = numValues;                                          // For immutable arrays, capacity equals count.
     newArray->callBacks = callBacks ? callBacks : &__kOCNullArrayCallBacks;  // Ensure callbacks is not NULL
-    _OCArrayRetainValues(newArray);
+    impl_OCArrayRetainValues(newArray);
     return newArray;
 }
 OCArrayRef OCArrayCreateCopy(OCArrayRef theArray) {
@@ -223,7 +223,7 @@ OCArrayRef OCArrayCreateCopy(OCArrayRef theArray) {
     return (OCArrayRef)OCArrayCreate((const void **)theArray->data, theArray->count, theArray->callBacks);
 }
 OCMutableArrayRef OCArrayCreateMutable(uint64_t capacity, const OCArrayCallBacks *callBacks) {
-    struct __OCArray *newArray = OCArrayAllocate();
+    struct impl_OCArray *newArray = OCArrayAllocate();
     if (NULL == newArray) return NULL;
     if (capacity > 0) {
         newArray->data = (const void **)calloc(capacity, sizeof(const void *));
@@ -249,7 +249,7 @@ OCMutableArrayRef OCArrayCreateMutableCopy(OCArrayRef theArray) {
     if (theArray->count > 0) {
         memcpy(newMutableArray->data, theArray->data, theArray->count * sizeof(const void *));
         newMutableArray->count = theArray->count;
-        _OCArrayRetainValues(newMutableArray);  // Retain values copied into the new mutable array
+        impl_OCArrayRetainValues(newMutableArray);  // Retain values copied into the new mutable array
     }
     return newMutableArray;
 }

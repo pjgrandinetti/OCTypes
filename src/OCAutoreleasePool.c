@@ -19,27 +19,27 @@
 #define POOL_NOT_FOUND -1
 #define POOLOBJECT_NOT_FOUND -1
 
-struct _OCAutoreleasePoolObject {
+struct impl_OCAutoreleasePoolObject {
     const void * object;
     void (*release)(const void *);
 };
 
-typedef struct _OCAutoreleasePoolObject * OCAutoreleasePoolObjectRef;
+typedef struct impl_OCAutoreleasePoolObject * OCAutoreleasePoolObjectRef;
 
 
-struct _OCAutoreleasePool
+struct impl_OCAutoreleasePool
 {
     OCAutoreleasePoolObjectRef *pool_objects;
     int number_of_pool_objects;
 };
 
-struct _OCAutoreleasePoolsManager
+struct impl_OCAutoreleasePoolsManager
 {
     OCAutoreleasePoolRef *pools;
     int number_of_pools;
 };
 
-typedef struct _OCAutoreleasePoolsManager *OCAutoreleasePoolsManagerRef;
+typedef struct impl_OCAutoreleasePoolsManager *OCAutoreleasePoolsManagerRef;
 
 // OCAutoreleasePoolsManager is a Singleton
 static OCAutoreleasePoolsManagerRef autorelease_pool_manager = NULL;
@@ -57,7 +57,7 @@ static OCAutoreleasePoolsManagerRef autorelease_pool_manager = NULL;
  */
 static OCAutoreleasePoolObjectRef OCAutoreleasePoolObjectCreate(const void * object, void (*release)(const void *))
 {
-    OCAutoreleasePoolObjectRef thePoolObject  = malloc(sizeof(struct _OCAutoreleasePoolObject));
+    OCAutoreleasePoolObjectRef thePoolObject  = malloc(sizeof(struct impl_OCAutoreleasePoolObject));
     
     IF_NO_OBJECT_EXISTS_RETURN(thePoolObject,NULL);
     
@@ -120,7 +120,7 @@ static bool OCAutoreleasePoolAddObject(OCAutoreleasePoolRef thePool, const void 
 
 static OCAutoreleasePoolsManagerRef OCAutoreleasePoolsManagerCreate(void)
 {
-    OCAutoreleasePoolsManagerRef thePoolsManager  = malloc(sizeof(struct _OCAutoreleasePoolsManager));
+    OCAutoreleasePoolsManagerRef thePoolsManager  = malloc(sizeof(struct impl_OCAutoreleasePoolsManager));
     IF_NO_OBJECT_EXISTS_RETURN(thePoolsManager,NULL);
     
     thePoolsManager->pools = NULL;
@@ -282,7 +282,7 @@ static bool OCAutoreleasePoolsManagerAddObject(const void *object, void (*releas
 
 OCAutoreleasePoolRef OCAutoreleasePoolCreate()
 {
-    OCAutoreleasePoolRef thePool = malloc(sizeof(struct _OCAutoreleasePool));
+    OCAutoreleasePoolRef thePool = malloc(sizeof(struct impl_OCAutoreleasePool));
     
     IF_NO_OBJECT_EXISTS_RETURN(thePool,NULL);
     
@@ -433,13 +433,13 @@ const void *OCAutorelease(const void *ptr)
 {
     IF_NO_OBJECT_EXISTS_RETURN(ptr, NULL);
 
-    struct __OCType *theType = (struct __OCType *) ptr;
+    struct impl_OCType *theType = (struct impl_OCType *) ptr;
 
     // fprintf(stderr, "OCAutorelease called for %p, typeID = %s\n",
     //         ptr, OCTypeIDName(theType));
 
     // Invalid type check
-    if (OCGetTypeID(ptr) == _kOCNotATypeID) {
+    if (OCGetTypeID(ptr) == kOCNotATypeID) {
         fprintf(stderr, "*** WARNING: OCAutorelease called on invalid object (%p), typeID = InvalidTypeID\n", ptr);
         return ptr;
     }

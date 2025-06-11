@@ -73,13 +73,13 @@ void OCTypesShutdown(void) {
 // Run *after* LSAN’s destructors (101–103), so that LSAN gets to see
 // everything and only afterward we print out any remaining leaks.
 __attribute__((destructor(100)))  
-static void _OCTypes_cleanup(void) {
+static void impl_OCTypes_cleanup(void) {
     if(typeIDTableCount == OCLIB_TYPES_COUNT) OCTypesShutdown();
 }
 
 
-struct __OCType {
-    OCBase _base;
+struct impl_OCType {
+    OCBase base;
 };
 
 // Compares two OCType objects for equality.
@@ -98,18 +98,18 @@ bool OCTypeEqual(const void * theType1, const void * theType2)
     OCTypeRef typeRef2 = (OCTypeRef)theType2;
 
     // Ensure type IDs are valid and match.
-    if (typeRef1->_base.typeID == _kOCNotATypeID ||
-        typeRef2->_base.typeID == _kOCNotATypeID ||
-        typeRef1->_base.typeID != typeRef2->_base.typeID) {
+    if (typeRef1->base.typeID == kOCNotATypeID ||
+        typeRef2->base.typeID == kOCNotATypeID ||
+        typeRef1->base.typeID != typeRef2->base.typeID) {
         return false;
     }
 
     // Use the custom equality function if available.
-    if (NULL == typeRef1->_base.equal) {
+    if (NULL == typeRef1->base.equal) {
         return false;
     }
     
-    return typeRef1->_base.equal(theType1, theType2);
+    return typeRef1->base.equal(theType1, theType2);
 }
 
 // Registers a new type and returns its unique type ID.
@@ -117,7 +117,7 @@ OCTypeID OCRegisterType(char *typeName)
 {
     // Return an invalid type ID if typeName is NULL.
     if (NULL == typeName) {
-        return _kOCNotATypeID;
+        return kOCNotATypeID;
     }
 
     // Initialize the type ID table if it hasn't been created yet.
@@ -148,42 +148,42 @@ OCTypeID OCRegisterType(char *typeName)
         return typeIDTableCount;
     }
     
-    return _kOCNotATypeID;
+    return kOCNotATypeID;
 }
 
 
 void OCRelease(const void * ptr)
 {
-    struct __OCType *theType = (struct __OCType *) ptr;
+    struct impl_OCType *theType = (struct impl_OCType *) ptr;
     if (NULL == theType) return;
 
-    if (theType->_base.typeID == _kOCNotATypeID) {
+    if (theType->base.typeID == kOCNotATypeID) {
         fprintf(stderr, "ERROR: OCRelease called on invalid object (%p),  typeID = %s\n",
                 theType, OCTypeIDName(theType));
         return;
     }
 
-    if (theType->_base.static_instance) return;
+    if (theType->base.static_instance) return;
 
-    if (theType->_base.finalized) {
+    if (theType->base.finalized) {
         fprintf(stderr, "ERROR: OCRelease called on (%p), an already-finalized object, typeID = %s\n",
                 theType, OCTypeIDName(theType));
         return;
     }
 
-    if (theType->_base.retainCount < 1) {
+    if (theType->base.retainCount < 1) {
         fprintf(stderr, "ERROR: OCRelease called on (%p) with retainCount < 1, typeID = %s\n",
                 theType, OCTypeIDName(theType));
         return;
     }
 
-    if (theType->_base.retainCount == 1) {
-        if (theType->_base.finalize) {
-            theType->_base.finalized = true;
-            theType->_base.finalize(theType);  // Clean up internal fields only
+    if (theType->base.retainCount == 1) {
+        if (theType->base.finalize) {
+            theType->base.finalized = true;
+            theType->base.finalize(theType);  // Clean up internal fields only
         }
 
-        if (theType->_base.tracked) {
+        if (theType->base.tracked) {
             _OCUntrack(theType);
         }
 
@@ -191,7 +191,7 @@ void OCRelease(const void * ptr)
         return;
     }
 
-    theType->_base.retainCount--;
+    theType->base.retainCount--;
 }
 
 const void *OCRetain(const void *ptr)
@@ -201,45 +201,45 @@ const void *OCRetain(const void *ptr)
         return NULL;
     }
 
-    struct __OCType *theType = (struct __OCType *) ptr;
+    struct impl_OCType *theType = (struct impl_OCType *) ptr;
 
-    OCTypeID typeID = theType->_base.typeID;
+    OCTypeID typeID = theType->base.typeID;
     const char *typeName = OCTypeIDName(theType);
 
-    if (typeID == _kOCNotATypeID) {
+    if (typeID == kOCNotATypeID) {
         fprintf(stderr, "*** WARNING: OCRetain called on invalid object (%p), typeID = InvalidTypeID\n", ptr);
         return ptr;
     }
 
-    if (theType->_base.static_instance) {
+    if (theType->base.static_instance) {
         // Static instances are immortal
     }
 
-    if (theType->_base.finalized) {
+    if (theType->base.finalized) {
         fprintf(stderr, "*** WARNING: OCRetain called on already-finalized object (%p), typeID = %s\n", ptr, typeName);
         return ptr;
     }
 
-    if (theType->_base.retainCount == UINT32_MAX) {
+    if (theType->base.retainCount == UINT32_MAX) {
         fprintf(stderr, "*** WARNING: OCRetain overflow on object (%p), typeID = %s\n", ptr, typeName);
         return ptr;
     }
 
-    theType->_base.retainCount++;
+    theType->base.retainCount++;
 
     return ptr;
 }
 
 void *OCTypeDeepCopy(const void *obj) {
     if (!obj) return NULL;
-    const struct __OCType *type = (const struct __OCType *)obj;
-    return type->_base.copyDeep ? type->_base.copyDeep(obj) : NULL;
+    const struct impl_OCType *type = (const struct impl_OCType *)obj;
+    return type->base.copyDeep ? type->base.copyDeep(obj) : NULL;
 }
 
 void *OCTypeDeepCopyMutable(const void *obj) {
     if (!obj) return NULL;
-    const struct __OCType *type = (const struct __OCType *)obj;
-    return type->_base.copyDeepMutable ? type->_base.copyDeepMutable(obj) : NULL;
+    const struct impl_OCType *type = (const struct impl_OCType *)obj;
+    return type->base.copyDeepMutable ? type->base.copyDeepMutable(obj) : NULL;
 }
 
 
@@ -248,7 +248,7 @@ OCStringRef OCTypeCopyFormattingDesc(const void * ptr)
 {
     if(NULL == ptr) return NULL;
     OCTypeRef theType = (OCTypeRef) ptr;
-    return theType->_base.copyFormattingDesc(theType);
+    return theType->base.copyFormattingDesc(theType);
 }
 
 // Returns a string description of the object's type.
@@ -259,10 +259,10 @@ OCStringRef OCCopyDescription(const void * ptr)
     }
 
     OCTypeRef theType = (OCTypeRef) ptr;
-    OCTypeID currentTypeID = theType->_base.typeID;
+    OCTypeID currentTypeID = theType->base.typeID;
 
     // Validate the type ID and return the corresponding name.
-    if (currentTypeID == _kOCNotATypeID || currentTypeID > typeIDTableCount) {
+    if (currentTypeID == kOCNotATypeID || currentTypeID > typeIDTableCount) {
         return OCStringCreateWithCString("UnknownType");
     }
 
@@ -283,25 +283,25 @@ void *OCTypeAllocate(size_t size,
                      const char *file, 
                      int line)
 {
-    struct __OCType *object = calloc(1, size);
+    struct impl_OCType *object = calloc(1, size);
     if (!object) {
         fprintf(stderr, "OCTypeAllocate: allocation failed\n");
         exit(EXIT_FAILURE);
     }
 
-    object->_base.typeID = typeID;
-    object->_base.retainCount = 1;
-    object->_base.finalize = finalize;
-    object->_base.equal = equal;
-    object->_base.copyFormattingDesc = copyDesc;
-    object->_base.copyDeep = copyDeep;
-    object->_base.copyDeepMutable = copyDeepMutable; 
-    object->_base.static_instance = false;
-    object->_base.finalized = false;
+    object->base.typeID = typeID;
+    object->base.retainCount = 1;
+    object->base.finalize = finalize;
+    object->base.equal = equal;
+    object->base.copyFormattingDesc = copyDesc;
+    object->base.copyDeep = copyDeep;
+    object->base.copyDeepMutable = copyDeepMutable; 
+    object->base.static_instance = false;
+    object->base.finalized = false;
 
-    object->_base.allocFile = file;
-    object->_base.allocLine = line;
-    object->_base.tracked = true;
+    object->base.allocFile = file;
+    object->base.allocLine = line;
+    object->base.tracked = true;
     _OCTrackDebug(object, file, line);
 
     return object;
@@ -312,12 +312,12 @@ OCTypeID OCGetTypeID(const void * ptr)
 {
     if(ptr) {
         OCTypeRef theType = (OCTypeRef) ptr;
-        if(theType->_base.typeID == _kOCNotATypeID || theType->_base.typeID > typeIDTableCount) {
-            return _kOCNotATypeID;
+        if(theType->base.typeID == kOCNotATypeID || theType->base.typeID > typeIDTableCount) {
+            return kOCNotATypeID;
         }
-        return theType->_base.typeID;
+        return theType->base.typeID;
     }
-    return _kOCNotATypeID;
+    return kOCNotATypeID;
 }
 
 int OCTypeGetRetainCount(const void * ptr) {
@@ -325,7 +325,7 @@ int OCTypeGetRetainCount(const void * ptr) {
         return 0;
     }
     OCTypeRef theType = (OCTypeRef) ptr;
-    return theType->_base.retainCount;
+    return theType->base.retainCount;
 }
 
 // Sets the retain count of the object.
@@ -334,39 +334,39 @@ bool OCTypeGetStaticInstance(const void * ptr) {
         return false;
     }
     OCTypeRef theType = (OCTypeRef) ptr;
-    return theType->_base.static_instance;
+    return theType->base.static_instance;
 }
 
 void OCTypeSetStaticInstance(const void * ptr, bool static_instance) {
     if (NULL == ptr) {
         return;
     }
-    struct __OCType *theType = (struct __OCType *) ptr;
-    theType->_base.retainCount = 1;
-    theType->_base.static_instance = static_instance;
+    struct impl_OCType *theType = (struct impl_OCType *) ptr;
+    theType->base.retainCount = 1;
+    theType->base.static_instance = static_instance;
 }
 
 bool OCTypeGetFinalized(const void * ptr) {
     if (NULL == ptr) return false;
-    struct __OCType *theType = (struct __OCType *) ptr;
-    return theType->_base.finalized;
+    struct impl_OCType *theType = (struct impl_OCType *) ptr;
+    return theType->base.finalized;
 }
 
 const char *OCTypeIDName(const void * ptr)
 {
-    struct __OCType *theType = (struct __OCType *) ptr;
+    struct impl_OCType *theType = (struct impl_OCType *) ptr;
 
-    if (theType->_base.typeID == _kOCNotATypeID || theType->_base.typeID == 0 || theType->_base.typeID > typeIDTableCount) {
+    if (theType->base.typeID == kOCNotATypeID || theType->base.typeID == 0 || theType->base.typeID > typeIDTableCount) {
         return "InvalidTypeID";
     }
 
-    const char *name = typeIDTable[theType->_base.typeID - 1];
+    const char *name = typeIDTable[theType->base.typeID - 1];
     return (name != NULL) ? name : "UnnamedType";
 }
 
 const char *OCTypeNameFromTypeID(OCTypeID typeID)
 {
-    if (typeID == _kOCNotATypeID || typeID == 0 || typeID > typeIDTableCount) {
+    if (typeID == kOCNotATypeID || typeID == 0 || typeID > typeIDTableCount) {
         return "InvalidTypeID";
     }
     const char *name = typeIDTable[typeID - 1];

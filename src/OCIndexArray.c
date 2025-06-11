@@ -11,20 +11,20 @@
 #include <stdlib.h>
 #include <string.h>
 
-static OCTypeID kOCIndexArrayID = _kOCNotATypeID;
+static OCTypeID kOCIndexArrayID = kOCNotATypeID;
 
-struct __OCIndexArray {
-    OCBase _base;
+struct impl_OCIndexArray {
+    OCBase base;
     OCMutableDataRef indexes;
 };
 
 OCTypeID OCIndexArrayGetTypeID(void) {
-    if (kOCIndexArrayID == _kOCNotATypeID)
+    if (kOCIndexArrayID == kOCNotATypeID)
         kOCIndexArrayID = OCRegisterType("OCIndexArray");
     return kOCIndexArrayID;
 }
 
-static bool __OCIndexArrayEqual(const void *a_, const void *b_) {
+static bool impl_OCIndexArrayEqual(const void *a_, const void *b_) {
     OCIndexArrayRef a = (OCIndexArrayRef)a_;
     OCIndexArrayRef b = (OCIndexArrayRef)b_;
     if (OCDataGetLength(a->indexes) != OCDataGetLength(b->indexes)) return false;
@@ -36,35 +36,35 @@ static bool __OCIndexArrayEqual(const void *a_, const void *b_) {
     return true;
 }
 
-static void *__OCIndexArrayDeepCopy(const void *obj) {
+static void *impl_OCIndexArrayDeepCopy(const void *obj) {
     OCIndexArrayRef src = (OCIndexArrayRef)obj;
     return src ? (void *)OCIndexArrayCreateCopy(src) : NULL;
 }
 
-static void *__OCIndexArrayDeepCopyMutable(const void *obj) {
+static void *impl_OCIndexArrayDeepCopyMutable(const void *obj) {
     OCIndexArrayRef src = (OCIndexArrayRef)obj;
     return src ? (void *)OCIndexArrayCreateMutableCopy(src) : NULL;
 }
 
-static void __OCIndexArrayFinalize(const void *obj) {
+static void impl_OCIndexArrayFinalize(const void *obj) {
     OCMutableIndexArrayRef array = (OCMutableIndexArrayRef)obj;
     if (array->indexes) OCRelease(array->indexes);
     array->indexes = NULL;
 }
 
-static OCStringRef __OCIndexArrayCopyFormattingDesc(OCTypeRef cf) {
+static OCStringRef impl_OCIndexArrayCopyFormattingDesc(OCTypeRef cf) {
     return OCStringCreateWithCString("<OCIndexArray>");
 }
 
 static OCMutableIndexArrayRef OCIndexArrayAllocate(void) {
     return (OCMutableIndexArrayRef)OCTypeAlloc(
-        struct __OCIndexArray,
+        struct impl_OCIndexArray,
         OCIndexArrayGetTypeID(),
-        __OCIndexArrayFinalize,
-        __OCIndexArrayEqual,
-        __OCIndexArrayCopyFormattingDesc,
-        __OCIndexArrayDeepCopy,
-        __OCIndexArrayDeepCopyMutable
+        impl_OCIndexArrayFinalize,
+        impl_OCIndexArrayEqual,
+        impl_OCIndexArrayCopyFormattingDesc,
+        impl_OCIndexArrayDeepCopy,
+        impl_OCIndexArrayDeepCopyMutable
     );
 }
 

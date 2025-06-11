@@ -6,9 +6,9 @@
      @discussion
      Parses complex double from calculator string input
      */
-    typedef const struct __complexNode * ComplexNodeRef;
-    typedef const struct __complexNumberValue * ComplexNumberRef;
-    typedef const struct __complexNodeFunction * ComplexNumberFunctionRef;
+    typedef const struct impl_complexNode * ComplexNodeRef;
+    typedef const struct impl_complexNumberValue * ComplexNumberRef;
+    typedef const struct impl_complexNodeFunction * ComplexNumberFunctionRef;
     typedef enum builtInMathFunctions {
         BM_sqrt = 1,
         BM_cbrt,
@@ -33,22 +33,22 @@
     static double complex result;
     int ocpclex(void);
 
-    struct __complexNode {
+    struct impl_complexNode {
         int nodeType;
         ComplexNodeRef left;
         ComplexNodeRef right;
-    } __complexNode;
+    } impl_complexNode;
 
-    struct __complexNodeFunction {
+    struct impl_complexNodeFunction {
         int nodeType;
         ComplexNodeRef left;
         builtInMathFunctions funcType;
-    } __complexNodeFunction;
+    } impl_complexNodeFunction;
 
-    struct __complexNumberValue {
+    struct impl_complexNumberValue {
         int nodeType;
         double complex number;
-    } __complexNumberValue;
+    } impl_complexNumberValue;
 
     ComplexNodeRef ComplexNodeCreateInnerNode(int nodeType, ComplexNodeRef left, ComplexNodeRef right);
     ComplexNodeRef ComplexNodeCreateNumberLeaf(double complex number);
@@ -156,7 +156,7 @@ double complex OCComplexFromCString(const char *string)
 
 ComplexNodeRef ComplexNodeCreateInnerNode(int nodeType, ComplexNodeRef left, ComplexNodeRef right)
 {
-    struct __complexNode *node = malloc(sizeof(struct __complexNode));
+    struct impl_complexNode *node = malloc(sizeof(struct impl_complexNode));
     node->nodeType = nodeType;
     node->left = left;
     node->right = right;
@@ -166,7 +166,7 @@ ComplexNodeRef ComplexNodeCreateInnerNode(int nodeType, ComplexNodeRef left, Com
 
 ComplexNodeRef ComplexNodeCreateFunction(int funcType, ComplexNodeRef left)
 {
-    struct __complexNodeFunction *node = malloc(sizeof(struct __complexNodeFunction));
+    struct impl_complexNodeFunction *node = malloc(sizeof(struct impl_complexNodeFunction));
     node->nodeType = 'F';
     node->left = left;
     node->funcType = funcType;
@@ -175,7 +175,7 @@ ComplexNodeRef ComplexNodeCreateFunction(int funcType, ComplexNodeRef left)
 
 ComplexNodeRef ComplexNodeCreateNumberLeaf(double complex number)
 {
-    struct __complexNumberValue *leaf = malloc(sizeof(struct __complexNumberValue));
+    struct impl_complexNumberValue *leaf = malloc(sizeof(struct impl_complexNumberValue));
     leaf->nodeType = 'K';
     leaf->number = number;
     return (ComplexNodeRef) leaf;

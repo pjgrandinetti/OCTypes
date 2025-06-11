@@ -15,9 +15,9 @@ bool booleanTest0(void) {
     OCTypeID trueID = OCGetTypeID(kOCBooleanTrue);
     OCTypeID falseID = OCGetTypeID(kOCBooleanFalse);
     OCTypeID directID = OCBooleanGetTypeID(); // This should register the type if not already
-    if (trueID == _kOCNotATypeID) PRINTERROR;
-    if (falseID == _kOCNotATypeID) PRINTERROR;
-    if (directID == _kOCNotATypeID) PRINTERROR;
+    if (trueID == kOCNotATypeID) PRINTERROR;
+    if (falseID == kOCNotATypeID) PRINTERROR;
+    if (directID == kOCNotATypeID) PRINTERROR;
     if (trueID != falseID) PRINTERROR;
     if (trueID != directID) PRINTERROR;
     // equality using OCTypeEqual (which should internally use OCTypeEqual or specific type equal)

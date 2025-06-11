@@ -16,21 +16,21 @@ bool OCStringFindWithOptions(OCStringRef string, OCStringRef stringToFind, OCRan
 static OCMutableDictionaryRef getConstantStringTable(void);
 
 // Callbacks for OCArray containing OCRange structs
-static void __OCRangeReleaseCallBack(const void *value) {
+static void impl_OCRangeReleaseCallBack(const void *value) {
     if (value) {
         free((void *)value);
     }
 }
 // NOP retain callback for OCRange objects, as they are simple malloc'd structs
 // and OCArrayAppendValue might attempt to call a retain callback.
-static const void *__OCRangeNopRetainCallBack(const void *value) {
+static const void *impl_OCRangeNopRetainCallBack(const void *value) {
     return value; // OCRanges are not further reference counted themselves by this callback
 }
 
 static const OCArrayCallBacks kOCRangeArrayCallBacks = {
     0, // version
-    __OCRangeNopRetainCallBack, // retain
-    __OCRangeReleaseCallBack, // release
+    impl_OCRangeNopRetainCallBack, // retain
+    impl_OCRangeReleaseCallBack, // release
     NULL, // copyDescription
     NULL  // equal
 };
@@ -219,11 +219,11 @@ str_replace(const char *orig,
 }
 
 
-static OCTypeID kOCStringID = _kOCNotATypeID;
+static OCTypeID kOCStringID = kOCNotATypeID;
 
 // OCString Opaque Type
-struct __OCString {
-    OCBase _base;
+struct impl_OCString {
+    OCBase base;
 
     // OCString Type attributes  - order of declaration is essential
     char *string;
@@ -231,7 +231,7 @@ struct __OCString {
     uint64_t capacity;
 };
 
-static bool __OCStringEqual(const void * theType1, const void * theType2)
+static bool impl_OCStringEqual(const void * theType1, const void * theType2)
 {
     OCStringRef theString1 = (OCStringRef) theType1;
     OCStringRef theString2 = (OCStringRef) theType2;
@@ -243,7 +243,7 @@ static bool __OCStringEqual(const void * theType1, const void * theType2)
     if (NULL == theString1 || NULL == theString2) return false;
 
     // 3. Now it's safe to access members. Check typeID.
-    if (theString1->_base.typeID != theString2->_base.typeID) return false;
+    if (theString1->base.typeID != theString2->base.typeID) return false;
 
     // 4. Compare lengths. If lengths differ, strings cannot be equal.
     if (theString1->length != theString2->length) return false;
@@ -262,14 +262,14 @@ static bool __OCStringEqual(const void * theType1, const void * theType2)
     return true;
 }
 
-static void __OCStringFinalize(const void * theType)
+static void impl_OCStringFinalize(const void * theType)
 {
     if(NULL == theType) return;
     OCStringRef theString = (OCStringRef) theType;
     free(theString->string);
 }
 
-static OCStringRef __OCStringCopyFormattingDesc(OCTypeRef cf)
+static OCStringRef impl_OCStringCopyFormattingDesc(OCTypeRef cf)
 {
     if (!cf) return NULL;
     OCBase *base = (OCBase *)cf;
@@ -280,13 +280,13 @@ static OCStringRef __OCStringCopyFormattingDesc(OCTypeRef cf)
     return OCStringCreateCopy((OCStringRef)cf);
 }
 
-static void *__OCStringDeepCopy(const void *obj) {
+static void *impl_OCStringDeepCopy(const void *obj) {
     OCStringRef src = (OCStringRef)obj;
     if (!src) return NULL;
     return (void *)OCStringCreateCopy(src); // Safe cast, as OCStringCreateCopy allocates
 }
 
-static void *__OCStringDeepCopyMutable(const void *obj) {
+static void *impl_OCStringDeepCopyMutable(const void *obj) {
     OCStringRef src = (OCStringRef)obj;
     if (!src) return NULL;
     return OCStringCreateMutableCopy(src); // Returns OCMutableStringRef
@@ -294,19 +294,19 @@ static void *__OCStringDeepCopyMutable(const void *obj) {
 
 OCTypeID OCStringGetTypeID(void)
 {
-    if(kOCStringID == _kOCNotATypeID) kOCStringID = OCRegisterType("OCString");
+    if(kOCStringID == kOCNotATypeID) kOCStringID = OCRegisterType("OCString");
     return kOCStringID;
 }
 
-static struct __OCString *OCStringAllocate()
+static struct impl_OCString *OCStringAllocate()
 {
-    struct __OCString *obj = OCTypeAlloc(struct __OCString,
+    struct impl_OCString *obj = OCTypeAlloc(struct impl_OCString,
                                          OCStringGetTypeID(),
-                                         __OCStringFinalize,
-                                         __OCStringEqual,
-                                         __OCStringCopyFormattingDesc,
-                                         __OCStringDeepCopy,
-                                         __OCStringDeepCopyMutable);
+                                         impl_OCStringFinalize,
+                                         impl_OCStringEqual,
+                                         impl_OCStringCopyFormattingDesc,
+                                         impl_OCStringDeepCopy,
+                                         impl_OCStringDeepCopyMutable);
 
     obj->string = NULL;
     obj->length = 0;
@@ -346,7 +346,7 @@ static OCMutableDictionaryRef getConstantStringTable(void) {
     return table;
 }
 
-OCStringRef __OCStringMakeConstantString(const char *cStr)
+OCStringRef impl_OCStringMakeConstantString(const char *cStr)
 {
     // Create a temporary OCString to look up in the table
     OCStringRef tmp = OCStringCreateWithCString(cStr);
@@ -371,7 +371,7 @@ OCStringRef OCStringCreateCopy(OCStringRef theString) {
 }
 
 OCMutableStringRef OCStringCreateMutable(uint64_t capacity) {
-    struct __OCString *s = OCStringAllocate();
+    struct impl_OCString *s = OCStringAllocate();
     if (!s) return NULL;
 
     s->capacity = capacity;
@@ -423,7 +423,7 @@ OCStringRef OCStringCreateWithCString(const char *cString)
 
 OCMutableStringRef OCStringCreateMutableCopy(OCStringRef theString) {
     if (!theString) return NULL;
-    struct __OCString *s = OCStringAllocate();
+    struct impl_OCString *s = OCStringAllocate();
     if (!s) return NULL;
 
     // Preserve both byte‐capacity and code‐point length
@@ -493,7 +493,7 @@ void OCStringShow(OCStringRef s) {
 }
 
 bool OCStringEqual(OCStringRef a, OCStringRef b) {
-    return __OCStringEqual(a, b);
+    return impl_OCStringEqual(a, b);
 }
 
 // Note: header declares `char OCStringGetCharacterAtIndex(...)`, 

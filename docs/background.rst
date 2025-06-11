@@ -249,7 +249,7 @@ We begin by creating a fundamental opaque type called OCType, from which all oth
 
 .. code-block:: c
 
-    struct __OCType {
+    struct impl_OCType {
         u_int32_t retainCount;
         void (*finalize)(void *); 
         bool (*equal)(void *, void *);
@@ -259,7 +259,7 @@ In OCType header define opaque type
 
 .. code-block:: c
 
-    typedef struct __OCType * OCTypeRef;
+    typedef struct impl_OCType * OCTypeRef;
 
 OCType Methods
 
@@ -291,7 +291,7 @@ Now we can define OCShape to inherit from OCType
 
 .. code-block:: c
 
-    struct __OCShape {
+    struct impl_OCShape {
         u_int32_t retainCount;
         void (*finalize)(void *); 
         bool (*equal)(void *, void *);
@@ -302,9 +302,9 @@ Now we can define OCShape to inherit from OCType
         float orientation;
     };
 
-    static struct __OCShape *OCShapeAllocate()
+    static struct impl_OCShape *OCShapeAllocate()
     {
-        struct __OCShape *theShape = malloc(sizeof(struct __OCShape)); 
+        struct impl_OCShape *theShape = malloc(sizeof(struct impl_OCShape)); 
         if(NULL == theShape) return NULL;
         theShape->retainCount = 1;
         theShape->finalize = KTShapeFinalize;

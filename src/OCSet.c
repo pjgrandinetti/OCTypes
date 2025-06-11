@@ -10,14 +10,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-static OCTypeID kOCSetID = _kOCNotATypeID;
+static OCTypeID kOCSetID = kOCNotATypeID;
 
-struct __OCSet {
-    OCBase _base;
+struct impl_OCSet {
+    OCBase base;
     OCMutableArrayRef elements;
 };
 
-static bool __OCSetEqual(const void *a, const void *b)
+static bool impl_OCSetEqual(const void *a, const void *b)
 {
     OCSetRef set1 = (OCSetRef)a;
     OCSetRef set2 = (OCSetRef)b;
@@ -35,7 +35,7 @@ static bool __OCSetEqual(const void *a, const void *b)
     return true;
 }
 
-static void __OCSetFinalize(const void *obj)
+static void impl_OCSetFinalize(const void *obj)
 {
     OCSetRef set = (OCSetRef)obj;
     if (set && set->elements) {
@@ -43,7 +43,7 @@ static void __OCSetFinalize(const void *obj)
     }
 }
 
-static OCStringRef __OCSetCopyFormattingDesc(OCTypeRef cf)
+static OCStringRef impl_OCSetCopyFormattingDesc(OCTypeRef cf)
 {
     OCSetRef set = (OCSetRef)cf;
     if (!set) return OCStringCreateWithCString("<OCSet: NULL>");
@@ -65,7 +65,7 @@ static OCStringRef __OCSetCopyFormattingDesc(OCTypeRef cf)
     return result;
 }
 
-static void *__OCSetDeepCopy(const void *obj) {
+static void *impl_OCSetDeepCopy(const void *obj) {
     OCSetRef src = (OCSetRef)obj;
     if (!src || !src->elements) return NULL;
 
@@ -87,29 +87,29 @@ static void *__OCSetDeepCopy(const void *obj) {
     return (void *)copy;
 }
 
-static void *__OCSetDeepCopyMutable(const void *obj) {
+static void *impl_OCSetDeepCopyMutable(const void *obj) {
     // OCSet is mutable, so same as deep copy
-    return __OCSetDeepCopy(obj);
+    return impl_OCSetDeepCopy(obj);
 }
 
 OCTypeID OCSetGetTypeID(void)
 {
-    if (kOCSetID == _kOCNotATypeID) {
+    if (kOCSetID == kOCNotATypeID) {
         kOCSetID = OCRegisterType("OCSet");
     }
     return kOCSetID;
 }
 
-static struct __OCSet *OCSetAllocate(void)
+static struct impl_OCSet *OCSetAllocate(void)
 {
-    struct __OCSet *set = OCTypeAlloc(
-        struct __OCSet,
+    struct impl_OCSet *set = OCTypeAlloc(
+        struct impl_OCSet,
         OCSetGetTypeID(),
-        __OCSetFinalize,
-        __OCSetEqual,
-        __OCSetCopyFormattingDesc,
-        __OCSetDeepCopy,
-        __OCSetDeepCopyMutable
+        impl_OCSetFinalize,
+        impl_OCSetEqual,
+        impl_OCSetCopyFormattingDesc,
+        impl_OCSetDeepCopy,
+        impl_OCSetDeepCopyMutable
     );
 
     set->elements = OCArrayCreateMutable(0, &kOCTypeArrayCallBacks);
@@ -188,7 +188,7 @@ void OCSetRemoveAllValues(OCMutableSetRef theSet)
 
 bool OCSetEqual(OCSetRef a, OCSetRef b)
 {
-    return __OCSetEqual(a, b);
+    return impl_OCSetEqual(a, b);
 }
 
 void OCSetShow(OCSetRef theSet)
