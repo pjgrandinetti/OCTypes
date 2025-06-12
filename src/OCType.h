@@ -199,6 +199,8 @@ const char *OCTypeIDName(const void * ptr);
 
 const char *OCTypeNameFromTypeID(OCTypeID typeID);
 
+int OCTypeIDTableGetCount(void);
+
 /** \cond INTERNAL */
 
 typedef struct impl_OCBase {

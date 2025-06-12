@@ -24,6 +24,10 @@ void cleanupTypeIDTable(void) {
     }
 }
 
+int OCTypeIDTableGetCount(void) {
+    return typeIDTableCount;
+}
+
 static bool TypeIDTableContainsName(const char *typeName) {
     if (typeName == NULL || typeIDTable == NULL) {
         return false;
@@ -70,12 +74,12 @@ void OCTypesShutdown(void) {
     cleanupTypeIDTable();
 }
 
-// Run *after* LSAN’s destructors (101–103), so that LSAN gets to see
-// everything and only afterward we print out any remaining leaks.
-__attribute__((destructor(100)))  
-static void impl_OCTypes_cleanup(void) {
-    // if(typeIDTableCount == OCLIB_TYPES_COUNT) OCTypesShutdown();
-}
+// // Run *after* LSAN’s destructors (101–103), so that LSAN gets to see
+// // everything and only afterward we print out any remaining leaks.
+// __attribute__((destructor(100)))  
+// static void impl_OCTypes_cleanup(void) {
+//     if(typeIDTableCount == OCLIB_TYPES_COUNT) OCTypesShutdown();
+// }
 
 
 struct impl_OCType {
