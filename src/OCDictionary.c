@@ -329,6 +329,7 @@ bool OCDictionaryAddValue(OCMutableDictionaryRef theDictionary, OCStringRef key,
         newKeys = (OCStringRef *)realloc(theDictionary->keys, newCapacity * sizeof(OCStringRef));
         if (!newKeys)
         {
+            free(newValues); // Free previously allocated values
             fprintf(stderr, "OCDictionaryAddValue: Memory reallocation for keys failed.\n");
             return false;
         }
