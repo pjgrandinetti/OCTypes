@@ -74,7 +74,7 @@ void OCTypesShutdown(void) {
 // everything and only afterward we print out any remaining leaks.
 __attribute__((destructor(100)))  
 static void impl_OCTypes_cleanup(void) {
-    if(typeIDTableCount == OCLIB_TYPES_COUNT) OCTypesShutdown();
+    // if(typeIDTableCount == OCLIB_TYPES_COUNT) OCTypesShutdown();
 }
 
 
