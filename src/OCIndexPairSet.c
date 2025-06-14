@@ -143,12 +143,12 @@ OCIndex OCIndexPairSetGetCount(OCIndexPairSetRef s) {
     return s && s->indexPairs ? OCDataGetLength(s->indexPairs) / sizeof(OCIndexPair) : 0;
 }
 
-OCIndexPair *OCIndexPairSetGetBytePtr(OCIndexPairSetRef s) {
-    return s && s->indexPairs ? (OCIndexPair *)OCDataGetBytePtr(s->indexPairs) : NULL;
+OCIndexPair *OCIndexPairSetGetBytesPtr(OCIndexPairSetRef s) {
+    return s && s->indexPairs ? (OCIndexPair *)OCDataGetBytesPtr(s->indexPairs) : NULL;
 }
 
 OCIndex OCIndexPairSetValueForIndex(OCIndexPairSetRef s, OCIndex index) {
-    OCIndexPair *pairs = OCIndexPairSetGetBytePtr(s);
+    OCIndexPair *pairs = OCIndexPairSetGetBytesPtr(s);
     OCIndex count = OCIndexPairSetGetCount(s);
     for (OCIndex i = 0; i < count; i++)
         if (pairs[i].index == index)
@@ -160,7 +160,7 @@ bool OCIndexPairSetAddIndexPair(OCMutableIndexPairSetRef s, OCIndex index, OCInd
     if (!s) return false;
     OCIndexPair newPair = {index, value};
     OCIndex count = OCIndexPairSetGetCount(s);
-    OCIndexPair *pairs = OCIndexPairSetGetBytePtr(s);
+    OCIndexPair *pairs = OCIndexPairSetGetBytesPtr(s);
 
     for (OCIndex i = 0; i < count; i++) {
         if (pairs[i].index == index) return false;
@@ -188,7 +188,7 @@ bool OCIndexPairSetAddIndexPair(OCMutableIndexPairSetRef s, OCIndex index, OCInd
 }
 
 bool OCIndexPairSetContainsIndex(OCIndexPairSetRef s, OCIndex index) {
-    OCIndexPair *pairs = OCIndexPairSetGetBytePtr(s);
+    OCIndexPair *pairs = OCIndexPairSetGetBytesPtr(s);
     OCIndex count = OCIndexPairSetGetCount(s);
     for (OCIndex i = 0; i < count; i++)
         if (pairs[i].index == index)
@@ -198,7 +198,7 @@ bool OCIndexPairSetContainsIndex(OCIndexPairSetRef s, OCIndex index) {
 
 void OCIndexPairSetShow(OCIndexPairSetRef s) {
     if (!s) return;
-    OCIndexPair *pairs = OCIndexPairSetGetBytePtr(s);
+    OCIndexPair *pairs = OCIndexPairSetGetBytesPtr(s);
     OCIndex count = OCIndexPairSetGetCount(s);
     fprintf(stderr, "(");
     for (OCIndex i = 0; i < count; i++) {

@@ -17,7 +17,7 @@ bool dataTest0(void) {
     OCDataRef data1 = OCDataCreate(bytes1, sizeof(bytes1));
     if (!data1) PRINTERROR;
     if (OCDataGetLength(data1) != sizeof(bytes1)) PRINTERROR;
-    const uint8_t *ptr1 = OCDataGetBytePtr(data1);
+    const uint8_t *ptr1 = OCDataGetBytesPtr(data1);
     if (!ptr1) PRINTERROR;
     for (size_t i = 0; i < sizeof(bytes1); ++i) {
         if (ptr1[i] != bytes1[i]) PRINTERROR;
@@ -36,7 +36,7 @@ bool dataTest0(void) {
     OCRelease(data1); 
     PRINTERROR; }
     if (OCDataGetLength(data2) != len2) { OCRelease(data2); OCRelease(data1); PRINTERROR; }
-    const uint8_t *ptr2 = OCDataGetBytePtr(data2);
+    const uint8_t *ptr2 = OCDataGetBytesPtr(data2);
     for (size_t i = 0; i < len2; ++i) {
         if (ptr2[i] != bytes2[i]) { OCRelease(data2); OCRelease(data1); PRINTERROR; }
     }
@@ -48,7 +48,7 @@ bool dataTest0(void) {
     OCDataRef data3 = OCDataCreateCopy(data1);
     if (!data3) { OCRelease(data1); PRINTERROR; }
     if (OCDataGetLength(data3) != OCDataGetLength(data1)) { OCRelease(data3); OCRelease(data1); PRINTERROR; }
-    const uint8_t *ptr3 = OCDataGetBytePtr(data3);
+    const uint8_t *ptr3 = OCDataGetBytesPtr(data3);
     if (ptr3 == ptr1) { OCRelease(data3); OCRelease(data1); PRINTERROR; }
     for (size_t i = 0; i < OCDataGetLength(data3); ++i) {
         if (ptr3[i] != ptr1[i]) { OCRelease(data3); OCRelease(data1); PRINTERROR; }
@@ -78,10 +78,10 @@ bool dataTest1(void) {
     uint8_t buffer[8] = {0};
     OCDataGetBytes((OCDataRef)mdata, OCRangeMake(0, OCDataGetLength(mdata)), buffer);
     ASSERT_TRUE(buffer[5] == 10 && buffer[6] == 20 && buffer[7] == 30, "Test 1.6: OCDataGetBytes should return appended data");
-    uint8_t *mutPtr = OCDataGetMutableBytePtr(mdata);
-    ASSERT_NOT_NULL(mutPtr, "Test 1.7: OCDataGetMutableBytePtr should not return NULL");
+    uint8_t *mutPtr = OCDataGetMutableBytesPtr(mdata);
+    ASSERT_NOT_NULL(mutPtr, "Test 1.7: OCDataGetMutableBytesPtr should not return NULL");
     mutPtr[0] = 55;
-    ASSERT_EQUAL(OCDataGetBytePtr((OCDataRef)mdata)[0], 55, "Test 1.8: OCDataGetMutableBytePtr should allow writing data");
+    ASSERT_EQUAL(OCDataGetBytesPtr((OCDataRef)mdata)[0], 55, "Test 1.8: OCDataGetMutableBytesPtr should allow writing data");
     OCRelease(mdata);
     fprintf(stderr, "%s end...without problems\n", __func__);
     return true;
@@ -98,20 +98,20 @@ bool dataTest_deepcopy(void) {
     OCDataRef copy = (OCDataRef)OCTypeDeepCopy(orig);
     ASSERT_NOT_NULL(copy, "OCTypeDeepCopy should not return NULL");
     ASSERT_TRUE(OCTypeEqual(orig, copy), "OCTypeDeepCopy should return equal data");
-    ASSERT_TRUE(OCDataGetBytePtr(orig) != OCDataGetBytePtr(copy), "OCTypeDeepCopy should return different memory");
+    ASSERT_TRUE(OCDataGetBytesPtr(orig) != OCDataGetBytesPtr(copy), "OCTypeDeepCopy should return different memory");
     OCRelease(copy);
 
     // Mutable deep copy
     OCMutableDataRef mcopy = (OCMutableDataRef)OCTypeDeepCopyMutable(orig);
     ASSERT_NOT_NULL(mcopy, "OCTypeDeepCopyMutable should not return NULL");
     ASSERT_TRUE(OCTypeEqual(orig, mcopy), "OCTypeDeepCopyMutable should return equal data");
-    ASSERT_TRUE(OCDataGetBytePtr(orig) != OCDataGetBytePtr(mcopy), "OCTypeDeepCopyMutable should return different memory");
+    ASSERT_TRUE(OCDataGetBytesPtr(orig) != OCDataGetBytesPtr(mcopy), "OCTypeDeepCopyMutable should return different memory");
 
     // Try modifying
-    uint8_t *ptr = OCDataGetMutableBytePtr(mcopy);
+    uint8_t *ptr = OCDataGetMutableBytesPtr(mcopy);
     ptr[0] = 0xAB;
-    ASSERT_TRUE(OCDataGetBytePtr(mcopy)[0] == 0xAB, "Modified byte should be reflected in mutable deep copy");
-    ASSERT_TRUE(OCDataGetBytePtr(orig)[0] != 0xAB, "Original should remain unchanged");
+    ASSERT_TRUE(OCDataGetBytesPtr(mcopy)[0] == 0xAB, "Modified byte should be reflected in mutable deep copy");
+    ASSERT_TRUE(OCDataGetBytesPtr(orig)[0] != 0xAB, "Original should remain unchanged");
 
     OCRelease(orig);
     OCRelease(mcopy);

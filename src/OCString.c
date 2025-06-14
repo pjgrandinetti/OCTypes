@@ -1424,7 +1424,7 @@ OCStringRef OCStringCreateBase64EncodedWithOptions(OCDataRef data,
     Base64LineEnding lineEnd;
     _parseOCBase64Options(options, &lineLen, &lineEnd);
 
-    const uint8_t* bytes = OCDataGetBytePtr(data);
+    const uint8_t* bytes = OCDataGetBytesPtr(data);
     size_t input_length = (size_t)OCDataGetLength(data);
 
     size_t output_length = 0;

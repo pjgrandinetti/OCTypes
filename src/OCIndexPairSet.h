@@ -150,7 +150,7 @@ OCIndex OCIndexPairSetGetCount(OCIndexPairSetRef set);
  *         Returns NULL if set is NULL.
  * @ingroup OCIndexPairSet
  */
-OCIndexPair *OCIndexPairSetGetBytePtr(OCIndexPairSetRef set);
+OCIndexPair *OCIndexPairSetGetBytesPtr(OCIndexPairSetRef set);
 
 /**
  * @brief Retrieves the value associated with a given index.

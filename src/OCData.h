@@ -93,7 +93,7 @@ uint64_t OCDataGetLength(OCDataRef theData);
  * @return Pointer to bytes, or NULL.
  * @ingroup OCData
  */
-const uint8_t *OCDataGetBytePtr(OCDataRef theData);
+const uint8_t *OCDataGetBytesPtr(OCDataRef theData);
 
 /**
  * @brief Returns a mutable pointer to internal bytes.
@@ -103,7 +103,7 @@ const uint8_t *OCDataGetBytePtr(OCDataRef theData);
  * @warning Use with care. Modifications may affect internal state.
  * @ingroup OCData
  */
-uint8_t *OCDataGetMutableBytePtr(OCMutableDataRef theData);
+uint8_t *OCDataGetMutableBytesPtr(OCMutableDataRef theData);
 
 /**
  * @brief Copies a range of bytes from an OCData object into a buffer.

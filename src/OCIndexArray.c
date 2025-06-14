@@ -144,8 +144,8 @@ OCIndex OCIndexArrayGetCount(OCIndexArrayRef array) {
     return array && array->indexes ? OCDataGetLength(array->indexes) / sizeof(OCIndex) : 0;
 }
 
-OCIndex *OCIndexArrayGetMutableBytePtr(OCIndexArrayRef array) {
-    return array && array->indexes ? (OCIndex *)OCDataGetMutableBytePtr(array->indexes) : NULL;
+OCIndex *OCIndexArrayGetMutableBytesPtr(OCIndexArrayRef array) {
+    return array && array->indexes ? (OCIndex *)OCDataGetMutableBytesPtr(array->indexes) : NULL;
 }
 
 OCIndex OCIndexArrayGetValueAtIndex(OCIndexArrayRef array, OCIndex index) {
@@ -154,7 +154,7 @@ OCIndex OCIndexArrayGetValueAtIndex(OCIndexArrayRef array, OCIndex index) {
     OCIndex count = OCIndexArrayGetCount(array);
     if (index >= count) return kOCNotFound;
 
-    OCIndex *ptr = (OCIndex *)OCDataGetBytePtr(array->indexes);
+    OCIndex *ptr = (OCIndex *)OCDataGetBytesPtr(array->indexes);
     return ptr ? ptr[index] : kOCNotFound;
 }
 
@@ -164,7 +164,7 @@ bool OCIndexArraySetValueAtIndex(OCMutableIndexArrayRef array, OCIndex index, OC
     OCIndex count = OCIndexArrayGetCount(array);
     if (index >= count) return false;
 
-    OCIndex *ptr = (OCIndex *)OCDataGetMutableBytePtr(array->indexes);
+    OCIndex *ptr = (OCIndex *)OCDataGetMutableBytesPtr(array->indexes);
     if (!ptr) return false;
 
     ptr[index] = value;
@@ -178,7 +178,7 @@ bool OCIndexArrayRemoveValueAtIndex(OCMutableIndexArrayRef array, OCIndex index)
     OCIndex count = OCIndexArrayGetCount(array);
     if (index >= count) return false;
 
-    OCIndex *old = (OCIndex *)OCDataGetBytePtr(array->indexes);
+    OCIndex *old = (OCIndex *)OCDataGetBytesPtr(array->indexes);
     if (!old) return false;
 
     // Allocate a new buffer of capacity (count-1)*sizeof(OCIndex)
@@ -191,7 +191,7 @@ bool OCIndexArrayRemoveValueAtIndex(OCMutableIndexArrayRef array, OCIndex index)
         return false;
     }
 
-    OCIndex *copy = (OCIndex *)OCDataGetMutableBytePtr(data);
+    OCIndex *copy = (OCIndex *)OCDataGetMutableBytesPtr(data);
     if (!copy) {
         OCRelease(data);
         return false;
@@ -234,7 +234,7 @@ void OCIndexArrayRemoveValuesAtIndexes(OCMutableIndexArrayRef array, OCIndexSetR
 
 bool OCIndexArrayContainsIndex(OCIndexArrayRef array, OCIndex value) {
     OCIndex count = OCIndexArrayGetCount(array);
-    OCIndex *ptr = (OCIndex *)OCDataGetBytePtr(array->indexes);
+    OCIndex *ptr = (OCIndex *)OCDataGetBytesPtr(array->indexes);
     for (OCIndex i = 0; i < count; i++) {
         if (ptr[i] == value) return true;
     }
@@ -248,7 +248,7 @@ bool OCIndexArrayAppendValue(OCMutableIndexArrayRef array, OCIndex value) {
         return false;
     }
 
-    OCIndex *ptr = (OCIndex *)OCDataGetMutableBytePtr(array->indexes);
+    OCIndex *ptr = (OCIndex *)OCDataGetMutableBytesPtr(array->indexes);
     if (!ptr) return false;
 
     ptr[OCIndexArrayGetCount(array) - 1] = value;
@@ -262,7 +262,7 @@ bool OCIndexArrayAppendValues(OCMutableIndexArrayRef dst, OCIndexArrayRef src) {
     if (!newData) return false;
 
     if (!OCDataAppendBytes(newData,
-                           OCDataGetBytePtr(src->indexes),
+                           OCDataGetBytesPtr(src->indexes),
                            OCDataGetLength(src->indexes))) {
         OCRelease(newData);
         return false;
@@ -276,7 +276,7 @@ bool OCIndexArrayAppendValues(OCMutableIndexArrayRef dst, OCIndexArrayRef src) {
 OCStringRef OCIndexArrayCreateBase64String(OCIndexArrayRef array, csdmNumericType type) {
     if (!array) return NULL;
     OCIndex count = OCIndexArrayGetCount(array);
-    OCIndex *src = (OCIndex *)OCDataGetBytePtr(array->indexes);
+    OCIndex *src = (OCIndex *)OCDataGetBytesPtr(array->indexes);
 
     size_t size = 0;
     void *converted = NULL;

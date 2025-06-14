@@ -26,7 +26,7 @@ bool impl_OCIndexSetEqual(const void *a_, const void *b_) {
     size_t len2 = b->indexes ? OCDataGetLength(b->indexes) : 0;
     if (len1 != len2) return false;
     if (len1 == 0) return true;
-    return memcmp(OCDataGetBytePtr(a->indexes), OCDataGetBytePtr(b->indexes), len1) == 0;
+    return memcmp(OCDataGetBytesPtr(a->indexes), OCDataGetBytesPtr(b->indexes), len1) == 0;
 }
 
 // -- Finalization --
@@ -44,7 +44,7 @@ static OCStringRef impl_OCIndexSetCopyFormattingDesc(OCTypeRef cf) {
     OCIndex count = OCIndexSetGetCount(set);
     for (OCIndex i = 0; i < count; i++) {
         if (i > 0) OCStringAppendCString(desc, ", ");
-        OCStringAppendFormat(desc, STR("%ld"), OCIndexSetGetBytePtr(set)[i]);
+        OCStringAppendFormat(desc, STR("%ld"), OCIndexSetGetBytesPtr(set)[i]);
     }
     OCStringAppendCString(desc, ">");
     return desc;
@@ -145,8 +145,8 @@ OCDataRef OCIndexSetGetIndexes(OCIndexSetRef set) {
     return set ? set->indexes : NULL;
 }
 
-OCIndex *OCIndexSetGetBytePtr(OCIndexSetRef set) {
-    return set && set->indexes ? (OCIndex *)OCDataGetBytePtr(set->indexes) : NULL;
+OCIndex *OCIndexSetGetBytesPtr(OCIndexSetRef set) {
+    return set && set->indexes ? (OCIndex *)OCDataGetBytesPtr(set->indexes) : NULL;
 }
 
 OCIndex OCIndexSetGetCount(OCIndexSetRef set) {
@@ -154,19 +154,19 @@ OCIndex OCIndexSetGetCount(OCIndexSetRef set) {
 }
 
 OCIndex OCIndexSetFirstIndex(OCIndexSetRef set) {
-    OCIndex *ptr = OCIndexSetGetBytePtr(set);
+    OCIndex *ptr = OCIndexSetGetBytesPtr(set);
     return ptr ? ptr[0] : kOCNotFound;
 }
 
 OCIndex OCIndexSetLastIndex(OCIndexSetRef set) {
     OCIndex count = OCIndexSetGetCount(set);
     if (count == 0) return kOCNotFound;
-    OCIndex *ptr = OCIndexSetGetBytePtr(set);
+    OCIndex *ptr = OCIndexSetGetBytesPtr(set);
     return ptr[count - 1];
 }
 
 OCIndex OCIndexSetIndexLessThanIndex(OCIndexSetRef set, OCIndex index) {
-    OCIndex *ptr = OCIndexSetGetBytePtr(set);
+    OCIndex *ptr = OCIndexSetGetBytesPtr(set);
     for (OCIndex i = OCIndexSetGetCount(set); i-- > 0;) {
         if (ptr[i] < index) return ptr[i];
     }
@@ -174,7 +174,7 @@ OCIndex OCIndexSetIndexLessThanIndex(OCIndexSetRef set, OCIndex index) {
 }
 
 OCIndex OCIndexSetIndexGreaterThanIndex(OCIndexSetRef set, OCIndex index) {
-    OCIndex *ptr = OCIndexSetGetBytePtr(set);
+    OCIndex *ptr = OCIndexSetGetBytesPtr(set);
     OCIndex count = OCIndexSetGetCount(set);
     for (OCIndex i = 0; i < count; i++) {
         if (ptr[i] > index) return ptr[i];
@@ -183,7 +183,7 @@ OCIndex OCIndexSetIndexGreaterThanIndex(OCIndexSetRef set, OCIndex index) {
 }
 
 bool OCIndexSetContainsIndex(OCIndexSetRef set, OCIndex index) {
-    OCIndex *ptr = OCIndexSetGetBytePtr(set);
+    OCIndex *ptr = OCIndexSetGetBytesPtr(set);
     OCIndex count = OCIndexSetGetCount(set);
     for (OCIndex i = 0; i < count; i++) {
         if (ptr[i] == index) return true;
@@ -204,7 +204,7 @@ bool OCIndexSetAddIndex(OCMutableIndexSetRef set, OCIndex index) {
         OCMutableDataRef newData = OCDataCreateMutable(sizeof(OCIndex));
         if (!newData) return false;
         if (!OCDataSetLength(newData, sizeof(OCIndex))) { OCRelease(newData); return false; }
-        OCIndex *ptr = (OCIndex *)OCDataGetMutableBytePtr(newData);
+        OCIndex *ptr = (OCIndex *)OCDataGetMutableBytesPtr(newData);
         ptr[0] = index;
         set->indexes = newData;
         return true;
@@ -212,7 +212,7 @@ bool OCIndexSetAddIndex(OCMutableIndexSetRef set, OCIndex index) {
 
     // Otherwise, we already have some data:
     count = OCIndexSetGetCount(set);
-    buf   = OCIndexSetGetBytePtr(set);
+    buf   = OCIndexSetGetBytesPtr(set);
     if (!buf) return false;
 
     // Check if already present
@@ -237,7 +237,7 @@ bool OCIndexSetAddIndex(OCMutableIndexSetRef set, OCIndex index) {
                 free(newBuf);
                 return false;
             }
-            memcpy(OCDataGetMutableBytePtr(newData), newBuf, sizeof(OCIndex) * (count + 1));
+            memcpy(OCDataGetMutableBytesPtr(newData), newBuf, sizeof(OCIndex) * (count + 1));
             free(newBuf);
             set->indexes = newData;
             return true;
@@ -248,7 +248,7 @@ bool OCIndexSetAddIndex(OCMutableIndexSetRef set, OCIndex index) {
     if (!OCDataIncreaseLength((OCMutableDataRef)set->indexes, sizeof(OCIndex)))
         return false;
 
-    OCIndex *newPtr = (OCIndex *)OCDataGetMutableBytePtr((OCMutableDataRef)set->indexes);
+    OCIndex *newPtr = (OCIndex *)OCDataGetMutableBytesPtr((OCMutableDataRef)set->indexes);
     if (!newPtr) return false;
     newPtr[count] = index;
     return true;
@@ -260,7 +260,7 @@ bool OCIndexSetEqual(OCIndexSetRef a, OCIndexSetRef b) {
 
 OCArrayRef OCIndexSetCreateOCNumberArray(OCIndexSetRef set) {
     OCMutableArrayRef arr = OCArrayCreateMutable(0, &kOCTypeArrayCallBacks);
-    OCIndex *buf = OCIndexSetGetBytePtr(set);
+    OCIndex *buf = OCIndexSetGetBytesPtr(set);
     OCIndex count = OCIndexSetGetCount(set);
     for (OCIndex i = 0; i < count; i++) {
         OCNumberRef num = OCNumberCreateWithOCIndex(buf[i]);
@@ -297,7 +297,7 @@ OCIndexSetRef OCIndexSetCreateWithData(OCDataRef data) {
 
 void OCIndexSetShow(OCIndexSetRef set) {
     fprintf(stderr, "(");
-    OCIndex *buf = OCIndexSetGetBytePtr(set);
+    OCIndex *buf = OCIndexSetGetBytesPtr(set);
     OCIndex count = OCIndexSetGetCount(set);
     for (OCIndex i = 0; i < count; i++) {
         fprintf(stderr, "%ld%s", buf[i], (i < count - 1) ? "," : "");

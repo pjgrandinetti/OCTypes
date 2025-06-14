@@ -99,7 +99,7 @@ OCDataRef OCIndexSetGetIndexes(OCIndexSetRef theIndexSet);
  *         if the set is immutable. Returns NULL if theIndexSet is NULL.
  * @ingroup OCIndexSet
  */
-OCIndex *OCIndexSetGetBytePtr(OCIndexSetRef theIndexSet);
+OCIndex *OCIndexSetGetBytesPtr(OCIndexSetRef theIndexSet);
 
 /**
  * @brief Returns the number of indices in the set.

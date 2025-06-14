@@ -86,7 +86,7 @@ OCIndex OCIndexArrayGetCount(OCIndexArrayRef theIndexArray);
  *         a mutable array. Returns NULL if the array is NULL.
  * @ingroup OCIndexArray
  */
-OCIndex *OCIndexArrayGetMutableBytePtr(OCIndexArrayRef theIndexArray);
+OCIndex *OCIndexArrayGetMutableBytesPtr(OCIndexArrayRef theIndexArray);
 
 /**
  * @brief Retrieves the value at the specified index.

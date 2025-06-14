@@ -156,11 +156,11 @@ uint64_t OCDataGetLength(OCDataRef data) {
     return data ? data->length : 0;
 }
 
-const uint8_t *OCDataGetBytePtr(OCDataRef data) {
+const uint8_t *OCDataGetBytesPtr(OCDataRef data) {
     return data ? data->bytes : NULL;
 }
 
-uint8_t *OCDataGetMutableBytePtr(OCMutableDataRef data) {
+uint8_t *OCDataGetMutableBytesPtr(OCMutableDataRef data) {
     return data ? data->bytes : NULL;
 }
 
