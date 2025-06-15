@@ -135,7 +135,7 @@ static void *impl_OCDictionaryDeepCopyMutable(const void *obj)
     return impl_OCDictionaryDeepCopy(obj);
 }
 
-static void impl_OCDictionaryReleaseValues(OCDictionaryRef dict)
+static void impl_OCDictionaryReleaseKeysAndValues(OCDictionaryRef dict)
 {
     for (uint64_t i = 0; i < dict->count; i++)
     {
@@ -152,7 +152,7 @@ static void impl_OCDictionaryFinalize(const void *theType)
         return;
     }
     OCDictionaryRef dict = (OCDictionaryRef)theType;
-    impl_OCDictionaryReleaseValues(dict);
+    impl_OCDictionaryReleaseKeysAndValues(dict);
 
     if (dict->keys)
     {

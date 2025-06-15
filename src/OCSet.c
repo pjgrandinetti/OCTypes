@@ -112,18 +112,22 @@ static struct impl_OCSet *OCSetAllocate(void)
         impl_OCSetDeepCopyMutable
     );
 
-    set->elements = OCArrayCreateMutable(0, &kOCTypeArrayCallBacks);
+    set->elements = NULL;
     return set;
 }
 
 OCSetRef OCSetCreate(void)
 {
-    return (OCSetRef) OCSetAllocate();
+    struct impl_OCSet *set = OCSetAllocate();
+    set->elements = OCArrayCreateMutable(0, &kOCTypeArrayCallBacks);
+    return (OCSetRef)set;
 }
 
 OCMutableSetRef OCSetCreateMutable(OCIndex capacity)
 {
-    return (OCMutableSetRef)OCSetAllocate();
+    struct impl_OCSet *set = OCSetAllocate();
+    set->elements = OCArrayCreateMutable(capacity, &kOCTypeArrayCallBacks);
+    return (OCMutableSetRef)set;
 }
 
 OCSetRef OCSetCreateCopy(OCSetRef theSet)
