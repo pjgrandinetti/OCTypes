@@ -90,6 +90,35 @@ OCStringRef OCStringCreateWithCString(const char *string);
 OCMutableStringRef OCStringCreateMutableCopy(OCStringRef theString);
 
 /**
+ * @brief Creates an OCString by decoding raw data as UTF-8 text.
+ *
+ * This function takes an OCDataRef containing UTF-8 encoded bytes and
+ * produces a newly allocated OCStringRef. On platforms without CFString,
+ * this performs a simple UTF-8 decode via OCStringCreateWithCString.
+ *
+ * @param data  OCDataRef containing the raw UTF-8 bytes.
+ * @return A new OCStringRef representing the decoded text. 
+ *         Ownership is transferred to the caller and must be released with OCRelease().
+ * @ingroup OCString
+ *
+ * @code
+ * // Suppose 'raw' is a binary blob loaded from a file:
+ * OCDataRef raw = OCDataCreateWithContentsOfFile("example.jdx");
+ * OCStringRef text = OCStringCreateWithExternalRepresentation(raw);
+ *
+ * // Use 'text' as needed...
+ * printf("%s\n", OCStringGetCStringPtr(text, NULL));
+ *
+ * // Clean up
+ * OCRelease(raw);
+ * OCRelease(text);
+ * @endcode
+ */
+OCStringRef
+OCStringCreateWithExternalRepresentation(OCDataRef data);
+
+
+/**
  * @brief Creates an immutable OCString from a substring.
  * @param str Source OCString.
  * @param range Range of substring to extract.

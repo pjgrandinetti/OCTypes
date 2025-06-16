@@ -78,6 +78,38 @@ OCMutableDataRef OCDataCreateMutable(uint64_t capacity);
 OCMutableDataRef OCDataCreateMutableCopy(uint64_t capacity, OCDataRef theData);
 
 /**
+ * @brief Reads an entire file into a new OCDataRef.
+ *
+ * Attempts to open and read the file at the given path, returning its
+ * raw bytes. If the operation fails (e.g. file not found or read error),
+ * returns NULL and, if `errorString` is non-NULL, sets *errorString to
+ * a newly created OCStringRef describing the failure (ownership transferred
+ * to caller). Pass NULL to ignore error details.
+ *
+ * @param path         Filesystem path to read.
+ * @param errorString  Optional pointer to an OCStringRef; on failure, *errorString
+ *                     will be set to an explanatory message (ownership transferred
+ *                     to caller). Pass NULL to skip error reporting.
+ * @return             An OCDataRef containing the file’s contents on success
+ *                     (ownership transferred to caller), or NULL on failure.
+ * @ingroup          OCData
+ *
+ * @code
+ * OCStringRef errMsg = NULL;
+ * OCDataRef blob = OCDataCreateWithContentsOfFile("data/sample.jdx", &errMsg);
+ * if (!blob) {
+ *     // handle errMsg...
+ *     OCRelease(errMsg);
+ * } else {
+ *     // use blob...
+ *     OCRelease(blob);
+ * }
+ * @endcode
+ */
+OCDataRef
+OCDataCreateWithContentsOfFile(const char *path, OCStringRef *errorString);
+
+/**
  * @brief Gets the length of a data object.
  *
  * @param theData OCDataRef or OCMutableDataRef.

@@ -367,6 +367,27 @@ OCStringRef impl_OCStringMakeConstantString(const char *cStr)
     }
 }
 
+OCStringRef
+OCStringCreateWithExternalRepresentation(OCDataRef data)
+{
+    if (!data || OCDataGetLength(data) == 0)
+        return STR("");
+
+    size_t len = OCDataGetLength(data);
+    const uint8_t *bytes = OCDataGetBytesPtr(data);
+
+    // make a nul-terminated buffer
+    char *buf = (char*)malloc(len + 1);
+    if (!buf) return STR("");  
+    memcpy(buf, bytes, len);
+    buf[len] = '\0';
+
+    // now feed it into your existing UTF-8 string constructor
+    OCStringRef s = OCStringCreateWithCString(buf);
+    free(buf);
+    return s;
+}
+
 OCStringRef OCStringCreateCopy(OCStringRef theString) {
     return theString ? OCStringCreateWithCString(theString->string) : NULL;
 }
