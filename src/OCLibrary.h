@@ -430,6 +430,7 @@ void cleanupTypeIDTable(void);
 #include "OCIndexArray.h"
 #include "OCIndexPairSet.h"
 #include "OCLeakTracker.h"
+#include "OCFileUtilities.h"
 
 /** @} */ // end of OCLibrary group
 

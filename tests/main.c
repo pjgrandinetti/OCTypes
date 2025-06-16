@@ -26,6 +26,7 @@
 #include "test_indexarray.h"
 #include "test_indexset.h" 
 #include "test_indexpairset.h"
+#include "test_fileutils.h"
 
 
 
@@ -110,6 +111,15 @@ int main(int argc, const char * argv[]) {
     if (!OCIndexPairSetEquality_test())             failures++;
     if (!OCIndexPairSetShow_test())                 failures++;
     if (!OCIndexPairSetDeepCopy_test())           failures++;
+
+
+    if (!test_path_join_and_split())    failures++;
+    if (!test_file_and_dir_checks())    failures++;
+    if (!test_create_and_list_directory()) failures++;
+    if (!test_rename_and_remove())      failures++;
+    if (!test_string_file_io())         failures++;
+
+
 
     if (failures) {
         fprintf(stderr, "\n%d test(s) failed.\n", failures);

@@ -51,6 +51,7 @@ This produces ``libOCTypes.a``.
    api/OCAutoreleasePool
    api/OCMath
    api/OCLibrary
+   api/OCFileUtilities
 
 Indices and Tables
 ==================

@@ -107,7 +107,7 @@ OCMutableStringRef OCStringCreateMutableCopy(OCStringRef theString);
  * OCStringRef text = OCStringCreateWithExternalRepresentation(raw);
  *
  * // Use 'text' as needed...
- * printf("%s\n", OCStringGetCStringPtr(text, NULL));
+ * printf("%s\n", OCStringGetCString(text, NULL));
  *
  * // Clean up
  * OCRelease(raw);
