@@ -188,8 +188,8 @@ bool test_dictionary_write_simple(void) {
     OCDictionarySetValue(dict, STR("flag"), OCBooleanGetWithBool(true));
 
     OCMutableArrayRef arr = OCArrayCreateMutable(0, &kOCTypeArrayCallBacks);
-    OCArrayAppendValue(arr, OCStringCreateWithCString("a"));
-    OCArrayAppendValue(arr, OCStringCreateWithCString("b"));
+    OCArrayAppendValue(arr, STR("a"));
+    OCArrayAppendValue(arr, STR("b"));
     OCDictionarySetValue(dict, STR("list"), arr);
     OCRelease(arr);
 
