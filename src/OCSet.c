@@ -226,6 +226,29 @@ bool OCSetEqual(OCSetRef a, OCSetRef b)
     return impl_OCSetEqual(a, b);
 }
 
+cJSON *OCSetCreateJSON(OCSetRef set) {
+    if (!set) return cJSON_CreateNull();
+
+    cJSON *arr = cJSON_CreateArray();
+    OCArrayRef elems = set->elements;
+    OCIndex count = OCArrayGetCount(elems);
+
+    for (OCIndex i = 0; i < count; i++) {
+        OCTypeRef v = (OCTypeRef)OCArrayGetValueAtIndex(elems, i);
+        cJSON *item = OCTypeCopyJSON(v);
+
+        if (!item) {
+            fprintf(stderr, "OCSetCreateJSON: Failed to serialize set element at index %llu. Using null.\n", (unsigned long long)i);
+            item = cJSON_CreateNull();
+        }
+
+        cJSON_AddItemToArray(arr, item);
+    }
+
+    return arr;
+}
+
+
 void OCSetShow(OCSetRef theSet)
 {
     if (!theSet) return;

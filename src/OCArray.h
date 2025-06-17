@@ -258,6 +258,21 @@ int64_t OCArrayBSearchValues(OCArrayRef array, OCRange range, const void *value,
 OCArrayRef OCArrayCreateWithArray(OCArrayRef array);
 
 /**
+ * @brief Creates a JSON array representation of an OCArray.
+ *
+ * Each element in the OCArray is serialized using its registered JSON serialization
+ * callback. If a type-specific JSON representation is unavailable, a generic fallback
+ * will be used instead.
+ *
+ * @param array A valid OCArrayRef.
+ * @return A new cJSON array on success, or cJSON null on failure.
+ *         The caller is responsible for managing the returned cJSON object.
+ * @ingroup OCArray
+ */
+cJSON *OCArrayCreateJSON(OCArrayRef array);
+
+
+/**
  * @brief Returns the callback structure associated with the array.
  *
  * @param array The array.

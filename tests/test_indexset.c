@@ -74,10 +74,10 @@ bool OCIndexSetSerialization_test(void) {
     OCIndexSetAddIndex(set, 100);
     OCIndexSetAddIndex(set, 200);
 
-    OCDictionaryRef dict = OCIndexSetCreatePList(set);
+    OCDictionaryRef dict = OCIndexSetCreateDictionary(set);
     success &= (dict != NULL);
 
-    OCIndexSetRef restored = OCIndexSetCreateWithPList(dict);
+    OCIndexSetRef restored = OCIndexSetCreateFromDictionary(dict);
     success &= (restored && OCIndexSetEqual(set, restored));
 
     OCRelease(set);

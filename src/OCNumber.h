@@ -144,6 +144,22 @@ OCNumberType OCNumberGetType(OCNumberRef number);
  */
 OCStringRef OCNumberCreateStringValue(OCNumberRef theNumber);
 
+
+/**
+ * @brief Creates an OCNumber from a string representation and numeric type.
+ *
+ * Converts a string (e.g., "42", "-3.14", "2.0+I*1.0") into a numeric OCNumberRef
+ * of the specified OCNumberType. This complements OCNumberCreateStringValue()
+ * and enables full round-trip conversion.
+ *
+ * @param type The expected OCNumberType of the value.
+ * @param stringValue A null-terminated string encoding the value.
+ * @return A new OCNumberRef on success, or NULL if parsing fails.
+ *         Caller is responsible for releasing the returned value.
+ * @ingroup OCNumber
+ */
+OCNumberRef OCNumberCreateWithStringValue(OCNumberType type, const char *stringValue);
+
 /**
  * @brief Returns a formatting-friendly description of the number.
  * @param theNumber OCNumberRef to describe.
@@ -171,6 +187,35 @@ bool OCNumberGetValue(OCNumberRef number, OCNumberType type, void *valuePtr);
  * @ingroup OCNumber
  */
 int OCNumberTypeSize(OCNumberType type);
+
+
+/**
+ * @brief Creates a JSON representation of an OCNumber.
+ *
+ * The resulting cJSON object includes both the number's type and value,
+ * stored under the keys `"type"` and `"value"`. The value is represented
+ * as a string for consistent round-tripping of all numeric formats.
+ *
+ * @param number An OCNumberRef to serialize.
+ * @return A cJSON object representing the OCNumber, or cJSON null on failure.
+ *         Caller is responsible for managing the returned cJSON object.
+ * @ingroup OCNumber
+ */
+cJSON *OCNumberCreateJSON(OCNumberRef number);
+
+/**
+ * @brief Creates an OCNumber from a cJSON object with "type" and "value" fields.
+ *
+ * The `json` object must be a cJSON object with the keys:
+ *   - `"type"`: a string matching a known OCNumberType (e.g., "sint32", "complex128")
+ *   - `"value"`: a string representing the numeric value
+ *
+ * @param json A cJSON object encoding a number.
+ * @return A newly created OCNumberRef on success, or NULL on failure.
+ *         The caller is responsible for releasing the returned number.
+ * @ingroup OCNumber
+ */
+OCNumberRef OCNumberCreateFromJSON(cJSON *json, OCNumberType type);
 
 /**
  * @name Convenience Constructors

@@ -142,6 +142,19 @@ void OCSetRemoveAllValues(OCMutableSetRef theSet);
 bool OCSetEqual(OCSetRef set1, OCSetRef set2);
 
 /**
+ * @brief Creates a JSON array representation of an OCSet.
+ *
+ * Each element in the set is serialized using its registered OCType JSON handler.
+ * If an element fails to serialize, a null is inserted and a warning is printed.
+ *
+ * @param set An OCSetRef to serialize.
+ * @return A new cJSON array on success, or cJSON null on failure.
+ *         The caller is responsible for managing the returned cJSON object.
+ * @ingroup OCSet
+ */
+cJSON *OCSetCreateJSON(OCSetRef set);
+
+/**
  * @brief Logs the contents of the set to stderr.
  *
  * @param theSet The set to display.

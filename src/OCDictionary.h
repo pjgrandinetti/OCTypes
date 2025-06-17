@@ -204,6 +204,22 @@ OCArrayRef OCDictionaryCreateArrayWithAllValues(OCDictionaryRef theDictionary);
  */
 OCStringRef OCDictionaryCopyFormattingDesc(OCTypeRef cf);
 
+
+/**
+ * @brief Creates a JSON object representation of an OCDictionary.
+ *
+ * Each key is serialized using its OCString value. Each value is serialized
+ * using its registered JSON serialization callback if available, or falls back
+ * to a string representation.
+ *
+ * @param dict An OCDictionaryRef to serialize.
+ * @return A new cJSON object on success, or cJSON null on failure.
+ *         Caller is responsible for managing the returned cJSON object.
+ * @ingroup OCDictionary
+ */
+cJSON *OCDictionaryCreateJSON(OCDictionaryRef dict);
+
+
 /** @} */
 
 #endif /* OCDICTIONARY_H */

@@ -47,17 +47,11 @@ static OCStringRef impl_OCIndexArrayCopyFormattingDesc(OCTypeRef cf) {
     return OCStringCreateWithCString("<OCIndexArray>");
 }
 static cJSON *
-impl_OCIndexArrayCopyJSON(const void *obj) {
-    if (!obj) return cJSON_CreateNull();
-    OCIndexArrayRef array = (OCIndexArrayRef)obj;
-    OCIndex count = OCIndexArrayGetCount(array);
-    cJSON *arr = cJSON_CreateArray();
-    for (OCIndex i = 0; i < count; i++) {
-        OCIndex v = OCIndexArrayGetValueAtIndex(array, i);
-        cJSON_AddItemToArray(arr, cJSON_CreateNumber((double)v));
-    }
-    return arr;
+impl_OCIndexArrayCopyJSON(const void *obj)
+{
+    return OCIndexArrayCreateJSON((OCIndexArrayRef)obj);
 }
+
 static OCMutableIndexArrayRef OCIndexArrayAllocate(void) {
     return (OCMutableIndexArrayRef)OCTypeAlloc(
         struct impl_OCIndexArray,
@@ -95,7 +89,7 @@ OCMutableIndexArrayRef OCIndexArrayCreateMutable(OCIndex capacity) {
     }
     return array;
 }
-static OCIndexArrayRef OCIndexArrayCreateWithParameters(OCDataRef indexes) {
+static OCIndexArrayRef OCIndexArrayCreateWithData(OCDataRef indexes) {
     if (!indexes) return NULL;
     OCMutableIndexArrayRef array = OCIndexArrayAllocate();
     if (!array) return NULL;
@@ -106,7 +100,7 @@ static OCIndexArrayRef OCIndexArrayCreateWithParameters(OCDataRef indexes) {
     }
     return array;
 }
-static OCMutableIndexArrayRef OCIndexArrayCreateMutableWithParameters(OCMutableDataRef indexes) {
+static OCMutableIndexArrayRef OCIndexArrayCreateMutableWithData(OCMutableDataRef indexes) {
     if (!indexes) return NULL;
     OCMutableIndexArrayRef array = OCIndexArrayAllocate();
     if (!array) return NULL;
@@ -119,16 +113,16 @@ static OCMutableIndexArrayRef OCIndexArrayCreateMutableWithParameters(OCMutableD
     return array;
 }
 OCIndexArrayRef OCIndexArrayCreateCopy(OCIndexArrayRef src) {
-    return OCIndexArrayCreateWithParameters(src->indexes);
+    return OCIndexArrayCreateWithData(src->indexes);
 }
 OCMutableIndexArrayRef OCIndexArrayCreateMutableCopy(OCIndexArrayRef src) {
-    return OCIndexArrayCreateMutableWithParameters(src->indexes);
+    return OCIndexArrayCreateMutableWithData(src->indexes);
 }
 OCIndex OCIndexArrayGetCount(OCIndexArrayRef array) {
     return array && array->indexes ? OCDataGetLength(array->indexes) / sizeof(OCIndex) : 0;
 }
-OCIndex *OCIndexArrayGetMutableBytesPtr(OCIndexArrayRef array) {
-    return array && array->indexes ? (OCIndex *)OCDataGetMutableBytesPtr(array->indexes) : NULL;
+OCIndex *OCIndexArrayGetMutableBytes(OCIndexArrayRef array) {
+    return array && array->indexes ? (OCIndex *)OCDataGetMutableBytes(array->indexes) : NULL;
 }
 OCIndex OCIndexArrayGetValueAtIndex(OCIndexArrayRef array, OCIndex index) {
     if (!array || !array->indexes) return kOCNotFound;
@@ -141,7 +135,7 @@ bool OCIndexArraySetValueAtIndex(OCMutableIndexArrayRef array, OCIndex index, OC
     if (!array || !array->indexes) return false;
     OCIndex count = OCIndexArrayGetCount(array);
     if (index >= count) return false;
-    OCIndex *ptr = (OCIndex *)OCDataGetMutableBytesPtr(array->indexes);
+    OCIndex *ptr = (OCIndex *)OCDataGetMutableBytes(array->indexes);
     if (!ptr) return false;
     ptr[index] = value;
     return true;
@@ -160,7 +154,7 @@ bool OCIndexArrayRemoveValueAtIndex(OCMutableIndexArrayRef array, OCIndex index)
         OCRelease(data);
         return false;
     }
-    OCIndex *copy = (OCIndex *)OCDataGetMutableBytesPtr(data);
+    OCIndex *copy = (OCIndex *)OCDataGetMutableBytes(data);
     if (!copy) {
         OCRelease(data);
         return false;
@@ -205,7 +199,7 @@ bool OCIndexArrayAppendValue(OCMutableIndexArrayRef array, OCIndex value) {
     if (!OCDataIncreaseLength(array->indexes, sizeof(OCIndex))) {
         return false;
     }
-    OCIndex *ptr = (OCIndex *)OCDataGetMutableBytesPtr(array->indexes);
+    OCIndex *ptr = (OCIndex *)OCDataGetMutableBytes(array->indexes);
     if (!ptr) return false;
     ptr[OCIndexArrayGetCount(array) - 1] = value;
     return true;
@@ -256,11 +250,11 @@ OCStringRef OCIndexArrayCreateBase64String(OCIndexArrayRef array, csdmNumericTyp
             for (OCIndex i = 0; i < count; i++) ((uint64_t *)converted)[i] = (uint64_t)src[i];
             break;
         default:
-            return OCStringCreateBase64EncodedWithOptions(array->indexes, OCBase64EncodingOptionsNone);
+            return OCDataCreateBase64EncodedString(array->indexes, OCBase64EncodingOptionsNone);
     }
     OCDataRef data = OCDataCreate((const uint8_t *)converted, count * size);
     free(converted);
-    OCStringRef result = OCStringCreateBase64EncodedWithOptions(data, OCBase64EncodingOptionsNone);
+    OCStringRef result = OCDataCreateBase64EncodedString(data, OCBase64EncodingOptionsNone);
     OCRelease(data);
     return result;
 }
@@ -274,20 +268,42 @@ OCArrayRef OCIndexArrayCreateCFNumberArray(OCIndexArrayRef array) {
     }
     return result;
 }
-OCDictionaryRef OCIndexArrayCreatePList(OCIndexArrayRef array) {
+OCDictionaryRef OCIndexArrayCreateDictionary(OCIndexArrayRef array) {
     OCMutableDictionaryRef dict = OCDictionaryCreateMutable(0);
     if (array && array->indexes)
         OCDictionarySetValue(dict, STR("indexes"), array->indexes);
     return dict;
 }
-OCIndexArrayRef OCIndexArrayCreateWithPList(OCDictionaryRef dict) {
-    return dict ? OCIndexArrayCreateWithParameters(OCDictionaryGetValue(dict, STR("indexes"))) : NULL;
+OCIndexArrayRef OCIndexArrayCreateFromDictionary(OCDictionaryRef dict) {
+    return dict ? OCIndexArrayCreateWithData(OCDictionaryGetValue(dict, STR("indexes"))) : NULL;
 }
-OCDataRef OCIndexArrayCreateData(OCIndexArrayRef array) {
-    return array ? OCRetain(array->indexes) : NULL;
+OCIndexArrayRef OCIndexArrayCreateFromJSON(cJSON *json) {
+    if (!cJSON_IsArray(json)) return NULL;
+    OCIndex count = cJSON_GetArraySize(json);
+    OCIndex *values = malloc(sizeof(OCIndex) * count);
+    if (!values) return NULL;
+    for (OCIndex i = 0; i < count; i++) {
+        cJSON *item = cJSON_GetArrayItem(json, i);
+        if (!cJSON_IsNumber(item)) {
+            free(values);
+            return NULL;
+        }
+        values[i] = (OCIndex)item->valuedouble;
+    }
+    OCIndexArrayRef result = OCIndexArrayCreate(values, count);
+    free(values);
+    return result;
 }
-OCIndexArrayRef OCIndexArrayCreateWithData(OCDataRef data) {
-    return data ? OCIndexArrayCreateWithParameters(data) : NULL;
+cJSON *OCIndexArrayCreateJSON(const void *obj) {
+    if (!obj) return cJSON_CreateNull();
+    OCIndexArrayRef array = (OCIndexArrayRef)obj;
+    OCIndex count = OCIndexArrayGetCount(array);
+    cJSON *arr = cJSON_CreateArray();
+    for (OCIndex i = 0; i < count; i++) {
+        OCIndex v = OCIndexArrayGetValueAtIndex(array, i);
+        cJSON_AddItemToArray(arr, cJSON_CreateNumber((double)v));
+    }
+    return arr;
 }
 void OCIndexArrayShow(OCIndexArrayRef array) {
     fprintf(stderr, "(");

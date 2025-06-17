@@ -76,6 +76,30 @@ OCBooleanRef OCBooleanGetWithBool(bool value);
  */
 OCStringRef OCBooleanCreateStringValue(OCBooleanRef boolean);
 
+/**
+ * @brief Creates a JSON boolean representation of an OCBooleanRef.
+ *
+ * This function maps `kOCBooleanTrue` to JSON true and `kOCBooleanFalse` to JSON false.
+ *
+ * @param boolean A valid OCBooleanRef (kOCBooleanTrue or kOCBooleanFalse).
+ * @return A new cJSON boolean node, or cJSON null if input is NULL.
+ *         Caller is responsible for managing the returned cJSON object.
+ * @ingroup OCBoolean
+ */
+cJSON *OCBooleanCreateJSON(OCBooleanRef boolean);
+
+/**
+ * @brief Creates an OCBooleanRef from a JSON boolean node.
+ *
+ * This function maps JSON true to `kOCBooleanTrue` and false to `kOCBooleanFalse`.
+ *
+ * @param json A cJSON boolean node.
+ * @return `kOCBooleanTrue` or `kOCBooleanFalse`, or NULL if input is invalid.
+ *         Returned object is a singleton and must not be released.
+ * @ingroup OCBoolean
+ */
+OCBooleanRef OCBooleanCreateFromJSON(cJSON *json);
+
 /** @} */ // end of OCBoolean group
 
 #endif /* OCBoolean_h */

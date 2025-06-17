@@ -93,35 +93,8 @@ OCStringRef OCDictionaryCopyFormattingDesc(OCTypeRef cf)
 static cJSON *
 impl_OCDictionaryCopyJSON(const void *obj)
 {
-    if (!obj) return cJSON_CreateNull();
-    OCDictionaryRef dict = (OCDictionaryRef)obj;
-
-    cJSON *root = cJSON_CreateObject();
-    OCArrayRef keys = OCDictionaryCreateArrayWithAllKeys(dict);
-    uint64_t n = OCArrayGetCount(keys);
-
-    for (uint64_t i = 0; i < n; i++) {
-        OCStringRef key = OCArrayGetValueAtIndex(keys, i);
-        const char *k = OCStringGetCString(key);
-        OCTypeRef   v = (OCTypeRef)OCDictionaryGetValue(dict, key);
-
-        // ask the value for its own JSON…
-        cJSON *child = OCTypeCopyJSON(v);
-        if (!child) {
-            // …or fall back to a string if no JSON callback
-            OCStringRef desc = OCTypeCopyFormattingDesc(v);
-            const char *s = desc ? OCStringGetCString(desc) : "";
-            child = cJSON_CreateString(s);
-            OCRelease(desc);
-        }
-
-        cJSON_AddItemToObject(root, k, child);
-    }
-
-    OCRelease(keys);
-    return root;
+    return OCDictionaryCreateJSON((OCDictionaryRef)obj);
 }
-
 static void *impl_OCDictionaryDeepCopy(const void *obj)
 {
     const OCDictionaryRef src = (OCDictionaryRef)obj;
@@ -525,3 +498,29 @@ OCArrayRef OCDictionaryCreateArrayWithAllValues(OCDictionaryRef theDictionary)
     free(keys);
     return array;
 }
+
+cJSON *OCDictionaryCreateJSON(OCDictionaryRef dict) {
+    if (!dict) return cJSON_CreateNull();
+
+    cJSON *root = cJSON_CreateObject();
+    OCArrayRef keys = OCDictionaryCreateArrayWithAllKeys(dict);
+    uint64_t n = OCArrayGetCount(keys);
+
+    for (uint64_t i = 0; i < n; i++) {
+        OCStringRef key = OCArrayGetValueAtIndex(keys, i);
+        const char *k = OCStringGetCString(key);
+        OCTypeRef   v = (OCTypeRef)OCDictionaryGetValue(dict, key);
+
+        cJSON *child = OCTypeCopyJSON(v);
+        if (!child) {
+            fprintf(stderr, "OCDictionaryCreateJSON: Failed to serialize value for key '%s'. Using null.\n", k);
+            child = cJSON_CreateNull();
+        }
+
+        cJSON_AddItemToObject(root, k, child);
+    }
+
+    OCRelease(keys);
+    return root;
+}
+

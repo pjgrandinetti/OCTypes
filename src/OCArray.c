@@ -156,25 +156,11 @@ OCStringRef OCArrayCopyFormattingDesc(OCTypeRef cf) {
     OCStringAppendCString(result, "]>");
     return result;
 }
-extern cJSON * _OCCreateCJSONFromObject(const void *obj);
 
 static cJSON *
 impl_OCArrayCopyJSON(const void *obj)
 {
-    if (!obj) return cJSON_CreateNull();
-    OCArrayRef a = (OCArrayRef)obj;
-    cJSON *arr = cJSON_CreateArray();
-    uint64_t cnt = OCArrayGetCount(a);
-    for (uint64_t i = 0; i < cnt; i++) {
-        OCTypeRef elem = OCArrayGetValueAtIndex(a, i);
-        cJSON *jsonVal = OCTypeCopyJSON(elem);
-        if (!jsonVal) {
-            // fallback to the generic walker
-            jsonVal = _OCCreateCJSONFromObject(elem);
-        }
-        cJSON_AddItemToArray(arr, jsonVal);
-    }
-    return arr;
+    return OCArrayCreateJSON((OCArrayRef)obj);
 }
 static void impl_OCArrayFinalize(const void *theType) {
     if (NULL == theType) return;
@@ -273,6 +259,26 @@ OCMutableArrayRef OCArrayCreateMutableCopy(OCArrayRef theArray) {
         impl_OCArrayRetainValues(newMutableArray);  // Retain values copied into the new mutable array
     }
     return newMutableArray;
+}
+cJSON *OCArrayCreateJSON(OCArrayRef array) {
+    if (!array) return cJSON_CreateNull();
+
+    cJSON *arr = cJSON_CreateArray();
+    uint64_t count = OCArrayGetCount(array);
+
+    for (uint64_t i = 0; i < count; i++) {
+        OCTypeRef elem = OCArrayGetValueAtIndex(array, i);
+        cJSON *jsonVal = OCTypeCopyJSON(elem);
+
+        if (!jsonVal) {
+            fprintf(stderr, "OCArrayCreateJSON: Failed to serialize array element at index %llu. Using null.\n", (unsigned long long)i);
+            jsonVal = cJSON_CreateNull();
+        }
+
+        cJSON_AddItemToArray(arr, jsonVal);
+    }
+
+    return arr;
 }
 const void *OCArrayGetValueAtIndex(OCArrayRef theArray, uint64_t index) {
     if (NULL == theArray) return NULL;

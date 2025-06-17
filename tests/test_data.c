@@ -78,10 +78,10 @@ bool dataTest1(void) {
     uint8_t buffer[8] = {0};
     OCDataGetBytes((OCDataRef)mdata, OCRangeMake(0, OCDataGetLength(mdata)), buffer);
     ASSERT_TRUE(buffer[5] == 10 && buffer[6] == 20 && buffer[7] == 30, "Test 1.6: OCDataGetBytes should return appended data");
-    uint8_t *mutPtr = OCDataGetMutableBytesPtr(mdata);
-    ASSERT_NOT_NULL(mutPtr, "Test 1.7: OCDataGetMutableBytesPtr should not return NULL");
+    uint8_t *mutPtr = OCDataGetMutableBytes(mdata);
+    ASSERT_NOT_NULL(mutPtr, "Test 1.7: OCDataGetMutableBytes should not return NULL");
     mutPtr[0] = 55;
-    ASSERT_EQUAL(OCDataGetBytesPtr((OCDataRef)mdata)[0], 55, "Test 1.8: OCDataGetMutableBytesPtr should allow writing data");
+    ASSERT_EQUAL(OCDataGetBytesPtr((OCDataRef)mdata)[0], 55, "Test 1.8: OCDataGetMutableBytes should allow writing data");
     OCRelease(mdata);
     fprintf(stderr, "%s end...without problems\n", __func__);
     return true;
@@ -108,7 +108,7 @@ bool dataTest_deepcopy(void) {
     ASSERT_TRUE(OCDataGetBytesPtr(orig) != OCDataGetBytesPtr(mcopy), "OCTypeDeepCopyMutable should return different memory");
 
     // Try modifying
-    uint8_t *ptr = OCDataGetMutableBytesPtr(mcopy);
+    uint8_t *ptr = OCDataGetMutableBytes(mcopy);
     ptr[0] = 0xAB;
     ASSERT_TRUE(OCDataGetBytesPtr(mcopy)[0] == 0xAB, "Modified byte should be reflected in mutable deep copy");
     ASSERT_TRUE(OCDataGetBytesPtr(orig)[0] != 0xAB, "Original should remain unchanged");

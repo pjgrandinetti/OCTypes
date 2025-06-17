@@ -45,20 +45,7 @@ static OCStringRef impl_OCIndexPairSetCopyFormattingDesc(OCTypeRef cf) {
 static cJSON *
 impl_OCIndexPairSetCopyJSON(const void *obj)
 {
-    if (!obj) return cJSON_CreateNull();
-
-    OCIndexPairSetRef s = (OCIndexPairSetRef)obj;
-    OCIndex count = OCIndexPairSetGetCount(s);
-    OCIndexPair *pairs = OCIndexPairSetGetBytesPtr(s);
-
-    cJSON *arr = cJSON_CreateArray();
-    for (OCIndex i = 0; i < count; i++) {
-        cJSON *pair = cJSON_CreateArray();
-        cJSON_AddItemToArray(pair, cJSON_CreateNumber((double)pairs[i].index));
-        cJSON_AddItemToArray(pair, cJSON_CreateNumber((double)pairs[i].value));
-        cJSON_AddItemToArray(arr, pair);
-    }
-    return arr;
+    return OCIndexPairSetCreateJSON((OCIndexPairSetRef)obj);
 }
 
 static OCMutableIndexPairSetRef OCIndexPairSetAllocate(void);
@@ -213,6 +200,53 @@ bool OCIndexPairSetContainsIndex(OCIndexPairSetRef s, OCIndex index) {
         if (pairs[i].index == index)
             return true;
     return false;
+}
+
+cJSON *OCIndexPairSetCreateJSON(OCIndexPairSetRef set) {
+    if (!set) return cJSON_CreateNull();
+
+    OCIndex count = OCIndexPairSetGetCount(set);
+    OCIndexPair *pairs = OCIndexPairSetGetBytesPtr(set);
+    if (!pairs) return cJSON_CreateNull();
+
+    cJSON *arr = cJSON_CreateArray();
+    for (OCIndex i = 0; i < count; i++) {
+        cJSON *pair = cJSON_CreateArray();
+        cJSON_AddItemToArray(pair, cJSON_CreateNumber((double)pairs[i].index));
+        cJSON_AddItemToArray(pair, cJSON_CreateNumber((double)pairs[i].value));
+        cJSON_AddItemToArray(arr, pair);
+    }
+    return arr;
+}
+
+OCIndexPairSetRef OCIndexPairSetCreateFromJSON(cJSON *json) {
+    if (!json || !cJSON_IsArray(json)) return NULL;
+
+    OCIndex count = cJSON_GetArraySize(json);
+    OCIndexPair *pairs = malloc(count * sizeof(OCIndexPair));
+    if (!pairs) return NULL;
+
+    for (OCIndex i = 0; i < count; i++) {
+        cJSON *pair = cJSON_GetArrayItem(json, i);
+        if (!cJSON_IsArray(pair) || cJSON_GetArraySize(pair) != 2) {
+            free(pairs);
+            return NULL;
+        }
+
+        cJSON *indexNode = cJSON_GetArrayItem(pair, 0);
+        cJSON *valueNode = cJSON_GetArrayItem(pair, 1);
+        if (!cJSON_IsNumber(indexNode) || !cJSON_IsNumber(valueNode)) {
+            free(pairs);
+            return NULL;
+        }
+
+        pairs[i].index = (OCIndex)indexNode->valuedouble;
+        pairs[i].value = (OCIndex)valueNode->valuedouble;
+    }
+
+    OCIndexPairSetRef result = OCIndexPairSetCreateWithIndexPairArray(pairs, count);
+    free(pairs);
+    return result;
 }
 
 void OCIndexPairSetShow(OCIndexPairSetRef s) {

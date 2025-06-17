@@ -112,6 +112,18 @@ OCStringRef OCBooleanCreateStringValue(OCBooleanRef boolean) {
     return OCStringCreateWithCString(OCBooleanGetValue(boolean) ? "true" : "false");
 }
 
+cJSON *OCBooleanCreateJSON(OCBooleanRef boolean) {
+    if (!boolean) return cJSON_CreateNull();
+    return (boolean == kOCBooleanTrue) ? cJSON_CreateTrue() : cJSON_CreateFalse();
+}
+
+OCBooleanRef OCBooleanCreateFromJSON(cJSON *json) {
+    if (!json) return NULL;
+    if (cJSON_IsTrue(json)) return kOCBooleanTrue;
+    if (cJSON_IsFalse(json)) return kOCBooleanFalse;
+    return NULL;
+}
+
 // Automatically initialize boolean type at load time
 __attribute__((constructor))
 static void OCBooleanModuleInitialize(void) {

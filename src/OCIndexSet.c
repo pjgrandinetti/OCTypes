@@ -52,17 +52,7 @@ static OCStringRef impl_OCIndexSetCopyFormattingDesc(OCTypeRef cf) {
 static cJSON *
 impl_OCIndexSetCopyJSON(const void *obj)
 {
-    if (!obj) return cJSON_CreateNull();
-    OCIndexSetRef s = (OCIndexSetRef)obj;
-    OCIndex count = OCIndexSetGetCount(s);
-    OCIndex *buf  = OCIndexSetGetBytesPtr(s);
-
-    cJSON *arr = cJSON_CreateArray();
-    for (OCIndex i = 0; i < count; i++) {
-        cJSON_AddItemToArray(arr,
-            cJSON_CreateNumber((double)buf[i]));
-    }
-    return arr;
+    return OCIndexSetCreateJSON((OCIndexSetRef)obj);
 }
 
 OCMutableIndexSetRef OCIndexSetAllocate(void);
@@ -220,7 +210,7 @@ bool OCIndexSetAddIndex(OCMutableIndexSetRef set, OCIndex index) {
         OCMutableDataRef newData = OCDataCreateMutable(sizeof(OCIndex));
         if (!newData) return false;
         if (!OCDataSetLength(newData, sizeof(OCIndex))) { OCRelease(newData); return false; }
-        OCIndex *ptr = (OCIndex *)OCDataGetMutableBytesPtr(newData);
+        OCIndex *ptr = (OCIndex *)OCDataGetMutableBytes(newData);
         ptr[0] = index;
         set->indexes = newData;
         return true;
@@ -253,7 +243,7 @@ bool OCIndexSetAddIndex(OCMutableIndexSetRef set, OCIndex index) {
                 free(newBuf);
                 return false;
             }
-            memcpy(OCDataGetMutableBytesPtr(newData), newBuf, sizeof(OCIndex) * (count + 1));
+            memcpy(OCDataGetMutableBytes(newData), newBuf, sizeof(OCIndex) * (count + 1));
             free(newBuf);
             set->indexes = newData;
             return true;
@@ -264,7 +254,7 @@ bool OCIndexSetAddIndex(OCMutableIndexSetRef set, OCIndex index) {
     if (!OCDataIncreaseLength((OCMutableDataRef)set->indexes, sizeof(OCIndex)))
         return false;
 
-    OCIndex *newPtr = (OCIndex *)OCDataGetMutableBytesPtr((OCMutableDataRef)set->indexes);
+    OCIndex *newPtr = (OCIndex *)OCDataGetMutableBytes((OCMutableDataRef)set->indexes);
     if (!newPtr) return false;
     newPtr[count] = index;
     return true;
@@ -286,7 +276,7 @@ OCArrayRef OCIndexSetCreateOCNumberArray(OCIndexSetRef set) {
     return arr;
 }
 
-OCDictionaryRef OCIndexSetCreatePList(OCIndexSetRef set) {
+OCDictionaryRef OCIndexSetCreateDictionary(OCIndexSetRef set) {
     if (!set) return NULL;
     OCMutableDictionaryRef dict = OCDictionaryCreateMutable(0);
     if (set->indexes)
@@ -294,7 +284,7 @@ OCDictionaryRef OCIndexSetCreatePList(OCIndexSetRef set) {
     return dict;
 }
 
-OCIndexSetRef OCIndexSetCreateWithPList(OCDictionaryRef dict) {
+OCIndexSetRef OCIndexSetCreateFromDictionary(OCDictionaryRef dict) {
     if (!dict) return NULL;
     OCDataRef data = OCDictionaryGetValue(dict, STR("indexes"));
     return data ? OCIndexSetCreateWithData(data) : OCIndexSetCreate();
@@ -309,6 +299,36 @@ OCIndexSetRef OCIndexSetCreateWithData(OCDataRef data) {
     OCMutableIndexSetRef s = OCIndexSetAllocate();
     s->indexes = (OCMutableDataRef)OCDataCreateCopy(data);
     return s;
+}
+
+cJSON *OCIndexSetCreateJSON(OCIndexSetRef set) {
+    if (!set) return cJSON_CreateNull();
+
+    OCIndex count = OCIndexSetGetCount(set);
+    OCIndex *buf  = OCIndexSetGetBytesPtr(set);
+
+    if (!buf) return cJSON_CreateNull();
+
+    cJSON *arr = cJSON_CreateArray();
+    for (OCIndex i = 0; i < count; i++) {
+        cJSON_AddItemToArray(arr, cJSON_CreateNumber((double)buf[i]));
+    }
+
+    return arr;
+}
+
+OCIndexSetRef OCIndexSetCreateFromJSON(cJSON *json) {
+    if (!cJSON_IsArray(json)) return NULL;
+    OCMutableIndexSetRef set = OCIndexSetCreateMutable();
+    OCIndex count = cJSON_GetArraySize(json);
+
+    for (OCIndex i = 0; i < count; i++) {
+        cJSON *item = cJSON_GetArrayItem(json, i);
+        if (!cJSON_IsNumber(item)) { OCRelease(set); return NULL; }
+        OCIndexSetAddIndex(set, (OCIndex)item->valuedouble);
+    }
+
+    return set;
 }
 
 void OCIndexSetShow(OCIndexSetRef set) {

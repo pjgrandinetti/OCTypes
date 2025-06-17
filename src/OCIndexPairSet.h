@@ -289,6 +289,30 @@ OCDataRef OCIndexPairSetCreateData(OCIndexPairSetRef set);
 OCIndexPairSetRef OCIndexPairSetCreateWithData(OCDataRef data);
 
 /**
+ * @brief Creates a JSON array representation of an OCIndexPairSet.
+ *
+ * Each pair in the set is serialized as a 2-element JSON array: `[index, value]`.
+ *
+ * @param set An OCIndexPairSetRef to serialize.
+ * @return A new cJSON array on success, or cJSON null on failure.
+ *         Caller is responsible for managing the returned cJSON object.
+ * @ingroup OCIndexPairSet
+ */
+cJSON *OCIndexPairSetCreateJSON(OCIndexPairSetRef set);
+
+/**
+ * @brief Creates an OCIndexPairSet from a JSON array of index-value pairs.
+ *
+ * Each item in the JSON array must be a 2-element array: `[index, value]`.
+ *
+ * @param json A cJSON array of index pairs.
+ * @return A new OCIndexPairSetRef on success, or NULL on failure.
+ *         Caller is responsible for releasing the returned set.
+ * @ingroup OCIndexPairSet
+ */
+OCIndexPairSetRef OCIndexPairSetCreateFromJSON(cJSON *json);
+
+/**
  * @brief Logs the contents of the index-pair set to stderr for debugging.
  *
  * @param set The OCIndexPairSetRef instance.

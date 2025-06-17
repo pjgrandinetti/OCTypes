@@ -9,25 +9,20 @@
  *       The caller owns returned OCDataRef or OCMutableDataRef from functions
  *       with "Create" or "Copy" in the name and must call OCRelease().
  */
-
 #ifndef OCData_h
 #define OCData_h
-
-#include "OCLibrary.h" // Ensures OCDataRef and other types are available
-
+#include "OCLibrary.h"  // Ensures OCDataRef and other types are available
 /**
  * @defgroup OCData OCData
  * @brief Binary data buffer types and utilities.
- * @{ 
+ * @{
  */
-
 /**
  * @brief Returns the unique type identifier for OCData objects.
  * @return OCTypeID for OCData.
  * @ingroup OCData
  */
 OCTypeID OCDataGetTypeID(void);
-
 /**
  * @brief Creates a new immutable data object by copying bytes.
  *
@@ -37,7 +32,6 @@ OCTypeID OCDataGetTypeID(void);
  * @ingroup OCData
  */
 OCDataRef OCDataCreate(const uint8_t *bytes, uint64_t length);
-
 /**
  * @brief Creates an immutable data object referencing existing memory (no copy).
  *
@@ -48,7 +42,6 @@ OCDataRef OCDataCreate(const uint8_t *bytes, uint64_t length);
  * @ingroup OCData
  */
 OCDataRef OCDataCreateWithBytesNoCopy(const uint8_t *bytes, uint64_t length);
-
 /**
  * @brief Creates a new OCDataRef by copying an existing one.
  *
@@ -57,7 +50,6 @@ OCDataRef OCDataCreateWithBytesNoCopy(const uint8_t *bytes, uint64_t length);
  * @ingroup OCData
  */
 OCDataRef OCDataCreateCopy(OCDataRef theData);
-
 /**
  * @brief Creates a new mutable data object with a specified capacity.
  *
@@ -66,7 +58,6 @@ OCDataRef OCDataCreateCopy(OCDataRef theData);
  * @ingroup OCData
  */
 OCMutableDataRef OCDataCreateMutable(uint64_t capacity);
-
 /**
  * @brief Creates a mutable copy of existing data with a specified capacity.
  *
@@ -76,7 +67,6 @@ OCMutableDataRef OCDataCreateMutable(uint64_t capacity);
  * @ingroup OCData
  */
 OCMutableDataRef OCDataCreateMutableCopy(uint64_t capacity, OCDataRef theData);
-
 /**
  * @brief Reads an entire file into a new OCDataRef.
  *
@@ -108,7 +98,6 @@ OCMutableDataRef OCDataCreateMutableCopy(uint64_t capacity, OCDataRef theData);
  */
 OCDataRef
 OCDataCreateWithContentsOfFile(const char *path, OCStringRef *errorString);
-
 /**
  * @brief Gets the length of a data object.
  *
@@ -117,7 +106,6 @@ OCDataCreateWithContentsOfFile(const char *path, OCStringRef *errorString);
  * @ingroup OCData
  */
 uint64_t OCDataGetLength(OCDataRef theData);
-
 /**
  * @brief Returns a read-only pointer to internal bytes.
  *
@@ -126,7 +114,6 @@ uint64_t OCDataGetLength(OCDataRef theData);
  * @ingroup OCData
  */
 const uint8_t *OCDataGetBytesPtr(OCDataRef theData);
-
 /**
  * @brief Returns a mutable pointer to internal bytes.
  *
@@ -135,8 +122,7 @@ const uint8_t *OCDataGetBytesPtr(OCDataRef theData);
  * @warning Use with care. Modifications may affect internal state.
  * @ingroup OCData
  */
-uint8_t *OCDataGetMutableBytesPtr(OCMutableDataRef theData);
-
+uint8_t *OCDataGetMutableBytes(OCMutableDataRef theData);
 /**
  * @brief Copies a range of bytes from an OCData object into a buffer.
  *
@@ -148,7 +134,6 @@ uint8_t *OCDataGetMutableBytesPtr(OCMutableDataRef theData);
  * @ingroup OCData
  */
 bool OCDataGetBytes(OCDataRef theData, OCRange range, uint8_t *buffer);
-
 /**
  * @brief Sets the length of a mutable data object.
  *
@@ -162,7 +147,6 @@ bool OCDataGetBytes(OCDataRef theData, OCRange range, uint8_t *buffer);
  * @ingroup OCData
  */
 bool OCDataSetLength(OCMutableDataRef theData, uint64_t length);
-
 /**
  * @brief Increases the length of a mutable data object by a given amount.
  *
@@ -173,7 +157,6 @@ bool OCDataSetLength(OCMutableDataRef theData, uint64_t length);
  * @ingroup OCData
  */
 bool OCDataIncreaseLength(OCMutableDataRef theData, uint64_t extraLength);
-
 /**
  * @brief Appends bytes to the end of a mutable data object.
  *
@@ -187,7 +170,6 @@ bool OCDataIncreaseLength(OCMutableDataRef theData, uint64_t extraLength);
  * @ingroup OCData
  */
 bool OCDataAppendBytes(OCMutableDataRef theData, const uint8_t *bytes, uint64_t length);
-
 /**
  * @brief Returns a human-readable string description of a data object.
  *
@@ -197,6 +179,91 @@ bool OCDataAppendBytes(OCMutableDataRef theData, const uint8_t *bytes, uint64_t 
  */
 OCStringRef OCDataCopyFormattingDesc(OCTypeRef cf);
 
-/** @} */ // end of OCData group
 
-#endif /* OCData_h */
+/**
+ * @typedef OCBase64EncodingOptions
+ * @brief Bitmask options to control the format of Base64-encoded output.
+ *
+ * These options allow callers to control line breaking and end-of-line characters
+ * in Base64-encoded strings. Options may be combined using the bitwise OR operator.
+ * Only one line length and one line ending option should be specified.
+ */
+typedef enum {
+    /** No line breaks; a single continuous Base64 string. */
+    OCBase64EncodingOptionsNone = 0,
+    /** Insert line breaks every 64 characters. */
+    OCBase64Encoding64CharacterLineLength = 1 << 0,
+    /** Insert line breaks every 76 characters. */
+    OCBase64Encoding76CharacterLineLength = 1 << 1,
+    /** Use a carriage return (`\r`) for line endings. */
+    OCBase64EncodingEndLineWithCarriageReturn = 1 << 4,
+    /** Use a line feed (`\n`) for line endings. */
+    OCBase64EncodingEndLineWithLineFeed = 1 << 5,
+    /** Use CRLF (`\r\n`) line endings. */
+    OCBase64EncodingEndLineWithCarriageReturnLineFeed = 1 << 6
+} OCBase64EncodingOptions;
+
+/**
+ * @brief Encodes an OCDataRef into a Base64-encoded OCStringRef.
+ *
+ * @param data
+ *     The input OCDataRef containing binary data to encode. Must not be NULL.
+ *
+ * @param options
+ *     Bitmask of OCBase64EncodingOptions to control line length and line endings.
+ *
+ * @return
+ *     A new OCStringRef containing the Base64-encoded output. Returns NULL on failure.
+ *     The caller owns the returned string and is responsible for releasing it.
+ *
+ * @ingroup OCData
+ */
+OCStringRef OCDataCreateBase64EncodedString(OCDataRef data,
+                                            OCBase64EncodingOptions options);
+
+/**
+ * @brief Decodes a Base64-encoded OCStringRef into an OCDataRef.
+ *
+ * @param base64String
+ *     An OCStringRef containing Base64-encoded content. Must not be NULL.
+ *     Whitespace and line breaks are ignored during decoding.
+ *
+ * @return
+ *     A new OCDataRef containing the decoded binary data, or NULL on failure.
+ *     The caller owns the returned data object and must release it.
+ *
+ * @ingroup OCData
+ */
+OCDataRef OCDataCreateFromBase64EncodedString(OCStringRef base64String);
+
+
+/**
+ * @brief Creates a JSON string from OCData by Base64-encoding its contents.
+ *
+ * This function serializes raw binary data into a cJSON string node using Base64 encoding.
+ * The result can be safely embedded in a JSON structure and later decoded.
+ *
+ * @param data An OCDataRef to serialize. Must not be NULL.
+ * @return A new cJSON string node containing Base64-encoded data,
+ *         or cJSON null if serialization fails.
+ *         Caller is responsible for managing the returned cJSON object.
+ * @ingroup OCData
+ */
+cJSON *OCDataCreateJSON(OCDataRef data);
+
+
+/**
+ * @brief Creates an OCDataRef from a Base64-encoded JSON string.
+ *
+ * This function expects a cJSON string node containing a Base64-encoded binary payload.
+ *
+ * @param json A cJSON string node.
+ * @return A new OCDataRef on success, or NULL on failure.
+ *         Caller is responsible for releasing the returned OCDataRef.
+ * @ingroup OCData
+ */
+OCDataRef OCDataCreateFromJSON(cJSON *json);
+
+
+/** @} */  // end of OCData group
+#endif     /* OCData_h */

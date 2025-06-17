@@ -86,7 +86,7 @@ OCIndex OCIndexArrayGetCount(OCIndexArrayRef theIndexArray);
  *         a mutable array. Returns NULL if the array is NULL.
  * @ingroup OCIndexArray
  */
-OCIndex *OCIndexArrayGetMutableBytesPtr(OCIndexArrayRef theIndexArray);
+OCIndex *OCIndexArrayGetMutableBytes(OCIndexArrayRef theIndexArray);
 
 /**
  * @brief Retrieves the value at the specified index.
@@ -185,34 +185,34 @@ OCArrayRef OCIndexArrayCreateCFNumberArray(OCIndexArrayRef theIndexArray);
  * @return A new OCDictionaryRef representing the array, or NULL on error.
  * @ingroup OCIndexArray
  */
-OCDictionaryRef OCIndexArrayCreatePList(OCIndexArrayRef theIndexArray);
+OCDictionaryRef OCIndexArrayCreateDictionary(OCIndexArrayRef theIndexArray);
 
 /**
  * @brief Reconstructs an OCIndexArray from a plist-compatible OCDictionary.
  *
- * @param dictionary An OCDictionaryRef previously returned by OCIndexArrayCreatePList().
+ * @param dictionary An OCDictionaryRef previously returned by OCIndexArrayCreateDictionary().
  * @return A new OCIndexArrayRef populated from the dictionary, or NULL on error.
  * @ingroup OCIndexArray
  */
-OCIndexArrayRef OCIndexArrayCreateWithPList(OCDictionaryRef dictionary);
+OCIndexArrayRef OCIndexArrayCreateFromDictionary(OCDictionaryRef dictionary);
 
 /**
- * @brief Returns a retained copy of the internal OCData buffer.
+ * @brief Creates an OCIndexArray from a cJSON array.
  *
- * @param theIndexArray The OCIndexArrayRef instance.
- * @return A new OCDataRef containing raw OCIndex data; caller must release.
- * @ingroup OCIndexArray
+ * @param json A cJSON array containing numeric values.
+ * @return A new OCIndexArrayRef, or NULL on failure.
+ *         The caller is responsible for releasing the returned array.
  */
-OCDataRef OCIndexArrayCreateData(OCIndexArrayRef theIndexArray);
+OCIndexArrayRef OCIndexArrayCreateFromJSON(cJSON *json);
 
 /**
- * @brief Constructs an OCIndexArray from an existing OCData buffer.
+ * @brief Creates a cJSON array from an OCIndexArray.
  *
- * @param data An OCDataRef containing raw OCIndex values.
- * @return A new OCIndexArrayRef using the provided data buffer, or NULL on error.
- * @ingroup OCIndexArray
+ * @param obj A valid OCIndexArrayRef cast to void*.
+ * @return A new cJSON array node containing numeric elements.
+ *         The caller is responsible for managing the returned cJSON object.
  */
-OCIndexArrayRef OCIndexArrayCreateWithData(OCDataRef data);
+cJSON *OCIndexArrayCreateJSON(const void *obj);
 
 /**
  * @brief Logs the contents of the array to stderr, for debugging.
