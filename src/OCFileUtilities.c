@@ -522,7 +522,7 @@ OCDictionaryCreateWithContentsOfFolder(const char *folderPath,
 
 /// @internal
 /// Recursively build a cJSON tree from any OCTypeRef.
-static cJSON *
+cJSON *
 _OCCreateCJSONFromObject(const void *obj)
 {
     if (!obj) {
