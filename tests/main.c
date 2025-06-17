@@ -122,9 +122,6 @@ int main(int argc, const char * argv[]) {
     if (!test_dictionary_write_empty())    failures++;
     if (!test_dictionary_write_error())    failures++;
 
-
-
-
     if (failures) {
         fprintf(stderr, "\n%d test(s) failed.\n", failures);
         OCAutoreleasePoolRelease(pool);

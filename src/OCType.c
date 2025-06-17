@@ -187,13 +187,14 @@ const void *OCRetain(const void *ptr) {
     theType->base.retainCount++;
     return ptr;
 }
-cJSON *
-OCTypeCopyJSON(OCTypeRef obj) {
+cJSON *OCTypeCopyJSON(OCTypeRef obj) {
     if (!obj) return cJSON_CreateNull();
     OCBase *b = (OCBase *)obj;
-    if (b->copyJSON)
-        return b->copyJSON(obj);
-    return cJSON_CreateNull();
+    if (!b->copyJSON) {
+        return cJSON_CreateNull();
+    }
+    
+    return b->copyJSON(obj);
 }
 void *OCTypeDeepCopy(const void *obj) {
     if (!obj) return NULL;
@@ -236,17 +237,20 @@ void *OCTypeAllocate(size_t size,
                      void *(*copyDeep)(const void *),
                      void *(*copyDeepMutable)(const void *),
                      const char *file,
-                     int line) {
+                     int line)
+{
     struct impl_OCType *object = calloc(1, size);
     if (!object) {
         fprintf(stderr, "OCTypeAllocate: allocation failed\n");
         exit(EXIT_FAILURE);
     }
+
     object->base.typeID = typeID;
     object->base.retainCount = 1;
     object->base.finalize = finalize;
     object->base.equal = equal;
     object->base.copyFormattingDesc = copyDesc;
+    object->base.copyJSON = copyJSON;
     object->base.copyDeep = copyDeep;
     object->base.copyDeepMutable = copyDeepMutable;
     object->base.static_instance = false;
@@ -254,6 +258,7 @@ void *OCTypeAllocate(size_t size,
     object->base.allocFile = file;
     object->base.allocLine = line;
     object->base.tracked = true;
+
     _OCTrackDebug(object, file, line);
     return object;
 }

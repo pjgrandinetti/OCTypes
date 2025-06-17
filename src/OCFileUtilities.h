@@ -188,15 +188,6 @@ OCDictionaryRef OCDictionaryCreateWithContentsOfFolder(const char *folderPath,
  */
 bool OCTypeWriteJSONToFile(OCTypeRef obj, const char *path, OCStringRef *err);
 
-/**
- * @brief Read a JSON file back into an OCTypes graph (OCString, OCNumber,
- *        OCBoolean, OCArray, OCDictionary…).
- * @param path  Path of the JSON file.
- * @param err   On parse or I/O failure, *err is set to a message.
- * @return      New OCTypeRef root of the graph (ownership transferred), or NULL.
- * @ingroup OCFileUtilities
- */
-OCTypeRef OCTypeCreateFromJSONFile(const char *path, OCStringRef *err);
 
 /** @} */
 

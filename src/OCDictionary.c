@@ -16,6 +16,14 @@ struct impl_OCDictionary
     OCTypeRef *values;
 };
 
+OCTypeID OCDictionaryGetTypeID(void)
+{
+    if (kOCDictionaryID == kOCNotATypeID)
+        kOCDictionaryID = OCRegisterType("OCDictionary");
+    return kOCDictionaryID;
+}
+
+
 static bool impl_OCDictionaryEqual(const void *theType1, const void *theType2)
 {
     OCDictionaryRef d1 = (OCDictionaryRef)theType1;
@@ -90,11 +98,6 @@ OCStringRef OCDictionaryCopyFormattingDesc(OCTypeRef cf)
     OCStringAppendCString(result, "}>");
     return result;
 }
-static cJSON *
-impl_OCDictionaryCopyJSON(const void *obj)
-{
-    return OCDictionaryCreateJSON((OCDictionaryRef)obj);
-}
 static void *impl_OCDictionaryDeepCopy(const void *obj)
 {
     const OCDictionaryRef src = (OCDictionaryRef)obj;
@@ -168,16 +171,16 @@ static void impl_OCDictionaryFinalize(const void *theType)
     }
 }
 
-OCTypeID OCDictionaryGetTypeID(void)
+static cJSON *
+impl_OCDictionaryCopyJSON(const void *obj)
 {
-    if (kOCDictionaryID == kOCNotATypeID)
-        kOCDictionaryID = OCRegisterType("OCDictionary");
-    return kOCDictionaryID;
+    return OCDictionaryCreateJSON((OCDictionaryRef)obj);
 }
+
 
 static struct impl_OCDictionary *OCDictionaryAllocate()
 {
-    return OCTypeAlloc(
+    struct impl_OCDictionary *dict = OCTypeAlloc(
         struct impl_OCDictionary,
         OCDictionaryGetTypeID(),
         impl_OCDictionaryFinalize,
@@ -186,6 +189,7 @@ static struct impl_OCDictionary *OCDictionaryAllocate()
         impl_OCDictionaryCopyJSON,
         impl_OCDictionaryDeepCopy,
         impl_OCDictionaryDeepCopyMutable);
+    return dict;
 }
 
 uint64_t OCDictionaryGetCount(OCDictionaryRef theDictionary)

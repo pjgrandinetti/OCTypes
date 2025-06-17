@@ -520,63 +520,6 @@ OCDictionaryCreateWithContentsOfFolder(const char *folderPath,
     return dict;
 }
 
-/// @internal
-/// Recursively build a cJSON tree from any OCTypeRef.
-cJSON *
-_OCCreateCJSONFromObject(const void *obj)
-{
-    if (!obj) {
-        return cJSON_CreateNull();
-    }
-
-    // 1) Let the type produce its JSON (via its copyJSON callback).
-    cJSON *json = OCTypeCopyJSON((OCTypeRef)obj);
-    if (json) {
-        return json;
-    }
-
-    // 2) If it’s an array, recurse into elements
-    if (OCGetTypeID(obj) == OCArrayGetTypeID()) {
-        OCArrayRef a = (OCArrayRef)obj;
-        cJSON *arr = cJSON_CreateArray();
-        uint64_t n = OCArrayGetCount(a);
-        for (uint64_t i = 0; i < n; i++) {
-            cJSON_AddItemToArray(arr,
-                _OCCreateCJSONFromObject(
-                    OCArrayGetValueAtIndex(a, i)
-                )
-            );
-        }
-        return arr;
-    }
-
-    // 3) If it’s a dictionary, recurse into key/value pairs
-    if (OCGetTypeID(obj) == OCDictionaryGetTypeID()) {
-        OCDictionaryRef d = (OCDictionaryRef)obj;
-        cJSON *o = cJSON_CreateObject();
-        OCArrayRef keys = OCDictionaryCreateArrayWithAllKeys(d);
-        uint64_t n = OCArrayGetCount(keys);
-        for (uint64_t i = 0; i < n; i++) {
-            OCStringRef key = OCArrayGetValueAtIndex(keys, i);
-            const void *val = OCDictionaryGetValue(d, key);
-            cJSON_AddItemToObject(
-                o,
-                OCStringGetCString(key),
-                _OCCreateCJSONFromObject(val)
-            );
-        }
-        OCRelease(keys);
-        return o;
-    }
-
-    // 4) Fallback: render as a JSON string by using the formatting description
-    OCStringRef desc = OCTypeCopyFormattingDesc((OCTypeRef)obj);
-    const char *s = desc ? OCStringGetCString(desc) : "";
-    cJSON *node = cJSON_CreateString(s);
-    OCRelease(desc);
-    return node;
-}
-
 bool
 OCTypeWriteJSONToFile(OCTypeRef    obj,
                       const char  *path,
@@ -588,8 +531,8 @@ OCTypeWriteJSONToFile(OCTypeRef    obj,
         return false;
     }
 
-    // 1) build the cJSON tree
-    cJSON *root = _OCCreateCJSONFromObject(obj);
+    // 1) build the cJSON tree using schema-conformant method
+    cJSON *root = OCTypeCopyJSON(obj);
     if (!root) {
         if (err) *err = STR("failed to build JSON");
         return false;
@@ -612,8 +555,6 @@ OCTypeWriteJSONToFile(OCTypeRef    obj,
 }
 
 
-// Forward
-static OCTypeRef _OCTypeCreateFromCJSON(const cJSON *node);
 
 // Read entire file into a malloc'd buffer (caller must free)
 static char * _readFile(const char *path, OCStringRef *err) {
@@ -636,76 +577,3 @@ static char * _readFile(const char *path, OCStringRef *err) {
     return buf;
 }
 
-///
-/// Public entrypoint: parse a JSON file into an OCTypeRef graph.
-/// Returns NULL on error (and sets *err if non-NULL).
-///
-OCTypeRef
-OCTypeCreateFromJSONFile(const char *path,
-                         OCStringRef *err)
-{
-    if (err) *err = NULL;
-    char *text = _readFile(path, err);
-    if (!text) return NULL;
-
-    cJSON *root = cJSON_Parse(text);
-    free(text);
-    if (!root) {
-        if (err) *err = STR("JSON parse error");
-        return NULL;
-    }
-
-    OCTypeRef result = _OCTypeCreateFromCJSON(root);
-    cJSON_Delete(root);
-    return result;
-}
-
-static OCTypeRef
-_OCTypeCreateFromCJSON(const cJSON *node)
-{
-    if (!node || cJSON_IsNull(node)) {
-        return NULL;
-    }
-
-    if (cJSON_IsBool(node)) {
-        return (OCTypeRef) OCBooleanGetWithBool(cJSON_IsTrue(node));
-    }
-
-    if (cJSON_IsNumber(node)) {
-        // we lose integer width, but preserve numeric value
-        return (OCTypeRef) OCNumberCreateWithDouble(node->valuedouble);
-    }
-
-    if (cJSON_IsString(node)) {
-        return (OCTypeRef) OCStringCreateWithCString(node->valuestring);
-    }
-
-    if (cJSON_IsArray(node)) {
-        OCMutableArrayRef arr = OCArrayCreateMutable(0, &kOCTypeArrayCallBacks);
-        cJSON *el = NULL;
-        cJSON_ArrayForEach(el, node) {
-            OCTypeRef child = _OCTypeCreateFromCJSON(el);
-            OCArrayAppendValue(arr, child);
-            OCRelease(child);
-        }
-        return (OCTypeRef)arr;
-    }
-
-    if (cJSON_IsObject(node)) {
-        OCMutableDictionaryRef dict = OCDictionaryCreateMutable(0);
-        cJSON *child = NULL;
-        cJSON_ArrayForEach(child, node) {
-            const char *key = child->string;
-            if (!key) continue;
-            OCStringRef k = OCStringCreateWithCString(key);
-            OCTypeRef v = _OCTypeCreateFromCJSON(child);
-            OCDictionarySetValue(dict, k, v);
-            OCRelease(k);
-            OCRelease(v);
-        }
-        return (OCTypeRef)dict;
-    }
-
-    // fallback: nothing sensible
-    return NULL;
-}
