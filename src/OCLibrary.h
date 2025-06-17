@@ -416,6 +416,7 @@ void cleanupConstantStringTable(void);
 void cleanupTypeIDTable(void);
 
 /* Now pull in the rest of the public OCTypes APIs: */
+#include "cJSON.h"
 #include "OCMath.h"
 #include "OCAutoreleasePool.h"
 #include "OCType.h"

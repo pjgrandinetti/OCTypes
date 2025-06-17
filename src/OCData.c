@@ -66,7 +66,6 @@ OCMutableDataRef OCDataCreateMutableCopy(uint64_t capacity, OCDataRef source) {
     return result;
 }
 
-
 OCStringRef OCDataCopyFormattingDesc(OCTypeRef cf) {
     if (!cf) return NULL;
     OCDataRef data = (OCDataRef)cf;
@@ -91,6 +90,19 @@ OCStringRef OCDataCopyFormattingDesc(OCTypeRef cf) {
     return result;
 }
 
+static cJSON *
+impl_OCDataCopyJSON(const void *obj)
+{
+    if (!obj) return cJSON_CreateNull();
+    OCDataRef d = (OCDataRef)obj;
+    // encode raw bytes to Base64
+    OCStringRef b64 = OCStringCreateBase64EncodedWithOptions(d, OCBase64EncodingOptionsNone);
+    const char *s = OCStringGetCString(b64);
+    cJSON *node = cJSON_CreateString(s ? s : "");
+    OCRelease(b64);
+    return node;
+}
+
 static void impl_OCDataFinalize(const void *obj) {
     OCDataRef data = (OCDataRef)obj;
     if (data->bytes) free(data->bytes);
@@ -102,6 +114,7 @@ static struct impl_OCData *OCDataAllocate() {
                    impl_OCDataFinalize,
                    impl_OCDataEqual,
                    OCDataCopyFormattingDesc,
+                   impl_OCDataCopyJSON,
                    impl_OCDataDeepCopy,   
                    impl_OCDataDeepCopyMutable);           
 

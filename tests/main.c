@@ -118,6 +118,10 @@ int main(int argc, const char * argv[]) {
     if (!test_create_and_list_directory()) failures++;
     if (!test_rename_and_remove())      failures++;
     if (!test_string_file_io())         failures++;
+    if (!test_dictionary_write_simple())    failures++;
+    if (!test_dictionary_write_empty())    failures++;
+    if (!test_dictionary_write_error())    failures++;
+
 
 
 

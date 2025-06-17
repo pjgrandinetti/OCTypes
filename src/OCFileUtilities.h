@@ -2,6 +2,7 @@
 #ifndef OCFILEUTILS_H
 #define OCFILEUTILS_H
 
+#include <stdbool.h>
 #include "OCLibrary.h"
 
 #ifdef __cplusplus
@@ -10,9 +11,11 @@ extern "C" {
 
 /**
  * @defgroup OCFileUtilities OCFileUtilities
- * @brief File and path utility functions
- * @{ 
+ * @brief File, path, and JSON (de)serialization helpers
+ * @{
  */
+
+/** @name Path utilities @{ */
 
 /**
  * @brief Join two path components with the platform’s separator.
@@ -50,12 +53,16 @@ OCStringRef OCPathExtension(OCStringRef path);
 
 /**
  * @brief Replace the existing extension on a path.
- * @param path     The original path.
- * @param newExt   Extension to use (with or without leading ‘.’).
- * @return         New OCStringRef of the modified path (ownership transferred).
+ * @param path    The original path.
+ * @param newExt  Extension to use (with or without leading ‘.’).
+ * @return        New OCStringRef of the modified path (ownership transferred).
  * @ingroup OCFileUtilities
  */
 OCStringRef OCPathByReplacingExtension(OCStringRef path, OCStringRef newExt);
+
+/** @} */
+
+/** @name Filesystem checks & manipulation @{ */
 
 /**
  * @brief Does the given path exist?
@@ -121,6 +128,10 @@ bool OCRemoveItem(const char *path, OCStringRef *err);
  */
 bool OCRenameItem(const char *oldPath, const char *newPath, OCStringRef *err);
 
+/** @} */
+
+/** @name Text & data I/O @{ */
+
 /**
  * @brief Read a UTF-8 text file into an OCString.
  * @param path  File path.
@@ -143,29 +154,56 @@ bool OCStringWriteToFile(OCStringRef str, const char *path, OCStringRef *err);
 /**
  * @brief Read a binary file into an OCDataRef.
  * @param path         Filesystem path.
- * @param errorString  On failure, *errorString is set to a human‐readable message.
+ * @param err          On failure, *err is set to a human‐readable message.
  * @return             New OCDataRef with file bytes (ownership transferred), or NULL.
  * @ingroup OCFileUtilities
  */
-OCDataRef OCDataCreateWithContentsOfFile(const char *path, OCStringRef *errorString);
+OCDataRef OCDataCreateWithContentsOfFile(const char *path, OCStringRef *err);
 
 /**
  * @brief Load all files under a folder (up to maxDepth) into a dictionary.
  * @param folderPath   Base directory.
  * @param maxDepth     Levels of recursion (0 = just top-level).
- * @param errorMessage On failure, *errorMessage is set to a human‐readable message.
+ * @param err          On failure, *err is set to a human‐readable message.
  * @return             New OCDictionaryRef ⟨relative-path→OCDataRef⟩,
  *                     or NULL on failure (ownership transferred).
  * @ingroup OCFileUtilities
  */
 OCDictionaryRef OCDictionaryCreateWithContentsOfFolder(const char *folderPath,
                                                        int maxDepth,
-                                                       OCStringRef *errorMessage);
+                                                       OCStringRef *err);
+
+/** @} */
+
+/** @name JSON (de)serialization @{ */
+
+/**
+ * @brief Write any OCTypes object (string, number, bool, array, dict…) to a
+ *        compact JSON file.
+ * @param obj   An OCTypeRef (OCString, OCNumber, OCBoolean, OCArray, OCDictionary…)
+ * @param path  Path to write.
+ * @param err   On failure, *err is set to a human-readable message.
+ * @return      true on success.
+ * @ingroup OCFileUtilities
+ */
+bool OCTypeWriteJSONToFile(OCTypeRef obj, const char *path, OCStringRef *err);
+
+/**
+ * @brief Read a JSON file back into an OCTypes graph (OCString, OCNumber,
+ *        OCBoolean, OCArray, OCDictionary…).
+ * @param path  Path of the JSON file.
+ * @param err   On parse or I/O failure, *err is set to a message.
+ * @return      New OCTypeRef root of the graph (ownership transferred), or NULL.
+ * @ingroup OCFileUtilities
+ */
+OCTypeRef OCTypeCreateFromJSONFile(const char *path, OCStringRef *err);
+
+/** @} */
+
+/** @} */  // end group OCFileUtilities
 
 #ifdef __cplusplus
 }
 #endif
-
-/** @} */
 
 #endif // OCFILEUTILS_H

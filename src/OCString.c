@@ -281,7 +281,13 @@ static OCStringRef impl_OCStringCopyFormattingDesc(OCTypeRef cf)
     }
     return OCStringCreateCopy((OCStringRef)cf);
 }
-
+static cJSON *
+impl_OCStringCopyJSON(const void *obj)
+{
+    if (!obj) return cJSON_CreateNull();
+    const char *s = OCStringGetCString((OCStringRef)obj);
+    return cJSON_CreateString(s ? s : "");
+}
 static void *impl_OCStringDeepCopy(const void *obj) {
     OCStringRef src = (OCStringRef)obj;
     if (!src) return NULL;
@@ -307,6 +313,7 @@ static struct impl_OCString *OCStringAllocate()
                                          impl_OCStringFinalize,
                                          impl_OCStringEqual,
                                          impl_OCStringCopyFormattingDesc,
+                                         impl_OCStringCopyJSON,
                                          impl_OCStringDeepCopy,
                                          impl_OCStringDeepCopyMutable);
 

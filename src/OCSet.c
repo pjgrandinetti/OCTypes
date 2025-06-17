@@ -64,6 +64,36 @@ static OCStringRef impl_OCSetCopyFormattingDesc(OCTypeRef cf)
     OCStringAppendCString(result, "}>");
     return result;
 }
+static cJSON *
+impl_OCSetCopyJSON(const void *obj)
+{
+    if (!obj) return cJSON_CreateNull();
+
+    OCSetRef set = (OCSetRef)obj;
+    cJSON *arr = cJSON_CreateArray();
+
+    // your impl stores elements in an OCArrayRef called `elements`
+    OCArrayRef elems = set->elements;
+    OCIndex count = OCArrayGetCount(elems);
+
+    for (OCIndex i = 0; i < count; i++) {
+        OCTypeRef v = (OCTypeRef)OCArrayGetValueAtIndex(elems, i);
+
+        // ask the element for its own JSON representation…
+        cJSON *item = OCTypeCopyJSON(v);
+        if (!item) {
+            // …or fall back to a string
+            OCStringRef desc = OCTypeCopyFormattingDesc(v);
+            const char *s = desc ? OCStringGetCString(desc) : "";
+            item = cJSON_CreateString(s);
+            OCRelease(desc);
+        }
+
+        cJSON_AddItemToArray(arr, item);
+    }
+
+    return arr;
+}
 
 static void *impl_OCSetDeepCopy(const void *obj) {
     OCSetRef src = (OCSetRef)obj;
@@ -108,6 +138,7 @@ static struct impl_OCSet *OCSetAllocate(void)
         impl_OCSetFinalize,
         impl_OCSetEqual,
         impl_OCSetCopyFormattingDesc,
+        impl_OCSetCopyJSON,
         impl_OCSetDeepCopy,
         impl_OCSetDeepCopyMutable
     );

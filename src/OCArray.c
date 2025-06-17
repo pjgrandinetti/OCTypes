@@ -156,6 +156,26 @@ OCStringRef OCArrayCopyFormattingDesc(OCTypeRef cf) {
     OCStringAppendCString(result, "]>");
     return result;
 }
+extern cJSON * _OCCreateCJSONFromObject(const void *obj);
+
+static cJSON *
+impl_OCArrayCopyJSON(const void *obj)
+{
+    if (!obj) return cJSON_CreateNull();
+    OCArrayRef a = (OCArrayRef)obj;
+    cJSON *arr = cJSON_CreateArray();
+    uint64_t cnt = OCArrayGetCount(a);
+    for (uint64_t i = 0; i < cnt; i++) {
+        OCTypeRef elem = OCArrayGetValueAtIndex(a, i);
+        cJSON *jsonVal = OCTypeCopyJSON(elem);
+        if (!jsonVal) {
+            // fallback to the generic walker
+            jsonVal = _OCCreateCJSONFromObject(elem);
+        }
+        cJSON_AddItemToArray(arr, jsonVal);
+    }
+    return arr;
+}
 static void impl_OCArrayFinalize(const void *theType) {
     if (NULL == theType) return;
     struct impl_OCArray *theArray = (struct impl_OCArray *)theType;
@@ -186,6 +206,7 @@ static struct impl_OCArray *OCArrayAllocate() {
         impl_OCArrayFinalize,
         impl_OCArrayEqual,
         OCArrayCopyFormattingDesc,
+        impl_OCArrayCopyJSON,
         impl_OCArrayDeepCopy,
         impl_OCArrayDeepCopyMutable  // ← NEW!
     );

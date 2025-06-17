@@ -129,6 +129,14 @@ OCTypeID OCNumberGetTypeID(void);
 OCNumberRef OCNumberCreate(OCNumberType type, void *value);
 
 /**
+ * @brief Get the underlying OCNumberType of an OCNumber.
+ * @param number  The OCNumber instance.
+ * @return        The type (one of kOCNumber…Type), or undefined if number is NULL.
+ * @ingroup      OCNumber
+ */
+OCNumberType OCNumberGetType(OCNumberRef number);
+
+/**
  * @brief Creates a formatted string representing the OCNumber's value.
  * @param theNumber An OCNumberRef.
  * @return An OCStringRef with the formatted string. Caller must release.

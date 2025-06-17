@@ -49,6 +49,21 @@ static OCStringRef impl_OCIndexSetCopyFormattingDesc(OCTypeRef cf) {
     OCStringAppendCString(desc, ">");
     return desc;
 }
+static cJSON *
+impl_OCIndexSetCopyJSON(const void *obj)
+{
+    if (!obj) return cJSON_CreateNull();
+    OCIndexSetRef s = (OCIndexSetRef)obj;
+    OCIndex count = OCIndexSetGetCount(s);
+    OCIndex *buf  = OCIndexSetGetBytesPtr(s);
+
+    cJSON *arr = cJSON_CreateArray();
+    for (OCIndex i = 0; i < count; i++) {
+        cJSON_AddItemToArray(arr,
+            cJSON_CreateNumber((double)buf[i]));
+    }
+    return arr;
+}
 
 OCMutableIndexSetRef OCIndexSetAllocate(void);
 
@@ -100,6 +115,7 @@ OCMutableIndexSetRef OCIndexSetAllocate(void) {
         impl_OCIndexSetFinalize,
         impl_OCIndexSetEqual,
         impl_OCIndexSetCopyFormattingDesc,
+        impl_OCIndexSetCopyJSON,
         impl_OCIndexSetDeepCopy,
         impl_OCIndexSetDeepCopyMutable
     );

@@ -23,4 +23,7 @@ bool test_create_and_list_directory(void);
 bool test_rename_and_remove(void);
 bool test_string_file_io(void);
 
+bool test_dictionary_write_simple(void);
+bool test_dictionary_write_empty(void);
+bool test_dictionary_write_error(void);
 #endif // TEST_FILEUTILS_H

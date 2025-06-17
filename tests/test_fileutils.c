@@ -174,3 +174,138 @@ bool test_string_file_io(void) {
     fprintf(stderr, "%s end.\n", __func__);
     return true;
 }
+
+/**
+ * Write a mixed‐type dictionary to JSON, read it back as a string,
+ * and verify the presence of the serialized values.
+ */
+bool test_dictionary_write_simple(void) {
+    fprintf(stderr, "%s begin...\n", __func__);
+
+    // build up a mutable dictionary
+    OCMutableDictionaryRef dict = OCDictionaryCreateMutable(0);
+    OCDictionarySetValue(dict, STR("foo"), STR("bar"));
+    // number: 42
+    OCNumberRef num = OCNumberCreateWithSInt32(42);
+    OCDictionarySetValue(dict, STR("num"), num);
+    OCRelease(num);
+    // boolean: true
+    OCDictionarySetValue(dict, STR("flag"), OCBooleanGetWithBool(true));
+    // array: ["a","b"]
+    OCMutableArrayRef arr = OCArrayCreateMutable(0, &kOCTypeArrayCallBacks);
+    OCStringRef a1 = OCStringCreateWithCString("a");
+    OCStringRef a2 = OCStringCreateWithCString("b");
+    OCArrayAppendValue(arr, a1); OCArrayAppendValue(arr, a2);
+    OCRelease(a1); OCRelease(a2);
+    OCDictionarySetValue(dict, STR("list"), arr);
+    OCRelease(arr);
+
+    // prepare a temp file
+    char tmpl[] = "/tmp/ocdict_jsonXXXXXX";
+    int fd = mkstemp(tmpl);
+    if (fd < 0) PRINTERROR;
+    close(fd);
+
+    // write via the new generic API
+    OCStringRef err = NULL;
+    if (!OCTypeWriteJSONToFile((OCTypeRef)dict, tmpl, &err)) {
+        fprintf(stderr, "Unexpected write failure: %s\n", OCStringGetCString(err));
+        OCRelease(err);
+        OCRelease(dict);
+        PRINTERROR;
+    }
+
+    // read it back
+    OCStringRef inErr = NULL;
+    OCStringRef json = OCStringCreateWithContentsOfFile(tmpl, &inErr);
+    if (!json) {
+        fprintf(stderr, "Read-back failure: %s\n", OCStringGetCString(inErr));
+        OCRelease(inErr);
+        OCRelease(dict);
+        PRINTERROR;
+    }
+
+    const char *s = OCStringGetCString(json);
+    // expect at least these substrings
+    if (!strstr(s, "\"foo\"")    || !strstr(s, "\"bar\""))        PRINTERROR;
+    if (!strstr(s, "\"num\"")    || !strstr(s, "42"))             PRINTERROR;
+    if (!strstr(s, "\"flag\"")   || !strstr(s, "true"))           PRINTERROR;
+    if (!strstr(s, "\"list\"")   || !strstr(s, "[\"a\",\"b\"]"))  PRINTERROR;
+
+    // cleanup
+    OCRelease(json);
+    OCRemoveItem(tmpl, NULL);
+    OCRelease(dict);
+
+    fprintf(stderr, "%s end.\n", __func__);
+    return true;
+}
+
+/**
+ * Writing an empty dictionary should produce "{}" (possibly with whitespace).
+ */
+bool test_dictionary_write_empty(void) {
+    fprintf(stderr, "%s begin...\n", __func__);
+
+    OCMutableDictionaryRef dict = OCDictionaryCreateMutable(0);
+
+    char tmpl[] = "/tmp/ocdict_emptyXXXXXX";
+    int fd = mkstemp(tmpl);
+    if (fd < 0) PRINTERROR;
+    close(fd);
+
+    OCStringRef err = NULL;
+    if (!OCTypeWriteJSONToFile((OCTypeRef)dict, tmpl, &err)) {
+        fprintf(stderr, "Unexpected failure: %s\n", OCStringGetCString(err));
+        OCRelease(err);
+        OCRelease(dict);
+        PRINTERROR;
+    }
+
+    OCStringRef json = OCStringCreateWithContentsOfFile(tmpl, NULL);
+    if (!json) {
+        OCRelease(dict);
+        PRINTERROR;
+    }
+    const char *s = OCStringGetCString(json);
+    // strip leading whitespace
+    while (*s==' '||*s=='\n'||*s=='\t') ++s;
+    if (strncmp(s, "{}", 2) != 0) PRINTERROR;
+
+    OCRelease(json);
+    fprintf(stderr, "JSON written to %s:\n%s\n", tmpl, s);
+    // OCRemoveItem(tmpl, NULL);
+
+    OCRelease(dict);
+
+    fprintf(stderr, "%s end.\n", __func__);
+    return true;
+}
+
+/**
+ * Attempt to write into a non‐existent directory—should fail with an error.
+ */
+bool test_dictionary_write_error(void) {
+    fprintf(stderr, "%s begin...\n", __func__);
+
+    OCMutableDictionaryRef dict = OCDictionaryCreateMutable(0);
+    OCDictionarySetValue(dict, STR("x"), STR("y"));
+
+    // pick a path under a directory that almost certainly doesn't exist
+    const char *badpath = "/no_such_dir/ocdict.json";
+    OCStringRef err = NULL;
+    bool ok = OCTypeWriteJSONToFile((OCTypeRef)dict, badpath, &err);
+    if (ok || err == NULL) {
+        fprintf(stderr, "Expected write failure with error\n");
+        if (err) OCRelease(err);
+        OCRelease(dict);
+        PRINTERROR;
+    }
+    // we got an error string
+    fprintf(stderr, "Got expected error: %s\n", OCStringGetCString(err));
+    OCRelease(err);
+
+    OCRelease(dict);
+    fprintf(stderr, "%s end.\n", __func__);
+    return true;
+}

@@ -42,6 +42,24 @@ static OCStringRef impl_OCIndexPairSetCopyFormattingDesc(OCTypeRef cf) {
     if (!cf) return NULL;
     return OCStringCreateWithCString("<OCIndexPairSet>");
 }
+static cJSON *
+impl_OCIndexPairSetCopyJSON(const void *obj)
+{
+    if (!obj) return cJSON_CreateNull();
+
+    OCIndexPairSetRef s = (OCIndexPairSetRef)obj;
+    OCIndex count = OCIndexPairSetGetCount(s);
+    OCIndexPair *pairs = OCIndexPairSetGetBytesPtr(s);
+
+    cJSON *arr = cJSON_CreateArray();
+    for (OCIndex i = 0; i < count; i++) {
+        cJSON *pair = cJSON_CreateArray();
+        cJSON_AddItemToArray(pair, cJSON_CreateNumber((double)pairs[i].index));
+        cJSON_AddItemToArray(pair, cJSON_CreateNumber((double)pairs[i].value));
+        cJSON_AddItemToArray(arr, pair);
+    }
+    return arr;
+}
 
 static OCMutableIndexPairSetRef OCIndexPairSetAllocate(void);
 
@@ -87,6 +105,7 @@ static OCMutableIndexPairSetRef OCIndexPairSetAllocate(void) {
         impl_OCIndexPairSetFinalize,
         impl_OCIndexPairSetEqual,
         impl_OCIndexPairSetCopyFormattingDesc,
+        impl_OCIndexPairSetCopyJSON,
         impl_OCIndexPairSetDeepCopy,
         impl_OCIndexPairSetDeepCopyMutable
     );

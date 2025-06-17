@@ -6,22 +6,17 @@
  * OCIndex, and the base OCTypeRef, as well as functions for type registration,
  * memory management (retain/release), and basic type introspection.
  */
-
 #ifndef OCType_h
 #define OCType_h
-
 #include "OCLibrary.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 /**
  * @defgroup OCType OCType
  * @brief Core type definitions and memory management functions.
  * @{
  */
-
 /**
  * @brief Macro to check if an object is NULL and return a specified value if it is.
  *
@@ -30,41 +25,36 @@ extern "C" {
  *
  * @ingroup OCType
  */
-#define IF_NO_OBJECT_EXISTS_RETURN(OBJECT, X) \
-    do { \
-        if (NULL == OBJECT) { \
+#define IF_NO_OBJECT_EXISTS_RETURN(OBJECT, X)                                        \
+    do {                                                                             \
+        if (NULL == OBJECT) {                                                        \
             fprintf(stderr, "*** WARNING - %s - object doesn't exist.\n", __func__); \
-            return X; \
-        } \
+            return X;                                                                \
+        }                                                                            \
     } while (0)
-
 /**
  * @brief Defines an identifier for an OCType.
  * @ingroup OCType
  */
 typedef uint32_t OCTypeID;
-
 /**
  * @brief Return value constants.
  * @ingroup OCType
  */
 enum CommonConstants {
-    kOCNotFound = -1  /**< Value returned when an item is not found. */
+    kOCNotFound = -1 /**< Value returned when an item is not found. */
 };
-
 /**
  * @brief Special OCTypeID constants.
  * @ingroup OCType
  */
 enum SpecialTypeIDs {
-    kOCNotATypeID = 0  /**< Represents an invalid or uninitialized OCTypeID. */
+    kOCNotATypeID = 0 /**< Represents an invalid or uninitialized OCTypeID. */
 };
-
 /**
  * @brief Function type for finalizing an OCType-compatible object.
  */
 typedef void (*OCFinalizerFunc)(const void *);
-
 /**
  * @brief Compares two OCType instances for equality.
  * @param theType1 Pointer to the first OCType.
@@ -73,11 +63,10 @@ typedef void (*OCFinalizerFunc)(const void *);
  * @ingroup OCType
  */
 bool OCTypeEqual(const void *theType1, const void *theType2);
-
 /**
  * @brief Performs a deep copy of an OCType object.
  *
- * Allocates and returns a new immutable instance that is semantically 
+ * Allocates and returns a new immutable instance that is semantically
  * equal to the original but independent in memory.
  *
  * The returned object must be released with OCRelease().
@@ -87,11 +76,10 @@ bool OCTypeEqual(const void *theType1, const void *theType2);
  * @ingroup OCType
  */
 void *OCTypeDeepCopy(const void *obj);
-
 /**
  * @brief Performs a deep copy of an OCType object, returning a mutable copy.
  *
- * Allocates and returns a new mutable instance that is semantically equal 
+ * Allocates and returns a new mutable instance that is semantically equal
  * to the original but allows modification and is independent in memory.
  *
  * The returned object must be released with OCRelease().
@@ -101,7 +89,6 @@ void *OCTypeDeepCopy(const void *obj);
  * @ingroup OCType
  */
 void *OCTypeDeepCopyMutable(const void *obj);
-
 /**
  * @brief Registers a new OCType with the system.
  * @param typeName A null-terminated C string representing the type name.
@@ -109,15 +96,13 @@ void *OCTypeDeepCopyMutable(const void *obj);
  * @ingroup OCType
  */
 OCTypeID OCRegisterType(char *typeName);
-
 /**
  * @brief Retrieves the retain count of an OCType instance.
  * @param ptr Pointer to the OCType instance.
  * @return The retain count, or 0 if NULL.
  * @ingroup OCType
  */
-int OCTypeGetRetainCount(const void * ptr);
-
+int OCTypeGetRetainCount(const void *ptr);
 /**
  * @brief Releases an OCType instance by decrementing its retain count.
  *
@@ -127,7 +112,6 @@ int OCTypeGetRetainCount(const void * ptr);
  * @ingroup OCType
  */
 void OCRelease(const void *ptr);
-
 /**
  * @brief Retains an OCType instance by incrementing its retain count.
  *
@@ -140,7 +124,6 @@ void OCRelease(const void *ptr);
  * @ingroup OCType
  */
 const void *OCRetain(const void *ptr);
-
 /**
  * @brief Returns a formatted string description of an OCType.
  * @param ptr Pointer to the OCType instance.
@@ -148,7 +131,17 @@ const void *OCRetain(const void *ptr);
  * @ingroup OCType
  */
 OCStringRef OCTypeCopyFormattingDesc(const void *ptr);
-
+/**
+ * @brief Returns a JSON representation of an OCType instance.
+ *
+ * The returned cJSON object must be freed by the caller.
+ *
+ * @param obj Pointer to the OCType instance.
+ * @return A cJSON object representing the instance, or NULL if obj is NULL.
+ * @ingroup OCType
+ */
+cJSON *
+OCTypeCopyJSON(OCTypeRef obj);
 /**
  * @brief Returns a generic description of an OCType instance.
  * @param ptr Pointer to the OCType instance.
@@ -156,31 +149,27 @@ OCStringRef OCTypeCopyFormattingDesc(const void *ptr);
  * @ingroup OCType
  */
 OCStringRef OCCopyDescription(const void *ptr);
-
 /**
  * @brief Checks if an OCType instance is static.
  * @param ptr Pointer to the instance.
  * @return true if static, false otherwise.
  * @ingroup OCType
  */
-bool OCTypeGetStaticInstance(const void * ptr);
-
+bool OCTypeGetStaticInstance(const void *ptr);
 /**
  * @brief Marks an OCType instance as static or non-static.
  * @param ptr Pointer to the instance.
  * @param static_instance Whether the object is static.
  * @ingroup OCType
  */
-void OCTypeSetStaticInstance(const void * ptr, bool static_instance);
-
+void OCTypeSetStaticInstance(const void *ptr, bool static_instance);
 /**
  * @brief Checks if an OCType instance has been finalized.
  * @param ptr Pointer to the instance.
  * @return true if finalized, false otherwise.
  * @ingroup OCType
  */
-bool OCTypeGetFinalized(const void * ptr);
-
+bool OCTypeGetFinalized(const void *ptr);
 /**
  * @brief Returns the type ID of an OCType instance.
  * @param ptr Pointer to the instance.
@@ -188,40 +177,32 @@ bool OCTypeGetFinalized(const void * ptr);
  * @ingroup OCType
  */
 OCTypeID OCGetTypeID(const void *ptr);
-
 /**
  * @brief Returns the registered name of a type given an instance.
  * @param ptr Pointer to the instance.
  * @return Type name string.
  * @ingroup OCType
  */
-const char *OCTypeIDName(const void * ptr);
-
+const char *OCTypeIDName(const void *ptr);
 const char *OCTypeNameFromTypeID(OCTypeID typeID);
-
 /** \cond INTERNAL */
-
 typedef struct impl_OCBase {
     OCTypeID typeID;
     uint32_t retainCount;
     bool static_instance;
     bool finalized;
-
     // Virtual methods
     void (*finalize)(const void *);
     bool (*equal)(const void *, const void *);
     OCStringRef (*copyFormattingDesc)(OCTypeRef);
-
+    cJSON *(*copyJSON)(const void *);
     void *(*copyDeep)(const void *);
     void *(*copyDeepMutable)(const void *);
-
     // Debug info
     const char *allocFile;
     int allocLine;
     bool tracked;
-
 } OCBase;
-
 /**
  * @brief Allocates and initializes a new OCType-compatible object.
  *
@@ -231,26 +212,52 @@ typedef struct impl_OCBase {
  * @param typeID The registered OCTypeID.
  * @param finalize Optional finalizer function.
  * @param equal Optional equality comparator.
- * @param copyDesc Optional formatting function.
+ * @param copyFormattingDesc Optional formatting function.
  * @param copyDeep Optional deep copy function.
+ * @param copyDeepMutable Optional mutable deep copy function.
  * @param file Source file for tracking (use __FILE__).
  * @param line Source line for tracking (use __LINE__).
  * @return Pointer to a fully initialized structure.
  */
-void *OCTypeAllocate(size_t size, 
-                     OCTypeID typeID,
-                     OCFinalizerFunc finalize,
-                     bool (*equal)(const void *, const void *),
-                     OCStringRef (*descFn)(OCTypeRef),
-                     void *(*deepCopy)(const void *),
-                     void *(*deepCopyMutable)(const void *),
-                     const char *file, int line);
+void *OCTypeAllocate(
+    size_t size,
+    OCTypeID typeID,
+    void (*finalize)(const void *),
+    bool (*equal)(const void *, const void *),
+    OCStringRef (*copyFormattingDesc)(OCTypeRef),
+    cJSON *(*copyJSON)(const void *), 
+    void *(*copyDeep)(const void *),
+    void *(*copyDeepMutable)(const void *),
+    const char *file,
+    int line);
 /**
  * @brief Macro for typed allocation of OCType-compatible objects.
  * Automatically injects debug information.
  */
-#define OCTypeAlloc(TYPE, TYPEID, FINALIZE, EQUAL_FN, DESC_FN, COPY_FN, MUTABLE_COPY_FN) \
-    (TYPE *)OCTypeAllocate(sizeof(TYPE), TYPEID, FINALIZE, EQUAL_FN, DESC_FN, COPY_FN, MUTABLE_COPY_FN, __FILE__, __LINE__)
+/**
+ * @brief Macro for typed allocation of OCType-compatible objects.
+ * Automatically injects debug information.
+ */
+#define OCTypeAlloc(        \
+    TYPE,                   \
+    TYPEID,                 \
+    FINALIZE,               \
+    EQUAL_FN,               \
+    DESC_FN,                \
+    JSON_FN,                \
+    COPY_FN,                \
+    MUTABLE_COPY_FN)        \
+    (TYPE *)OCTypeAllocate( \
+        sizeof(TYPE),       \
+        TYPEID,             \
+        FINALIZE,           \
+        EQUAL_FN,           \
+        DESC_FN,            \
+        JSON_FN,            \
+        COPY_FN,            \
+        MUTABLE_COPY_FN,    \
+        __FILE__,           \
+        __LINE__)
 /**
  * @brief Finalizes and cleans up resources used by the OCTypes library.
  *
@@ -266,12 +273,9 @@ void *OCTypeAllocate(size_t size,
  * @ingroup OCType
  */
 void OCTypesShutdown(void);
-
 /** \endcond */
-/** @} */ // end of OCType group
-
+/** @} */  // end of OCType group
 #ifdef __cplusplus
 }
 #endif
-
-#endif // OCType_h
+#endif  // OCType_h
