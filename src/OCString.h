@@ -90,6 +90,29 @@ OCStringRef OCStringCreateWithCString(const char *string);
 OCMutableStringRef OCStringCreateMutableCopy(OCStringRef theString);
 
 /**
+ * @brief Create a JSON string from an OCStringRef.
+ *
+ * Converts the OCStringRef to a UTF-8 C string and returns it
+ * as a cJSON string node. If the input is NULL, a JSON null is returned.
+ *
+ * @param str The OCStringRef to serialize.
+ * @return A cJSON string node or cJSON null on failure.
+ */
+cJSON *OCStringCreateJSON(OCStringRef str);
+
+/**
+ * @brief Create an OCStringRef from a cJSON string node.
+ *
+ * Parses the JSON value as a string. If the input is NULL or not a string,
+ * returns NULL. The returned string follows CoreFoundation ownership rules
+ * (caller must call OCRelease when done).
+ *
+ * @param json A cJSON node expected to be a string.
+ * @return A newly allocated OCStringRef, or NULL on failure.
+ */
+OCStringRef OCStringCreateFromJSON(cJSON *json);
+
+/**
  * @brief Creates an OCString by decoding raw data as UTF-8 text.
  *
  * This function takes an OCDataRef containing UTF-8 encoded bytes and

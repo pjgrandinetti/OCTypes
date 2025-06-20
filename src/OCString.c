@@ -284,9 +284,7 @@ static OCStringRef impl_OCStringCopyFormattingDesc(OCTypeRef cf)
 static cJSON *
 impl_OCStringCopyJSON(const void *obj)
 {
-    if (!obj) return cJSON_CreateNull();
-    const char *s = OCStringGetCString((OCStringRef)obj);
-    return cJSON_CreateString(s ? s : "");
+    return OCStringCreateJSON((OCStringRef)obj);
 }
 static void *impl_OCStringDeepCopy(const void *obj) {
     OCStringRef src = (OCStringRef)obj;
@@ -324,6 +322,17 @@ static struct impl_OCString *OCStringAllocate()
     return obj;
 }
 
+cJSON *OCStringCreateJSON(OCStringRef str) {
+    if (!str) return cJSON_CreateNull();
+    const char *s = OCStringGetCString(str);
+    return cJSON_CreateString(s ? s : "");
+}
+
+OCStringRef OCStringCreateFromJSON(cJSON *json) {
+    if (!json || !cJSON_IsString(json)) return NULL;
+    const char *s = json->valuestring;
+    return s ? OCStringCreateWithCString(s) : NULL;
+}
 
 // -----------------------------------------------------------------------------
 // Core OCString Constructors
