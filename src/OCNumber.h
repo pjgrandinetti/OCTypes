@@ -119,110 +119,88 @@ typedef enum {
  */
 OCTypeID OCNumberGetTypeID(void);
 
+
 /**
- * @brief Creates an OCNumber object from a raw value and specified OCNumberType.
- * @param type The numeric type.
- * @param value Pointer to a variable of the matching C type (e.g., uint8_t*, double*, etc.).
- * @return An OCNumberRef or NULL on error.
+ * @brief Create a new OCNumber of given type from raw pointer to value.
+ * @param type Numeric type tag.
+ * @param value Pointer to matching C value.
+ * @return New OCNumberRef or NULL on error.
  * @ingroup OCNumber
  */
 OCNumberRef OCNumberCreate(OCNumberType type, void *value);
 
 /**
- * @brief Get the underlying OCNumberType of an OCNumber.
- * @param number  The OCNumber instance.
- * @return        The type (one of kOCNumber…Type), or undefined if number is NULL.
- * @ingroup      OCNumber
+ * @brief Get the stored type of an OCNumber.
+ * @param number An OCNumberRef.
+ * @return Stored OCNumberType or -1 if NULL.
+ * @ingroup OCNumber
  */
 OCNumberType OCNumberGetType(OCNumberRef number);
 
 /**
- * @brief Creates a formatted string representing the OCNumber's value.
- * @param theNumber An OCNumberRef.
- * @return An OCStringRef with the formatted string. Caller must release.
+ * @brief Create string representation of a number.
+ * @param number An OCNumberRef.
+ * @return OCStringRef (caller must release).
  * @ingroup OCNumber
  */
-OCStringRef OCNumberCreateStringValue(OCNumberRef theNumber);
-
+OCStringRef OCNumberCreateStringValue(OCNumberRef number);
 
 /**
- * @brief Creates an OCNumber from a string representation and numeric type.
- *
- * Converts a string (e.g., "42", "-3.14", "2.0+I*1.0") into a numeric OCNumberRef
- * of the specified OCNumberType. This complements OCNumberCreateStringValue()
- * and enables full round-trip conversion.
- *
- * @param type The expected OCNumberType of the value.
- * @param stringValue A null-terminated string encoding the value.
- * @return A new OCNumberRef on success, or NULL if parsing fails.
- *         Caller is responsible for releasing the returned value.
+ * @brief Create OCNumber from string and type.
+ * @param type Target OCNumberType.
+ * @param stringValue Null-terminated C string.
+ * @return OCNumberRef or NULL on parse error.
  * @ingroup OCNumber
  */
 OCNumberRef OCNumberCreateWithStringValue(OCNumberType type, const char *stringValue);
 
 /**
- * @brief Returns a formatting-friendly description of the number.
- * @param theNumber OCNumberRef to describe.
- * @return OCStringRef describing the number (caller must release).
+ * @brief Copy a human-readable description of the number.
+ * @param number An OCNumberRef.
+ * @return OCStringRef (caller must release).
  * @ingroup OCNumber
  */
-OCStringRef OCNumberCopyFormattingDesc(OCNumberRef theNumber);
+OCStringRef OCNumberCopyFormattingDesc(OCNumberRef number);
 
 /**
- * @brief Retrieves the raw value from an OCNumber.
- *
- * If the type does not match the OCNumber's actual type, no value is written.
- *
- * @param number The OCNumberRef to query.
- * @param type Expected OCNumberType.
- * @param outValue Destination buffer (must match type).
+ * @brief Extract raw value if types match.
+ * @param number An OCNumberRef.
+ * @param type Expected type.
+ * @param valuePtr Pointer to output buffer.
+ * @return true on success, false on NULL or type mismatch.
  * @ingroup OCNumber
  */
 bool OCNumberGetValue(OCNumberRef number, OCNumberType type, void *valuePtr);
 
 /**
- * @brief Returns the size in bytes of the C type corresponding to the given OCNumberType.
- * @param type The OCNumberType to query.
- * @return The size in bytes of the specified type, or 0 if invalid.
+ * @brief Size in bytes of numeric type.
+ * @param type OCNumberType.
+ * @return Byte size or 0 if invalid.
  * @ingroup OCNumber
  */
 int OCNumberTypeSize(OCNumberType type);
 
-
 /**
- * @brief Creates a JSON representation of an OCNumber.
- *
- * The resulting cJSON object includes both the number's type and value,
- * stored under the keys `"type"` and `"value"`. The value is represented
- * as a string for consistent round-tripping of all numeric formats.
- *
- * @param number An OCNumberRef to serialize.
- * @return A cJSON object representing the OCNumber, or cJSON null on failure.
- *         Caller is responsible for managing the returned cJSON object.
+ * @brief Serialize to cJSON (value encoded as string).
+ * @param number An OCNumberRef.
+ * @return cJSON object (caller responsible).
  * @ingroup OCNumber
  */
 cJSON *OCNumberCreateJSON(OCNumberRef number);
 
 /**
- * @brief Creates an OCNumber from a cJSON object with "type" and "value" fields.
- *
- * The `json` object must be a cJSON object with the keys:
- *   - `"type"`: a string matching a known OCNumberType (e.g., "sint32", "complex128")
- *   - `"value"`: a string representing the numeric value
- *
- * @param json A cJSON object encoding a number.
- * @return A newly created OCNumberRef on success, or NULL on failure.
- *         The caller is responsible for releasing the returned number.
+ * @brief Deserialize from cJSON using specified type.
+ * @param json A cJSON string node.
+ * @param type Expected OCNumberType.
+ * @return New OCNumberRef or NULL.
  * @ingroup OCNumber
  */
 OCNumberRef OCNumberCreateFromJSON(cJSON *json, OCNumberType type);
 
 /**
  * @name Convenience Constructors
- * @brief Create OCNumberRefs for native numeric types.
- * @ingroup OCNumber
- * @{ 
- */
+ * Create OCNumberRefs for native types.
+ * @{ */
 OCNumberRef OCNumberCreateWithUInt8(uint8_t value);
 OCNumberRef OCNumberCreateWithUInt16(uint16_t value);
 OCNumberRef OCNumberCreateWithUInt32(uint32_t value);
@@ -240,7 +218,143 @@ OCNumberRef OCNumberCreateWithFloatComplex(float complex value);
 OCNumberRef OCNumberCreateWithDoubleComplex(double complex value);
 /** @} */
 
-/** @} */ // end of OCNumber group
+/** @name Try-get Accessors
+ *  Inline helpers to read back C values if type matches.
+ * @{ */
+
+/** @brief Try extract uint8_t. */
+static inline bool OCNumberTryGetUInt8(OCNumberRef n, uint8_t *out) {
+    return OCNumberGetValue(n, kOCNumberUInt8Type, out);
+}
+
+/** @brief Try extract int8_t. */
+static inline bool OCNumberTryGetSInt8(OCNumberRef n, int8_t *out) {
+    return OCNumberGetValue(n, kOCNumberSInt8Type, out);
+}
+
+/** @brief Try extract uint16_t. */
+static inline bool OCNumberTryGetUInt16(OCNumberRef n, uint16_t *out) {
+    return OCNumberGetValue(n, kOCNumberUInt16Type, out);
+}
+
+/** @brief Try extract int16_t. */
+static inline bool OCNumberTryGetSInt16(OCNumberRef n, int16_t *out) {
+    return OCNumberGetValue(n, kOCNumberSInt16Type, out);
+}
+
+/** @brief Try extract uint32_t. */
+static inline bool OCNumberTryGetUInt32(OCNumberRef n, uint32_t *out) {
+    return OCNumberGetValue(n, kOCNumberUInt32Type, out);
+}
+
+/** @brief Try extract int32_t. */
+static inline bool OCNumberTryGetSInt32(OCNumberRef n, int32_t *out) {
+    return OCNumberGetValue(n, kOCNumberSInt32Type, out);
+}
+
+/** @brief Try extract uint64_t. */
+static inline bool OCNumberTryGetUInt64(OCNumberRef n, uint64_t *out) {
+    return OCNumberGetValue(n, kOCNumberUInt64Type, out);
+}
+
+/** @brief Try extract int64_t. */
+static inline bool OCNumberTryGetSInt64(OCNumberRef n, int64_t *out) {
+    return OCNumberGetValue(n, kOCNumberSInt64Type, out);
+}
+
+/** @brief Try extract float (32-bit). */
+static inline bool OCNumberTryGetFloat32(OCNumberRef n, float *out) {
+    return OCNumberGetValue(n, kOCNumberFloat32Type, out);
+}
+
+/** @brief Try extract double (64-bit). */
+static inline bool OCNumberTryGetFloat64(OCNumberRef n, double *out) {
+    return OCNumberGetValue(n, kOCNumberFloat64Type, out);
+}
+
+/** @brief Try extract complex float (32-bit). */
+static inline bool OCNumberTryGetComplex64(OCNumberRef n, float complex *out) {
+    return OCNumberGetValue(n, kOCNumberFloat32ComplexType, out);
+}
+
+/** @brief Try extract complex double (64-bit). */
+static inline bool OCNumberTryGetComplex128(OCNumberRef n, double complex *out) {
+    return OCNumberGetValue(n, kOCNumberFloat64ComplexType, out);
+}
+
+/** @brief Alias for TryGetFloat32. */
+static inline bool OCNumberTryGetFloat(OCNumberRef n, float *out) {
+    return OCNumberTryGetFloat32(n, out);
+}
+
+/** @brief Alias for TryGetFloat64. */
+static inline bool OCNumberTryGetDouble(OCNumberRef n, double *out) {
+    return OCNumberTryGetFloat64(n, out);
+}
+
+/** @brief Alias for TryGetComplex64. */
+static inline bool OCNumberTryGetFloatComplex(OCNumberRef n, float complex *out) {
+    return OCNumberTryGetComplex64(n, out);
+}
+
+/** @brief Alias for TryGetComplex128. */
+static inline bool OCNumberTryGetDoubleComplex(OCNumberRef n, double complex *out) {
+    return OCNumberTryGetComplex128(n, out);
+}
+
+/** @brief Try extract int native size. */
+static inline bool OCNumberTryGetInt(OCNumberRef n, int *out) {
+    if (!n || !out) return false;
+    if (sizeof(int) == sizeof(int32_t)) {
+        int32_t v;
+        if (!OCNumberTryGetSInt32(n, &v)) return false;
+        *out = (int)v;
+        return true;
+    } else if (sizeof(int) == sizeof(int64_t)) {
+        int64_t v;
+        if (!OCNumberTryGetSInt64(n, &v)) return false;
+        *out = (int)v;
+        return true;
+    }
+    return false;
+}
+
+/** @brief Try extract long native size. */
+static inline bool OCNumberTryGetLong(OCNumberRef n, long *out) {
+    if (!n || !out) return false;
+    if (sizeof(long) == sizeof(int32_t)) {
+        int32_t v;
+        if (!OCNumberTryGetSInt32(n, &v)) return false;
+        *out = (long)v;
+        return true;
+    } else if (sizeof(long) == sizeof(int64_t)) {
+        int64_t v;
+        if (!OCNumberTryGetSInt64(n, &v)) return false;
+        *out = (long)v;
+        return true;
+    }
+    return false;
+}
+
+/** @brief Try extract OCIndex native size. */
+static inline bool OCNumberTryGetOCIndex(OCNumberRef n, OCIndex *out) {
+    if (!n || !out) return false;
+    if (sizeof(OCIndex) == sizeof(int32_t)) {
+        int32_t v;
+        if (!OCNumberTryGetSInt32(n, &v)) return false;
+        *out = (OCIndex)v;
+        return true;
+    } else if (sizeof(OCIndex) == sizeof(int64_t)) {
+        int64_t v;
+        if (!OCNumberTryGetSInt64(n, &v)) return false;
+        *out = (OCIndex)v;
+        return true;
+    }
+    return false;
+}
+
+/** @} */ // end Try-get Accessors
+/** @} */ // end OCNumber
 
 #endif /* OCNumber_h */
 
