@@ -323,7 +323,7 @@ OCIndexSetRef OCIndexSetCreateFromJSON(cJSON *json) {
     OCIndex count = cJSON_GetArraySize(json);
 
     for (OCIndex i = 0; i < count; i++) {
-        cJSON *item = cJSON_GetArrayItem(json, i);
+        cJSON *item = cJSON_GetArrayItem(json, (int) i);
         if (!cJSON_IsNumber(item)) { OCRelease(set); return NULL; }
         OCIndexSetAddIndex(set, (OCIndex)item->valuedouble);
     }

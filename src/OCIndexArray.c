@@ -283,7 +283,7 @@ OCIndexArrayRef OCIndexArrayCreateFromJSON(cJSON *json) {
     OCIndex *values = malloc(sizeof(OCIndex) * count);
     if (!values) return NULL;
     for (OCIndex i = 0; i < count; i++) {
-        cJSON *item = cJSON_GetArrayItem(json, i);
+        cJSON *item = cJSON_GetArrayItem(json, (int) i);
         if (!cJSON_IsNumber(item)) {
             free(values);
             return NULL;

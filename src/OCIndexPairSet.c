@@ -227,7 +227,7 @@ OCIndexPairSetRef OCIndexPairSetCreateFromJSON(cJSON *json) {
     if (!pairs) return NULL;
 
     for (OCIndex i = 0; i < count; i++) {
-        cJSON *pair = cJSON_GetArrayItem(json, i);
+        cJSON *pair = cJSON_GetArrayItem(json, (int) i);
         if (!cJSON_IsArray(pair) || cJSON_GetArraySize(pair) != 2) {
             free(pairs);
             return NULL;
@@ -244,7 +244,7 @@ OCIndexPairSetRef OCIndexPairSetCreateFromJSON(cJSON *json) {
         pairs[i].value = (OCIndex)valueNode->valuedouble;
     }
 
-    OCIndexPairSetRef result = OCIndexPairSetCreateWithIndexPairArray(pairs, count);
+    OCIndexPairSetRef result = OCIndexPairSetCreateWithIndexPairArray(pairs, (int) count);
     free(pairs);
     return result;
 }
