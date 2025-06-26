@@ -6,6 +6,8 @@
 bool stringTest0(void);
 bool stringTest1(void);
 bool stringTest2(void);
+bool stringTest_mixed_format_specifiers(void);
+bool test_OCStringAppendFormat(void);
 
 // New UTF-8–aware tests
 bool stringTest3(void);

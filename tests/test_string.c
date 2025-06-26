@@ -11,13 +11,46 @@
 
 // ————————— existing tests —————————
 
+// Test equality, immutability, and creation from C-string and STR
 bool stringTest1(void) {
     fprintf(stderr, "%s begin...\n", __func__);
     bool success = false;
     OCStringRef s1 = OCStringCreateWithCString("theStringWithAStringOnAStringTown");
     OCStringRef s_check = STR("theStringWithAStringOnAStringTown");
+
+    // Test length, equality, and roundtrip
     if (!s1 || !s_check)                           goto cleanup;
-    if (!OCStringEqual(s1, s_check))               goto cleanup;
+    if (!OCStringEqual(s1, s_check)) {
+        fprintf(stderr, "OCStringEqual failed on identical strings\n");
+        goto cleanup;
+    }
+    if (OCStringGetLength(s1) != OCStringGetLength(s_check)) {
+        fprintf(stderr, "Length mismatch: %llu != %llu\n",
+                (unsigned long long)OCStringGetLength(s1),
+                (unsigned long long)OCStringGetLength(s_check));
+        goto cleanup;
+    }
+    // Round-trip copy and compare
+    OCStringRef copy = OCStringCreateCopy(s1);
+    if (!OCStringEqual(s1, copy)) {
+        fprintf(stderr, "Copy is not equal to original!\n");
+        OCRelease(copy);
+        goto cleanup;
+    }
+    OCRelease(copy);
+
+    // Test empty string
+    OCStringRef s_empty = OCStringCreateWithCString("");
+    OCStringRef s_empty2 = STR("");
+    if (!OCStringEqual(s_empty, s_empty2)) {
+        fprintf(stderr, "Empty string comparison failed\n");
+        OCRelease(s_empty);
+        OCRelease(s_empty2);
+        goto cleanup;
+    }
+    OCRelease(s_empty);
+    // s_empty2 is static, don't release
+
     success = true;
 cleanup:
     if (s1) OCRelease(s1);
@@ -26,32 +59,317 @@ cleanup:
     return success;
 }
 
+// Test format features, including %d, %f, %s, %@, and edge cases
 bool stringTest2(void) {
     fprintf(stderr, "%s begin...\n", __func__);
     bool success = false;
-    // Test OCStringCreateWithFormat with OCStringRef argument
+    OCStringRef out = NULL;
+
+    // --- Test %@ with OCStringRef
     OCStringRef fmt1 = STR("Ix(%@)");
     OCStringRef out1 = OCStringCreateWithFormat(fmt1, STR("H2"));
     OCStringRef chk1 = STR("Ix(H2)");
-    
-    // Initialize out2 to NULL before potentially jumping to cleanup
-    OCStringRef out2 = NULL;
-    
-    if (!OCStringEqual(out1, chk1)) goto cleanup;
+    if (!OCStringEqual(out1, chk1)) {
+        fprintf(stderr, "Format with %%@ failed: got [%s] expected [%s]\n",
+                OCStringGetCString(out1), OCStringGetCString(chk1));
+        goto cleanup;
+    }
 
-    // Test OCStringCreateWithFormat with C-string %s
+    // --- Test %s with C string
     OCStringRef fmt2 = STR("Ix(%s)");
-    out2 = OCStringCreateWithFormat(fmt2, "H2");
-    OCStringRef chk2 = STR("Ix(H2)");
-    if (!OCStringEqual(out2, chk2)) goto cleanup;
+    out = OCStringCreateWithFormat(fmt2, "H2");
+    if (!OCStringEqual(out, chk1)) {
+        fprintf(stderr, "Format with %%s failed: got [%s] expected [%s]\n",
+                OCStringGetCString(out), OCStringGetCString(chk1));
+        goto cleanup;
+    }
+    OCRelease(out); out = NULL;
+
+    // --- Test mixed specifiers (%@, %d, %f)
+    OCStringRef fmt3 = STR("Atom:%@, Index:%d, Mass:%.2f");
+    out = OCStringCreateWithFormat(fmt3, STR("H2"), 42, 1.0079);
+    OCStringRef chk3 = OCStringCreateWithCString("Atom:H2, Index:42, Mass:1.01");
+    if (!OCStringEqual(out, chk3)) {
+        fprintf(stderr, "Mixed format failed: got [%s] expected [%s]\n",
+                OCStringGetCString(out), OCStringGetCString(chk3));
+        OCRelease(chk3);
+        goto cleanup;
+    }
+    OCRelease(chk3);
+    OCRelease(out); out = NULL;
+
+    // --- Test Unicode/UTF-8
+    OCStringRef fmt4 = STR("Prefix-%@-Suffix");
+    OCStringRef out4 = OCStringCreateWithFormat(fmt4, STR("é💧"));
+    OCStringRef chk4 = OCStringCreateWithCString("Prefix-é💧-Suffix");
+    if (!OCStringEqual(out4, chk4)) {
+        fprintf(stderr, "Unicode format failed: got [%s] expected [%s]\n",
+                OCStringGetCString(out4), OCStringGetCString(chk4));
+        OCRelease(out4);
+        OCRelease(chk4);
+        goto cleanup;
+    }
+    OCRelease(out4); OCRelease(chk4);
+
+    // --- Test edge case: empty format string
+    OCStringRef emptyFmt = STR("");
+    OCStringRef outEmpty = OCStringCreateWithFormat(emptyFmt);
+    if (!OCStringEqual(outEmpty, emptyFmt)) {
+        fprintf(stderr, "Empty format string failed\n");
+        OCRelease(outEmpty);
+        goto cleanup;
+    }
+    OCRelease(outEmpty);
+
+    // --- Test error case: NULL OCStringRef as argument to %@
+    OCStringRef fmt5 = STR("NullCheck:%@");
+    out = OCStringCreateWithFormat(fmt5, (OCStringRef)NULL);
+    OCStringRef chk5 = OCStringCreateWithCString("NullCheck:");
+    if (!OCStringEqual(out, chk5)) {
+        fprintf(stderr, "NULL OCStringRef in %%@ failed: got [%s] expected [%s]\n",
+                OCStringGetCString(out), OCStringGetCString(chk5));
+        OCRelease(chk5);
+        goto cleanup;
+    }
+    OCRelease(chk5);
+    OCRelease(out); out = NULL;
+
+    // --- Test double %@
+    OCStringRef fmt6 = STR("%@-%@");
+    OCStringRef out6 = OCStringCreateWithFormat(fmt6, STR("A"), STR("B"));
+    OCStringRef chk6 = STR("A-B");
+    if (!OCStringEqual(out6, chk6)) {
+        fprintf(stderr, "Double %%@ failed: got [%s] expected [%s]\n",
+                OCStringGetCString(out6), OCStringGetCString(chk6));
+        OCRelease(out6);
+        goto cleanup;
+    }
+    OCRelease(out6);
+
+    // --- Test mismatched argument types (should NOT crash, but should warn)
+    // The following should be detected and handled gracefully (if you've added runtime checks):
+    // out = OCStringCreateWithFormat(fmt1, 1234); // Invalid, would crash with current implementation
 
     success = true;
 cleanup:
     if (out1) OCRelease(out1);
-    if (out2) OCRelease(out2);
+    if (out) OCRelease(out);
     if (!success) fprintf(stderr, "Test %s FAILED.\n", __func__);
     else         fprintf(stderr, "%s passed.\n", __func__);
     return success;
+}
+
+// --- More rigorous, order-mixed format argument tests ---
+
+bool stringTest_mixed_format_specifiers(void) {
+    fprintf(stderr, "%s begin...\n", __func__);
+    bool ok = false;
+    OCStringRef fmt = NULL;
+    OCStringRef out = NULL;
+    OCStringRef chk = NULL;
+
+    // Test interleaved %@ and printf specifiers (the dangerous case)
+    fmt = STR("%@:%d:%@:%s:%@");
+    out = OCStringCreateWithFormat(fmt, STR("A"), 11, STR("B"), "X", STR("C"));
+    chk = OCStringCreateWithCString("A:11:B:X:C");
+    if (!OCStringEqual(out, chk)) {
+        fprintf(stderr, "Mixed (%%@ and printf) format failed: got [%s], expected [%s]\n",
+                OCStringGetCString(out), OCStringGetCString(chk));
+        goto cleanup;
+    }
+    OCRelease(out); out = NULL;
+    OCRelease(chk); chk = NULL;
+
+    // Test a chunk with multiple printf specifiers between %@ (will break if not parsed right)
+    fmt = STR("%@:%d-%0.2f:%@");
+    out = OCStringCreateWithFormat(fmt, STR("Q"), 99, 2.71, STR("W"));
+    chk = OCStringCreateWithCString("Q:99-2.71:W");
+    if (!OCStringEqual(out, chk)) {
+        fprintf(stderr, "Multiple printf specifiers between %%@ failed: got [%s], expected [%s]\n",
+                OCStringGetCString(out), OCStringGetCString(chk));
+        goto cleanup;
+    }
+    OCRelease(out); out = NULL;
+    OCRelease(chk); chk = NULL;
+
+    // Test sequence with only printf specifiers, no %@ (should still work)
+    fmt = STR("Val1:%d,Val2:%.1f,Val3:%s");
+    out = OCStringCreateWithFormat(fmt, 123, 4.5, "hi");
+    chk = OCStringCreateWithCString("Val1:123,Val2:4.5,Val3:hi");
+    if (!OCStringEqual(out, chk)) {
+        fprintf(stderr, "Printf-only format failed: got [%s], expected [%s]\n",
+                OCStringGetCString(out), OCStringGetCString(chk));
+        goto cleanup;
+    }
+    OCRelease(out); out = NULL;
+    OCRelease(chk); chk = NULL;
+
+    // Test out-of-order usage: printf, %@, printf, %@, printf
+    fmt = STR("%d:%@:%f:%@:%s");
+    out = OCStringCreateWithFormat(fmt, 1, STR("M"), 3.14, STR("N"), "str");
+    chk = OCStringCreateWithCString("1:M:3.140000:N:str");
+    if (!OCStringEqual(out, chk)) {
+        fprintf(stderr, "Out-of-order %%@ and printf failed: got [%s], expected [%s]\n",
+                OCStringGetCString(out), OCStringGetCString(chk));
+        goto cleanup;
+    }
+    OCRelease(out); out = NULL;
+    OCRelease(chk); chk = NULL;
+
+    // Test %% and %@ next to each other
+    fmt = STR("100%% %@!");
+    out = OCStringCreateWithFormat(fmt, STR("bonus"));
+    chk = OCStringCreateWithCString("100% bonus!");
+    if (!OCStringEqual(out, chk)) {
+        fprintf(stderr, "Percent/%%@ adjacent failed: got [%s], expected [%s]\n",
+                OCStringGetCString(out), OCStringGetCString(chk));
+        goto cleanup;
+    }
+    OCRelease(out); out = NULL;
+    OCRelease(chk); chk = NULL;
+
+    // Test many %@ in a row (should consume all)
+    fmt = STR("%@%@%@");
+    out = OCStringCreateWithFormat(fmt, STR("1"), STR("2"), STR("3"));
+    chk = OCStringCreateWithCString("123");
+    if (!OCStringEqual(out, chk)) {
+        fprintf(stderr, "Consecutive %%@ failed: got [%s], expected [%s]\n",
+                OCStringGetCString(out), OCStringGetCString(chk));
+        goto cleanup;
+    }
+    OCRelease(out); out = NULL;
+    OCRelease(chk); chk = NULL;
+
+    // Test if passing NULL as OCStringRef to %@ doesn't crash, just skips
+    fmt = STR("%@|%@|%@");
+    out = OCStringCreateWithFormat(fmt, STR("X"), (OCStringRef)NULL, STR("Y"));
+    chk = OCStringCreateWithCString("X| |Y");
+    // Our logic expects "X||Y", so just ensure NULL does not crash and prints nothing for that slot.
+    if (!OCStringEqual(out, STR("X||Y"))) {
+        fprintf(stderr, "NULL to %%@ should print nothing: got [%s]\n", OCStringGetCString(out));
+        goto cleanup;
+    }
+    OCRelease(out); out = NULL;
+    OCRelease(chk); chk = NULL;
+
+    // Test more arguments than specifiers (extra args ignored)
+    fmt = STR("%@-%d-%@");
+    out = OCStringCreateWithFormat(fmt, STR("A"), 8, STR("B"), STR("SHOULD_NOT_BE_USED"), 999);
+    chk = OCStringCreateWithCString("A-8-B");
+    if (!OCStringEqual(out, chk)) {
+        fprintf(stderr, "Extra args present failed: got [%s], expected [%s]\n",
+                OCStringGetCString(out), OCStringGetCString(chk));
+        goto cleanup;
+    }
+    OCRelease(out); out = NULL;
+    OCRelease(chk); chk = NULL;
+
+    // Test fewer arguments than needed (should not crash, might print garbage)
+    fmt = STR("%@-%d-%@");
+    out = OCStringCreateWithFormat(fmt, STR("A"));
+    if (out) { OCRelease(out); out = NULL; }
+
+    fprintf(stderr, "stringTest_mixed_format_specifiers passed (if no crash).\n");
+    ok = true;
+cleanup:
+    if (out) OCRelease(out);
+    if (chk) OCRelease(chk);
+    return ok;
+}
+
+bool test_OCStringAppendFormat(void) {
+    fprintf(stderr, "%s begin...\n", __func__);
+    bool ok = false;
+    OCMutableStringRef str = NULL;
+    OCStringRef fmt = NULL;
+    OCStringRef verify = NULL;
+
+    // Start with an initial string
+    str = OCStringCreateMutable(0);
+    OCStringAppendCString(str, "START|");
+
+    // Append an OCStringRef using %@ and test append behavior
+    fmt = STR("%@|");
+    OCStringAppendFormat(str, fmt, STR("SEG1"));
+    verify = OCStringCreateWithCString("START|SEG1|");
+    if (!OCStringEqual((OCStringRef)str, verify)) {
+        fprintf(stderr, "OCStringAppendFormat (single %%@) failed: got [%s], expected [%s]\n",
+                OCStringGetCString((OCStringRef)str), OCStringGetCString(verify));
+        goto cleanup;
+    }
+    OCRelease(verify);
+
+    // Append with multiple types: %d, %f, %s, %c, %% and pointer
+    fmt = STR("%d-%0.1f-%s-%c-%%-%p|");
+    int intval = 42;
+    double fval = 3.14;
+    const char *sval = "sVal";
+    char cval = 'X';
+    void *pval = (void*)0x1234;
+
+    OCStringAppendFormat(str, fmt, intval, fval, sval, cval, pval);
+
+    // Construct expected prefix (don't assume pointer formatting, only compare prefix up to pointer)
+    char buf[256];
+    snprintf(buf, sizeof(buf), "START|SEG1|42-3.1-sVal-X-%%-");
+    const char *str_c = OCStringGetCString((OCStringRef)str);
+    if (strncmp(str_c, buf, strlen(buf)) != 0) {
+        fprintf(stderr, "OCStringAppendFormat (multi type) failed:\n  got:      [%s]\n  expected: [%s...]\n",
+                str_c, buf);
+        goto cleanup;
+    }
+
+    // Append with double %@ and check append order (only check trailing pattern)
+    fmt = STR("%@-%@|");
+    OCStringAppendFormat(str, fmt, STR("A"), STR("B"));
+    str_c = OCStringGetCString((OCStringRef)str);
+    if (!strstr(str_c, "A-B|")) {
+        fprintf(stderr, "OCStringAppendFormat (double %%@) failed: missing [A-B|] in [%s]\n", str_c);
+        goto cleanup;
+    }
+
+    // Append with Unicode
+    fmt = STR("💧%@💧|");
+    OCStringAppendFormat(str, fmt, STR("Z"));
+    str_c = OCStringGetCString((OCStringRef)str);
+    if (!strstr(str_c, "💧Z💧|")) {
+        fprintf(stderr, "OCStringAppendFormat (unicode) failed: missing [💧Z💧|] in [%s]\n", str_c);
+        goto cleanup;
+    }
+
+    // Append with literal percent
+    fmt = STR("100%%|");
+    OCStringAppendFormat(str, fmt);
+    str_c = OCStringGetCString((OCStringRef)str);
+    if (!strstr(str_c, "100%|")) {
+        fprintf(stderr, "OCStringAppendFormat (literal %%) failed: missing [100%%|] in [%s]\n", str_c);
+        goto cleanup;
+    }
+
+    // Append with NULL OCStringRef for %@ (should append nothing, not crash)
+    fmt = STR("NULL-%@|");
+    OCStringAppendFormat(str, fmt, (OCStringRef)NULL);
+    str_c = OCStringGetCString((OCStringRef)str);
+    if (!strstr(str_c, "NULL-|")) {
+        fprintf(stderr, "OCStringAppendFormat (NULL %%@) failed: missing [NULL-|] in [%s]\n", str_c);
+        goto cleanup;
+    }
+
+    // Final check: count '|' pieces to ensure string grew as expected (at least 7 pieces)
+    size_t expected_pieces = 7;
+    size_t found = 0;
+    for (const char *p = str_c; (p = strchr(p, '|')) != NULL; ++p, ++found) { }
+    if (found < expected_pieces) {
+        fprintf(stderr, "OCStringAppendFormat (pieces) mismatch: expected >=%zu, found %zu\n", expected_pieces, found);
+        goto cleanup;
+    }
+
+    ok = true;
+cleanup:
+    if (str) OCRelease(str);
+    if (!ok) fprintf(stderr, "Test %s FAILED.\n", __func__);
+    else     fprintf(stderr, "%s passed.\n", __func__);
+    return ok;
 }
 
 // ————————— new UTF-8–aware tests —————————

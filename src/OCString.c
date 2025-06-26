@@ -1094,114 +1094,36 @@ OCStringCompare(OCStringRef theString1,
     return kOCCompareEqualTo;
 }
 
-#include <stdarg.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include "OCString.h"
+// Helper: Parse a printf format specifier. Returns pointer after specifier, fills subfmt buffer.
+static const char *parse_printf_spec(const char *p, char *out, size_t maxlen) {
+    const char *start = p;
+    if (*p != '%') return NULL;
+    p++; // skip %
 
-// Internal helper: append formatted text using a va_list
-void _OCStringAppendFormatAndArgumentsAux(OCMutableStringRef outputString,
-                                          OCStringRef formatString,
-                                          va_list args)
-{
-    if (!outputString || !formatString) return;
-
-    const char *fmt = formatString->string;
-    if (!fmt) return;
-
-    // Handle object specifier "%@"
-    if (strstr(fmt, "%@")) {
-        const char *p = fmt;
-        while (*p) {
-            if (p[0]=='%' && p[1]=='%') {
-                OCStringAppendCString(outputString, "%");
-                p += 2;
-            } else if (p[0]=='%' && p[1]=='@') {
-                OCStringRef obj = va_arg(args, OCStringRef);
-                if (obj && obj->string) OCStringAppendCString(outputString, obj->string);
-                p += 2;
-            } else if (p[0]=='%') {
-                const char *start = p; p++;
-                while (strchr("-+ #0", *p)) p++;
-                while (*p >= '0' && *p <= '9') p++;
-                if (*p=='*') p++;
-                if (*p=='.') { p++; while (*p>='0' && *p<='9') p++; if (*p=='*') p++; }
-                if (strchr("hljztL", *p)) {
-                    if ((p[0]=='h'&&p[1]=='h')||(p[0]=='l'&&p[1]=='l')) p+=2; else p++;
-                }
-                if (*p) p++;
-                size_t len = p - start;
-                char *subFmt = malloc(len+1);
-                if (NULL == subFmt) {
-                    fprintf(stderr, "_OCStringAppendFormatAndArgumentsAux: Memory allocation failed for subFmt.\n");
-                    return;
-                }
-                memcpy(subFmt, start, len);
-                subFmt[len] = '\0';
-                va_list argsCopy;
-                va_copy(argsCopy, args);
-                int needed = vsnprintf(NULL, 0, subFmt, argsCopy);
-                va_end(argsCopy);
-                if (needed > 0) {
-                    char *buf = malloc((size_t)needed + 1);
-                    if (NULL == buf) {
-                        fprintf(stderr, "_OCStringAppendFormatAndArgumentsAux: Memory allocation failed for buf.\n");
-                        free(subFmt);
-                        return;
-                    }
-                    vsnprintf(buf, (size_t)needed + 1, subFmt, args);
-                    OCStringAppendCString(outputString, buf);
-                    free(buf);
-                }
-                free(subFmt);
-            } else {
-                char tmp[2] = {*p, '\0'};
-                OCStringAppendCString(outputString, tmp);
-                p++;
-            }
-        }
-        return;
+    // Flags
+    while (strchr("-+ #0", *p)) p++;
+    // Width
+    while (*p >= '0' && *p <= '9') p++;
+    if (*p == '*') p++;
+    // Precision
+    if (*p == '.') {
+        p++;
+        while (*p >= '0' && *p <= '9') p++;
+        if (*p == '*') p++;
     }
-
-    // Measure required buffer size
-    va_list argsCopy;
-    va_copy(argsCopy, args);
-    int needed = vsnprintf(NULL, 0, fmt, argsCopy);
-    va_end(argsCopy);
-    if (needed < 0) return;
-
-    // Format into buffer
-    char *buf = malloc((size_t)needed + 1);
-    if (NULL == buf) {
-        fprintf(stderr, "_OCStringAppendFormatAndArgumentsAux: Memory allocation failed for buf.\n");
-        return;
+    // Length modifier (handle "hh", "ll", or single char)
+    while (strchr("hljztL", *p)) {
+        if ((p[0]=='h'&&p[1]=='h')||(p[0]=='l'&&p[1]=='l')) p+=2; else p++;
     }
-    vsnprintf(buf, (size_t)needed + 1, fmt, args);
+    // Conversion specifier (one char)
+    if (*p) p++;
 
-    // Append the result
-    OCStringAppendCString(outputString, buf);
-    free(buf);
+    size_t len = (size_t)(p - start);
+    if (len >= maxlen) len = maxlen - 1;
+    memcpy(out, start, len);
+    out[len] = '\0';
+    return p;
 }
-
-/**
- * @brief Creates an immutable OCString using a format string and arguments.
- * @param format Format OCString.
- * @param ... Variable arguments for the format string.
- * @return New OCStringRef (ownership transferred to caller).
- * @ingroup OCString
- */
-OCStringRef OCStringCreateWithFormat(OCStringRef format, ...)
-{
-    va_list args;
-    va_start(args, format);
-
-    OCMutableStringRef result = OCStringCreateMutable(0);
-    _OCStringAppendFormatAndArgumentsAux(result, format, args);
-
-    va_end(args);
-    return (OCStringRef)result;
-}
-
 /**
  * @brief Appends formatted text to a mutable OCString.
  * @param theString Mutable OCString.
@@ -1209,14 +1131,85 @@ OCStringRef OCStringCreateWithFormat(OCStringRef format, ...)
  * @param ... Variable arguments for the format string.
  * @ingroup OCString
  */
-void OCStringAppendFormat(OCMutableStringRef theString, OCStringRef format, ...)
-{
+static void OCStringAppendFormatWithArguments(OCMutableStringRef result, OCStringRef format, va_list args) {
+    if (!result || !format || !format->string) return;
+
+    const char *f = format->string;
+    va_list arglist;
+    va_copy(arglist, args);
+
+    while (*f) {
+        if (f[0] == '%' && f[1] == '@') {
+            OCStringRef s = va_arg(arglist, OCStringRef);
+            if (s && s->string) OCStringAppendCString(result, s->string);
+            f += 2;
+        } else if (f[0] == '%' && f[1] == '%') {
+            OCStringAppendCString(result, "%");
+            f += 2;
+        } else if (f[0] == '%') {
+            char subfmt[32];
+            const char *after = parse_printf_spec(f, subfmt, sizeof(subfmt));
+            if (!after) {
+                OCStringAppendCString(result, "%");
+                f++;
+                continue;
+            }
+            char spec = subfmt[strlen(subfmt)-1];
+            char buf[128] = {0};
+
+            if ((spec == 'd' || spec == 'i') && strstr(subfmt, "ll")) {
+                long long v = va_arg(arglist, long long);
+                snprintf(buf, sizeof(buf), subfmt, v);
+            } else if ((spec == 'u' || spec == 'x' || spec == 'X' || spec == 'o') && strstr(subfmt, "ll")) {
+                unsigned long long v = va_arg(arglist, unsigned long long);
+                snprintf(buf, sizeof(buf), subfmt, v);
+            } else if (spec == 'd' || spec == 'i') {
+                int v = va_arg(arglist, int);
+                snprintf(buf, sizeof(buf), subfmt, v);
+            } else if (spec == 'u' || spec == 'x' || spec == 'X' || spec == 'o') {
+                unsigned int v = va_arg(arglist, unsigned int);
+                snprintf(buf, sizeof(buf), subfmt, v);
+            } else if (spec == 'f' || spec == 'e' || spec == 'E' || spec == 'g' || spec == 'G' || spec == 'a' || spec == 'A') {
+                double v = va_arg(arglist, double);
+                snprintf(buf, sizeof(buf), subfmt, v);
+            } else if (spec == 's') {
+                const char *v = va_arg(arglist, const char *);
+                snprintf(buf, sizeof(buf), subfmt, v ? v : "(null)");
+            } else if (spec == 'c') {
+                int v = va_arg(arglist, int);
+                snprintf(buf, sizeof(buf), subfmt, v);
+            } else if (spec == 'p') {
+                void *v = va_arg(arglist, void *);
+                snprintf(buf, sizeof(buf), subfmt, v);
+            } else {
+                snprintf(buf, sizeof(buf), "%s", subfmt);
+            }
+            OCStringAppendCString(result, buf);
+            f = after;
+        } else {
+            char tmp[2] = {*f, '\0'};
+            OCStringAppendCString(result, tmp);
+            f++;
+        }
+    }
+    va_end(arglist);
+}
+OCStringRef OCStringCreateWithFormat(OCStringRef format, ...) {
+    if (!format || !format->string) return NULL;
+    OCMutableStringRef result = OCStringCreateMutable(0);
     va_list args;
     va_start(args, format);
-    _OCStringAppendFormatAndArgumentsAux(theString, format, args);
+    OCStringAppendFormatWithArguments(result, format, args);
     va_end(args);
+    return (OCStringRef)result;
 }
 
+void OCStringAppendFormat(OCMutableStringRef theString, OCStringRef format, ...) {
+    va_list args;
+    va_start(args, format);
+    OCStringAppendFormatWithArguments(theString, format, args);
+    va_end(args);
+}
 
 /**
  * @brief Creates an array of ranges where a substring is found.
@@ -1357,4 +1350,19 @@ OCArrayRef OCStringCreateArrayBySeparatingStrings(OCStringRef string,
     return result;
 }
 
+
+
+
+OCStringRef OCCreateISO8601Timestamp(void) {
+    char buf[32];
+    time_t now = time(NULL);
+    struct tm tm_now;
+#if defined(_WIN32) || defined(_WIN64)
+    gmtime_s(&tm_now, &now);
+#else
+    gmtime_r(&now, &tm_now);
+#endif
+    strftime(buf, sizeof(buf), "%Y-%m-%dT%H:%M:%SZ", &tm_now);
+    return OCStringCreateWithCString(buf);
+}
 

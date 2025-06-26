@@ -9,6 +9,8 @@
 #define OCString_h
 
 #include <complex.h>
+#include <time.h>
+#include <stdio.h>
 #include "OCLibrary.h"
 
 /**
@@ -1005,6 +1007,22 @@ bool characterIsDigitOrDecimalPoint(uint32_t character);
  * @endcode
  */
 bool characterIsDigitOrDecimalPointOrSpace(uint32_t character);
+
+
+/**
+ * @brief Creates an OCStringRef containing the current UTC date and time in ISO 8601 format.
+ * @return A new OCStringRef with the current UTC timestamp in the format "YYYY-MM-DDTHH:MM:SSZ".
+ *         The caller is responsible for releasing the returned OCStringRef.
+ * @ingroup OCString
+ *
+ * Example:
+ * @code
+ * OCStringRef timestamp = OCCreateISO8601Timestamp();
+ * // timestamp might contain "2024-06-30T23:45:12Z"
+ * OCRelease(timestamp);
+ * @endcode
+ */
+OCStringRef OCCreateISO8601Timestamp(void);
 
 
 /** @} */ // end of OCString group

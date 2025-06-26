@@ -78,6 +78,9 @@ int main(int argc, const char * argv[]) {
     if (!stringTest1())          failures++;
     if (!stringTest2())          failures++;
     if (!stringTest3())          failures++;
+    if (!stringTest_mixed_format_specifiers()) failures++;
+    if (!test_OCStringAppendFormat())   failures++;
+
     if (!stringTest4())          failures++;
     if (!stringTest5())          failures++;
     if (!stringTest6())          failures++;
