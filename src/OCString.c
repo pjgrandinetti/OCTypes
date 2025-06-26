@@ -1094,11 +1094,12 @@ OCStringCompare(OCStringRef theString1,
     return kOCCompareEqualTo;
 }
 
-// Helper: Parse a printf format specifier. Returns pointer after specifier, fills subfmt buffer.
-static const char *parse_printf_spec(const char *p, char *out, size_t maxlen) {
+// Returns a pointer just after the full specifier, writes up to maxlen bytes (including NUL) to out.
+static const char *parse_printf_spec(const char *p, char *out, size_t maxlen, char *lenmod, size_t lenmod_max) {
     const char *start = p;
+    *lenmod = 0;
     if (*p != '%') return NULL;
-    p++; // skip %
+    p++; // skip '%'
 
     // Flags
     while (strchr("-+ #0", *p)) p++;
@@ -1111,11 +1112,15 @@ static const char *parse_printf_spec(const char *p, char *out, size_t maxlen) {
         while (*p >= '0' && *p <= '9') p++;
         if (*p == '*') p++;
     }
-    // Length modifier (handle "hh", "ll", or single char)
-    while (strchr("hljztL", *p)) {
-        if ((p[0]=='h'&&p[1]=='h')||(p[0]=='l'&&p[1]=='l')) p+=2; else p++;
-    }
-    // Conversion specifier (one char)
+
+    // Length modifier ("hh", "h", "ll", "l", "j", "z", "t", "L", possibly more)
+    size_t modlen = 0;
+    if ((p[0]=='h'&&p[1]=='h')) { strncpy(lenmod, "hh", lenmod_max); p+=2; modlen=2; }
+    else if ((p[0]=='l'&&p[1]=='l')) { strncpy(lenmod, "ll", lenmod_max); p+=2; modlen=2; }
+    else if (strchr("hljztL", *p)) { lenmod[0] = *p; lenmod[1]=0; p++; modlen=1; }
+    else { lenmod[0]=0; }
+
+    // Conversion specifier
     if (*p) p++;
 
     size_t len = (size_t)(p - start);
@@ -1147,8 +1152,8 @@ static void OCStringAppendFormatWithArguments(OCMutableStringRef result, OCStrin
             OCStringAppendCString(result, "%");
             f += 2;
         } else if (f[0] == '%') {
-            char subfmt[32];
-            const char *after = parse_printf_spec(f, subfmt, sizeof(subfmt));
+            char subfmt[32], lenmod[4];
+            const char *after = parse_printf_spec(f, subfmt, sizeof(subfmt), lenmod, sizeof(lenmod));
             if (!after) {
                 OCStringAppendCString(result, "%");
                 f++;
@@ -1157,21 +1162,31 @@ static void OCStringAppendFormatWithArguments(OCMutableStringRef result, OCStrin
             char spec = subfmt[strlen(subfmt)-1];
             char buf[128] = {0};
 
-            if ((spec == 'd' || spec == 'i') && strstr(subfmt, "ll")) {
-                long long v = va_arg(arglist, long long);
-                snprintf(buf, sizeof(buf), subfmt, v);
-            } else if ((spec == 'u' || spec == 'x' || spec == 'X' || spec == 'o') && strstr(subfmt, "ll")) {
-                unsigned long long v = va_arg(arglist, unsigned long long);
-                snprintf(buf, sizeof(buf), subfmt, v);
-            } else if (spec == 'd' || spec == 'i') {
-                int v = va_arg(arglist, int);
-                snprintf(buf, sizeof(buf), subfmt, v);
+            // Robustly match length modifiers and conversion specifiers:
+            if ((spec == 'd' || spec == 'i')) {
+                if (strcmp(lenmod, "ll") == 0)
+                    snprintf(buf, sizeof(buf), subfmt, va_arg(arglist, long long));
+                else if (strcmp(lenmod, "l") == 0)
+                    snprintf(buf, sizeof(buf), subfmt, va_arg(arglist, long));
+                else if (strcmp(lenmod, "h") == 0)
+                    snprintf(buf, sizeof(buf), subfmt, (short)va_arg(arglist, int)); // 'short' promoted to int
+                else if (strcmp(lenmod, "hh") == 0)
+                    snprintf(buf, sizeof(buf), subfmt, (signed char)va_arg(arglist, int)); // 'char' promoted
+                else
+                    snprintf(buf, sizeof(buf), subfmt, va_arg(arglist, int));
             } else if (spec == 'u' || spec == 'x' || spec == 'X' || spec == 'o') {
-                unsigned int v = va_arg(arglist, unsigned int);
-                snprintf(buf, sizeof(buf), subfmt, v);
+                if (strcmp(lenmod, "ll") == 0)
+                    snprintf(buf, sizeof(buf), subfmt, va_arg(arglist, unsigned long long));
+                else if (strcmp(lenmod, "l") == 0)
+                    snprintf(buf, sizeof(buf), subfmt, va_arg(arglist, unsigned long));
+                else if (strcmp(lenmod, "h") == 0)
+                    snprintf(buf, sizeof(buf), subfmt, (unsigned short)va_arg(arglist, unsigned int));
+                else if (strcmp(lenmod, "hh") == 0)
+                    snprintf(buf, sizeof(buf), subfmt, (unsigned char)va_arg(arglist, unsigned int));
+                else
+                    snprintf(buf, sizeof(buf), subfmt, va_arg(arglist, unsigned int));
             } else if (spec == 'f' || spec == 'e' || spec == 'E' || spec == 'g' || spec == 'G' || spec == 'a' || spec == 'A') {
-                double v = va_arg(arglist, double);
-                snprintf(buf, sizeof(buf), subfmt, v);
+                snprintf(buf, sizeof(buf), subfmt, va_arg(arglist, double));
             } else if (spec == 's') {
                 const char *v = va_arg(arglist, const char *);
                 snprintf(buf, sizeof(buf), subfmt, v ? v : "(null)");
