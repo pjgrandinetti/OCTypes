@@ -776,23 +776,20 @@ bool OCStringEqual(OCStringRef theString1, OCStringRef theString2);
 
 /**
  * @brief Creates an immutable OCString using a format string and arguments.
- * @param format Format OCString.
- * @param ... Variable arguments for the format string.
+ * @param format Format OCString (supports printf-style specifiers and %@ for OCStringRef).
+ * @param ... Arguments matching the format string.
  * @return New OCStringRef (ownership transferred to caller).
  * @ingroup OCString
- * 
+ *
+ * @warning
+ * - Passing fewer arguments than required will print a warning and insert "[MISSING]" at missing positions.
+ * - Passing extra arguments is safe but they are ignored.
+ * - Argument types must match format specifiers exactly—C99 varargs cannot check types at runtime.
+ * - For %@, if the OCStringRef is NULL, a warning is printed and nothing is inserted.
+ *
  * @code
- * OCStringRef formatStr = STR("%s %d %f");
- * const char* name = "John";
- * int age = 30;
- * float height = 1.85f;
- * 
- * OCStringRef result = OCStringCreateWithFormat(formatStr, name, age, height);
- * // result now contains "John 30 1.850000"
- * 
- * // Release when done
- * OCRelease(result);
- * // No need to release formatStr as it's created with STR macro
+ * OCStringRef s = OCStringCreateWithFormat(STR("%@ %d"), STR("Hello"), 123);
+ * // s contains "Hello 123"
  * @endcode
  */
 OCStringRef OCStringCreateWithFormat(OCStringRef format, ...);
@@ -800,22 +797,20 @@ OCStringRef OCStringCreateWithFormat(OCStringRef format, ...);
 /**
  * @brief Appends formatted text to a mutable OCString.
  * @param theString Mutable OCString.
- * @param format Format OCString.
- * @param ... Variable arguments for the format string.
+ * @param format Format OCString (supports printf-style specifiers and %@ for OCStringRef).
+ * @param ... Arguments matching the format string.
  * @ingroup OCString
- * 
+ *
+ * @warning
+ * - Too few arguments: warning printed, "[MISSING]" inserted.
+ * - Extra arguments: ignored.
+ * - Argument types must match the format exactly.
+ * - %@ with NULL: warning printed, nothing inserted.
+ *
  * @code
- * OCMutableStringRef mutableStr = OCMutableStringCreateWithCString("User: ");
- * OCStringRef formatStr = STR("%s, Age: %d");
- * const char* name = "John";
- * int age = 30;
- * 
- * OCStringAppendFormat(mutableStr, formatStr, name, age);
- * // mutableStr now contains "User: John, Age: 30"
- * 
- * // Release when done
- * OCRelease(mutableStr);
- * // No need to release formatStr as it's created with STR macro
+ * OCMutableStringRef s = OCMutableStringCreateWithCString("Val: ");
+ * OCStringAppendFormat(s, STR("%@ %d"), STR("foo"), 7);
+ * // s now contains "Val: foo 7"
  * @endcode
  */
 void OCStringAppendFormat(OCMutableStringRef theString, OCStringRef format, ...);
