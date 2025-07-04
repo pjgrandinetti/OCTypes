@@ -173,6 +173,16 @@ OCIndex OCIndexPairSetValueForIndex(OCIndexPairSetRef set, OCIndex index);
 OCIndexArrayRef OCIndexPairSetCreateIndexArrayOfValues(OCIndexPairSetRef set);
 
 /**
+ * @brief Returns an OCIndexSet containing all of the _keys_ (indexes) in the set.
+ *
+ * @param set The OCIndexPairSetRef instance to query.
+ * @return A new OCIndexSetRef with every pair’s `.index` member, in ascending order;
+ *         or NULL if `set` is NULL or on allocation failure.
+ * @ingroup OCIndexPairSet
+ */
+OCIndexSetRef OCIndexPairSetCreateIndexSetOfIndexes(OCIndexPairSetRef set);
+
+/**
  * @brief Returns an OCIndexSet of all indexes in the set.
  *
  * @param set The OCIndexPairSetRef instance.
@@ -319,6 +329,7 @@ OCIndexPairSetRef OCIndexPairSetCreateFromJSON(cJSON *json);
  * @ingroup OCIndexPairSet
  */
 void OCIndexPairSetShow(OCIndexPairSetRef set);
+
 
 /** @} */ // end of OCIndexPairSet group
 

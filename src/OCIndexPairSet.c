@@ -259,3 +259,43 @@ void OCIndexPairSetShow(OCIndexPairSetRef s) {
     }
     fprintf(stderr, ")\n");
 }
+
+OCIndexArrayRef OCIndexPairSetCreateIndexArrayOfValues(OCIndexPairSetRef set) {
+    if (!set) return NULL;
+
+    OCIndex count = OCIndexPairSetGetCount(set);
+    OCMutableIndexArrayRef result = OCIndexArrayCreateMutable(count);
+    if (!result) return NULL;
+
+    OCIndexPair *pairs = OCIndexPairSetGetBytesPtr(set);
+    if (!pairs) {
+        OCRelease(result);
+        return NULL;
+    }
+
+    for (OCIndex i = 0; i < count; ++i) {
+        OCIndexArrayAppendValue(result, pairs[i].value);
+    }
+
+    return (OCIndexArrayRef)result;
+}
+
+OCIndexSetRef OCIndexPairSetCreateIndexSetOfIndexes(OCIndexPairSetRef set)
+{
+    if (!set) return NULL;
+
+    // 1) make an empty, mutable OCIndexSet
+    OCMutableIndexSetRef indexes = OCIndexSetCreateMutable();
+
+    // 2) grab the raw OCIndexPair buffer
+    const OCIndexPair *pairs = OCIndexPairSetGetBytesPtr(set);
+    OCIndex cnt   = OCIndexPairSetGetCount(set);
+
+    // 3) add each .index into our OCIndexSet
+    for (OCIndex i = 0; i < cnt; ++i) {
+        OCIndexSetAddIndex(indexes, pairs[i].index);
+    }
+
+    // 4) return as immutable OCIndexSetRef
+    return (OCIndexSetRef)indexes;
+}
