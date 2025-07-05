@@ -218,8 +218,7 @@ typedef enum {
  *
  * @ingroup OCData
  */
-OCStringRef OCDataCreateBase64EncodedString(OCDataRef data,
-                                            OCBase64EncodingOptions options);
+OCStringRef OCDataCreateBase64EncodedString(OCDataRef data, OCBase64EncodingOptions options);
 
 /**
  * @brief Decodes a Base64-encoded OCStringRef into an OCDataRef.
