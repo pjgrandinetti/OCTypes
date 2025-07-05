@@ -132,16 +132,24 @@ const void *OCRetain(const void *ptr);
  */
 OCStringRef OCTypeCopyFormattingDesc(const void *ptr);
 /**
- * @brief Returns a JSON representation of an OCType instance.
+ * @brief Returns a schema-bound JSON representation of an OCType instance.
  *
- * The returned cJSON object must be freed by the caller.
+ * This function serializes the given OCType instance to a cJSON object
+ * following your library's schema conventions. The output does not include
+ * type information (e.g., no "__type__" field), and assumes that any
+ * deserialization will occur in a context where the expected type is known
+ * a priori.
  *
- * @param obj Pointer to the OCType instance.
- * @return A cJSON object representing the instance, or NULL if obj is NULL.
+ * The returned cJSON object must be freed by the caller using cJSON_Delete().
+ *
+ * @note The resulting JSON is not self-describing. Deserialization requires
+ *       external knowledge of the expected OCType subclass.
+ *
+ * @param obj Pointer to the OCType instance. If NULL, returns a JSON null.
+ * @return A cJSON object representing the instance, or cJSON null if obj is NULL.
  * @ingroup OCType
  */
-cJSON *
-OCTypeCopyJSON(OCTypeRef obj);
+cJSON * OCTypeCopyJSON(OCTypeRef obj);
 /**
  * @brief Returns a generic description of an OCType instance.
  * @param ptr Pointer to the OCType instance.
