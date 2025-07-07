@@ -229,45 +229,70 @@ char *base64_encode_with_options(const uint8_t *data, size_t input_length,
                                  size_t *output_length) {
     if (!data) return NULL;
 
+    // 1) choose line separator
     const char *line_sep = "";
     size_t line_sep_len = 0;
     switch (line_ending) {
-        case BASE64_LINE_ENDING_LF:   line_sep = "\n"; line_sep_len = 1; break;
-        case BASE64_LINE_ENDING_CR:   line_sep = "\r"; line_sep_len = 1; break;
+        case BASE64_LINE_ENDING_LF:   line_sep = "\n";  line_sep_len = 1; break;
+        case BASE64_LINE_ENDING_CR:   line_sep = "\r";  line_sep_len = 1; break;
         case BASE64_LINE_ENDING_CRLF: line_sep = "\r\n"; line_sep_len = 2; break;
         default: break;
     }
 
+    // 2) raw base64 length
     size_t encoded_raw_len = 4 * ((input_length + 2) / 3);
-    size_t num_line_separators = (line_length > 0) ? encoded_raw_len / line_length : 0;
-    if (encoded_raw_len % line_length == 0 && num_line_separators > 0)
-        --num_line_separators;
 
+    // 3) count how many separators we'll need (only if line_length > 0)
+    size_t num_line_separators = 0;
+    if (line_length > 0) {
+        num_line_separators = encoded_raw_len / line_length;
+        // if perfectly divides, we don't want a trailing empty line
+        if (encoded_raw_len % line_length == 0 && num_line_separators > 0) {
+            --num_line_separators;
+        }
+    }
+
+    // 4) total output length = raw + separators
     size_t total_output_len = encoded_raw_len + num_line_separators * line_sep_len;
+
+    // 5) allocate
     char *output = malloc(total_output_len + 1);
     if (!output) return NULL;
 
-    size_t i = 0, j = 0, line_count = 0;
+    // 6) encode
+    size_t i = 0, j = 0, lines = 0;
     while (i < input_length) {
-        uint32_t octet_a = i < input_length ? data[i++] : 0;
-        uint32_t octet_b = i < input_length ? data[i++] : 0;
-        uint32_t octet_c = i < input_length ? data[i++] : 0;
+        uint32_t octet_a = data[i++];
+        uint32_t octet_b = (i < input_length ? data[i++] : 0);
+        uint32_t octet_c = (i < input_length ? data[i++] : 0);
 
         uint32_t triple = (octet_a << 16) | (octet_b << 8) | octet_c;
 
         output[j++] = base64_table[(triple >> 18) & 0x3F];
         output[j++] = base64_table[(triple >> 12) & 0x3F];
-        output[j++] = (i > input_length + 1) ? '=' : base64_table[(triple >> 6) & 0x3F];
-        output[j++] = (i > input_length)     ? '=' : base64_table[triple & 0x3F];
+        output[j++] = (i > input_length + 1)
+                          ? '='
+                          : base64_table[(triple >> 6) & 0x3F];
+        output[j++] = (i > input_length)
+                          ? '='
+                          : base64_table[triple & 0x3F];
 
-        if (line_length > 0 && ((j + line_count * line_sep_len) % line_length == 0) &&
-            j < encoded_raw_len) {
-            memcpy(output + j + line_count * line_sep_len, line_sep, line_sep_len);
-            line_count++;
+        // insert line separator if needed
+        if (line_length > 0) {
+            // how many base64 chars we’ve written so far (excluding sep)
+            size_t chars_written = j;
+            if (chars_written > 0 &&
+                chars_written % line_length == 0 &&
+                lines < num_line_separators) {
+                memcpy(output + j + lines * line_sep_len,
+                       line_sep, line_sep_len);
+                ++lines;
+            }
         }
     }
 
-    j += line_count * line_sep_len;
+    // 7) adjust final index for inserted separators
+    j += lines * line_sep_len;
     output[j] = '\0';
     if (output_length) *output_length = j;
     return output;

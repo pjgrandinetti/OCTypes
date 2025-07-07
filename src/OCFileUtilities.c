@@ -375,8 +375,7 @@ bool OCStringWriteToFile(OCStringRef str, const char *path, OCStringRef *err) {
 //-----------------------------------------------------------------------------
 // MARK: OCDataCreateWithContentsOfFile
 //-----------------------------------------------------------------------------
-OCDataRef
-OCDataCreateWithContentsOfFile(const char *path,
+OCDataRef OCDataCreateWithContentsOfFile(const char *path,
                                OCStringRef *errorString) {
     if (errorString) *errorString = NULL;
     FILE *fp = fopen(path, "rb");
