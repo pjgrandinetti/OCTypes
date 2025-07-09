@@ -177,17 +177,17 @@ bool numberTest0(void) {
 
     // --- complex numbers ---
     struct { double complex v; OCNumberType t; } complex_tests[] = {
-        { 1.0f + 2.5f*I,      kOCNumberFloat32ComplexType },
-        { -3.5  + 4.75*I,     kOCNumberFloat64ComplexType },
-        { 0.0f + 0.0f*I,      kOCNumberFloat32ComplexType },  // zero case
-        { 1.23e4f - .0567f*I, kOCNumberFloat32ComplexType }   // precision case
+        { 1.0f + 2.5f*I,      kOCNumberComplex64Type },
+        { -3.5  + 4.75*I,     kOCNumberComplex128Type },
+        { 0.0f + 0.0f*I,      kOCNumberComplex64Type },  // zero case
+        { 1.23e4f - .0567f*I, kOCNumberComplex64Type }   // precision case
     };
     for (size_t i = 0; i < sizeof complex_tests/sizeof *complex_tests; ++i) {
         double complex v = complex_tests[i].v;
         OCNumberType t   = complex_tests[i].t;
 
         // create
-        OCNumberRef n = (t == kOCNumberFloat32ComplexType)
+        OCNumberRef n = (t == kOCNumberComplex64Type)
             ? OCNumberCreateWithFloatComplex((float complex)v)
             : OCNumberCreateWithDoubleComplex(       v );
         if (!n) PRINTERROR;
@@ -197,7 +197,7 @@ bool numberTest0(void) {
 
         // decompose using the correct real/imag functions
         double real, imag;
-        if (t == kOCNumberFloat32ComplexType) {
+        if (t == kOCNumberComplex64Type) {
             real = crealf((float complex)v);
             imag = cimagf((float complex)v);
         } else {
@@ -219,7 +219,7 @@ bool numberTest0(void) {
         else {
             // build expected with the same format
             char expected_buf[64];
-            if (t == kOCNumberFloat32ComplexType) {
+            if (t == kOCNumberComplex64Type) {
                 snprintf(expected_buf, sizeof expected_buf,
                          "%.9g+I*%.9g", real, imag);
             } else {

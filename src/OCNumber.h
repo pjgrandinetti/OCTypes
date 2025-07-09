@@ -52,8 +52,8 @@ typedef union __Number {
 #define UInt16Type 18
 #define UInt32Type 19
 #define UInt64Type 20
-#define Float32ComplexType 24
-#define Float64ComplexType 26
+#define Complex64Type 24
+#define Complex128Type 26
 
 typedef enum csdmNumericType {
     kCSDMNumberUInt8Type = -1,
@@ -88,8 +88,8 @@ typedef enum {
     kOCNumberUInt16Type = UInt16Type,             /**< Unsigned 16-bit integer. */
     kOCNumberUInt32Type = UInt32Type,             /**< Unsigned 32-bit integer. */
     kOCNumberUInt64Type = UInt64Type,             /**< Unsigned 64-bit integer. */
-    kOCNumberFloat32ComplexType = Float32ComplexType, /**< Complex float. */
-    kOCNumberFloat64ComplexType = Float64ComplexType  /**< Complex double. */
+    kOCNumberComplex64Type = Complex64Type, /**< Complex float. */
+    kOCNumberComplex128Type = Complex128Type  /**< Complex double. */
 } OCNumberType;
 
 #if INT_MAX == 127
@@ -274,12 +274,12 @@ static inline bool OCNumberTryGetFloat64(OCNumberRef n, double *out) {
 
 /** @brief Try extract complex float (32-bit). */
 static inline bool OCNumberTryGetComplex64(OCNumberRef n, float complex *out) {
-    return OCNumberGetValue(n, kOCNumberFloat32ComplexType, out);
+    return OCNumberGetValue(n, kOCNumberComplex64Type, out);
 }
 
 /** @brief Try extract complex double (64-bit). */
 static inline bool OCNumberTryGetComplex128(OCNumberRef n, double complex *out) {
-    return OCNumberGetValue(n, kOCNumberFloat64ComplexType, out);
+    return OCNumberGetValue(n, kOCNumberComplex128Type, out);
 }
 
 /** @brief Alias for TryGetFloat32. */
