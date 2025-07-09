@@ -33,9 +33,9 @@ const char *OCNumberGetTypeName(OCNumberType type) {
             return "float32";
         case kOCNumberFloat64Type:
             return "float64";
-        case kOCNumberFloat32ComplexType:
+        case kOCNumberComplex64Type:
             return "complex64";
-        case kOCNumberFloat64ComplexType:
+        case kOCNumberComplex128Type:
             return "complex128";
         default:
             return NULL;
@@ -53,8 +53,8 @@ OCNumberType OCNumberTypeFromName(const char *name) {
     if (strcmp(name, "sint64") == 0) return kOCNumberSInt64Type;
     if (strcmp(name, "float32") == 0) return kOCNumberFloat32Type;
     if (strcmp(name, "float64") == 0) return kOCNumberFloat64Type;
-    if (strcmp(name, "complex64") == 0) return kOCNumberFloat32ComplexType;
-    if (strcmp(name, "complex128") == 0) return kOCNumberFloat64ComplexType;
+    if (strcmp(name, "complex64") == 0) return kOCNumberComplex64Type;
+    if (strcmp(name, "complex128") == 0) return kOCNumberComplex128Type;
     return (OCNumberType)(-1);  // Unrecognized name
 }
 OCTypeID OCNumberGetTypeID(void) {
@@ -100,12 +100,12 @@ static bool impl_OCNumberEqual(const void *a_, const void *b_) {
         case kOCNumberFloat64Type:
             ar = a->value.doubleValue;
             break;
-        case kOCNumberFloat32ComplexType:
+        case kOCNumberComplex64Type:
             ar = crealf(a->value.floatComplexValue);
             ai = cimagf(a->value.floatComplexValue);
             ac = true;
             break;
-        case kOCNumberFloat64ComplexType:
+        case kOCNumberComplex128Type:
             ar = creal(a->value.doubleComplexValue);
             ai = cimag(a->value.doubleComplexValue);
             ac = true;
@@ -144,12 +144,12 @@ static bool impl_OCNumberEqual(const void *a_, const void *b_) {
         case kOCNumberFloat64Type:
             br = b->value.doubleValue;
             break;
-        case kOCNumberFloat32ComplexType:
+        case kOCNumberComplex64Type:
             br = crealf(b->value.floatComplexValue);
             bi = cimagf(b->value.floatComplexValue);
             bc = true;
             break;
-        case kOCNumberFloat64ComplexType:
+        case kOCNumberComplex128Type:
             br = creal(b->value.doubleComplexValue);
             bi = cimag(b->value.doubleComplexValue);
             bc = true;
@@ -193,11 +193,11 @@ static OCStringRef impl_OCNumberCopyFormattingDesc(OCTypeRef theType) {
             return OCStringCreateWithFormat(STR("%f"), n->value.floatValue);
         case kOCNumberFloat64Type:
             return OCStringCreateWithFormat(STR("%lf"), n->value.doubleValue);
-        case kOCNumberFloat32ComplexType:
+        case kOCNumberComplex64Type:
             return OCStringCreateWithFormat(STR("%f+I•%f"),
                                             crealf(n->value.floatComplexValue),
                                             cimagf(n->value.floatComplexValue));
-        case kOCNumberFloat64ComplexType:
+        case kOCNumberComplex128Type:
             return OCStringCreateWithFormat(STR("%lf+I•%lf"),
                                             creal(n->value.doubleComplexValue),
                                             cimag(n->value.doubleComplexValue));
@@ -265,10 +265,10 @@ OCNumberRef OCNumberCreate(const OCNumberType type, void *value) {
         case kOCNumberFloat64Type:
             n->value.doubleValue = *(double *)value;
             break;
-        case kOCNumberFloat32ComplexType:
+        case kOCNumberComplex64Type:
             n->value.floatComplexValue = *(float complex *)value;
             break;
-        case kOCNumberFloat64ComplexType:
+        case kOCNumberComplex128Type:
             n->value.doubleComplexValue = *(double complex *)value;
             break;
     }
@@ -305,10 +305,10 @@ OCNumberRef OCNumberCreateWithDouble(double v) {
     return OCNumberCreate(kOCNumberFloat64Type, &v);
 }
 OCNumberRef OCNumberCreateWithFloatComplex(float complex v) {
-    return OCNumberCreate(kOCNumberFloat32ComplexType, &v);
+    return OCNumberCreate(kOCNumberComplex64Type, &v);
 }
 OCNumberRef OCNumberCreateWithDoubleComplex(double complex v) {
-    return OCNumberCreate(kOCNumberFloat64ComplexType, &v);
+    return OCNumberCreate(kOCNumberComplex128Type, &v);
 }
 OCNumberRef OCNumberCreateWithOCIndex(OCIndex index) {
     OCNumberType type;
@@ -382,9 +382,9 @@ int OCNumberTypeSize(OCNumberType type) {
             return sizeof(float);
         case kOCNumberFloat64Type:
             return sizeof(double);
-        case kOCNumberFloat32ComplexType:
+        case kOCNumberComplex64Type:
             return sizeof(float complex);
-        case kOCNumberFloat64ComplexType:
+        case kOCNumberComplex128Type:
             return sizeof(double complex);
     }
     return 0;
@@ -417,14 +417,14 @@ OCStringRef OCNumberCreateStringValue(OCNumberRef n) {
             return OCStringCreateWithFormat(STR("%.9g"), n->value.floatValue);  // Float precision
         case kOCNumberFloat64Type:
             return OCStringCreateWithFormat(STR("%.17g"), n->value.doubleValue);  // Double precision
-        case kOCNumberFloat32ComplexType: {
+        case kOCNumberComplex64Type: {
             float r = crealf(n->value.floatComplexValue);
             float i = cimagf(n->value.floatComplexValue);
             if (r == 0.0f && i == 0.0f)
                 return OCStringCreateWithCString("0");
             return OCStringCreateWithFormat(STR("%.9g+I*%.9g"), r, i);
         }
-        case kOCNumberFloat64ComplexType: {
+        case kOCNumberComplex128Type: {
             double r = creal(n->value.doubleComplexValue);
             double i = cimag(n->value.doubleComplexValue);
             if (r == 0.0 && i == 0.0)
@@ -468,12 +468,12 @@ OCNumberRef OCNumberCreateWithStringValue(OCNumberType type, const char *stringV
         case kOCNumberFloat64Type:
             value.doubleValue = strtod(stringValue, NULL);
             break;
-        case kOCNumberFloat32ComplexType: {
+        case kOCNumberComplex64Type: {
             double complex z = OCComplexFromCString(stringValue);
             value.floatComplexValue = (float complex)z;
             break;
         }
-        case kOCNumberFloat64ComplexType:
+        case kOCNumberComplex128Type:
             value.doubleComplexValue = OCComplexFromCString(stringValue);
             break;
         default:
@@ -526,10 +526,10 @@ bool OCNumberGetValue(OCNumberRef number, OCNumberType type, void *valuePtr) {
         case kOCNumberFloat64Type:
             *(double *)valuePtr = number->value.doubleValue;
             break;
-        case kOCNumberFloat32ComplexType:
+        case kOCNumberComplex64Type:
             *(float complex *)valuePtr = number->value.floatComplexValue;
             break;
-        case kOCNumberFloat64ComplexType:
+        case kOCNumberComplex128Type:
             *(double complex *)valuePtr = number->value.doubleComplexValue;
             break;
             // No default needed as we check number->type == type above,
