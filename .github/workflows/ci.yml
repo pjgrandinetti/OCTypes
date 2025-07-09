@@ -90,13 +90,13 @@ jobs:
 
       # Package & upload public headers on Ubuntu only
       - name: Package public headers
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.os == 'ubuntu-latest' && matrix.arch == 'x64'
         run: |
           mkdir -p header-pkg/include
           cp src/*.h header-pkg/include/
           zip -j header-pkg/libOCTypes-headers.zip header-pkg/include/*.h
       - name: Upload headers artifact
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.os == 'ubuntu-latest' && matrix.arch == 'x64'
         uses: actions/upload-artifact@v4
         with:
           name: libOCTypes-headers
