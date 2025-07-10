@@ -42,26 +42,12 @@ typedef union __Number {
 #define SInt64Type 4
 #define Float32Type 5
 #define Float64Type 6
-#define UInt8Type 17
-#define UInt16Type 18
-#define UInt32Type 19
-#define UInt64Type 20
+#define UInt8Type -1
+#define UInt16Type -2
+#define UInt32Type -3
+#define UInt64Type -4
 #define Complex64Type 24
 #define Complex128Type 26
-typedef enum csdmNumericType {
-    kCSDMNumberUInt8Type = -1,
-    kCSDMNumberSInt8Type = 1,
-    kCSDMNumberUInt16Type = -2,
-    kCSDMNumberSInt16Type = 2,
-    kCSDMNumberUInt32Type = -3,
-    kCSDMNumberSInt32Type = 3,
-    kCSDMNumberUInt64Type = -4,
-    kCSDMNumberSInt64Type = 4,
-    kCSDMNumberFloat32Type = 12,
-    kCSDMNumberFloat64Type = 13,
-    kCSDMNumberComplex64Type = 24,
-    kCSDMNumberComplex128Type = 26,
-} csdmNumericType;
 /** @endcond */
 /**
  * @enum OCNumberType
@@ -82,6 +68,11 @@ typedef enum {
     kOCNumberComplex64Type = Complex64Type,  /**< Complex float. */
     kOCNumberComplex128Type = Complex128Type /**< Complex double. */
 } OCNumberType;
+#define kOCNumberTypeInvalid 0
+/**
+ * @brief The OCTypeID for OCNumber.
+ * @ingroup OCNumber
+ */
 #if INT_MAX == 127
 #define kOCNumberIntType kOCNumberSInt8Type
 #elif INT_MAX == 32767

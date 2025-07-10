@@ -218,33 +218,33 @@ bool OCIndexArrayAppendValues(OCMutableIndexArrayRef dst, OCIndexArrayRef src) {
     dst->indexes = newData;
     return true;
 }
-OCStringRef OCIndexArrayCreateBase64String(OCIndexArrayRef array, csdmNumericType type) {
+OCStringRef OCIndexArrayCreateBase64String(OCIndexArrayRef array, OCNumberType type) {
     if (!array) return NULL;
     OCIndex count = OCIndexArrayGetCount(array);
     OCIndex *src = (OCIndex *)OCDataGetBytesPtr(array->indexes);
     size_t size = 0;
     void *converted = NULL;
     switch (type) {
-        case kCSDMNumberUInt8Type:
-        case kCSDMNumberSInt8Type:
+        case kOCNumberUInt8Type:
+        case kOCNumberSInt8Type:
             size = sizeof(uint8_t);
             converted = malloc(count * size);
             for (OCIndex i = 0; i < count; i++) ((uint8_t *)converted)[i] = (uint8_t)src[i];
             break;
-        case kCSDMNumberUInt16Type:
-        case kCSDMNumberSInt16Type:
+        case kOCNumberUInt16Type:
+        case kOCNumberSInt16Type:
             size = sizeof(uint16_t);
             converted = malloc(count * size);
             for (OCIndex i = 0; i < count; i++) ((uint16_t *)converted)[i] = (uint16_t)src[i];
             break;
-        case kCSDMNumberUInt32Type:
-        case kCSDMNumberSInt32Type:
+        case kOCNumberUInt32Type:
+        case kOCNumberSInt32Type:
             size = sizeof(uint32_t);
             converted = malloc(count * size);
             for (OCIndex i = 0; i < count; i++) ((uint32_t *)converted)[i] = (uint32_t)src[i];
             break;
-        case kCSDMNumberUInt64Type:
-        case kCSDMNumberSInt64Type:
+        case kOCNumberUInt64Type:
+        case kOCNumberSInt64Type:
             size = sizeof(uint64_t);
             converted = malloc(count * size);
             for (OCIndex i = 0; i < count; i++) ((uint64_t *)converted)[i] = (uint64_t)src[i];

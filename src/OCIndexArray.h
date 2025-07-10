@@ -163,11 +163,11 @@ bool OCIndexArrayAppendValues(OCMutableIndexArrayRef theIndexArray, OCIndexArray
  * @brief Converts the array to a Base64-encoded OCString using the given numeric type.
  *
  * @param theIndexArray The OCIndexArrayRef instance.
- * @param integerType   A csdmNumericType indicating how to encode OCIndex values.
+ * @param integerType   A OCNumberType indicating how to encode OCIndex values.
  * @return A new OCStringRef containing the Base64 representation, or NULL on error.
  * @ingroup OCIndexArray
  */
-OCStringRef OCIndexArrayCreateBase64String(OCIndexArrayRef theIndexArray, csdmNumericType integerType);
+OCStringRef OCIndexArrayCreateBase64String(OCIndexArrayRef theIndexArray, OCNumberType integerType);
 
 /**
  * @brief Converts the array to a CFNumber-based OCArray.
