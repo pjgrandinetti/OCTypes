@@ -12,6 +12,24 @@
 bool numberTest0(void) {
 
     fprintf(stderr, "%s begin...\n", __func__);
+    // ---- diagnostic: verify OCNumberTypeSize returns correct values ----
+    struct { OCNumberType type; int expectedSize; const char *label; } size_tests[] = {
+        { kOCNumberUInt8Type,   sizeof(uint8_t),   "UInt8" },
+        { kOCNumberUInt16Type,  sizeof(uint16_t),  "UInt16" },
+        { kOCNumberUInt32Type,  sizeof(uint32_t),  "UInt32" },
+        { kOCNumberUInt64Type,  sizeof(uint64_t),  "UInt64" },
+    };
+    for (size_t i = 0; i < sizeof size_tests / sizeof *size_tests; ++i) {
+        int size = OCNumberTypeSize(size_tests[i].type);
+        if (size != size_tests[i].expectedSize) {
+            fprintf(stderr, "ERROR: OCNumberTypeSize(%s) = %d, expected %d\n",
+                    size_tests[i].label, size, size_tests[i].expectedSize);
+            PRINTERROR;
+        } else {
+            fprintf(stderr, "INFO: OCNumberTypeSize(%s) = %d [ok]\n",
+                    size_tests[i].label, size);
+        }
+    }
 
     // everyone should share the same TypeID
     OCTypeID numTypeID = OCNumberGetTypeID();
@@ -256,6 +274,22 @@ bool numberTest0(void) {
         OCRelease(original);
     }
 
+        // --- OCNumberTypeSize: test invalid / undefined types ---
+    {
+        OCNumberType bogus_types[] = {
+            (OCNumberType)(999),  // clearly invalid
+            (OCNumberType)(-999), // invalid negative
+            (OCNumberType)(0),    // possibly unhandled
+        };
+        for (size_t i = 0; i < sizeof bogus_types / sizeof *bogus_types; ++i) {
+            int sz = OCNumberTypeSize(bogus_types[i]);
+            if (sz != 0) {
+                fprintf(stderr, "ERROR: OCNumberTypeSize(%d) returned %d, expected 0\n",
+                        (int)bogus_types[i], sz);
+                PRINTERROR;
+            }
+        }
+    }
 
     fprintf(stderr, "%s end...without problems\n", __func__);
     return true;
