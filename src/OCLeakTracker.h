@@ -1,5 +1,5 @@
 /**
- * @file OCLeaktracker.h
+ * @file OCLeakTracker.h
  * @brief Internal leak tracking API for OCTypeRef-based objects.
  *
  * This module provides debug-only utilities to track allocations and

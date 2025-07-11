@@ -23,7 +23,6 @@
  */
 
 /**
- * @struct OCIndexPair
  * @brief A simple (index, value) pair.
  *
  * Each OCIndexPair contains two OCIndex members:
