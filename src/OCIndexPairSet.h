@@ -17,22 +17,15 @@
  * @brief APIs for sets of OCIndex–OCIndex pairs (OCIndexPairSet and mutable variant).
  *
  * This group includes types and functions to create, query, modify, and serialize
- * collections of OCIndexPair structures, where each pair holds an index and its
+ * collections of index-value pair structures, where each pair holds an index and its
  * associated value.
  * @{
  */
 
-/**
- * @brief A simple (index, value) pair.
- * @internal
- *
- * Each OCIndexPair contains two OCIndex members:
- * - index:   the lookup key.
- * - value:   the associated value for that index.
- */
+/* Internal struct - not documented to avoid Sphinx duplicate declaration issues */
 typedef struct OCIndexPair {
-    OCIndex index; /**< The index (key) component. */
-    OCIndex value; /**< The associated value for this index. */
+    OCIndex index;
+    OCIndex value;
 } OCIndexPair;
 
 /**

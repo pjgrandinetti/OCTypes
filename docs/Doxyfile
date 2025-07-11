@@ -130,7 +130,11 @@ SKIP_FUNCTION_MACROS   = NO
 # of gcc). The argument of the tag is a list of macros of the form: name=value
 PREDEFINED             = complex=_Complex \
                          OC_INLINE="" \
-                         uint64_t="unsigned long"
+                         uint64_t="unsigned long" \
+                         DOXYGEN_SHOULD_SKIP_THIS
+
+# Exclude specific symbols from the documentation
+EXCLUDE_SYMBOLS        = OCIndexPair
 
 #---------------------------------------------------------------------------
 # Configuration options related to warnings and progress messages
