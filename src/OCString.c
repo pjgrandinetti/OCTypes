@@ -963,9 +963,10 @@ static const char *parse_printf_spec(const char *p, char *out, size_t maxlen, ch
 }
 /**
  * @brief Appends formatted text to a mutable OCString.
- * @param theString Mutable OCString.
+ * @param result Mutable OCString.
  * @param format Format OCString.
- * @param ... Variable arguments for the format string.
+ * @param args Variable arguments for the format string.
+ * @param max_args Maximum number of arguments to process.
  * @ingroup OCString
  */
 // Pass arg_index by pointer to update it

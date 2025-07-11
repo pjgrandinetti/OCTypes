@@ -183,16 +183,6 @@ OCIndexArrayRef OCIndexPairSetCreateIndexArrayOfValues(OCIndexPairSetRef set);
 OCIndexSetRef OCIndexPairSetCreateIndexSetOfIndexes(OCIndexPairSetRef set);
 
 /**
- * @brief Returns an OCIndexSet of all indexes in the set.
- *
- * @param set The OCIndexPairSetRef instance.
- * @return A new OCIndexSetRef containing all indexes (in ascending order),
- *         or NULL on error.
- * @ingroup OCIndexPairSet
- */
-OCIndexSetRef OCIndexPairSetCreateIndexSetOfIndexes(OCIndexPairSetRef set);
-
-/**
  * @brief Returns the first index–value pair in the set.
  *
  * @param set The OCIndexPairSetRef instance.

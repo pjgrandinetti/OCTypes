@@ -36,7 +36,9 @@ OCTypeID OCDictionaryGetTypeID(void);
 /**
  * @brief Creates a new dictionary with initial capacity.
  *
- * @param capacity Number of key-value pairs to allocate space for initially.
+ * @param keys Array of keys.
+ * @param values Array of values.
+ * @param numValues Number of key-value pairs.
  * @return New OCDictionaryRef or NULL on failure.
  * @ingroup OCDictionary
  */
@@ -198,7 +200,7 @@ OCArrayRef OCDictionaryCreateArrayWithAllValues(OCDictionaryRef theDictionary);
 /**
  * @brief Returns a human-readable description of the dictionary.
  *
- * @param theDictionary Dictionary to describe.
+ * @param cf Dictionary to describe.
  * @return A formatted OCStringRef (caller must release).
  * @ingroup OCDictionary
  */

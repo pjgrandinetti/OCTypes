@@ -15,7 +15,7 @@ extern "C" {
  * @{
  */
 
-/** @name Path utilities @{ */
+// Path utilities
 
 /**
  * @brief Join two path components with the platform’s separator.
@@ -60,9 +60,7 @@ OCStringRef OCPathExtension(OCStringRef path);
  */
 OCStringRef OCPathByReplacingExtension(OCStringRef path, OCStringRef newExt);
 
-/** @} */
-
-/** @name Filesystem checks & manipulation @{ */
+// Filesystem checks & manipulation
 
 /**
  * @brief Does the given path exist?
@@ -128,9 +126,7 @@ bool OCRemoveItem(const char *path, OCStringRef *err);
  */
 bool OCRenameItem(const char *oldPath, const char *newPath, OCStringRef *err);
 
-/** @} */
-
-/** @name Text & data I/O @{ */
+// Text & data I/O
 
 /**
  * @brief Read a UTF-8 text file into an OCString.
@@ -164,9 +160,7 @@ OCDictionaryRef OCDictionaryCreateWithContentsOfFolder(const char *folderPath,
                                                        int maxDepth,
                                                        OCStringRef *err);
 
-/** @} */
-
-/** @name JSON (de)serialization @{ */
+// JSON (de)serialization
 
 /**
  * @brief Write any OCTypes object (string, number, bool, array, dict…) to a
@@ -179,10 +173,7 @@ OCDictionaryRef OCDictionaryCreateWithContentsOfFolder(const char *folderPath,
  */
 bool OCTypeWriteJSONToFile(OCTypeRef obj, const char *path, OCStringRef *err);
 
-
-/** @} */
-
-/** @} */  // end group OCFileUtilities
+/** @} */ // end of OCFileUtilities group
 
 #ifdef __cplusplus
 }

@@ -36,6 +36,45 @@ typedef union __Number {
  * @{
  */
 /** @cond INTERNAL */
+// Ensure these macros are not already defined to avoid conflicts
+#ifdef SInt8Type
+#undef SInt8Type
+#endif
+#ifdef UInt8Type  
+#undef UInt8Type
+#endif
+#ifdef SInt16Type
+#undef SInt16Type
+#endif
+#ifdef UInt16Type
+#undef UInt16Type
+#endif
+#ifdef SInt32Type
+#undef SInt32Type
+#endif
+#ifdef UInt32Type
+#undef UInt32Type
+#endif
+#ifdef SInt64Type
+#undef SInt64Type
+#endif
+#ifdef UInt64Type
+#undef UInt64Type
+#endif
+#ifdef Float32Type
+#undef Float32Type
+#endif
+#ifdef Float64Type
+#undef Float64Type
+#endif
+#ifdef Complex64Type
+#undef Complex64Type
+#endif
+#ifdef Complex128Type
+#undef Complex128Type
+#endif
+
+// Define our numeric type constants
 #define SInt8Type 1
 #define SInt16Type 2
 #define SInt32Type 3

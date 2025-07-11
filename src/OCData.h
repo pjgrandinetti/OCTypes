@@ -101,28 +101,28 @@ OCDataCreateWithContentsOfFile(const char *path, OCStringRef *errorString);
 /**
  * @brief Gets the length of a data object.
  *
- * @param theData OCDataRef or OCMutableDataRef.
+ * @param data OCDataRef or OCMutableDataRef.
  * @return Length in bytes.
  * @ingroup OCData
  */
-uint64_t OCDataGetLength(OCDataRef theData);
+uint64_t OCDataGetLength(OCDataRef data);
 /**
  * @brief Returns a read-only pointer to internal bytes.
  *
- * @param theData OCDataRef or OCMutableDataRef.
+ * @param data OCDataRef or OCMutableDataRef.
  * @return Pointer to bytes, or NULL.
  * @ingroup OCData
  */
-const uint8_t *OCDataGetBytesPtr(OCDataRef theData);
+const uint8_t *OCDataGetBytesPtr(OCDataRef data);
 /**
  * @brief Returns a mutable pointer to internal bytes.
  *
- * @param theData Mutable data object.
+ * @param data Mutable data object.
  * @return Pointer to bytes, or NULL.
  * @warning Use with care. Modifications may affect internal state.
  * @ingroup OCData
  */
-uint8_t *OCDataGetMutableBytes(OCMutableDataRef theData);
+uint8_t *OCDataGetMutableBytes(OCMutableDataRef data);
 /**
  * @brief Copies a range of bytes from an OCData object into a buffer.
  *
@@ -133,20 +133,20 @@ uint8_t *OCDataGetMutableBytes(OCMutableDataRef theData);
  *
  * @ingroup OCData
  */
-bool OCDataGetBytes(OCDataRef theData, OCRange range, uint8_t *buffer);
+bool OCDataGetBytes(OCDataRef data, OCRange range, uint8_t *buffer);
 /**
  * @brief Sets the length of a mutable data object.
  *
  * If the new length is greater than the current length, the extra memory is zero-initialized.
  * If the new length exceeds the current capacity, the buffer is reallocated.
  *
- * @param theData Mutable data object to resize.
- * @param length The desired new length in bytes.
+ * @param data Mutable data object to resize.
+ * @param newLength The desired new length in bytes.
  * @return true if the operation succeeded; false if allocation failed or input was NULL.
  *
  * @ingroup OCData
  */
-bool OCDataSetLength(OCMutableDataRef theData, uint64_t length);
+bool OCDataSetLength(OCMutableDataRef data, uint64_t newLength);
 /**
  * @brief Increases the length of a mutable data object by a given amount.
  *
@@ -156,7 +156,7 @@ bool OCDataSetLength(OCMutableDataRef theData, uint64_t length);
  *
  * @ingroup OCData
  */
-bool OCDataIncreaseLength(OCMutableDataRef theData, uint64_t extraLength);
+bool OCDataIncreaseLength(OCMutableDataRef data, uint64_t extraLength);
 /**
  * @brief Appends bytes to the end of a mutable data object.
  *
@@ -169,11 +169,11 @@ bool OCDataIncreaseLength(OCMutableDataRef theData, uint64_t extraLength);
  *
  * @ingroup OCData
  */
-bool OCDataAppendBytes(OCMutableDataRef theData, const uint8_t *bytes, uint64_t length);
+bool OCDataAppendBytes(OCMutableDataRef data, const uint8_t *bytes, uint64_t length);
 /**
  * @brief Returns a human-readable string description of a data object.
  *
- * @param theData OCDataRef instance.
+ * @param cf the OCTypeRef instance.
  * @return A formatted OCStringRef (caller must release).
  * @ingroup OCData
  */
