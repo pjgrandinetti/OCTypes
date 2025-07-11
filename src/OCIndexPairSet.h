@@ -24,6 +24,7 @@
 
 /**
  * @brief A simple (index, value) pair.
+ * @internal
  *
  * Each OCIndexPair contains two OCIndex members:
  * - index:   the lookup key.
