@@ -152,15 +152,6 @@ OCStringRef OCStringCreateWithContentsOfFile(const char *path, OCStringRef *err)
 bool OCStringWriteToFile(OCStringRef str, const char *path, OCStringRef *err);
 
 /**
- * @brief Read a binary file into an OCDataRef.
- * @param path         Filesystem path.
- * @param err          On failure, *err is set to a human‐readable message.
- * @return             New OCDataRef with file bytes (ownership transferred), or NULL.
- * @ingroup OCFileUtilities
- */
-OCDataRef OCDataCreateWithContentsOfFile(const char *path, OCStringRef *err);
-
-/**
  * @brief Load all files under a folder (up to maxDepth) into a dictionary.
  * @param folderPath   Base directory.
  * @param maxDepth     Levels of recursion (0 = just top-level).
