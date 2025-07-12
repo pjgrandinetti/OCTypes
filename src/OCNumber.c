@@ -367,15 +367,19 @@ OCNumberRef OCNumberCreateWithLong(long value) {
 int OCNumberTypeSize(OCNumberType type) {
     switch (type) {
         case kOCNumberUInt8Type:
+            return sizeof(uint8_t);
         case kOCNumberSInt8Type:
             return sizeof(int8_t);
         case kOCNumberUInt16Type:
+            return sizeof(uint16_t);
         case kOCNumberSInt16Type:
             return sizeof(int16_t);
         case kOCNumberUInt32Type:
+            return sizeof(uint32_t);
         case kOCNumberSInt32Type:
             return sizeof(int32_t);
         case kOCNumberUInt64Type:
+            return sizeof(uint64_t);
         case kOCNumberSInt64Type:
             return sizeof(int64_t);
         case kOCNumberFloat32Type:

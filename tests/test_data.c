@@ -8,6 +8,7 @@
 
 #include "test_utils.h"
 #include "../src/OCData.h"
+#include <string.h>  // for memcmp
 
 bool dataTest0(void) {
     fprintf(stderr, "%s begin...\n", __func__);
@@ -115,6 +116,94 @@ bool dataTest_deepcopy(void) {
 
     OCRelease(orig);
     OCRelease(mcopy);
+
+    fprintf(stderr, "%s end...without problems\n", __func__);
+    return true;
+}
+
+bool dataTest_base64_roundtrip(void) {
+    fprintf(stderr, "%s begin...\n", __func__);
+
+    // Test 1: Simple case - 16 bytes (2 doubles)
+    uint8_t test_data1[] = {
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xF0, 0x3F,  // 1.0 as double
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40   // 2.0 as double
+    };
+    size_t len1 = sizeof(test_data1);
+    
+    OCDataRef original1 = OCDataCreate(test_data1, len1);
+    ASSERT_NOT_NULL(original1, "Original data should not be NULL");
+    ASSERT_EQUAL(OCDataGetLength(original1), len1, "Original data length should match");
+    
+    // Encode to base64
+    OCStringRef b64_1 = OCDataCreateBase64EncodedString(original1, OCBase64EncodingOptionsNone);
+    ASSERT_NOT_NULL(b64_1, "Base64 encoding should not return NULL");
+    
+    printf("Original length: %zu\n", len1);
+    printf("Base64 string: %s\n", OCStringGetCString(b64_1));
+    
+    // Decode back from base64
+    OCDataRef decoded1 = OCDataCreateFromBase64EncodedString(b64_1);
+    ASSERT_NOT_NULL(decoded1, "Base64 decoding should not return NULL");
+    
+    printf("Decoded length: %llu\n", OCDataGetLength(decoded1));
+    
+    // Check if lengths match
+    ASSERT_EQUAL(OCDataGetLength(original1), OCDataGetLength(decoded1), 
+                 "Original and decoded lengths should match");
+    
+    // Check if data matches byte-by-byte
+    const uint8_t *orig_bytes = OCDataGetBytesPtr(original1);
+    const uint8_t *decoded_bytes = OCDataGetBytesPtr(decoded1);
+    for (size_t i = 0; i < len1; i++) {
+        if (orig_bytes[i] != decoded_bytes[i]) {
+            printf("Data mismatch at byte %zu: original=0x%02X, decoded=0x%02X\n", 
+                   i, orig_bytes[i], decoded_bytes[i]);
+            PRINTERROR;
+        }
+    }
+    
+    OCRelease(original1);
+    OCRelease(b64_1);
+    OCRelease(decoded1);
+
+    // Test 2: Various lengths to test padding
+    for (size_t test_len = 1; test_len <= 20; test_len++) {
+        uint8_t *test_data = malloc(test_len);
+        for (size_t i = 0; i < test_len; i++) {
+            test_data[i] = (uint8_t)(i & 0xFF);
+        }
+        
+        OCDataRef original = OCDataCreate(test_data, test_len);
+        OCStringRef b64 = OCDataCreateBase64EncodedString(original, OCBase64EncodingOptionsNone);
+        OCDataRef decoded = OCDataCreateFromBase64EncodedString(b64);
+        
+        if (OCDataGetLength(original) != OCDataGetLength(decoded)) {
+            printf("Length mismatch for test_len=%zu: original=%llu, decoded=%llu\n",
+                   test_len, OCDataGetLength(original), OCDataGetLength(decoded));
+            free(test_data);
+            OCRelease(original);
+            OCRelease(b64);
+            OCRelease(decoded);
+            PRINTERROR;
+        }
+        
+        const uint8_t *orig_ptr = OCDataGetBytesPtr(original);
+        const uint8_t *decoded_ptr = OCDataGetBytesPtr(decoded);
+        if (memcmp(orig_ptr, decoded_ptr, test_len) != 0) {
+            printf("Data mismatch for test_len=%zu\n", test_len);
+            free(test_data);
+            OCRelease(original);
+            OCRelease(b64);
+            OCRelease(decoded);
+            PRINTERROR;
+        }
+        
+        free(test_data);
+        OCRelease(original);
+        OCRelease(b64);
+        OCRelease(decoded);
+    }
 
     fprintf(stderr, "%s end...without problems\n", __func__);
     return true;

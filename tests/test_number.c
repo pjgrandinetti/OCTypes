@@ -12,25 +12,55 @@
 bool numberTest0(void) {
 
     fprintf(stderr, "%s begin...\n", __func__);
-    // ---- diagnostic: verify OCNumberTypeSize returns correct values ----
-    struct { OCNumberType type; int expectedSize; const char *label; } size_tests[] = {
-        { kOCNumberUInt8Type,   sizeof(uint8_t),   "UInt8" },
-        { kOCNumberUInt16Type,  sizeof(uint16_t),  "UInt16" },
-        { kOCNumberUInt32Type,  sizeof(uint32_t),  "UInt32" },
-        { kOCNumberUInt64Type,  sizeof(uint64_t),  "UInt64" },
+    // ---- Diagnostic: verify OCNumberTypeSize returns correct values for all OCNumberTypes ----
+
+    struct {
+        OCNumberType type;
+        int expectedSize;
+        const char *label;
+    } size_tests[] = {
+        { kOCNumberUInt8Type,      sizeof(uint8_t),        "UInt8" },
+        { kOCNumberSInt8Type,      sizeof(int8_t),         "SInt8" },
+        { kOCNumberUInt16Type,     sizeof(uint16_t),       "UInt16" },
+        { kOCNumberSInt16Type,     sizeof(int16_t),        "SInt16" },
+        { kOCNumberUInt32Type,     sizeof(uint32_t),       "UInt32" },
+        { kOCNumberSInt32Type,     sizeof(int32_t),        "SInt32" },
+        { kOCNumberUInt64Type,     sizeof(uint64_t),       "UInt64" },
+        { kOCNumberSInt64Type,     sizeof(int64_t),        "SInt64" },
+        { kOCNumberFloat32Type,    sizeof(float),          "Float32" },
+        { kOCNumberFloat64Type,    sizeof(double),         "Float64" },
+        { kOCNumberComplex64Type,  sizeof(float complex),  "Complex64" },
+        { kOCNumberComplex128Type, sizeof(double complex), "Complex128" },
     };
-    for (size_t i = 0; i < sizeof size_tests / sizeof *size_tests; ++i) {
-        int size = OCNumberTypeSize(size_tests[i].type);
-        if (size != size_tests[i].expectedSize) {
+
+    bool all_ok = true;
+    fprintf(stderr, "BEGIN: OCNumberTypeSize() diagnostics\n");
+
+    for (size_t i = 0; i < sizeof(size_tests) / sizeof(size_tests[0]); ++i) {
+        int actualSize = OCNumberTypeSize(size_tests[i].type);
+        int expectedSize = size_tests[i].expectedSize;
+
+        if (actualSize == 0) {
+            fprintf(stderr, "ERROR: OCNumberTypeSize(%s) returned 0 — possibly unhandled type!\n", size_tests[i].label);
+            all_ok = false;
+            PRINTERROR;
+        } else if (actualSize != expectedSize) {
             fprintf(stderr, "ERROR: OCNumberTypeSize(%s) = %d, expected %d\n",
-                    size_tests[i].label, size, size_tests[i].expectedSize);
+                    size_tests[i].label, actualSize, expectedSize);
+            all_ok = false;
             PRINTERROR;
         } else {
-            fprintf(stderr, "INFO: OCNumberTypeSize(%s) = %d [ok]\n",
-                    size_tests[i].label, size);
+            fprintf(stderr, "PASS : OCNumberTypeSize(%s) = %d\n", size_tests[i].label, actualSize);
         }
     }
 
+    if (all_ok) {
+        fprintf(stderr, "PASS : All OCNumberTypeSize checks passed\n");
+    } else {
+        fprintf(stderr, "FAIL : One or more OCNumberTypeSize checks failed\n");
+    }
+
+    fprintf(stderr, "END  : OCNumberTypeSize() diagnostics\n");
     // everyone should share the same TypeID
     OCTypeID numTypeID = OCNumberGetTypeID();
     if (numTypeID == kOCNotATypeID) PRINTERROR;

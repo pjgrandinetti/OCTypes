@@ -35,77 +35,24 @@ typedef union __Number {
  * @brief Numerical value representation using OCType-compatible objects.
  * @{
  */
-/** @cond INTERNAL */
-// Ensure these macros are not already defined to avoid conflicts
-#ifdef SInt8Type
-#undef SInt8Type
-#endif
-#ifdef UInt8Type  
-#undef UInt8Type
-#endif
-#ifdef SInt16Type
-#undef SInt16Type
-#endif
-#ifdef UInt16Type
-#undef UInt16Type
-#endif
-#ifdef SInt32Type
-#undef SInt32Type
-#endif
-#ifdef UInt32Type
-#undef UInt32Type
-#endif
-#ifdef SInt64Type
-#undef SInt64Type
-#endif
-#ifdef UInt64Type
-#undef UInt64Type
-#endif
-#ifdef Float32Type
-#undef Float32Type
-#endif
-#ifdef Float64Type
-#undef Float64Type
-#endif
-#ifdef Complex64Type
-#undef Complex64Type
-#endif
-#ifdef Complex128Type
-#undef Complex128Type
-#endif
-
-// Define our numeric type constants
-#define SInt8Type 1
-#define SInt16Type 2
-#define SInt32Type 3
-#define SInt64Type 4
-#define Float32Type 5
-#define Float64Type 6
-#define UInt8Type -1
-#define UInt16Type -2
-#define UInt32Type -3
-#define UInt64Type -4
-#define Complex64Type 24
-#define Complex128Type 26
-/** @endcond */
 /**
  * @enum OCNumberType
  * @brief Enumerates the specific numeric data types that an OCNumber object can represent.
  * @ingroup OCNumber
  */
 typedef enum {
-    kOCNumberSInt8Type = SInt8Type,          /**< Signed 8-bit integer. */
-    kOCNumberSInt16Type = SInt16Type,        /**< Signed 16-bit integer. */
-    kOCNumberSInt32Type = SInt32Type,        /**< Signed 32-bit integer. */
-    kOCNumberSInt64Type = SInt64Type,        /**< Signed 64-bit integer. */
-    kOCNumberFloat32Type = Float32Type,      /**< 32-bit float. */
-    kOCNumberFloat64Type = Float64Type,      /**< 64-bit float (double). */
-    kOCNumberUInt8Type = UInt8Type,          /**< Unsigned 8-bit integer. */
-    kOCNumberUInt16Type = UInt16Type,        /**< Unsigned 16-bit integer. */
-    kOCNumberUInt32Type = UInt32Type,        /**< Unsigned 32-bit integer. */
-    kOCNumberUInt64Type = UInt64Type,        /**< Unsigned 64-bit integer. */
-    kOCNumberComplex64Type = Complex64Type,  /**< Complex float. */
-    kOCNumberComplex128Type = Complex128Type /**< Complex double. */
+    kOCNumberSInt8Type=1,          /**< Signed 8-bit integer. */
+    kOCNumberSInt16Type,        /**< Signed 16-bit integer. */
+    kOCNumberSInt32Type,        /**< Signed 32-bit integer. */
+    kOCNumberSInt64Type,        /**< Signed 64-bit integer. */
+    kOCNumberFloat32Type,      /**< 32-bit float. */
+    kOCNumberFloat64Type,      /**< 64-bit float (double). */
+    kOCNumberUInt8Type,          /**< Unsigned 8-bit integer. */
+    kOCNumberUInt16Type,        /**< Unsigned 16-bit integer. */
+    kOCNumberUInt32Type,        /**< Unsigned 32-bit integer. */
+    kOCNumberUInt64Type,        /**< Unsigned 64-bit integer. */
+    kOCNumberComplex64Type,  /**< Complex float. */
+    kOCNumberComplex128Type /**< Complex double. */
 } OCNumberType;
 #define kOCNumberTypeInvalid 0
 /**

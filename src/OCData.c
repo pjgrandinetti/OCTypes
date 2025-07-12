@@ -262,20 +262,41 @@ char *base64_encode_with_options(const uint8_t *data, size_t input_length,
     // 6) encode
     size_t i = 0, j = 0, lines = 0;
     while (i < input_length) {
+        size_t bytes_in_group = 0;
+        
         uint32_t octet_a = data[i++];
-        uint32_t octet_b = (i < input_length ? data[i++] : 0);
-        uint32_t octet_c = (i < input_length ? data[i++] : 0);
+        bytes_in_group++;
+        
+        uint32_t octet_b = 0;
+        if (i < input_length) {
+            octet_b = data[i++];
+            bytes_in_group++;
+        }
+        
+        uint32_t octet_c = 0;
+        if (i < input_length) {
+            octet_c = data[i++];
+            bytes_in_group++;
+        }
 
         uint32_t triple = (octet_a << 16) | (octet_b << 8) | octet_c;
 
         output[j++] = base64_table[(triple >> 18) & 0x3F];
         output[j++] = base64_table[(triple >> 12) & 0x3F];
-        output[j++] = (i > input_length + 1)
-                          ? '='
-                          : base64_table[(triple >> 6) & 0x3F];
-        output[j++] = (i > input_length)
-                          ? '='
-                          : base64_table[triple & 0x3F];
+        
+        // For third character: pad if we only had 1 input byte in this group
+        if (bytes_in_group < 2) {
+            output[j++] = '=';
+        } else {
+            output[j++] = base64_table[(triple >> 6) & 0x3F];
+        }
+        
+        // For fourth character: pad if we only had 1 or 2 input bytes in this group
+        if (bytes_in_group < 3) {
+            output[j++] = '=';
+        } else {
+            output[j++] = base64_table[triple & 0x3F];
+        }
 
         // insert line separator if needed
         if (line_length > 0) {
@@ -304,35 +325,48 @@ uint8_t *base64_decode(const char *input, size_t input_length, size_t *output_le
     if (!base64_initialized)
         initialize_base64_decoding_table();
 
+    // First pass: extract only valid base64 characters (including padding)
+    char *clean_input = malloc(input_length + 1);
+    if (!clean_input) return NULL;
+    
     size_t clean_length = 0;
     for (size_t i = 0; i < input_length; ++i) {
-        if (isalnum((unsigned char)input[i]) || input[i] == '+' || input[i] == '/' || input[i] == '=')
-            ++clean_length;
+        if (isalnum((unsigned char)input[i]) || input[i] == '+' || input[i] == '/' || input[i] == '=') {
+            clean_input[clean_length++] = input[i];
+        }
+    }
+    clean_input[clean_length] = '\0';
+
+    if (clean_length % 4 != 0) {
+        free(clean_input);
+        return NULL;
     }
 
-    if (clean_length % 4 != 0) return NULL;
-
+    // Calculate output size based on padding in cleaned input
     size_t alloc_size = (clean_length / 4) * 3;
-    if (clean_length >= 1 && input[clean_length - 1] == '=') --alloc_size;
-    if (clean_length >= 2 && input[clean_length - 2] == '=') --alloc_size;
+    if (clean_length >= 1 && clean_input[clean_length - 1] == '=') --alloc_size;
+    if (clean_length >= 2 && clean_input[clean_length - 2] == '=') --alloc_size;
 
     uint8_t *decoded = malloc(alloc_size);
-    if (!decoded) return NULL;
+    if (!decoded) {
+        free(clean_input);
+        return NULL;
+    }
 
     size_t i = 0, j = 0;
     uint32_t sextet[4];
 
-    while (i < input_length) {
+    while (i < clean_length) {
         int k = 0;
-        for (; k < 4 && i < input_length; ++i) {
-            char c = input[i];
-            if (isspace((unsigned char)c)) continue;
+        for (; k < 4 && i < clean_length; ++i) {
+            char c = clean_input[i];
             if (c == '=') {
                 sextet[k++] = 0;
             } else {
                 uint8_t val = base64_decoding_table[(unsigned char)c];
                 if (val == BASE64_INVALID) {
                     free(decoded);
+                    free(clean_input);
                     return NULL;
                 }
                 sextet[k++] = val;
@@ -348,6 +382,7 @@ uint8_t *base64_decode(const char *input, size_t input_length, size_t *output_le
         if (j < alloc_size) decoded[j++] =  triple        & 0xFF;
     }
 
+    free(clean_input);
     if (output_length) *output_length = j;
     return decoded;
 }

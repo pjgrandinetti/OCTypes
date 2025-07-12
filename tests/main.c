@@ -57,6 +57,7 @@ int main(int argc, const char * argv[]) {
     if (!dataTest0())            failures++;
     if (!dataTest1())            failures++;  // New: mutable-data API tests
     if (!dataTest_deepcopy())    failures++;  // New: OCData deep copy tests
+    if (!dataTest_base64_roundtrip()) failures++;  // New: Base64 roundtrip tests
 
     if (!booleanTest0())         failures++;
     if (!numberTest0())          failures++;  // ← New: Invoke OCNumber tests
