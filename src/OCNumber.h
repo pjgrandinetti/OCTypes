@@ -8,6 +8,7 @@
 #define OCNumber_h
 #include <complex.h>
 #include <limits.h>
+
 #include "OCLibrary.h"
 /**
  * @note Ownership follows CoreFoundation conventions:
@@ -238,52 +239,143 @@ static inline bool OCNumberTryGetFloatComplex(OCNumberRef n, float complex *out)
 static inline bool OCNumberTryGetDoubleComplex(OCNumberRef n, double complex *out) {
     return OCNumberTryGetComplex128(n, out);
 }
-/** @brief Try extract int native size. */
+
 static inline bool OCNumberTryGetInt(OCNumberRef n, int *out) {
     if (!n || !out) return false;
-    if (sizeof(int) == sizeof(int32_t)) {
-        int32_t v;
-        if (!OCNumberTryGetSInt32(n, &v)) return false;
-        *out = (int)v;
-        return true;
-    } else if (sizeof(int) == sizeof(int64_t)) {
-        int64_t v;
-        if (!OCNumberTryGetSInt64(n, &v)) return false;
-        *out = (int)v;
-        return true;
+
+    OCNumberType type = OCNumberGetType(n);
+    switch (type) {
+        case kOCNumberSInt8Type: {
+            int8_t v;
+            if (OCNumberTryGetSInt8(n, &v)) {
+                *out = (int)v;
+                return true;
+            }
+            break;
+        }
+        case kOCNumberSInt16Type: {
+            int16_t v;
+            if (OCNumberTryGetSInt16(n, &v)) {
+                *out = (int)v;
+                return true;
+            }
+            break;
+        }
+        case kOCNumberSInt32Type: {
+            int32_t v;
+            if (OCNumberTryGetSInt32(n, &v)) {
+                *out = (int)v;
+                return true;
+            }
+            break;
+        }
+        case kOCNumberSInt64Type: {
+            int64_t v;
+            if (OCNumberTryGetSInt64(n, &v)) {
+                if (v < (int64_t)INT_MIN || v > (int64_t)INT_MAX) return false; // overflow check
+                *out = (int)v;
+                return true;
+            }
+            break;
+        }
+        default:
+            break;
     }
+
     return false;
 }
 /** @brief Try extract long native size. */
 static inline bool OCNumberTryGetLong(OCNumberRef n, long *out) {
     if (!n || !out) return false;
-    if (sizeof(long) == sizeof(int32_t)) {
-        int32_t v;
-        if (!OCNumberTryGetSInt32(n, &v)) return false;
-        *out = (long)v;
-        return true;
-    } else if (sizeof(long) == sizeof(int64_t)) {
-        int64_t v;
-        if (!OCNumberTryGetSInt64(n, &v)) return false;
-        *out = (long)v;
-        return true;
+
+    OCNumberType type = OCNumberGetType(n);
+    switch (type) {
+        case kOCNumberSInt8Type: {
+            int8_t v;
+            if (OCNumberTryGetSInt8(n, &v)) {
+                *out = (long)v;
+                return true;
+            }
+            break;
+        }
+        case kOCNumberSInt16Type: {
+            int16_t v;
+            if (OCNumberTryGetSInt16(n, &v)) {
+                *out = (long)v;
+                return true;
+            }
+            break;
+        }
+        case kOCNumberSInt32Type: {
+            int32_t v;
+            if (OCNumberTryGetSInt32(n, &v)) {
+                *out = (long)v;
+                return true;
+            }
+            break;
+        }
+        case kOCNumberSInt64Type: {
+            int64_t v;
+            if (OCNumberTryGetSInt64(n, &v)) {
+                // Optional: validate that v fits into a long if long < int64_t
+#if LONG_MAX < INT64_MAX || LONG_MIN > INT64_MIN
+                if (v < (int64_t)LONG_MIN || v > (int64_t)LONG_MAX) return false;
+#endif
+                *out = (long)v;
+                return true;
+            }
+            break;
+        }
+        default:
+            break;
     }
+
     return false;
 }
 /** @brief Try extract OCIndex native size. */
 static inline bool OCNumberTryGetOCIndex(OCNumberRef n, OCIndex *out) {
     if (!n || !out) return false;
-    if (sizeof(OCIndex) == sizeof(int32_t)) {
-        int32_t v;
-        if (!OCNumberTryGetSInt32(n, &v)) return false;
-        *out = (OCIndex)v;
-        return true;
-    } else if (sizeof(OCIndex) == sizeof(int64_t)) {
-        int64_t v;
-        if (!OCNumberTryGetSInt64(n, &v)) return false;
-        *out = (OCIndex)v;
-        return true;
+
+    OCNumberType type = OCNumberGetType(n);
+    
+    switch (type) {
+        case kOCNumberSInt8Type: {
+            int8_t v;
+            if (OCNumberTryGetSInt8(n, &v)) {
+                *out = (OCIndex)v;
+                return true;
+            }
+            break;
+        }
+        case kOCNumberSInt16Type: {
+            int16_t v;
+            if (OCNumberTryGetSInt16(n, &v)) {
+                *out = (OCIndex)v;
+                return true;
+            }
+            break;
+        }
+        case kOCNumberSInt32Type: {
+            int32_t v;
+            if (OCNumberTryGetSInt32(n, &v)) {
+                *out = (OCIndex)v;
+                return true;
+            }
+            break;
+        }
+        case kOCNumberSInt64Type: {
+            int64_t v;
+            if (OCNumberTryGetSInt64(n, &v)) {
+                // Optional: clamp or validate if OCIndex is narrower
+                *out = (OCIndex)v;
+                return true;
+            }
+            break;
+        }
+        default:
+            break;
     }
+
     return false;
 }
 /** @} */  // end Try-get Accessors
