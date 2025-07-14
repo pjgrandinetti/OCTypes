@@ -45,7 +45,7 @@ void OCReportLeaks(void) {
     pthread_mutex_lock(&gLeakLock);
 
     if (gLeakCount == 0) {
-        fprintf(stderr, "[OCLeakTracker] All objects finalized successfully.\n");
+        // Silent success - no need to report when everything is working correctly
         pthread_mutex_unlock(&gLeakLock);
         return;
     }
@@ -154,10 +154,11 @@ void OCReportLeaksForType(OCTypeID filterTypeID) {
     }
 
     if (filteredCount == 0) {
-        // No outstanding leaks of this type
+        // Check if this looks like an invalid type ID
         const char *typeName = OCTypeNameFromTypeID(filterTypeID);
+        bool hasInvalidTypeName = false;
+        
         // If there's at least one instance in memory, grab its name.
-        // Otherwise we cannot look up the name at runtime, so stick with "(unknown)".
         for (size_t i = 0; i < gLeakCount; ++i) {
             const OCBase *base = gLeakTable[i].ptr;
             if (base && base->typeID == filterTypeID) {
@@ -165,9 +166,20 @@ void OCReportLeaksForType(OCTypeID filterTypeID) {
                 break;
             }
         }
-        fprintf(stderr,
-                "[OCLeakTracker] No leaked objects of type \"%s\" (typeID %u) found.\n",
-                typeName, (unsigned)filterTypeID);
+        
+        // Check if the type name suggests this is an invalid type ID
+        if (typeName && (strstr(typeName, "InvalidTypeID") || strstr(typeName, "invalid") || strstr(typeName, "Invalid"))) {
+            hasInvalidTypeName = true;
+        }
+        
+        // Only report if it looks like an invalid type ID
+        if (hasInvalidTypeName) {
+            fprintf(stderr,
+                    "[OCLeakTracker] No leaked objects of type \"%s\" (typeID %u) found.\n",
+                    typeName, (unsigned)filterTypeID);
+        }
+        // Otherwise, silent success - no need to report when everything is working correctly
+        
         pthread_mutex_unlock(&gLeakLock);
         return;
     }
