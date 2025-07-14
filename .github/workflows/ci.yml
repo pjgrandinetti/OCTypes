@@ -19,16 +19,16 @@ jobs:
         include:
           - os: ubuntu-latest
             arch: x64
-            label: ubuntu-latest x64
+            label: ubuntu-latest.x64
           - os: ubuntu-latest
             arch: arm64
-            label: ubuntu-latest arm64
+            label: ubuntu-latest.arm64
           - os: macos-latest
             arch: x64
-            label: macos-latest x64
+            label: macos-latest
           - os: windows-latest
             arch: x64
-            label: windows-latest x64
+            label: windows-latest
 
     steps:
       - name: Checkout repository
