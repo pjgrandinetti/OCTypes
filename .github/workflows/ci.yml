@@ -129,9 +129,11 @@ jobs:
               continue
             fi
             os=$(basename "$osdir")
-            zipfile="packages/libOCTypes-${os}.zip"
+            # Strip the libOCTypes- prefix to get clean platform name
+            platform=${os#libOCTypes-}
+            zipfile="packages/libOCTypes-${platform}.zip"
 
-            if [[ "$os" == windows-latest ]]; then
+            if [[ "$platform" == windows-latest ]]; then
               pwsh -Command "Compress-Archive -Path '${lib}' -DestinationPath '${zipfile}'"
             else
               zip -j "${zipfile}" "${lib}"
