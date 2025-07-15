@@ -1,5 +1,6 @@
 // OCNumber.c – Updated to use OCTypeAlloc and leak-safe finalization
 #include <complex.h>
+#include <stddef.h> // for NULL
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -55,7 +56,7 @@ OCNumberType OCNumberTypeFromName(const char *name) {
     if (strcmp(name, "float64") == 0) return kOCNumberFloat64Type;
     if (strcmp(name, "complex64") == 0) return kOCNumberComplex64Type;
     if (strcmp(name, "complex128") == 0) return kOCNumberComplex128Type;
-    return (OCNumberType)(-1);  // Unrecognized name
+    return kOCNumberTypeInvalid;  // Unrecognized name
 }
 OCTypeID OCNumberGetTypeID(void) {
     if (kOCNumberID == kOCNotATypeID)
@@ -544,16 +545,43 @@ bool OCNumberGetValue(OCNumberRef number, OCNumberType type, void *valuePtr) {
 cJSON *OCNumberCreateJSON(OCNumberRef number) {
     if (!number) return cJSON_CreateNull();
 
-    OCStringRef valueStr = OCNumberCreateStringValue(number);
-    if (!valueStr) {
-        fprintf(stderr, "OCNumberCreateJSON: Failed to convert OCNumber to string.\n");
-        return cJSON_CreateNull();
+    switch (number->type) {
+        case kOCNumberUInt8Type:
+            return cJSON_CreateNumber(number->value.uint8Value);
+        case kOCNumberSInt8Type:
+            return cJSON_CreateNumber(number->value.int8Value);
+        case kOCNumberUInt16Type:
+            return cJSON_CreateNumber(number->value.uint16Value);
+        case kOCNumberSInt16Type:
+            return cJSON_CreateNumber(number->value.int16Value);
+        case kOCNumberUInt32Type:
+            return cJSON_CreateNumber(number->value.uint32Value);
+        case kOCNumberSInt32Type:
+            return cJSON_CreateNumber(number->value.int32Value);
+        case kOCNumberUInt64Type:
+            return cJSON_CreateNumber((double)number->value.uint64Value);
+        case kOCNumberSInt64Type:
+            return cJSON_CreateNumber((double)number->value.int64Value);
+        case kOCNumberFloat32Type:
+            return cJSON_CreateNumber(number->value.floatValue);
+        case kOCNumberFloat64Type:
+            return cJSON_CreateNumber(number->value.doubleValue);
+        case kOCNumberComplex64Type:
+        case kOCNumberComplex128Type: {
+            // Complex numbers: serialize as string
+            OCStringRef valueStr = OCNumberCreateStringValue(number);
+            if (!valueStr) {
+                fprintf(stderr, "OCNumberCreateJSON: Failed to convert OCNumber to string.\n");
+                return cJSON_CreateNull();
+            }
+            const char *s = OCStringGetCString(valueStr);
+            cJSON *node = cJSON_CreateString(s ? s : "");
+            OCRelease(valueStr);
+            return node;
+        }
+        default:
+            return cJSON_CreateNull();
     }
-
-    const char *s = OCStringGetCString(valueStr);
-    cJSON *node = cJSON_CreateString(s ? s : "");
-    OCRelease(valueStr);
-    return node;
 }
 OCNumberRef OCNumberCreateFromJSON(cJSON *json, OCNumberType type) {
     if (!json || !cJSON_IsString(json)) return NULL;

@@ -56,6 +56,25 @@ typedef enum {
     kOCNumberComplex128Type /**< Complex double. */
 } OCNumberType;
 #define kOCNumberTypeInvalid 0
+
+/**
+ * @brief Returns the canonical string name for a given OCNumberType.
+ *
+ * @param type The OCNumberType enum value.
+ * @return The string name (e.g., "int32", "float64"), or NULL if invalid.
+ * @ingroup OCNumber
+ */
+const char *OCNumberGetTypeName(OCNumberType type);
+
+/**
+ * @brief Returns the OCNumberType enum value for a given string name.
+ *
+ * @param name The string name (e.g., "int32", "float64").
+ * @return The corresponding OCNumberType, or -1 if unrecognized.
+ * @ingroup OCNumber
+ */
+OCNumberType OCNumberTypeFromName(const char *name);
+
 /**
  * @brief The OCTypeID for OCNumber.
  * @ingroup OCNumber
