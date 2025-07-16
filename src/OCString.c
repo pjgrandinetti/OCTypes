@@ -136,8 +136,7 @@ static size_t oc_utf8_strlen(const char *s) {
 // ——— Helper: replace all occurrences of a C‐string ———
 // Returns a newly malloc’d buffer, and sets *count to the number of replacements.
 // The returned buffer always has enough space for the final string + '\0'.
-static char *
-str_replace(const char *orig,
+static char * str_replace(const char *orig,
             const char *rep,
             const char *with,
             int64_t *count) {
@@ -568,6 +567,29 @@ void OCStringUppercase(OCMutableStringRef s) {
         ptrdiff_t off = oc_utf8_offset_for_index(s->string, i);
         unsigned char *c = (unsigned char *)(s->string + off);
         if (*c >= 'a' && *c <= 'z') *c -= 'a' - 'A';
+    }
+}
+void OCStringTrim(OCMutableStringRef s, OCStringRef t) {
+    if (!s || !t || t->length == 0 || s->length == 0) return;
+
+    OCRange r;
+
+    // Trim from the beginning
+    while (s->length >= t->length) {
+        if (!OCStringFindWithOptions(s, t, OCRangeMake(0, t->length), 0, &r) || r.location != 0) {
+            break;
+        }
+        OCStringDelete(s, OCRangeMake(0, t->length));
+    }
+
+    // Trim from the end
+    while (s->length >= t->length) {
+        OCRange suffixSearch = OCRangeMake(s->length - t->length, t->length);
+        if (!OCStringFindWithOptions(s, t, suffixSearch, 0, &r) ||
+            r.location != suffixSearch.location) {
+            break;
+        }
+        OCStringDelete(s, suffixSearch);
     }
 }
 void OCStringTrimWhitespace(OCMutableStringRef s) {

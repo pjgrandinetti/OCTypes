@@ -367,6 +367,26 @@ void OCStringLowercase(OCMutableStringRef theString);
  */
 void OCStringUppercase(OCMutableStringRef theString);
 
+
+/**
+ * @brief Trims all occurrences of a specified substring from both ends of a mutable OCString.
+ * @param s       The mutable OCString to be trimmed.
+ * @param t       The OCString substring to remove from the start and end.
+ * @ingroup OCString
+ *
+ * @code
+ * OCMutableStringRef myString = OCMutableStringCreateWithCString("fooHello, world!foo");
+ * OCStringRef      trimSub  = OCStringCreateWithCString("foo");
+ *
+ * OCStringTrim(myString, trimSub);
+ * // myString now contains "Hello, world!"
+ *
+ * OCRelease(trimSub);
+ * OCRelease(myString);
+ * @endcode
+ */
+void OCStringTrim(OCMutableStringRef s, OCStringRef t);
+
 /**
  * @brief Trims whitespace characters from both ends of a mutable OCString.
  * @param theString Mutable OCString.
