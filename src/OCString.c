@@ -1189,83 +1189,62 @@ OCArrayRef OCStringCreateArrayWithFindResults(OCStringRef string,
     }
     return result;
 }
-/**
- * @brief Splits a string by a separator, returning an array of OCStringRefs.
- */
-OCArrayRef OCStringCreateArrayBySeparatingStrings(OCStringRef string,
-                                                  OCStringRef separatorString) {
-    if (!string || !string->string || !separatorString || !separatorString->string) return NULL;
-    OCMutableArrayRef result = OCArrayCreateMutable(0, &kOCTypeArrayCallBacks);  // Use OCType callbacks for OCStringRef
-    if (!result) return NULL;
-    uint64_t current_pos = 0;
-    uint64_t string_len = string->length;
-    uint64_t sep_len = separatorString->length;
-    // Handle empty string: return array with one empty element
-    if (string_len == 0) {
-        OCStringRef empty = OCStringCreateWithCString("");
-        if (empty) {
-            OCArrayAppendValue(result, empty);
-            OCRelease(empty);  // OCArray retains it
-        }
-        return result;
+
+OCArrayRef
+OCStringCreateArrayBySeparatingStrings(OCStringRef string,
+                                       OCStringRef separator)
+{
+    if (!string || !string->string ||
+        !separator || !separator->string)
+        return NULL;
+
+    // Full range of the input string in code-points
+    OCRange fullRange = OCRangeMake(0, OCStringGetLength(string));
+
+    // Find all occurrences of 'separator'
+    OCArrayRef findResults =
+        OCStringCreateArrayWithFindResults(string,
+                                           separator,
+                                           fullRange,
+                                           0);
+    if (!findResults) {
+        // No occurrences or error => treat as single token
+        OCMutableArrayRef single = OCArrayCreateMutable(1, &kOCTypeArrayCallBacks);
+        OCArrayAppendValue(single, string);
+        return single;
     }
-    // Handle empty separator string: return array with one element (copy of original string)
-    if (sep_len == 0) {
-        OCStringRef copy = OCStringCreateCopy(string);
-        if (copy) {
-            OCArrayAppendValue(result, copy);
-            OCRelease(copy);  // OCArray retains it
+
+    uint64_t sepCount = OCArrayGetCount(findResults);
+    // Preallocate result slots (sepCount separators ⇒ sepCount+1 tokens)
+    OCMutableArrayRef result =
+        OCArrayCreateMutable((uint32_t)(sepCount + 1), &kOCTypeArrayCallBacks);
+
+    // Walk through each found separator, slicing out the preceding chunk
+    uint64_t prevEnd = 0;
+    for (uint64_t i = 0; i < sepCount; ++i) {
+        OCRange *r = (OCRange *)OCArrayGetValueAtIndex(findResults, i);
+        // substring from prevEnd of length (r->location - prevEnd)
+        OCRange slice = OCRangeMake(prevEnd, r->location - prevEnd);
+        OCStringRef piece = OCStringCreateWithSubstring(string, slice);
+        if (piece) {
+            OCArrayAppendValue(result, piece);
+            OCRelease(piece);
         }
-        return result;
+        // advance past this separator
+        prevEnd = r->location + r->length;
     }
-    // Check if string begins with separator, if so add empty string first
-    // OCRange prefix_check = OCRangeMake(0, sep_len);
-    if (OCStringFind(string, separatorString, 0).location == 0) {
-        OCStringRef empty = OCStringCreateWithCString("");
-        if (empty) {
-            OCArrayAppendValue(result, empty);
-            OCRelease(empty);
-        }
-        // Skip past the initial separator
-        current_pos = sep_len;
-    }
-    // Simple iterative approach to avoid memory management issues with ranges
-    while (current_pos <= string_len) {
-        OCRange search_range = OCRangeMake(current_pos, string_len - current_pos);
-        OCRange found_range;
-        bool found = OCStringFindWithOptions(string, separatorString, search_range, 0, &found_range);
-        if (found) {
-            // Create substring from current_pos to the start of the separator
-            uint64_t part_len = found_range.location - current_pos;
-            OCRange part_range = OCRangeMake(current_pos, part_len);
-            OCStringRef part = OCStringCreateWithSubstring(string, part_range);
-            if (part) {
-                OCArrayAppendValue(result, part);
-                OCRelease(part);  // Array retains it
-            }
-            // Move past the separator
-            current_pos = found_range.location + found_range.length;
-            // If we're at the end and found a separator at the end,
-            // add an empty string for the trailing separator
-            if (current_pos == string_len) {
-                OCStringRef empty = OCStringCreateWithCString("");
-                if (empty) {
-                    OCArrayAppendValue(result, empty);
-                    OCRelease(empty);
-                }
-                break;
-            }
-        } else {
-            // No more separators - add the final part and break
-            OCRange final_range = OCRangeMake(current_pos, string_len - current_pos);
-            OCStringRef final_part = OCStringCreateWithSubstring(string, final_range);
-            if (final_part) {
-                OCArrayAppendValue(result, final_part);
-                OCRelease(final_part);  // Array retains it
-            }
-            break;
+
+    // Add final token after last separator
+    if (prevEnd <= fullRange.length) {
+        OCRange slice = OCRangeMake(prevEnd, fullRange.length - prevEnd);
+        OCStringRef piece = OCStringCreateWithSubstring(string, slice);
+        if (piece) {
+            OCArrayAppendValue(result, piece);
+            OCRelease(piece);
         }
     }
+
+    OCRelease(findResults);
     return result;
 }
 OCStringRef OCCreateISO8601Timestamp(void) {
