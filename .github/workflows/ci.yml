@@ -70,12 +70,12 @@ jobs:
             flex
             bison
 
-      - name: Build on Windows
+      - name: Build & test on Windows
         if: runner.os == 'Windows'
         shell: msys2 {0}
         run: |
           make clean
-          make CC=gcc \
+          make test CC=gcc \
                CFLAGS="-std=c99 -I. -Isrc -O3 -Wall -Wextra \
                        -Wno-sign-compare -Wno-unused-parameter \
                        -Wno-missing-field-initializers" \

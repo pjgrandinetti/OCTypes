@@ -4,10 +4,99 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#ifndef _WIN32
 #include <unistd.h>
+#else
+#include <windows.h>
+#include <io.h>
+#include <direct.h>
+#include <fcntl.h>
+#endif
 #include "OCFileUtilities.h"
 #include "OCLibrary.h"
 #include "test_utils.h"
+
+// Cross-platform helper functions
+#ifdef _WIN32
+static const char* get_temp_dir(void) {
+    static char temp_dir[MAX_PATH];
+    DWORD len = GetTempPathA(MAX_PATH, temp_dir);
+    if (len > 0 && len < MAX_PATH) {
+        // Remove trailing backslash if present
+        if (temp_dir[len-1] == '\\') {
+            temp_dir[len-1] = '\0';
+        }
+        return temp_dir;
+    }
+    return "C:\\temp";  // fallback
+}
+
+static int cross_platform_mkstemp(char *template) {
+    char *temp_dir = _strdup(get_temp_dir());
+    char *filename = _tempnam(temp_dir, "ocfu_");
+    if (!filename) {
+        free(temp_dir);
+        return -1;
+    }
+    
+    // Copy the generated filename back to template
+    strcpy(template, filename);
+    
+    // Create and open the file
+    int fd = _open(filename, _O_RDWR | _O_CREAT | _O_EXCL | _O_TEMPORARY, _S_IREAD | _S_IWRITE);
+    
+    free(filename);
+    free(temp_dir);
+    return fd;
+}
+
+static int cross_platform_mkstemps(char *template, int suffixlen) {
+    // For Windows, we'll use a simpler approach
+    char *temp_dir = _strdup(get_temp_dir());
+    char *filename = _tempnam(temp_dir, "ocfu_");
+    if (!filename) {
+        free(temp_dir);
+        return -1;
+    }
+    
+    // Add the suffix from the original template
+    char *suffix = template + strlen(template) - suffixlen;
+    strcat(filename, suffix);
+    
+    strcpy(template, filename);
+    
+    int fd = _open(filename, _O_RDWR | _O_CREAT | _O_EXCL | _O_TEMPORARY, _S_IREAD | _S_IWRITE);
+    
+    free(filename);
+    free(temp_dir);
+    return fd;
+}
+
+static char* cross_platform_mkdtemp(char *template) {
+    char *temp_dir = _strdup(get_temp_dir());
+    char unique_dir[MAX_PATH];
+    sprintf(unique_dir, "%s\\ocfu_dir_%d_%d", temp_dir, GetCurrentProcessId(), GetTickCount());
+    
+    if (_mkdir(unique_dir) == 0) {
+        strcpy(template, unique_dir);
+        free(temp_dir);
+        return template;
+    }
+    
+    free(temp_dir);
+    return NULL;
+}
+
+#define mkstemp cross_platform_mkstemp
+#define mkstemps cross_platform_mkstemps
+#define mkdtemp cross_platform_mkdtemp
+#define close _close
+#define TEMP_DIR get_temp_dir()
+
+#else
+#define TEMP_DIR "/tmp"
+#endif
+
 bool test_path_join_and_split(void) {
     fprintf(stderr, "%s begin...\n", __func__);
     OCStringRef a = OCStringCreateWithCString("/foo");
@@ -57,7 +146,8 @@ bool test_path_join_and_split(void) {
 bool test_file_and_dir_checks(void) {
     fprintf(stderr, "%s begin...\n", __func__);
     // create temp file
-    char tmpl[] = "/tmp/ocfu_testfileXXXXXX";
+    char tmpl[PATH_MAX];
+    snprintf(tmpl, PATH_MAX, "%s/ocfu_testfileXXXXXX", TEMP_DIR);
     int fd = mkstemp(tmpl);
     if (fd < 0) PRINTERROR;
     close(fd);
@@ -68,7 +158,8 @@ bool test_file_and_dir_checks(void) {
     if (!OCRemoveItem(tmpl, NULL)) PRINTERROR;
     if (OCFileExists(tmpl)) PRINTERROR;
     // create temp dir
-    char dirtmpl[] = "/tmp/ocfu_testdirXXXXXX";
+    char dirtmpl[PATH_MAX];
+    snprintf(dirtmpl, PATH_MAX, "%s/ocfu_testdirXXXXXX", TEMP_DIR);
     char *dpath = mkdtemp(dirtmpl);
     if (!dpath) PRINTERROR;
     if (!OCFileExists(dpath)) PRINTERROR;
@@ -83,18 +174,21 @@ bool test_file_and_dir_checks(void) {
 bool test_create_and_list_directory(void) {
     fprintf(stderr, "%s begin...\n", __func__);
     // base temp directory
-    char base[] = "/tmp/ocfu_testdirXXXXXX";
+    char base[PATH_MAX];
+    snprintf(base, PATH_MAX, "%s/ocfu_testdirXXXXXX", TEMP_DIR);
     char *b = mkdtemp(base);
     if (!b) PRINTERROR;
     // simple non-recursive
     OCStringRef err = NULL;
-    if (!OCCreateDirectory("/tmp/ocfu_dummy_nonexist", false, &err)) {
+    char dummy_path[PATH_MAX];
+    snprintf(dummy_path, PATH_MAX, "%s/ocfu_dummy_nonexist", TEMP_DIR);
+    if (!OCCreateDirectory(dummy_path, false, &err)) {
         fprintf(stderr, "Unexpected failure: %s\n",
                 OCStringGetCString(err));
         PRINTERROR;
     }
     // cleanup that
-    OCRemoveItem("/tmp/ocfu_dummy_nonexist", NULL);
+    OCRemoveItem(dummy_path, NULL);
     // recursive nested
     char nested[PATH_MAX];
     snprintf(nested, PATH_MAX, "%s/sub1/sub2", b);
@@ -133,7 +227,8 @@ bool test_create_and_list_directory(void) {
 }
 bool test_rename_and_remove(void) {
     fprintf(stderr, "%s begin...\n", __func__);
-    char tmpl[] = "/tmp/ocfu_renameXXXXXX";
+    char tmpl[PATH_MAX];
+    snprintf(tmpl, PATH_MAX, "%s/ocfu_renameXXXXXX", TEMP_DIR);
     int fd = mkstemp(tmpl);
     if (fd < 0) PRINTERROR;
     close(fd);
@@ -148,7 +243,8 @@ bool test_rename_and_remove(void) {
 }
 bool test_string_file_io(void) {
     fprintf(stderr, "%s begin...\n", __func__);
-    char path[] = "/tmp/ocfu_strioXXXXXX.txt";
+    char path[PATH_MAX];
+    snprintf(path, PATH_MAX, "%s/ocfu_strioXXXXXX.txt", TEMP_DIR);
     int fd = mkstemps(path, 4);
     if (fd < 0) PRINTERROR;
     close(fd);
@@ -194,7 +290,8 @@ bool test_dictionary_write_simple(void) {
     OCRelease(arr);
 
     // Create temp file
-    char tmpl[] = "/tmp/ocdict_jsonXXXXXX";
+    char tmpl[PATH_MAX];
+    snprintf(tmpl, PATH_MAX, "%s/ocdict_jsonXXXXXX", TEMP_DIR);
     int fd = mkstemp(tmpl);
     if (fd < 0) PRINTERROR;
     close(fd);
@@ -238,7 +335,8 @@ bool test_dictionary_write_empty(void) {
     OCMutableDictionaryRef dict = OCDictionaryCreateMutable(0);
 
     // Create temporary file
-    char tmpl[] = "/tmp/ocdict_emptyXXXXXX";
+    char tmpl[PATH_MAX];
+    snprintf(tmpl, PATH_MAX, "%s/ocdict_emptyXXXXXX", TEMP_DIR);
     int fd = mkstemp(tmpl);
     if (fd < 0) PRINTERROR;
     close(fd);
