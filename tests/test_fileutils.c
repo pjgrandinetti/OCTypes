@@ -180,7 +180,11 @@ bool test_path_join_and_split(void) {
     OCStringRef extArg = OCStringCreateWithCString(".md");
     OCStringRef newp = OCPathByReplacingExtension(p, extArg);
     OCRelease(extArg);
+#ifdef _WIN32
+    if (strcmp(OCStringGetCString(newp), "C:\\foo\\bar\\baz.md") != 0) PRINTERROR;
+#else
     if (strcmp(OCStringGetCString(newp), "/foo/bar/baz.md") != 0) PRINTERROR;
+#endif
     OCRelease(newp);
     OCRelease(p);
     fprintf(stderr, "%s end.\n", __func__);
