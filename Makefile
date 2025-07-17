@@ -9,7 +9,7 @@ YFLAGS = -d
 INCLUDES := -I . -I src
 WARNINGS := -Wall -Wextra -Wno-sign-compare -Wno-unused-parameter -Wno-missing-field-initializers
 OPT := -O3
-CFLAGS := $(INCLUDES) $(WARNINGS) $(OPT) -DDEBUG -g
+CFLAGS := -fPIC $(INCLUDES) $(WARNINGS) $(OPT) -DDEBUG -g
 
 SRC_DIR := src
 BUILD_DIR := build
