@@ -12,7 +12,6 @@
 #include <direct.h>
 #include <fcntl.h>
 #endif
-#include "OCFileUtilities.h"
 #include "OCLibrary.h"
 #include "test_utils.h"
 

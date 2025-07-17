@@ -1,10 +1,20 @@
 #include "test_string.h"
 #include "../src/OCString.h"
 #include "../src/OCMath.h"      // for OCComplexFromCString, OCCompareDoubleValuesLoose
+
+// Define _USE_MATH_DEFINES before including math.h to get M_PI on Windows
+#ifdef _WIN32
+#define _USE_MATH_DEFINES
+#endif
 #include <math.h>              // exp, log, acos, asin, cos, sin, sqrt
 #include <complex.h>           // creal, cimag, conj, cexp, clog, csin, ccos, casin, cacos, cargument
 #include <stdio.h>
 #include <stdlib.h>
+
+// Fallback definition for M_PI if not available
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 #define PRINTFAILURE(msg) \
     do { fprintf(stderr, "TEST FAILED: %s\n", msg); success = false; } while (0)
