@@ -38,11 +38,18 @@ static int cross_platform_mkstemp(char *template) {
         return -1;
     }
     
+    // Ensure template buffer is large enough
+    if (strlen(filename) >= PATH_MAX) {
+        free(filename);
+        free(temp_dir);
+        return -1;
+    }
+    
     // Copy the generated filename back to template
     strcpy(template, filename);
     
-    // Create and open the file
-    int fd = _open(filename, _O_RDWR | _O_CREAT | _O_EXCL | _O_TEMPORARY, _S_IREAD | _S_IWRITE);
+    // Create and open the file (remove _O_TEMPORARY so file persists)
+    int fd = _open(filename, _O_RDWR | _O_CREAT | _O_EXCL, _S_IREAD | _S_IWRITE);
     
     free(filename);
     free(temp_dir);
@@ -60,12 +67,23 @@ static int cross_platform_mkstemps(char *template, int suffixlen) {
     
     // Add the suffix from the original template
     char *suffix = template + strlen(template) - suffixlen;
-    strcat(filename, suffix);
+    char *full_filename = malloc(strlen(filename) + suffixlen + 1);
+    strcpy(full_filename, filename);
+    strcat(full_filename, suffix);
     
-    strcpy(template, filename);
+    // Ensure template buffer is large enough
+    if (strlen(full_filename) >= PATH_MAX) {
+        free(full_filename);
+        free(filename);
+        free(temp_dir);
+        return -1;
+    }
     
-    int fd = _open(filename, _O_RDWR | _O_CREAT | _O_EXCL | _O_TEMPORARY, _S_IREAD | _S_IWRITE);
+    strcpy(template, full_filename);
     
+    int fd = _open(full_filename, _O_RDWR | _O_CREAT | _O_EXCL, _S_IREAD | _S_IWRITE);
+    
+    free(full_filename);
     free(filename);
     free(temp_dir);
     return fd;
@@ -98,6 +116,19 @@ static char* cross_platform_mkdtemp(char *template) {
 
 bool test_path_join_and_split(void) {
     fprintf(stderr, "%s begin...\n", __func__);
+    
+#ifdef _WIN32
+    OCStringRef a = OCStringCreateWithCString("C:\\foo");
+    OCStringRef b = OCStringCreateWithCString("bar");
+    OCStringRef j = OCPathJoin(a, b);
+    if (strcmp(OCStringGetCString(j), "C:\\foo\\bar") != 0) PRINTERROR;
+    OCRelease(j);
+    // absolute b should win
+    OCRelease(a);
+    OCRelease(b);
+    a = OCStringCreateWithCString("C:\\foo");
+    b = OCStringCreateWithCString("C:\\abs\\path");
+#else
     OCStringRef a = OCStringCreateWithCString("/foo");
     OCStringRef b = OCStringCreateWithCString("bar");
     OCStringRef j = OCPathJoin(a, b);
@@ -108,8 +139,13 @@ bool test_path_join_and_split(void) {
     OCRelease(b);
     a = OCStringCreateWithCString("/foo");
     b = OCStringCreateWithCString("/abs/path");
+#endif
     j = OCPathJoin(a, b);
+#ifdef _WIN32
+    if (strcmp(OCStringGetCString(j), "C:\\abs\\path") != 0) PRINTERROR;
+#else
     if (strcmp(OCStringGetCString(j), "/abs/path") != 0) PRINTERROR;
+#endif
     OCRelease(j);
     // empty a
     OCRelease(a);
@@ -122,11 +158,19 @@ bool test_path_join_and_split(void) {
     // dirname / basename
     OCRelease(a);
     OCRelease(b);
+#ifdef _WIN32
+    OCStringRef p = OCStringCreateWithCString("C:\\foo\\bar\\baz.txt");
+    OCStringRef d = OCPathDirname(p);
+    OCStringRef bn = OCPathBasename(p);
+    if (strcmp(OCStringGetCString(d), "C:\\foo\\bar") != 0) PRINTERROR;
+    if (strcmp(OCStringGetCString(bn), "baz.txt") != 0) PRINTERROR;
+#else
     OCStringRef p = OCStringCreateWithCString("/foo/bar/baz.txt");
     OCStringRef d = OCPathDirname(p);
     OCStringRef bn = OCPathBasename(p);
     if (strcmp(OCStringGetCString(d), "/foo/bar") != 0) PRINTERROR;
     if (strcmp(OCStringGetCString(bn), "baz.txt") != 0) PRINTERROR;
+#endif
     OCRelease(d);
     OCRelease(bn);
     // extension / replace ext
