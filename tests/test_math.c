@@ -1,6 +1,20 @@
 #include "test_math.h"
 #include "../src/OCMath.h" // For OCCompareDoubleValuesLoose and other math functions if used directly
+
+// Define _USE_MATH_DEFINES before including math.h to get M_PI_4 on Windows
+#ifdef _WIN32
+#define _USE_MATH_DEFINES
+#endif
+#include <math.h>      // For mathematical constants and functions
 #include <complex.h>   // For double complex, creal, cimag, I
+
+// Fallback definitions for mathematical constants if not available
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+#ifndef M_PI_4
+#define M_PI_4 (M_PI / 4.0)
+#endif
 
 // Definition for raise_to_integer_power if it's not part of the library
 // This is here because it was extern in the original main.c
