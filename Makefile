@@ -128,13 +128,13 @@ doxygen:
 
 html: doxygen
 	@echo "Building Sphinx HTML…"
-	sphinx-build -W -E -b html docs build/html
+	cd docs && sphinx-build -W -E -b html . _build/html
 
 docs: html
 
 clean-docs:
 	@echo "Cleaning documentation…"
-	rm -rf docs/doxygen build/html
+	rm -rf docs/doxygen docs/_build
 
 xcode:
 	@echo "Generating Xcode project in build-xcode..."
