@@ -16,7 +16,7 @@ In the C language, object-oriented abstraction can be implemented using structur
 
 This declares a new type, ShapeRef, which is a pointer to a hidden structure __Shape. While the messages we can send to (or functions we can call with) this structure pointer are defined in a C header file, i.e. Shape.h, we are not allowed to see nor access directly the elements of this structure.
 
-You can read more about `Opaque data types <http://en.wikipedia.org/wiki/Opaque_data_type>`_ and `Opaque pointers <http://en.wikipedia.org/wiki/Opaque_pointer>`_ on Wikipedia. You can also learn more about Opaque types at `Apple <http://developer.apple.com/library/mac/#documentation/CoreFoundation/Conceptual/CFDesignConcepts/Articles/OpaqueTypes.html#//apple_ref/doc/uid/20001106-CJBEJBHH>`_.
+You can read more about `Opaque data types <http://en.wikipedia.org/wiki/Opaque_data_type>`_ and `Opaque pointers <http://en.wikipedia.org/wiki/Opaque_pointer>`_ on Wikipedia. You can also learn more about Opaque types at `Apple's Core Foundation documentation <http://developer.apple.com/library/mac/#documentation/CoreFoundation/Conceptual/CFDesignConcepts/Articles/OpaqueTypes.html#//apple_ref/doc/uid/20001106-CJBEJBHH>`_.
 
 Mutable vs Immutable Types
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -240,37 +240,37 @@ With this in mind, we follow the conventions below.
 
 * if you are an owner of an type, you must relinquish ownership when you have finished using it (using a release method).
 
-Read more about Reference counting at Wikipedia and at Apple.
+Read more about Reference counting at `Wikipedia <http://en.wikipedia.org/wiki/Reference_counting>`_ and at `Apple's Memory Management documentation <http://developer.apple.com/library/mac/#documentation/CoreFoundation/Conceptual/CFMemoryMgmt/CFMemoryMgmt.html#//apple_ref/doc/uid/10000127i>`_.
 
 Implementation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-We begin by creating a fundamental opaque type called OCType, from which all other types will inherit. In OCType source code define structure
+We begin by creating a fundamental opaque type called KFType, from which all other types will inherit. In KFType source code define structure
 
 .. code-block:: c
 
-    struct impl_OCType {
+    struct impl_KFType {
         u_int32_t retainCount;
         void (*finalize)(void *); 
         bool (*equal)(void *, void *);
     };
 
-In OCType header define opaque type
+In KFType header define opaque type
 
 .. code-block:: c
 
-    typedef struct impl_OCType * OCTypeRef;
+    typedef struct impl_KFType * KFTypeRef;
 
-OCType Methods
+KFType Methods
 
 .. code-block:: c
 
-    bool OCTypeEqual(OCTypeRef theType1, OCTypeRef theType2)
+    bool KFTypeEqual(KFTypeRef theType1, KFTypeRef theType2)
     {
     return theType1->equal(theType1,theType2);
     }
 
-    void OCRelease(OCTypeRef theType)
+    void KFRelease(KFTypeRef theType)
     {
         if(NULL==theType) return;
         if(theType->retainCount == 1) {
@@ -287,11 +287,11 @@ OCType Methods
         return theType;
     }
 
-Now we can define OCShape to inherit from OCType
+Now we can define KFShape to inherit from KFType
 
 .. code-block:: c
 
-    struct impl_OCShape {
+    struct impl_KFShape {
         u_int32_t retainCount;
         void (*finalize)(void *); 
         bool (*equal)(void *, void *);
@@ -302,25 +302,258 @@ Now we can define OCShape to inherit from OCType
         float orientation;
     };
 
-    static struct impl_OCShape *OCShapeAllocate()
+    static struct impl_KFShape *KFShapeAllocate()
     {
-        struct impl_OCShape *theShape = malloc(sizeof(struct impl_OCShape)); 
+        struct impl_KFShape *theShape = malloc(sizeof(struct impl_KFShape));
         if(NULL == theShape) return NULL;
         theShape->retainCount = 1;
-        theShape->finalize = KTShapeFinalize;
+        theShape->finalize = KFShapeFinalize;
         theShape->equal = KFShapeEqual;
         return theShape;
     }
 
-Usage of OCShape
+Usage of KFShape
 
 .. code-block:: c
 
-    OCMutableShapeRef shape = OCShapeCreateMutable(0.0, 0.0, 0.0);
-    OCShapeShow(shape);
-    
-    OCShapeTranslate(shape, 10.0, 20.0);
-    OCShapeRotate(shape, 180.);
-    OCShapeShow(shape);
-    
-    OCRelease((OCTypeRef) shape);
+    KFMutableShapeRef shape = KFShapeCreateMutable(0.0, 0.0, 0.0);
+    KFShapeShow(shape);
+
+    KFShapeTranslate(shape, 10.0, 20.0);
+    KFShapeRotate(shape, 180.);
+    KFShapeShow(shape);
+
+    KFRelease((KFTypeRef) shape);
+
+Part III: Best - The OCTypes Framework
+----------------------------------------
+
+Evolution from Core Foundation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In Apple's Core Foundation, the opaque type we called KFType is actually called CFType. The Core Foundation framework 
+provides a rich set of types and functions that implement reference counting, collections, strings, and many other 
+useful object-oriented design features. It is a powerful and mature framework that has proven itself in building 
+complex applications across macOS and iOS platforms.
+
+However, Core Foundation has some limitations for general C development:
+
+* **Size and Complexity**: It's a rather large framework with many components beyond what most projects need
+* **Platform Dependencies**: It's not easily portable to non-Apple platforms
+* **Learning Curve**: The full API surface can be overwhelming for developers new to object-oriented C
+
+The OCTypes Solution
+~~~~~~~~~~~~~~~~~~~~
+
+Here, we provide a lightweight alternative to Core Foundation, called OCTypes. It is a small framework that implements 
+the core object-oriented design patterns we've explored—reference counting, inheritance, polymorphism, and collections—while 
+maintaining the essential benefits of type safety and memory management.
+
+Key design principles of OCTypes:
+
+* **Minimal Dependencies**: Implemented in pure C with no external dependencies
+* **Cross-Platform**: Suitable for use across different operating systems and environments
+* **Educational**: Simple enough to understand and modify, making it an excellent learning tool
+* **Practical**: Robust enough for real-world applications while remaining lightweight
+
+The OCBase Foundation
+~~~~~~~~~~~~~~~~~~~~~
+
+The heart of the OCTypes system is the OCBase structure, which serves as the foundation for all OCTypes objects. 
+Let's examine how this evolution improves upon our earlier approaches:
+
+.. code-block:: c
+
+  struct __OCShape {
+      OCBase   _base;        // Always the first member
+
+      // Shape-specific attributes
+      float xPosition;
+      float yPosition;
+      float orientation;
+  };
+
+The OCBase structure itself contains everything needed for sophisticated object-oriented behavior:
+
+.. code-block:: c
+
+  typedef struct impl_OCBase {
+      OCTypeID typeID;                              // Unique identifier for runtime type checking
+      uint32_t retainCount;                         // Reference count for memory management
+      bool static_instance;                         // Indicates if the instance is static (never deallocated)
+      bool finalized;                               // Indicates if the instance has been finalized
+      
+      // Virtual method table - enables polymorphism
+      void (*finalize)(const void *);               // Finalizer called when retain count reaches zero
+      bool (*equal)(const void *, const void *);   // Equality comparison function for this type
+      OCStringRef (*copyFormattingDesc)(OCTypeRef);// Human-readable description of the object
+      cJSON *(*copyJSON)(const void *);             // JSON serialization function
+      void *(*copyDeep)(const void *);              // Immutable deep copy function
+      void *(*copyDeepMutable)(const void *);       // Mutable deep copy function
+      
+      // Debug and introspection support
+      const char *allocFile;                        // Source file where object was allocated
+      int allocLine;                                // Source line where object was allocated
+      bool tracked;                                 // Whether this object is tracked for leak detection
+  } OCBase;
+
+Key Improvements Over Previous Approaches
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**1. Type Safety and Runtime Introspection**
+
+Unlike our earlier approaches, OCTypes provides runtime type checking through OCTypeID. This prevents many common casting errors:
+
+.. code-block:: c
+
+  // Safe: will return NULL if obj is not actually an OCShape
+  OCShapeRef shape = (OCShapeRef)obj;  
+  if (OCGetTypeID(shape) == OCShapeGetTypeID()) {
+      // Safe to use as OCShape
+  }
+
+**2. Comprehensive Virtual Method Table**
+
+The virtual method table in OCBase enables true polymorphism. Different types can have different implementations of the same conceptual operation:
+
+.. code-block:: c
+
+  // Works for any OCType - calls the appropriate implementation
+  OCStringRef description = OCTypeCopyFormattingDesc(anyOCTypeObject);
+  bool areEqual = OCTypeEqual(obj1, obj2);
+  void *copy = OCTypeDeepCopy(originalObject);
+
+**3. Built-in Debugging and Leak Detection**
+
+The framework includes sophisticated debugging capabilities that help developers track down memory leaks and other issues:
+
+.. code-block:: c
+
+  // Debug information is automatically captured
+  OCShapeRef shape = OCShapeCreate(1.0, 2.0, 45.0);  // __FILE__ and __LINE__ recorded
+  
+  // Leak detection can report exactly where objects were allocated
+  int leakCount = OCLeakTrackerGetUnreleasedObjectCount();
+
+**4. Consistent API Patterns**
+
+OCTypes follows consistent naming and behavior patterns that make the API predictable and learnable:
+
+* **Create functions**: Return objects with retain count 1 (caller owns)
+* **Copy functions**: Return new objects with retain count 1 (caller owns)  
+* **Get functions**: Return borrowed references (caller doesn't own)
+* **Retain/Release**: Explicit memory management
+
+A Complete OCShape Implementation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Let's see how all these concepts come together in a complete OCShape implementation:
+
+.. code-block:: c
+
+  // Type registration - done once per type
+  static OCTypeID kOCShapeID = kOCNotATypeID;
+  
+  OCTypeID OCShapeGetTypeID(void) {
+      if (kOCShapeID == kOCNotATypeID) {
+          kOCShapeID = OCRegisterType("OCShape");
+      }
+      return kOCShapeID;
+  }
+
+  // Structure definition with OCBase inheritance
+  struct impl_OCShape {
+      OCBase base;           // Must be first for inheritance to work
+      float xPosition;
+      float yPosition;
+      float orientation;
+  };
+
+  // Virtual method implementations
+  static bool impl_OCShapeEqual(const void *a_, const void *b_) {
+      OCShapeRef a = (OCShapeRef)a_;
+      OCShapeRef b = (OCShapeRef)b_;
+      
+      // First check type compatibility
+      if (a->base.typeID != b->base.typeID) return false;
+      if (a == b) return true;  // Same object
+      
+      // Compare actual values
+      return (a->xPosition == b->xPosition && 
+              a->yPosition == b->yPosition && 
+              a->orientation == b->orientation);
+  }
+
+  static void *impl_OCShapeDeepCopy(const void *obj) {
+      OCShapeRef source = (OCShapeRef)obj;
+      if (!source) return NULL;
+      return (void *)OCShapeCreate(source->xPosition, source->yPosition, source->orientation);
+  }
+
+  static void *impl_OCShapeDeepCopyMutable(const void *obj) {
+      OCShapeRef source = (OCShapeRef)obj;
+      if (!source) return NULL;
+      return (void *)OCShapeCreateMutable(source->xPosition, source->yPosition, source->orientation);
+  }
+
+  static void impl_OCShapeFinalize(const void *obj) {
+      // OCShape doesn't own any additional resources, so just free the memory
+      // Note: OCBase cleanup is handled automatically by the framework
+      free((void *)obj);
+  }
+
+  // Allocation function using the OCTypes framework
+  static struct impl_OCShape *OCShapeAllocate() {
+      return OCTypeAlloc(struct impl_OCShape,
+                         OCShapeGetTypeID(),
+                         impl_OCShapeFinalize,
+                         impl_OCShapeEqual,
+                         OCShapeCopyFormattingDesc,
+                         impl_OCShapeCopyJSON,
+                         impl_OCShapeDeepCopy,
+                         impl_OCShapeDeepCopyMutable);
+  }
+
+  // Public creation function
+  OCShapeRef OCShapeCreate(float x, float y, float orientation) {
+      struct impl_OCShape *shape = OCShapeAllocate();
+      if (!shape) return NULL;
+      
+      // Initialize shape-specific data
+      shape->xPosition = x;
+      shape->yPosition = y;
+      shape->orientation = orientation;
+      
+      return (OCShapeRef)shape;
+  }
+
+**Benefits of This Approach**
+
+1. **Memory Safety**: Automatic retain/release prevents most memory leaks and use-after-free bugs
+2. **Type Safety**: Runtime type checking prevents casting errors  
+3. **Polymorphism**: Virtual method table enables object-oriented behavior in C
+4. **Debugging**: Built-in leak detection and allocation tracking
+5. **Consistency**: Predictable API patterns across all types
+6. **Portability**: Pure C implementation works everywhere
+
+**Public Interface**
+
+In the header file, we maintain the clean opaque interface while hiding all implementation details:
+
+.. code-block:: c
+
+  typedef const struct __OCShape * OCShapeRef;
+  typedef struct __OCShape * OCMutableShapeRef;
+  
+  // Creation and memory management
+  OCShapeRef OCShapeCreate(float x, float y, float orientation);
+  OCMutableShapeRef OCShapeCreateMutable(float x, float y, float orientation);
+  
+  // All OCTypes inherit these operations
+  OCShapeRef OCRetain(OCShapeRef shape);      // Increment retain count
+  void OCRelease(OCShapeRef shape);           // Decrement retain count
+  bool OCShapeEqual(OCShapeRef a, OCShapeRef b);  // Compare for equality
+  OCShapeRef OCShapeDeepCopy(OCShapeRef source);  // Create immutable copy
+
+This approach provides all the benefits of object-oriented programming—encapsulation, inheritance, and polymorphism—while 
+remaining true to C's philosophy of simplicity and explicitness.
