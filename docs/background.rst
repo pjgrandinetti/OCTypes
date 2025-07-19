@@ -325,11 +325,11 @@ Usage of KFShape
 
     KFRelease((KFTypeRef) shape);
 
-Part III: Best - The OCTypes Framework
-----------------------------------------
+Part III: Best - OCTypes Framework
+-----------------------------------
 
-Evolution from Core Foundation
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Inspiration from Core Foundation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In Apple's Core Foundation, the opaque type we called KFType is actually called CFType. The Core Foundation framework 
 provides a rich set of types and functions that implement reference counting, collections, strings, and many other 
