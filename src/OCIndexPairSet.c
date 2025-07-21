@@ -113,6 +113,16 @@ OCMutableIndexPairSetRef OCIndexPairSetCreateMutable(void) {
     return s;
 }
 
+OCIndexPairSetRef OCIndexPairSetCreateCopy(OCIndexPairSetRef source) {
+    if (!source) return NULL;
+    return (OCIndexPairSetRef)impl_OCIndexPairSetDeepCopy(source);
+}
+
+OCMutableIndexPairSetRef OCIndexPairSetCreateMutableCopy(OCIndexPairSetRef source) {
+    if (!source) return NULL;
+    return (OCMutableIndexPairSetRef)impl_OCIndexPairSetDeepCopyMutable(source);
+}
+
 OCIndexPairSetRef OCIndexPairSetCreateWithIndexPairArray(OCIndexPair *array, int count) {
     // Defensive check: invalid input if count > 0 but array is NULL
     if (count > 0 && array == NULL) return NULL;
