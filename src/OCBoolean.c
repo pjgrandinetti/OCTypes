@@ -19,12 +19,12 @@ struct impl_OCBoolean {
 
 static struct impl_OCBoolean impl_kOCBooleanTrue = {
     .base = {
-        kOCNotATypeID, 0, NULL, NULL, NULL
+        kOCNotATypeID, 0, 0, NULL, NULL
     }
 };
 static struct impl_OCBoolean impl_kOCBooleanFalse = {
     .base = {
-        kOCNotATypeID, 0, NULL, NULL, NULL
+        kOCNotATypeID, 0, 0, NULL, NULL
     }
 };
 

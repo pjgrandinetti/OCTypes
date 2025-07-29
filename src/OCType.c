@@ -180,7 +180,7 @@ const void *OCRetain(const void *ptr) {
         fprintf(stderr, "*** WARNING: OCRetain called on already-finalized object (%p), typeID = %s\n", ptr, typeName);
         return ptr;
     }
-    if (theType->base.retainCount == UINT32_MAX) {
+    if (theType->base.retainCount == UINT16_MAX) {
         fprintf(stderr, "*** WARNING: OCRetain overflow on object (%p), typeID = %s\n", ptr, typeName);
         return ptr;
     }
