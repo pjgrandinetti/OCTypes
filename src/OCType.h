@@ -36,7 +36,7 @@ extern "C" {
  * @brief Defines an identifier for an OCType.
  * @ingroup OCType
  */
-typedef uint32_t OCTypeID;
+typedef uint16_t OCTypeID;
 /**
  * @brief Return value constants.
  * @ingroup OCType
@@ -203,22 +203,83 @@ const char *OCTypeNameFromTypeID(OCTypeID typeID);
  * All OCType-compatible objects must start with this structure as their first member.
  */
 typedef struct impl_OCBase {
-    OCTypeID typeID; // Unique identifier for the type.
-    uint32_t retainCount; // Reference count for memory management.
-    bool static_instance; // Indicates if the instance is static.
-    bool finalized; // Indicates if the instance has been finalized.
-    // Virtual methods
-    void (*finalize)(const void *); // Finalizer function called when retain count reaches zero.
-    bool (*equal)(const void *, const void *); // Equality comparison function for this type.
-    OCStringRef (*copyFormattingDesc)(OCTypeRef); // Function to create a human-readable description of the object.
-    cJSON *(*copyJSON)(const void *); // Function to serialize the object to JSON format.
-    void *(*copyDeep)(const void *); // Function to create an immutable deep copy of the object.
-    void *(*copyDeepMutable)(const void *); // Function to create a mutable deep copy of the object.
+    OCTypeID typeID;        // 2 bytes
+    uint16_t retainCount;   // 2 bytes
+    int allocLine;          // 4 bytes
+    // 8 bytes total - perfectly aligned for pointers
+    
+    // Virtual methods (8-byte aligned)
+    void (*finalize)(const void *);
+    bool (*equal)(const void *, const void *);
+    OCStringRef (*copyFormattingDesc)(OCTypeRef);
+    cJSON *(*copyJSON)(const void *);
+    void *(*copyDeep)(const void *);
+    void *(*copyDeepMutable)(const void *);
+    
     // Debug info
-    const char *allocFile; // Source file where the object was allocated.
-    int allocLine; // Source line number where the object was allocated.
-    bool tracked; // Indicates if the object is being tracked for memory leaks.
+    const char *allocFile;  // 8 bytes
+    
+    // Flags packed together
+    bool static_instance;   // 1 byte
+    bool finalized;         // 1 byte  
+    bool tracked;           // 1 byte
 } OCBase;
+
+//  Below is a future plan to optimize OCBase.  It will require 
+//  rewriting the getters and setters for the bools, and also
+//  modifying the OCLeakTracker to not capture the allocFile and line
+// /**
+//  * @brief Base structure for all OCType-compatible objects.
+//  *
+//  * This structure provides the common fields and virtual method table
+//  * required for polymorphic behavior in the OCTypes library.
+//  *
+//  * All OCType-compatible objects must start with this structure as their first member.
+//  */
+// typedef struct impl_OCBase {
+//     OCTypeID typeID;        // 2 bytes (uint16_t)
+//     uint16_t retainCount;   // 2 bytes
+//     uint32_t flags;         // 4 bytes (replaces 3 separate bools)
+//     // 8 bytes total - perfectly aligned for 64-bit pointers
+    
+//     // Virtual methods (8-byte aligned)
+//     void (*finalize)(const void *);
+//     bool (*equal)(const void *, const void *);
+//     OCStringRef (*copyFormattingDesc)(OCTypeRef);
+//     cJSON *(*copyJSON)(const void *);
+//     void *(*copyDeep)(const void *);
+//     void *(*copyDeepMutable)(const void *);
+// } OCBase;
+
+// // Flag bit definitions for OCBase.flags
+// #define OC_FLAG_STATIC_INSTANCE  (1U << 0)   // 0x00000001
+// #define OC_FLAG_FINALIZED        (1U << 1)   // 0x00000002  
+// #define OC_FLAG_TRACKED          (1U << 2)   // 0x00000004
+// // 29 bits remaining (bits 3-31) for future boolean flags
+
+// // Accessor macros for backward compatibility
+// #define OCTypeGetStaticInstance(obj)  ((((OCBase*)(obj))->flags & OC_FLAG_STATIC_INSTANCE) != 0)
+// #define OCTypeSetStaticInstance(obj, val) \
+//     do { \
+//         if (val) ((OCBase*)(obj))->flags |= OC_FLAG_STATIC_INSTANCE; \
+//         else ((OCBase*)(obj))->flags &= ~OC_FLAG_STATIC_INSTANCE; \
+//     } while(0)
+
+// #define OCTypeGetFinalized(obj)   ((((OCBase*)(obj))->flags & OC_FLAG_FINALIZED) != 0)
+// #define OCTypeSetFinalized(obj, val) \
+//     do { \
+//         if (val) ((OCBase*)(obj))->flags |= OC_FLAG_FINALIZED; \
+//         else ((OCBase*)(obj))->flags &= ~OC_FLAG_FINALIZED; \
+//     } while(0)
+
+// #define OCTypeGetTracked(obj)     ((((OCBase*)(obj))->flags & OC_FLAG_TRACKED) != 0)
+// #define OCTypeSetTracked(obj, val) \
+//     do { \
+//         if (val) ((OCBase*)(obj))->flags |= OC_FLAG_TRACKED; \
+//         else ((OCBase*)(obj))->flags &= ~OC_FLAG_TRACKED; \
+//     } while(0)
+
+
 /**
  * @brief Allocates and initializes a new OCType-compatible object with virtual method table.
  *
