@@ -8,10 +8,19 @@
  */
 #ifndef OCType_h
 #define OCType_h
-#include "OCLibrary.h"
+#include <stdint.h>
+#include <stdio.h>
+#include <stdbool.h>
+#include "cJSON.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+// Forward declarations (the actual definitions will be in OCLibrary.h)
+typedef const struct impl_OCType *OCTypeRef;
+typedef const struct impl_OCString *OCStringRef;
+
 /**
  * @defgroup OCType OCType
  * @brief Core type definitions and memory management functions.
@@ -32,11 +41,6 @@ extern "C" {
             return X;                                                                \
         }                                                                            \
     } while (0)
-/**
- * @brief Defines an identifier for an OCType.
- * @ingroup OCType
- */
-typedef uint16_t OCTypeID;
 /**
  * @brief Return value constants.
  * @ingroup OCType

@@ -250,31 +250,58 @@ typedef enum {
  * @endcode
  */
 typedef OCOptionFlags OCStringCompareFlags;
-typedef signed long OCIndex;
 /** @cond INTERNAL */
-// Centralized Ref typedefs
+
+/**
+ * @brief Index type for OCTypes collections.
+ * @ingroup OCLibrary
+ */
+typedef signed long OCIndex;
+
+/**
+ * @brief Defines an identifier for an OCType.
+ * @ingroup OCLibrary  
+ */
+typedef uint16_t OCTypeID;
+
+// Forward struct declarations for opaque type system
+struct impl_OCType;
+struct impl_OCString;
+struct impl_OCData;
+struct impl_OCArray;
+struct impl_OCDictionary;
+struct impl_OCSet;
+struct impl_OCBoolean;
+struct impl_OCNumber;
+struct impl_OCIndexSet;
+struct impl_OCIndexArray;
+struct impl_OCIndexPairSet;
+
+// Const ref typedefs (immutable references)
 typedef const struct impl_OCType *OCTypeRef;
 typedef const struct impl_OCString *OCStringRef;
-typedef const struct impl_OCArray *OCArrayRef;
-typedef const struct impl_OCSet *OCSetRef;
-typedef const struct impl_OCDictionary *OCDictionaryRef;
-typedef const struct impl_OCBoolean *OCBooleanRef;
 typedef const struct impl_OCData *OCDataRef;
+typedef const struct impl_OCArray *OCArrayRef;
+typedef const struct impl_OCDictionary *OCDictionaryRef;
+typedef const struct impl_OCSet *OCSetRef;
+typedef const struct impl_OCBoolean *OCBooleanRef;
 typedef const struct impl_OCNumber *OCNumberRef;
 typedef const struct impl_OCIndexSet *OCIndexSetRef;
 typedef const struct impl_OCIndexArray *OCIndexArrayRef;
 typedef const struct impl_OCIndexPairSet *OCIndexPairSetRef;
-// OCAutoreleasePoolRef is typically 'typedef struct impl_OCAutoreleasePool *OCAutoreleasePoolRef;'
-// and not a 'const struct'. So, it's usually defined directly in OCAutoreleasePool.h.
-// Mutable Ref typedefs
+
+// Mutable ref typedefs (mutable references)
 typedef struct impl_OCArray *OCMutableArrayRef;
-typedef struct impl_OCSet *OCMutableSetRef;
 typedef struct impl_OCData *OCMutableDataRef;
 typedef struct impl_OCDictionary *OCMutableDictionaryRef;
+typedef struct impl_OCSet *OCMutableSetRef;
 typedef struct impl_OCString *OCMutableStringRef;
 typedef struct impl_OCIndexSet *OCMutableIndexSetRef;
 typedef struct impl_OCIndexArray *OCMutableIndexArrayRef;
 typedef struct impl_OCIndexPairSet *OCMutableIndexPairSetRef;
+
+// OCAutoreleasePoolRef is typically 'typedef struct impl_OCAutoreleasePool *OCAutoreleasePoolRef;'
+// and not a 'const struct'. So, it's usually defined directly in OCAutoreleasePool.h.
 /** @endcond */
 /**
  * @enum OCDiacriticCompatibilityFlagsEnum
@@ -394,21 +421,28 @@ OC_INLINE OCRange OCRangeMake(uint64_t loc, uint64_t len) {
 // Expose cleanup functions for master cleanup
 void cleanupConstantStringTable(void);
 void cleanupTypeIDTable(void);
+
+/**
+ * @brief Defines an identifier for an OCType.
+ * @ingroup OCLibrary
+ */
+typedef uint16_t OCTypeID;
+
 /* Now pull in the rest of the public OCTypes APIs: */
-#include "OCType.h"  // Base type system - must be first
 #include "cJSON.h"   // JSON support - needed by many modules
+#include "OCType.h"  // Base type system - must be first
 #include "OCArray.h"
 #include "OCAutoreleasePool.h"
 #include "OCBoolean.h"
 #include "OCData.h"
 #include "OCDictionary.h"
 #include "OCFileUtilities.h"
+#include "OCNumber.h"
 #include "OCIndexArray.h"
 #include "OCIndexPairSet.h"
 #include "OCIndexSet.h"
 #include "OCLeakTracker.h"
 #include "OCMath.h"
-#include "OCNumber.h"
 #include "OCSet.h"
 #include "OCString.h"
 /** @} */            // end of OCLibrary group
