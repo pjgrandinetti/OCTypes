@@ -6,13 +6,10 @@
  * with support for Base64 serialization, CFNumber-based conversion, and
  * plist-compatible serialization.
  */
-
 #ifndef OCINDEXARRAY_H
 #define OCINDEXARRAY_H
-
-#include "OCLibrary.h"
 #include <stdbool.h>
-
+#include "OCLibrary.h"
 /**
  * @defgroup OCIndexArray OCIndexArray
  * @brief Array types and operations for OCIndex values in OCTypes.
@@ -22,7 +19,6 @@
  * array export.
  * @{
  */
-
 /**
  * @brief Returns the unique OCTypeID for OCIndexArray.
  *
@@ -30,7 +26,6 @@
  * @ingroup OCIndexArray
  */
 OCTypeID OCIndexArrayGetTypeID(void);
-
 /**
  * @brief Creates an immutable OCIndexArray from a C array of OCIndex values.
  *
@@ -41,7 +36,6 @@ OCTypeID OCIndexArrayGetTypeID(void);
  * @ingroup OCIndexArray
  */
 OCIndexArrayRef OCIndexArrayCreate(OCIndex *indexes, OCIndex numValues);
-
 /**
  * @brief Creates a mutable OCIndexArray with the given initial capacity.
  *
@@ -50,7 +44,6 @@ OCIndexArrayRef OCIndexArrayCreate(OCIndex *indexes, OCIndex numValues);
  * @ingroup OCIndexArray
  */
 OCMutableIndexArrayRef OCIndexArrayCreateMutable(OCIndex capacity);
-
 /**
  * @brief Creates a deep immutable copy of the given index array.
  *
@@ -59,7 +52,6 @@ OCMutableIndexArrayRef OCIndexArrayCreateMutable(OCIndex capacity);
  * @ingroup OCIndexArray
  */
 OCIndexArrayRef OCIndexArrayCreateCopy(OCIndexArrayRef theIndexArray);
-
 /**
  * @brief Creates a deep mutable copy of the given index array.
  *
@@ -68,7 +60,6 @@ OCIndexArrayRef OCIndexArrayCreateCopy(OCIndexArrayRef theIndexArray);
  * @ingroup OCIndexArray
  */
 OCMutableIndexArrayRef OCIndexArrayCreateMutableCopy(OCIndexArrayRef theIndexArray);
-
 /**
  * @brief Returns the number of OCIndex values in the array.
  *
@@ -77,7 +68,6 @@ OCMutableIndexArrayRef OCIndexArrayCreateMutableCopy(OCIndexArrayRef theIndexArr
  * @ingroup OCIndexArray
  */
 OCIndex OCIndexArrayGetCount(OCIndexArrayRef theIndexArray);
-
 /**
  * @brief Returns a pointer to the raw mutable OCIndex buffer.
  *
@@ -87,7 +77,6 @@ OCIndex OCIndexArrayGetCount(OCIndexArrayRef theIndexArray);
  * @ingroup OCIndexArray
  */
 OCIndex *OCIndexArrayGetMutableBytes(OCIndexArrayRef theIndexArray);
-
 /**
  * @brief Retrieves the value at the specified index.
  *
@@ -97,7 +86,6 @@ OCIndex *OCIndexArrayGetMutableBytes(OCIndexArrayRef theIndexArray);
  * @ingroup OCIndexArray
  */
 OCIndex OCIndexArrayGetValueAtIndex(OCIndexArrayRef theIndexArray, OCIndex index);
-
 /**
  * @brief Sets a value at the specified index in a mutable array.
  *
@@ -108,7 +96,6 @@ OCIndex OCIndexArrayGetValueAtIndex(OCIndexArrayRef theIndexArray, OCIndex index
  * @ingroup OCIndexArray
  */
 bool OCIndexArraySetValueAtIndex(OCMutableIndexArrayRef theIndexArray, OCIndex index, OCIndex value);
-
 /**
  * @brief Removes the value at the specified index.
  *
@@ -118,7 +105,6 @@ bool OCIndexArraySetValueAtIndex(OCMutableIndexArrayRef theIndexArray, OCIndex i
  * @ingroup OCIndexArray
  */
 bool OCIndexArrayRemoveValueAtIndex(OCMutableIndexArrayRef theIndexArray, OCIndex index);
-
 /**
  * @brief Removes multiple values at indices specified in an OCIndexSet.
  *
@@ -128,7 +114,6 @@ bool OCIndexArrayRemoveValueAtIndex(OCMutableIndexArrayRef theIndexArray, OCInde
  * @ingroup OCIndexArray
  */
 void OCIndexArrayRemoveValuesAtIndexes(OCMutableIndexArrayRef theIndexArray, OCIndexSetRef theIndexSet);
-
 /**
  * @brief Checks whether the array contains the specified value.
  *
@@ -138,7 +123,6 @@ void OCIndexArrayRemoveValuesAtIndexes(OCMutableIndexArrayRef theIndexArray, OCI
  * @ingroup OCIndexArray
  */
 bool OCIndexArrayContainsIndex(OCIndexArrayRef theIndexArray, OCIndex index);
-
 /**
  * @brief Appends a single value to the mutable array.
  *
@@ -148,7 +132,6 @@ bool OCIndexArrayContainsIndex(OCIndexArrayRef theIndexArray, OCIndex index);
  * @ingroup OCIndexArray
  */
 bool OCIndexArrayAppendValue(OCMutableIndexArrayRef theIndexArray, OCIndex index);
-
 /**
  * @brief Appends the contents of another array to the mutable array.
  *
@@ -158,7 +141,6 @@ bool OCIndexArrayAppendValue(OCMutableIndexArrayRef theIndexArray, OCIndex index
  * @ingroup OCIndexArray
  */
 bool OCIndexArrayAppendValues(OCMutableIndexArrayRef theIndexArray, OCIndexArrayRef arrayToAppend);
-
 /**
  * @brief Converts the array to a Base64-encoded OCString using the given numeric type.
  *
@@ -168,7 +150,6 @@ bool OCIndexArrayAppendValues(OCMutableIndexArrayRef theIndexArray, OCIndexArray
  * @ingroup OCIndexArray
  */
 OCStringRef OCIndexArrayCreateBase64String(OCIndexArrayRef theIndexArray, OCNumberType integerType);
-
 /**
  * @brief Converts the array to a CFNumber-based OCArray.
  *
@@ -177,7 +158,6 @@ OCStringRef OCIndexArrayCreateBase64String(OCIndexArrayRef theIndexArray, OCNumb
  * @ingroup OCIndexArray
  */
 OCArrayRef OCIndexArrayCreateCFNumberArray(OCIndexArrayRef theIndexArray);
-
 /**
  * @brief Serializes the array to a plist-compatible OCDictionary.
  *
@@ -186,7 +166,6 @@ OCArrayRef OCIndexArrayCreateCFNumberArray(OCIndexArrayRef theIndexArray);
  * @ingroup OCIndexArray
  */
 OCDictionaryRef OCIndexArrayCreateDictionary(OCIndexArrayRef theIndexArray);
-
 /**
  * @brief Reconstructs an OCIndexArray from a plist-compatible OCDictionary.
  *
@@ -195,7 +174,6 @@ OCDictionaryRef OCIndexArrayCreateDictionary(OCIndexArrayRef theIndexArray);
  * @ingroup OCIndexArray
  */
 OCIndexArrayRef OCIndexArrayCreateFromDictionary(OCDictionaryRef dictionary);
-
 /**
  * @brief Creates an OCIndexArray from a cJSON array.
  *
@@ -204,7 +182,6 @@ OCIndexArrayRef OCIndexArrayCreateFromDictionary(OCDictionaryRef dictionary);
  *         The caller is responsible for releasing the returned array.
  */
 OCIndexArrayRef OCIndexArrayCreateFromJSON(cJSON *json);
-
 /**
  * @brief Creates a cJSON array from an OCIndexArray.
  *
@@ -213,7 +190,6 @@ OCIndexArrayRef OCIndexArrayCreateFromJSON(cJSON *json);
  *         The caller is responsible for managing the returned cJSON object.
  */
 cJSON *OCIndexArrayCreateJSON(const void *obj);
-
 /**
  * @brief Logs the contents of the array to stderr, for debugging.
  *
@@ -221,11 +197,8 @@ cJSON *OCIndexArrayCreateJSON(const void *obj);
  * @ingroup OCIndexArray
  */
 void OCIndexArrayShow(OCIndexArrayRef theIndexArray);
-
-/** @} */ // end of OCIndexArray group
-
+/** @} */  // end of OCIndexArray group
 #ifdef __cplusplus
 }
 #endif
-
 #endif /* OCINDEXARRAY_H */

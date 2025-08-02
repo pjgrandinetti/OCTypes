@@ -136,10 +136,10 @@ static size_t oc_utf8_strlen(const char *s) {
 // ——— Helper: replace all occurrences of a C‐string ———
 // Returns a newly malloc’d buffer, and sets *count to the number of replacements.
 // The returned buffer always has enough space for the final string + '\0'.
-static char * str_replace(const char *orig,
-            const char *rep,
-            const char *with,
-            int64_t *count) {
+static char *str_replace(const char *orig,
+                         const char *rep,
+                         const char *with,
+                         int64_t *count) {
     const char *ins = orig;
     char *result;
     char *tmp;
@@ -571,9 +571,7 @@ void OCStringUppercase(OCMutableStringRef s) {
 }
 void OCStringTrim(OCMutableStringRef s, OCStringRef t) {
     if (!s || !t || t->length == 0 || s->length == 0) return;
-
     OCRange r;
-
     // Trim from the beginning
     while (s->length >= t->length) {
         if (!OCStringFindWithOptions(s, t, OCRangeMake(0, t->length), 0, &r) || r.location != 0) {
@@ -581,7 +579,6 @@ void OCStringTrim(OCMutableStringRef s, OCStringRef t) {
         }
         OCStringDelete(s, OCRangeMake(0, t->length));
     }
-
     // Trim from the end
     while (s->length >= t->length) {
         OCRange suffixSearch = OCRangeMake(s->length - t->length, t->length);
@@ -996,14 +993,12 @@ static void OCStringAppendFormatWithArgumentsSafe(
     OCMutableStringRef result,
     OCStringRef format,
     va_list args,
-    int max_args)
-{
+    int max_args) {
     if (!result || !format || !format->string) return;
     int arg_index = 0;
     const char *f = format->string;
     va_list arglist;
     va_copy(arglist, args);
-
     while (*f) {
         if (f[0] == '%' && f[1] == '@') {
             if (arg_index >= max_args) {
@@ -1015,15 +1010,12 @@ static void OCStringAppendFormatWithArgumentsSafe(
                 if (!s) {
                     // DO NOT append "[NULL]"—skip, just print error
                     fprintf(stderr, "[OCString] ERROR: NULL OCStringRef for %%@ at index %d (expected, test may allow)\n", arg_index);
-                }
-                else if ((uintptr_t)s < 4096) { // catch NULL/tiny invalid pointers
-                    fprintf(stderr, "[OCString] ERROR: Bad pointer for %%@ at index %d: %p\n", arg_index, (void*)s);
-                }
-                else if (s->base.typeID != OCStringGetTypeID()) {
+                } else if ((uintptr_t)s < 4096) {  // catch NULL/tiny invalid pointers
+                    fprintf(stderr, "[OCString] ERROR: Bad pointer for %%@ at index %d: %p\n", arg_index, (void *)s);
+                } else if (s->base.typeID != OCStringGetTypeID()) {
                     fprintf(stderr, "[OCString] ERROR: Not an OCStringRef at %%@ index %d (typeID=%u, expected=%u)\n",
                             arg_index, s->base.typeID, OCStringGetTypeID());
-                }
-                else if (s && s->string) {
+                } else if (s && s->string) {
                     OCStringAppendCString(result, s->string);
                 } else {
                     // Don't append, just print error
@@ -1189,18 +1181,14 @@ OCArrayRef OCStringCreateArrayWithFindResults(OCStringRef string,
     }
     return result;
 }
-
 OCArrayRef
 OCStringCreateArrayBySeparatingStrings(OCStringRef string,
-                                       OCStringRef separator)
-{
+                                       OCStringRef separator) {
     if (!string || !string->string ||
         !separator || !separator->string)
         return NULL;
-
     // Full range of the input string in code-points
     OCRange fullRange = OCRangeMake(0, OCStringGetLength(string));
-
     // Find all occurrences of 'separator'
     OCArrayRef findResults =
         OCStringCreateArrayWithFindResults(string,
@@ -1213,12 +1201,10 @@ OCStringCreateArrayBySeparatingStrings(OCStringRef string,
         OCArrayAppendValue(single, string);
         return single;
     }
-
     uint64_t sepCount = OCArrayGetCount(findResults);
     // Preallocate result slots (sepCount separators ⇒ sepCount+1 tokens)
     OCMutableArrayRef result =
         OCArrayCreateMutable((uint32_t)(sepCount + 1), &kOCTypeArrayCallBacks);
-
     // Walk through each found separator, slicing out the preceding chunk
     uint64_t prevEnd = 0;
     for (uint64_t i = 0; i < sepCount; ++i) {
@@ -1233,7 +1219,6 @@ OCStringCreateArrayBySeparatingStrings(OCStringRef string,
         // advance past this separator
         prevEnd = r->location + r->length;
     }
-
     // Add final token after last separator
     if (prevEnd <= fullRange.length) {
         OCRange slice = OCRangeMake(prevEnd, fullRange.length - prevEnd);
@@ -1243,7 +1228,6 @@ OCStringCreateArrayBySeparatingStrings(OCStringRef string,
             OCRelease(piece);
         }
     }
-
     OCRelease(findResults);
     return result;
 }

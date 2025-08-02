@@ -8,7 +8,6 @@
 #define OCNumber_h
 #include <complex.h>
 #include <limits.h>
-
 #include "OCLibrary.h"
 /**
  * @note Ownership follows CoreFoundation conventions:
@@ -42,21 +41,20 @@ typedef union __Number {
  * @ingroup OCNumber
  */
 typedef enum {
-    kOCNumberSInt8Type=1,          /**< Signed 8-bit integer. */
-    kOCNumberSInt16Type,        /**< Signed 16-bit integer. */
-    kOCNumberSInt32Type,        /**< Signed 32-bit integer. */
-    kOCNumberSInt64Type,        /**< Signed 64-bit integer. */
-    kOCNumberFloat32Type,      /**< 32-bit float. */
-    kOCNumberFloat64Type,      /**< 64-bit float (double). */
-    kOCNumberUInt8Type,          /**< Unsigned 8-bit integer. */
-    kOCNumberUInt16Type,        /**< Unsigned 16-bit integer. */
-    kOCNumberUInt32Type,        /**< Unsigned 32-bit integer. */
-    kOCNumberUInt64Type,        /**< Unsigned 64-bit integer. */
-    kOCNumberComplex64Type,  /**< Complex float. */
+    kOCNumberSInt8Type = 1, /**< Signed 8-bit integer. */
+    kOCNumberSInt16Type,    /**< Signed 16-bit integer. */
+    kOCNumberSInt32Type,    /**< Signed 32-bit integer. */
+    kOCNumberSInt64Type,    /**< Signed 64-bit integer. */
+    kOCNumberFloat32Type,   /**< 32-bit float. */
+    kOCNumberFloat64Type,   /**< 64-bit float (double). */
+    kOCNumberUInt8Type,     /**< Unsigned 8-bit integer. */
+    kOCNumberUInt16Type,    /**< Unsigned 16-bit integer. */
+    kOCNumberUInt32Type,    /**< Unsigned 32-bit integer. */
+    kOCNumberUInt64Type,    /**< Unsigned 64-bit integer. */
+    kOCNumberComplex64Type, /**< Complex float. */
     kOCNumberComplex128Type /**< Complex double. */
 } OCNumberType;
 #define kOCNumberTypeInvalid 0
-
 /**
  * @brief Returns the canonical string name for a given OCNumberType.
  *
@@ -65,7 +63,6 @@ typedef enum {
  * @ingroup OCNumber
  */
 const char *OCNumberGetTypeName(OCNumberType type);
-
 /**
  * @brief Returns the OCNumberType enum value for a given string name.
  *
@@ -74,7 +71,6 @@ const char *OCNumberGetTypeName(OCNumberType type);
  * @ingroup OCNumber
  */
 OCNumberType OCNumberTypeFromName(const char *name);
-
 /**
  * @brief The OCTypeID for OCNumber.
  * @ingroup OCNumber
@@ -258,10 +254,8 @@ static inline bool OCNumberTryGetFloatComplex(OCNumberRef n, float complex *out)
 static inline bool OCNumberTryGetDoubleComplex(OCNumberRef n, double complex *out) {
     return OCNumberTryGetComplex128(n, out);
 }
-
 static inline bool OCNumberTryGetInt(OCNumberRef n, int *out) {
     if (!n || !out) return false;
-
     OCNumberType type = OCNumberGetType(n);
     switch (type) {
         case kOCNumberSInt8Type: {
@@ -291,7 +285,7 @@ static inline bool OCNumberTryGetInt(OCNumberRef n, int *out) {
         case kOCNumberSInt64Type: {
             int64_t v;
             if (OCNumberTryGetSInt64(n, &v)) {
-                if (v < (int64_t)INT_MIN || v > (int64_t)INT_MAX) return false; // overflow check
+                if (v < (int64_t)INT_MIN || v > (int64_t)INT_MAX) return false;  // overflow check
                 *out = (int)v;
                 return true;
             }
@@ -300,13 +294,11 @@ static inline bool OCNumberTryGetInt(OCNumberRef n, int *out) {
         default:
             break;
     }
-
     return false;
 }
 /** @brief Try extract long native size. */
 static inline bool OCNumberTryGetLong(OCNumberRef n, long *out) {
     if (!n || !out) return false;
-
     OCNumberType type = OCNumberGetType(n);
     switch (type) {
         case kOCNumberSInt8Type: {
@@ -348,15 +340,12 @@ static inline bool OCNumberTryGetLong(OCNumberRef n, long *out) {
         default:
             break;
     }
-
     return false;
 }
 /** @brief Try extract OCIndex native size. */
 static inline bool OCNumberTryGetOCIndex(OCNumberRef n, OCIndex *out) {
     if (!n || !out) return false;
-
     OCNumberType type = OCNumberGetType(n);
-    
     switch (type) {
         case kOCNumberSInt8Type: {
             int8_t v;
@@ -394,7 +383,6 @@ static inline bool OCNumberTryGetOCIndex(OCNumberRef n, OCIndex *out) {
         default:
             break;
     }
-
     return false;
 }
 /** @} */  // end Try-get Accessors

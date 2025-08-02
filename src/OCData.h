@@ -178,8 +178,6 @@ bool OCDataAppendBytes(OCMutableDataRef data, const uint8_t *bytes, uint64_t len
  * @ingroup OCData
  */
 OCStringRef OCDataCopyFormattingDesc(OCTypeRef cf);
-
-
 /**
  * @typedef OCBase64EncodingOptions
  * @brief Bitmask options to control the format of Base64-encoded output.
@@ -202,7 +200,6 @@ typedef enum {
     /** Use CRLF (`\r\n`) line endings. */
     OCBase64EncodingEndLineWithCarriageReturnLineFeed = 1 << 6
 } OCBase64EncodingOptions;
-
 /**
  * @brief Encodes an OCDataRef into a Base64-encoded OCStringRef.
  *
@@ -219,7 +216,6 @@ typedef enum {
  * @ingroup OCData
  */
 OCStringRef OCDataCreateBase64EncodedString(OCDataRef data, OCBase64EncodingOptions options);
-
 /**
  * @brief Decodes a Base64-encoded OCStringRef into an OCDataRef.
  *
@@ -234,8 +230,6 @@ OCStringRef OCDataCreateBase64EncodedString(OCDataRef data, OCBase64EncodingOpti
  * @ingroup OCData
  */
 OCDataRef OCDataCreateFromBase64EncodedString(OCStringRef base64String);
-
-
 /**
  * @brief Creates a JSON string from OCData by Base64-encoding its contents.
  *
@@ -249,8 +243,6 @@ OCDataRef OCDataCreateFromBase64EncodedString(OCStringRef base64String);
  * @ingroup OCData
  */
 cJSON *OCDataCreateJSON(OCDataRef data);
-
-
 /**
  * @brief Creates an OCDataRef from a Base64-encoded JSON string.
  *
@@ -262,7 +254,5 @@ cJSON *OCDataCreateJSON(OCDataRef data);
  * @ingroup OCData
  */
 OCDataRef OCDataCreateFromJSON(cJSON *json);
-
-
 /** @} */  // end of OCData group
 #endif     /* OCData_h */

@@ -50,17 +50,17 @@ Creation and Destruction of the Shape Type is handled with these function:
 
     static struct __Shape *ShapeAllocate()
     {
-        struct __Shape *theShape = malloc(sizeof(struct __Shape)); 
+        struct __Shape *theShape = malloc(sizeof(struct __Shape));
         if(NULL == theShape) return NULL;
         return theShape;
     }
 
     ShapeRef ShapeCreate(float xPosition, float yPosition, float orientation)
     {
-        struct __Shape *newShape = ShapeAllocate(); 
-        if(NULL == newShape) return NULL; 
-        newShape->xPosition = xPosition; 
-        newShape->yPosition = yPosition;           
+        struct __Shape *newShape = ShapeAllocate();
+        if(NULL == newShape) return NULL;
+        newShape->xPosition = xPosition;
+        newShape->yPosition = yPosition;
         newShape->orientation = orientation;
         return newShape;
     }
@@ -68,20 +68,20 @@ Creation and Destruction of the Shape Type is handled with these function:
     void ShapeFinalize(ShapeRef theShape)
     {
         if(NULL == theShape) return;
-        free((void *)theShape); 
+        free((void *)theShape);
     }
 
 Comparison and Accessors are handled with these functions:
 
 .. code-block:: c
 
-    bool ShapeEqual(ShapeRef theShape1, ShapeRef theShape2) 
+    bool ShapeEqual(ShapeRef theShape1, ShapeRef theShape2)
     {
-        if(NULL == theShape1 || NULL == theShape2) return false; 
+        if(NULL == theShape1 || NULL == theShape2) return false;
         if(theShape1 == theShape2) return true;
-        if(theShape1->xPosition != theShape2->xPosition) return false; 
-        if(theShape1->yPosition != theShape2->yPosition) return false; 
-        if(theShape1->orientation != theShape2->orientation) return false; 
+        if(theShape1->xPosition != theShape2->xPosition) return false;
+        if(theShape1->yPosition != theShape2->yPosition) return false;
+        if(theShape1->orientation != theShape2->orientation) return false;
         return true;
     }
 
@@ -100,14 +100,14 @@ A shape can be translated and rotated. These methods are handled with these func
 
 .. code-block:: c
 
-    void ShapeTranslate(MutableShapeRef theShape, float xTranslation, float yTranslation) 
+    void ShapeTranslate(MutableShapeRef theShape, float xTranslation, float yTranslation)
     {
         if(NULL == theShape) return;
-        theShape->xPosition += xTranslation; 
+        theShape->xPosition += xTranslation;
         theShape->yPosition += yTranslation;
     }
 
-    void ShapeRotate(MutableShapeRef theShape, float angle) 
+    void ShapeRotate(MutableShapeRef theShape, float angle)
     {
         if(NULL == theShape) return;
         theShape->orientation += angle;
@@ -119,7 +119,7 @@ Usage of Shape
 
     MutableShapeRef shape = ShapeCreateMutable(0.0, 0.0, 0.0);
     ShapeShow(shape);
-    
+
     ShapeTranslate(shape, 10.0, 20.0);
     ShapeRotate(shape, 180.);
     ShapeShow(shape);
@@ -133,12 +133,12 @@ Let's examine how we can define a Square type that inherits from Shape. In sourc
 .. code-block:: c
 
     struct __Square {
-        // Shape Type attributes - order of declaration is essential 
+        // Shape Type attributes - order of declaration is essential
         float xPosition;
         float yPosition;
         float orientation;
         // Square Type attributes
-        float width; 
+        float width;
     };
 
 For this inheritance trick to work it is essential that the order of instance variable declarations be identical to those inside the Shape structure. Any additional instance variables must go after the variables matching Shape's structure.
@@ -151,57 +151,57 @@ In the header file we define the opaque types
     typedef struct __Square * MutableSquareRef;
     Creation and Destruction of the Square Type is handled with these function:
 
-    static struct __Square *SquareAllocate() 
+    static struct __Square *SquareAllocate()
     {
         struct __Square *theSquare = malloc(sizeof(struct __Square)); if(NULL == theSquare) return NULL;
         return theSquare;
     }
 
-    SquareRef SquareCreate(float xPosition, float yPosition, float orientation, float width) 
+    SquareRef SquareCreate(float xPosition, float yPosition, float orientation, float width)
     {
         struct __Square *newSquare = SquareAllocate();
-        if(NULL == newSquare) return NULL; 
-        newSquare->xPosition = xPosition; 
-        newSquare->yPosition = yPosition; 
-        newSquare->orientation = orientation; 
+        if(NULL == newSquare) return NULL;
+        newSquare->xPosition = xPosition;
+        newSquare->yPosition = yPosition;
+        newSquare->orientation = orientation;
         newSquare->width = width;
-        return newSquare; 
+        return newSquare;
     }
 
-    void SquareFinalize(SquareRef theSquare) 
+    void SquareFinalize(SquareRef theSquare)
     {
         if(NULL == theSquare) return;
-        free((void *)theSquare); 
+        free((void *)theSquare);
     }
     Comparison and Accessors are handled with these functions:
 
-    bool SquareEqual(SquareRef theSquare1, SquareRef theSquare2) 
+    bool SquareEqual(SquareRef theSquare1, SquareRef theSquare2)
     {
         if(!ShapeEqual((ShapeRef) theSquare1, (ShapeRef) theSquare2)) return false;
         if(theSquare1->width != theSquare2->width) return false;
         return true;
     }
 
-    float SquareGetXPosition(SquareRef theSquare) 
+    float SquareGetXPosition(SquareRef theSquare)
     {
-        return ShapeGetXPosition((ShapeRef) theSquare); 
+        return ShapeGetXPosition((ShapeRef) theSquare);
     }
 
-    float SquareGetWidth(SquareRef theSquare) 
+    float SquareGetWidth(SquareRef theSquare)
     {
         if(NULL == theSquare) return nan(NULL);
         return theSquare->width;
     }
 
-    void SquareSetXPosition(MutableSquareRef theSquare, float xPosition) 
+    void SquareSetXPosition(MutableSquareRef theSquare, float xPosition)
     {
-        ShapeSetXPosition((MutableShapeRef) theSquare, xPosition); 
+        ShapeSetXPosition((MutableShapeRef) theSquare, xPosition);
     }
 
-    void SquareSetWidth(MutableSquareRef theSquare, float width) 
+    void SquareSetWidth(MutableSquareRef theSquare, float width)
     {
         if(NULL == theSquare) return;
-        theSquare->width = width; 
+        theSquare->width = width;
     }
 
 Notice how we type cast a Square into a Shape before calling Shape methods.
@@ -213,7 +213,7 @@ Usage of Square
     MutableSquareRef square = MutableSquareCreate(0.0, 0.0, 0.0, 10.0);
     ShapeShow((ShapeRef) square);
     SquareShow(square);
-  
+
     ShapeTranslate((MutableShapeRef) square, 10.0, 20.0);
     ShapeRotate((MutableShapeRef) square, 180.);
     SquareShow(square);
@@ -251,7 +251,7 @@ We begin by creating a fundamental opaque type called KFType, from which all oth
 
     struct impl_KFType {
         u_int32_t retainCount;
-        void (*finalize)(void *); 
+        void (*finalize)(void *);
         bool (*equal)(void *, void *);
     };
 
@@ -274,7 +274,7 @@ KFType Methods
     {
         if(NULL==theType) return;
         if(theType->retainCount == 1) {
-            theType->finalize(theType); return; 
+            theType->finalize(theType); return;
         }
         theType->retainCount--;
         return;
@@ -293,12 +293,12 @@ Now we can define KFShape to inherit from KFType
 
     struct impl_KFShape {
         u_int32_t retainCount;
-        void (*finalize)(void *); 
+        void (*finalize)(void *);
         bool (*equal)(void *, void *);
 
         // Shape Type attributes
-        float xPosition; 
-        float yPosition; 
+        float xPosition;
+        float yPosition;
         float orientation;
     };
 
@@ -331,9 +331,9 @@ Part III: Best - OCTypes Framework
 Inspiration from Core Foundation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In Apple's Core Foundation, the opaque type we called KFType is actually called CFType. The Core Foundation framework 
-provides a rich set of types and functions that implement reference counting, collections, strings, and many other 
-useful object-oriented design features. It is a powerful and mature framework that has proven itself in building 
+In Apple's Core Foundation, the opaque type we called KFType is actually called CFType. The Core Foundation framework
+provides a rich set of types and functions that implement reference counting, collections, strings, and many other
+useful object-oriented design features. It is a powerful and mature framework that has proven itself in building
 complex applications across macOS and iOS platforms.
 
 However, Core Foundation has some limitations for general C development:
@@ -345,8 +345,8 @@ However, Core Foundation has some limitations for general C development:
 The OCTypes Solution
 ~~~~~~~~~~~~~~~~~~~~
 
-Here, we provide a lightweight alternative to Core Foundation, called OCTypes. It is a small framework that implements 
-the core object-oriented design patterns we've explored—reference counting, inheritance, polymorphism, and collections—while 
+Here, we provide a lightweight alternative to Core Foundation, called OCTypes. It is a small framework that implements
+the core object-oriented design patterns we've explored—reference counting, inheritance, polymorphism, and collections—while
 maintaining the essential benefits of type safety and memory management.
 
 Key design principles of OCTypes:
@@ -359,7 +359,7 @@ Key design principles of OCTypes:
 The OCBase Foundation
 ~~~~~~~~~~~~~~~~~~~~~
 
-The heart of the OCTypes system is the OCBase structure, which serves as the foundation for all OCTypes objects. 
+The heart of the OCTypes system is the OCBase structure, which serves as the foundation for all OCTypes objects.
 Let's examine how this evolution improves upon our earlier approaches:
 
 .. code-block:: c
@@ -382,7 +382,7 @@ The OCBase structure itself contains everything needed for sophisticated object-
       uint32_t retainCount;                         // Reference count for memory management
       bool static_instance;                         // Indicates if the instance is static (never deallocated)
       bool finalized;                               // Indicates if the instance has been finalized
-      
+
       // Virtual method table - enables polymorphism
       void (*finalize)(const void *);               // Finalizer called when retain count reaches zero
       bool (*equal)(const void *, const void *);   // Equality comparison function for this type
@@ -390,7 +390,7 @@ The OCBase structure itself contains everything needed for sophisticated object-
       cJSON *(*copyJSON)(const void *);             // JSON serialization function
       void *(*copyDeep)(const void *);              // Immutable deep copy function
       void *(*copyDeepMutable)(const void *);       // Mutable deep copy function
-      
+
       // Debug and introspection support
       const char *allocFile;                        // Source file where object was allocated
       int allocLine;                                // Source line where object was allocated
@@ -407,7 +407,7 @@ Unlike our earlier approaches, OCTypes provides runtime type checking through OC
 .. code-block:: c
 
   // Safe: will return NULL if obj is not actually an OCShape
-  OCShapeRef shape = (OCShapeRef)obj;  
+  OCShapeRef shape = (OCShapeRef)obj;
   if (OCGetTypeID(shape) == OCShapeGetTypeID()) {
       // Safe to use as OCShape
   }
@@ -431,7 +431,7 @@ The framework includes sophisticated debugging capabilities that help developers
 
   // Debug information is automatically captured
   OCShapeRef shape = OCShapeCreate(1.0, 2.0, 45.0);  // __FILE__ and __LINE__ recorded
-  
+
   // Leak detection can report exactly where objects were allocated
   int leakCount = OCLeakTrackerGetUnreleasedObjectCount();
 
@@ -440,7 +440,7 @@ The framework includes sophisticated debugging capabilities that help developers
 OCTypes follows consistent naming and behavior patterns that make the API predictable and learnable:
 
 * **Create functions**: Return objects with retain count 1 (caller owns)
-* **Copy functions**: Return new objects with retain count 1 (caller owns)  
+* **Copy functions**: Return new objects with retain count 1 (caller owns)
 * **Get functions**: Return borrowed references (caller doesn't own)
 * **Retain/Release**: Explicit memory management
 
@@ -453,7 +453,7 @@ Let's see how all these concepts come together in a complete OCShape implementat
 
   // Type registration - done once per type
   static OCTypeID kOCShapeID = kOCNotATypeID;
-  
+
   OCTypeID OCShapeGetTypeID(void) {
       if (kOCShapeID == kOCNotATypeID) {
           kOCShapeID = OCRegisterType("OCShape");
@@ -473,14 +473,14 @@ Let's see how all these concepts come together in a complete OCShape implementat
   static bool impl_OCShapeEqual(const void *a_, const void *b_) {
       OCShapeRef a = (OCShapeRef)a_;
       OCShapeRef b = (OCShapeRef)b_;
-      
+
       // First check type compatibility
       if (a->base.typeID != b->base.typeID) return false;
       if (a == b) return true;  // Same object
-      
+
       // Compare actual values
-      return (a->xPosition == b->xPosition && 
-              a->yPosition == b->yPosition && 
+      return (a->xPosition == b->xPosition &&
+              a->yPosition == b->yPosition &&
               a->orientation == b->orientation);
   }
 
@@ -518,19 +518,19 @@ Let's see how all these concepts come together in a complete OCShape implementat
   OCShapeRef OCShapeCreate(float x, float y, float orientation) {
       struct impl_OCShape *shape = OCShapeAllocate();
       if (!shape) return NULL;
-      
+
       // Initialize shape-specific data
       shape->xPosition = x;
       shape->yPosition = y;
       shape->orientation = orientation;
-      
+
       return (OCShapeRef)shape;
   }
 
 **Benefits of This Approach**
 
 1. **Memory Safety**: Automatic retain/release prevents most memory leaks and use-after-free bugs
-2. **Type Safety**: Runtime type checking prevents casting errors  
+2. **Type Safety**: Runtime type checking prevents casting errors
 3. **Polymorphism**: Virtual method table enables object-oriented behavior in C
 4. **Debugging**: Built-in leak detection and allocation tracking
 5. **Consistency**: Predictable API patterns across all types
@@ -544,16 +544,16 @@ In the header file, we maintain the clean opaque interface while hiding all impl
 
   typedef const struct __OCShape * OCShapeRef;
   typedef struct __OCShape * OCMutableShapeRef;
-  
+
   // Creation and memory management
   OCShapeRef OCShapeCreate(float x, float y, float orientation);
   OCMutableShapeRef OCShapeCreateMutable(float x, float y, float orientation);
-  
+
   // All OCTypes inherit these operations
   OCShapeRef OCRetain(OCShapeRef shape);      // Increment retain count
   void OCRelease(OCShapeRef shape);           // Decrement retain count
   bool OCShapeEqual(OCShapeRef a, OCShapeRef b);  // Compare for equality
   OCShapeRef OCShapeDeepCopy(OCShapeRef source);  // Create immutable copy
 
-This approach provides all the benefits of object-oriented programming—encapsulation, inheritance, and polymorphism—while 
+This approach provides all the benefits of object-oriented programming—encapsulation, inheritance, and polymorphism—while
 remaining true to C's philosophy of simplicity and explicitness.

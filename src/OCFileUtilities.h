@@ -1,22 +1,17 @@
 // OCFileUtilities.h
 #ifndef OCFILEUTILS_H
 #define OCFILEUTILS_H
-
 #include <stdbool.h>
 #include "OCLibrary.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 /**
  * @defgroup OCFileUtilities OCFileUtilities
  * @brief File, path, and JSON (de)serialization helpers
  * @{
  */
-
 // Path utilities
-
 /**
  * @brief Join two path components with the platform’s separator.
  * @param a  First path component.
@@ -25,7 +20,6 @@ extern "C" {
  * @ingroup OCFileUtilities
  */
 OCStringRef OCPathJoin(OCStringRef a, OCStringRef b);
-
 /**
  * @brief Return the parent directory of a path.
  * @param path  The full path.
@@ -33,7 +27,6 @@ OCStringRef OCPathJoin(OCStringRef a, OCStringRef b);
  * @ingroup OCFileUtilities
  */
 OCStringRef OCPathDirname(OCStringRef path);
-
 /**
  * @brief Return the final component of a path.
  * @param path  The full path.
@@ -41,7 +34,6 @@ OCStringRef OCPathDirname(OCStringRef path);
  * @ingroup OCFileUtilities
  */
 OCStringRef OCPathBasename(OCStringRef path);
-
 /**
  * @brief Extract the “.ext” suffix from a path.
  * @param path  The full path.
@@ -50,7 +42,6 @@ OCStringRef OCPathBasename(OCStringRef path);
  * @ingroup OCFileUtilities
  */
 OCStringRef OCPathExtension(OCStringRef path);
-
 /**
  * @brief Replace the existing extension on a path.
  * @param path    The original path.
@@ -59,9 +50,7 @@ OCStringRef OCPathExtension(OCStringRef path);
  * @ingroup OCFileUtilities
  */
 OCStringRef OCPathByReplacingExtension(OCStringRef path, OCStringRef newExt);
-
 // Filesystem checks & manipulation
-
 /**
  * @brief Does the given path exist?
  * @param path  Filesystem path.
@@ -69,7 +58,6 @@ OCStringRef OCPathByReplacingExtension(OCStringRef path, OCStringRef newExt);
  * @ingroup OCFileUtilities
  */
 bool OCFileExists(const char *path);
-
 /**
  * @brief Is the given path a directory?
  * @param path  Filesystem path.
@@ -77,7 +65,6 @@ bool OCFileExists(const char *path);
  * @ingroup OCFileUtilities
  */
 bool OCIsDirectory(const char *path);
-
 /**
  * @brief Is the given path a regular file?
  * @param path  Filesystem path.
@@ -85,7 +72,6 @@ bool OCIsDirectory(const char *path);
  * @ingroup OCFileUtilities
  */
 bool OCIsRegularFile(const char *path);
-
 /**
  * @brief Create a directory, optionally recursing like “mkdir -p”.
  * @param path       Directory to create.
@@ -95,7 +81,6 @@ bool OCIsRegularFile(const char *path);
  * @ingroup OCFileUtilities
  */
 bool OCCreateDirectory(const char *path, bool recursive, OCStringRef *err);
-
 /**
  * @brief List every regular file under a folder.
  * @param path       Base directory.
@@ -106,7 +91,6 @@ bool OCCreateDirectory(const char *path, bool recursive, OCStringRef *err);
  * @ingroup OCFileUtilities
  */
 OCArrayRef OCListDirectory(const char *path, bool recursive, OCStringRef *err);
-
 /**
  * @brief Remove a file or empty directory.
  * @param path  Path to delete.
@@ -115,7 +99,6 @@ OCArrayRef OCListDirectory(const char *path, bool recursive, OCStringRef *err);
  * @ingroup OCFileUtilities
  */
 bool OCRemoveItem(const char *path, OCStringRef *err);
-
 /**
  * @brief Rename or move a file or directory.
  * @param oldPath  Existing path.
@@ -125,9 +108,7 @@ bool OCRemoveItem(const char *path, OCStringRef *err);
  * @ingroup OCFileUtilities
  */
 bool OCRenameItem(const char *oldPath, const char *newPath, OCStringRef *err);
-
 // Text & data I/O
-
 /**
  * @brief Read a UTF-8 text file into an OCString.
  * @param path  File path.
@@ -136,7 +117,6 @@ bool OCRenameItem(const char *oldPath, const char *newPath, OCStringRef *err);
  * @ingroup OCFileUtilities
  */
 OCStringRef OCStringCreateWithContentsOfFile(const char *path, OCStringRef *err);
-
 /**
  * @brief Write an OCString (UTF-8) to a file.
  * @param str   The string to write.
@@ -146,7 +126,6 @@ OCStringRef OCStringCreateWithContentsOfFile(const char *path, OCStringRef *err)
  * @ingroup OCFileUtilities
  */
 bool OCStringWriteToFile(OCStringRef str, const char *path, OCStringRef *err);
-
 /**
  * @brief Load all files under a folder (up to maxDepth) into a dictionary.
  * @param folderPath   Base directory.
@@ -159,9 +138,7 @@ bool OCStringWriteToFile(OCStringRef str, const char *path, OCStringRef *err);
 OCDictionaryRef OCDictionaryCreateWithContentsOfFolder(const char *folderPath,
                                                        int maxDepth,
                                                        OCStringRef *err);
-
 // JSON (de)serialization
-
 /**
  * @brief Write any OCTypes object (string, number, bool, array, dict…) to a
  *        compact JSON file.
@@ -172,11 +149,8 @@ OCDictionaryRef OCDictionaryCreateWithContentsOfFolder(const char *folderPath,
  * @ingroup OCFileUtilities
  */
 bool OCTypeWriteJSONToFile(OCTypeRef obj, const char *path, OCStringRef *err);
-
-/** @} */ // end of OCFileUtilities group
-
+/** @} */  // end of OCFileUtilities group
 #ifdef __cplusplus
 }
 #endif
-
-#endif // OCFILEUTILS_H
+#endif  // OCFILEUTILS_H

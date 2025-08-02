@@ -277,18 +277,15 @@ cleanup:
     if (chk) OCRelease(chk);
     return ok;
 }
-
 bool test_OCStringAppendFormat(void) {
     fprintf(stderr, "%s begin...\n", __func__);
     bool ok = false;
     OCMutableStringRef str = NULL;
     OCStringRef fmt = NULL;
     OCStringRef verify = NULL;
-
     // Start with an initial string
     str = OCStringCreateMutable(0);
     OCStringAppendCString(str, "START|");
-
     // Append an OCStringRef using %@ and test append behavior
     fmt = STR("%@|");
     OCStringAppendFormat(str, fmt, STR("SEG1"));
@@ -299,7 +296,6 @@ bool test_OCStringAppendFormat(void) {
         goto cleanup;
     }
     OCRelease(verify);
-
     // Append with multiple types: %d, %f, %s, %c, %% and pointer
     fmt = STR("%d-%0.1f-%s-%c-%%-%p|");
     int intval = 42;
@@ -308,7 +304,6 @@ bool test_OCStringAppendFormat(void) {
     char cval = 'X';
     void *pval = (void *)0x1234;
     OCStringAppendFormat(str, fmt, intval, fval, sval, cval, pval);
-
     // Construct expected prefix (don't assume pointer formatting, only compare prefix up to pointer)
     char buf[256];
     snprintf(buf, sizeof(buf), "START|SEG1|42-3.1-sVal-X-%%-");
@@ -318,7 +313,6 @@ bool test_OCStringAppendFormat(void) {
                 str_c, buf);
         goto cleanup;
     }
-
     // Append with double %@ and check append order (only check trailing pattern)
     fmt = STR("%@-%@|");
     OCStringAppendFormat(str, fmt, STR("A"), STR("B"));
@@ -327,7 +321,6 @@ bool test_OCStringAppendFormat(void) {
         fprintf(stderr, "OCStringAppendFormat (double %%@) failed: missing [A-B|] in [%s]\n", str_c);
         goto cleanup;
     }
-
     // Append with Unicode
     fmt = STR("💧%@💧|");
     OCStringAppendFormat(str, fmt, STR("Z"));
@@ -336,7 +329,6 @@ bool test_OCStringAppendFormat(void) {
         fprintf(stderr, "OCStringAppendFormat (unicode) failed: missing [💧Z💧|] in [%s]\n", str_c);
         goto cleanup;
     }
-
     // Append with literal percent
     fmt = STR("100%%|");
     OCStringAppendFormat(str, fmt);
@@ -345,7 +337,6 @@ bool test_OCStringAppendFormat(void) {
         fprintf(stderr, "OCStringAppendFormat (literal %%) failed: missing [100%%|] in [%s]\n", str_c);
         goto cleanup;
     }
-
     // Append with NULL OCStringRef for %@ (should append nothing, not crash)
     // [INFO] The error message from the library about NULL OCStringRef is expected.
     fprintf(stderr, "[INFO] The following '[OCString] ERROR:' message is expected and not a test failure.\n");
@@ -356,7 +347,6 @@ bool test_OCStringAppendFormat(void) {
         fprintf(stderr, "OCStringAppendFormat (NULL %%@) failed: missing [NULL-|] in [%s]\n", str_c);
         goto cleanup;
     }
-
     // Final check: count '|' pieces to ensure string grew as expected (at least 7 pieces)
     size_t expected_pieces = 7;
     size_t found = 0;
@@ -365,7 +355,6 @@ bool test_OCStringAppendFormat(void) {
         fprintf(stderr, "OCStringAppendFormat (pieces) mismatch: expected >=%zu, found %zu\n", expected_pieces, found);
         goto cleanup;
     }
-
     ok = true;
 cleanup:
     if (str) OCRelease(str);

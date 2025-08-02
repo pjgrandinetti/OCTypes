@@ -7,29 +7,27 @@
 #ifndef _WIN32
 #include <unistd.h>
 #else
-#include <windows.h>
-#include <io.h>
 #include <direct.h>
 #include <fcntl.h>
+#include <io.h>
+#include <windows.h>
 #endif
 #include "OCLibrary.h"
 #include "test_utils.h"
-
 // Cross-platform helper functions
 #ifdef _WIN32
-static const char* get_temp_dir(void) {
+static const char *get_temp_dir(void) {
     static char temp_dir[MAX_PATH];
     DWORD len = GetTempPathA(MAX_PATH, temp_dir);
     if (len > 0 && len < MAX_PATH) {
         // Remove trailing backslash if present
-        if (temp_dir[len-1] == '\\') {
-            temp_dir[len-1] = '\0';
+        if (temp_dir[len - 1] == '\\') {
+            temp_dir[len - 1] = '\0';
         }
         return temp_dir;
     }
     return "C:\\temp";  // fallback
 }
-
 static int cross_platform_mkstemp(char *template) {
     char *temp_dir = _strdup(get_temp_dir());
     char *filename = _tempnam(temp_dir, "ocfu_");
@@ -37,25 +35,20 @@ static int cross_platform_mkstemp(char *template) {
         free(temp_dir);
         return -1;
     }
-    
     // Ensure template buffer is large enough
     if (strlen(filename) >= PATH_MAX) {
         free(filename);
         free(temp_dir);
         return -1;
     }
-    
     // Copy the generated filename back to template
     strcpy(template, filename);
-    
     // Create and open the file (remove _O_TEMPORARY so file persists)
     int fd = _open(filename, _O_RDWR | _O_CREAT | _O_EXCL, _S_IREAD | _S_IWRITE);
-    
     free(filename);
     free(temp_dir);
     return fd;
 }
-
 static int cross_platform_mkstemps(char *template, int suffixlen) {
     // For Windows, we'll use a simpler approach
     char *temp_dir = _strdup(get_temp_dir());
@@ -64,13 +57,11 @@ static int cross_platform_mkstemps(char *template, int suffixlen) {
         free(temp_dir);
         return -1;
     }
-    
     // Add the suffix from the original template
     char *suffix = template + strlen(template) - suffixlen;
     char *full_filename = malloc(strlen(filename) + suffixlen + 1);
     strcpy(full_filename, filename);
     strcat(full_filename, suffix);
-    
     // Ensure template buffer is large enough
     if (strlen(full_filename) >= PATH_MAX) {
         free(full_filename);
@@ -78,45 +69,35 @@ static int cross_platform_mkstemps(char *template, int suffixlen) {
         free(temp_dir);
         return -1;
     }
-    
     strcpy(template, full_filename);
-    
     int fd = _open(full_filename, _O_RDWR | _O_CREAT | _O_EXCL, _S_IREAD | _S_IWRITE);
-    
     free(full_filename);
     free(filename);
     free(temp_dir);
     return fd;
 }
-
-static char* cross_platform_mkdtemp(char *template) {
+static char *cross_platform_mkdtemp(char *template) {
     char *temp_dir = _strdup(get_temp_dir());
     char unique_dir[MAX_PATH];
     sprintf(unique_dir, "%s\\ocfu_dir_%d_%d", temp_dir, GetCurrentProcessId(), GetTickCount());
-    
     if (_mkdir(unique_dir) == 0) {
         strcpy(template, unique_dir);
         free(temp_dir);
         return template;
     }
-    
     free(temp_dir);
     return NULL;
 }
-
 #define mkstemp cross_platform_mkstemp
 #define mkstemps cross_platform_mkstemps
 #define mkdtemp cross_platform_mkdtemp
 #define close _close
 #define TEMP_DIR get_temp_dir()
-
 #else
 #define TEMP_DIR "/tmp"
 #endif
-
 bool test_path_join_and_split(void) {
     fprintf(stderr, "%s begin...\n", __func__);
-    
 #ifdef _WIN32
     OCStringRef a = OCStringCreateWithCString("C:\\foo");
     OCStringRef b = OCStringCreateWithCString("bar");
@@ -329,20 +310,17 @@ bool test_dictionary_write_simple(void) {
     OCDictionarySetValue(dict, STR("num"), num);
     OCRelease(num);
     OCDictionarySetValue(dict, STR("flag"), OCBooleanGetWithBool(true));
-
     OCMutableArrayRef arr = OCArrayCreateMutable(0, &kOCTypeArrayCallBacks);
     OCArrayAppendValue(arr, STR("a"));
     OCArrayAppendValue(arr, STR("b"));
     OCDictionarySetValue(dict, STR("list"), arr);
     OCRelease(arr);
-
     // Create temp file
     char tmpl[PATH_MAX];
     snprintf(tmpl, PATH_MAX, "%s/ocdict_jsonXXXXXX", TEMP_DIR);
     int fd = mkstemp(tmpl);
     if (fd < 0) PRINTERROR;
     close(fd);
-
     // Write to file
     OCStringRef err = NULL;
     if (!OCTypeWriteJSONToFile((OCTypeRef)dict, tmpl, &err)) {
@@ -350,7 +328,6 @@ bool test_dictionary_write_simple(void) {
         OCRelease(dict);
         PRINTERROR;
     }
-
     // Read back
     OCStringRef json = OCStringCreateWithContentsOfFile(tmpl, NULL);
     if (!json) {
@@ -358,7 +335,6 @@ bool test_dictionary_write_simple(void) {
         OCRelease(dict);
         PRINTERROR;
     }
-
     const char *s = OCStringGetCString(json);
     if (!s || !strstr(s, "\"foo\"") || !strstr(s, "\"bar\"") ||
         !strstr(s, "\"num\"") || !strstr(s, "42") ||
@@ -369,7 +345,6 @@ bool test_dictionary_write_simple(void) {
         OCRelease(dict);
         PRINTERROR;
     }
-
     OCRelease(json);
     OCRemoveItem(tmpl, NULL);
     OCRelease(dict);
@@ -380,14 +355,12 @@ bool test_dictionary_write_simple(void) {
  */
 bool test_dictionary_write_empty(void) {
     OCMutableDictionaryRef dict = OCDictionaryCreateMutable(0);
-
     // Create temporary file
     char tmpl[PATH_MAX];
     snprintf(tmpl, PATH_MAX, "%s/ocdict_emptyXXXXXX", TEMP_DIR);
     int fd = mkstemp(tmpl);
     if (fd < 0) PRINTERROR;
     close(fd);
-
     // Write dictionary to JSON file
     OCStringRef err = NULL;
     if (!OCTypeWriteJSONToFile((OCTypeRef)dict, tmpl, &err)) {
@@ -395,7 +368,6 @@ bool test_dictionary_write_empty(void) {
         OCRelease(dict);
         PRINTERROR;
     }
-
     // Read JSON back from file
     OCStringRef json = OCStringCreateWithContentsOfFile(tmpl, NULL);
     if (!json) {
@@ -403,7 +375,6 @@ bool test_dictionary_write_empty(void) {
         OCRelease(dict);
         PRINTERROR;
     }
-
     const char *s = OCStringGetCString(json);
     if (!s) {
         OCRelease(json);
@@ -411,7 +382,6 @@ bool test_dictionary_write_empty(void) {
         OCRelease(dict);
         PRINTERROR;
     }
-
     // Strip leading whitespace and validate content
     while (*s && (*s == ' ' || *s == '\n' || *s == '\t')) s++;
     if (strncmp(s, "{}", 2) != 0) {
@@ -420,24 +390,20 @@ bool test_dictionary_write_empty(void) {
         OCRelease(dict);
         PRINTERROR;
     }
-
     OCRelease(json);
     OCRemoveItem(tmpl, NULL);
     OCRelease(dict);
     return true;
 }
-
 /**
  * Attempt to write into a non-existent directory—should fail with an error.
  */
 bool test_dictionary_write_error(void) {
     OCMutableDictionaryRef dict = OCDictionaryCreateMutable(0);
     OCDictionarySetValue(dict, STR("x"), STR("y"));
-
     const char *badpath = "/no_such_dir/ocdict.json";
     OCStringRef err = NULL;
     bool ok = OCTypeWriteJSONToFile((OCTypeRef)dict, badpath, &err);
-
     if (ok || err == NULL) {
         if (err) OCRelease(err);
         OCStringRef maybe = OCStringCreateWithContentsOfFile(badpath, NULL);
@@ -445,7 +411,6 @@ bool test_dictionary_write_error(void) {
         OCRelease(dict);
         PRINTERROR;
     }
-
     OCRelease(err);
     OCRelease(dict);
     return true;

@@ -6,18 +6,14 @@
  * It defines two singleton instances—kOCBooleanTrue and kOCBooleanFalse—
  * representing the logical values `true` and `false`, respectively.
  */
-
 #ifndef OCBoolean_h
 #define OCBoolean_h
-
-#include "OCLibrary.h" // Ensures OCBooleanRef and other types are available
-
+#include "OCLibrary.h"  // Ensures OCBooleanRef and other types are available
 /**
  * @defgroup OCBoolean OCBoolean
  * @brief Immutable Boolean type abstraction in OCTypes.
  * @{
  */
-
 /**
  * @brief Returns the unique type identifier for the OCBoolean class.
  *
@@ -27,7 +23,6 @@
  * @ingroup OCBoolean
  */
 OCTypeID OCBooleanGetTypeID(void);
-
 /**
  * @brief The immutable singleton OCBooleanRef representing Boolean true.
  *
@@ -37,7 +32,6 @@ OCTypeID OCBooleanGetTypeID(void);
  * @ingroup OCBoolean
  */
 extern const OCBooleanRef kOCBooleanTrue;
-
 /**
  * @brief The immutable singleton OCBooleanRef representing Boolean false.
  *
@@ -47,7 +41,6 @@ extern const OCBooleanRef kOCBooleanTrue;
  * @ingroup OCBoolean
  */
 extern const OCBooleanRef kOCBooleanFalse;
-
 /**
  * @brief Retrieves the primitive Boolean value (`true` or `false`) from an OCBooleanRef.
  *
@@ -58,7 +51,6 @@ extern const OCBooleanRef kOCBooleanFalse;
  * @ingroup OCBoolean
  */
 bool OCBooleanGetValue(OCBooleanRef boolean);
-
 /*!
  * @brief  Return the OCBoolean singleton corresponding to the given C bool.
  *         No ownership is transferred.
@@ -67,7 +59,6 @@ bool OCBooleanGetValue(OCBooleanRef boolean);
  * @return kOCBooleanTrue if value is true, else kOCBooleanFalse.
  */
 OCBooleanRef OCBooleanGetWithBool(bool value);
-
 /**
  * @brief Returns a new OCStringRef representing the Boolean value ("true" or "false").
  * @param boolean The OCBooleanRef to convert.
@@ -75,7 +66,6 @@ OCBooleanRef OCBooleanGetWithBool(bool value);
  * @ingroup OCBoolean
  */
 OCStringRef OCBooleanCreateStringValue(OCBooleanRef boolean);
-
 /**
  * @brief Creates a JSON boolean representation of an OCBooleanRef.
  *
@@ -87,7 +77,6 @@ OCStringRef OCBooleanCreateStringValue(OCBooleanRef boolean);
  * @ingroup OCBoolean
  */
 cJSON *OCBooleanCreateJSON(OCBooleanRef boolean);
-
 /**
  * @brief Creates an OCBooleanRef from a JSON boolean node.
  *
@@ -99,7 +88,5 @@ cJSON *OCBooleanCreateJSON(OCBooleanRef boolean);
  * @ingroup OCBoolean
  */
 OCBooleanRef OCBooleanCreateFromJSON(cJSON *json);
-
-/** @} */ // end of OCBoolean group
-
-#endif /* OCBoolean_h */
+/** @} */  // end of OCBoolean group
+#endif     /* OCBoolean_h */

@@ -5,13 +5,10 @@
  * OCIndexPairSet provides immutable and mutable collections of (index, value) pairs,
  * with support for creation from arrays, lookup, and serialization to plist or OCData.
  */
-
 #ifndef OCINDEXPAIRSET_H
 #define OCINDEXPAIRSET_H
-
-#include "OCLibrary.h"
 #include <stdbool.h>
-
+#include "OCLibrary.h"
 /**
  * @defgroup OCIndexPairSet OCIndexPairSet
  * @brief APIs for sets of OCIndex–OCIndex pairs (OCIndexPairSet and mutable variant).
@@ -21,13 +18,11 @@
  * associated value.
  * @{
  */
-
 /* Internal struct - not documented to avoid Sphinx duplicate declaration issues */
 typedef struct OCIndexPair {
     OCIndex index;
     OCIndex value;
 } OCIndexPair;
-
 /**
  * @brief Returns the unique OCTypeID for OCIndexPairSet.
  *
@@ -35,7 +30,6 @@ typedef struct OCIndexPair {
  * @ingroup OCIndexPairSet
  */
 OCTypeID OCIndexPairSetGetTypeID(void);
-
 /**
  * @brief Creates an empty immutable OCIndexPairSet.
  *
@@ -43,7 +37,6 @@ OCTypeID OCIndexPairSetGetTypeID(void);
  * @ingroup OCIndexPairSet
  */
 OCIndexPairSetRef OCIndexPairSetCreate(void);
-
 /**
  * @brief Creates an empty mutable OCIndexPairSet.
  *
@@ -51,7 +44,6 @@ OCIndexPairSetRef OCIndexPairSetCreate(void);
  * @ingroup OCIndexPairSet
  */
 OCMutableIndexPairSetRef OCIndexPairSetCreateMutable(void);
-
 /**
  * @brief Creates a deep immutable copy of the given set.
  *
@@ -60,7 +52,6 @@ OCMutableIndexPairSetRef OCIndexPairSetCreateMutable(void);
  * @ingroup OCIndexPairSet
  */
 OCIndexPairSetRef OCIndexPairSetCreateCopy(OCIndexPairSetRef source);
-
 /**
  * @brief Creates a deep mutable copy of the given set.
  *
@@ -69,7 +60,6 @@ OCIndexPairSetRef OCIndexPairSetCreateCopy(OCIndexPairSetRef source);
  * @ingroup OCIndexPairSet
  */
 OCMutableIndexPairSetRef OCIndexPairSetCreateMutableCopy(OCIndexPairSetRef source);
-
 /**
  * @brief Creates a mutable index-pair set from an OCIndexArray.
  *
@@ -80,7 +70,6 @@ OCMutableIndexPairSetRef OCIndexPairSetCreateMutableCopy(OCIndexPairSetRef sourc
  * @ingroup OCIndexPairSet
  */
 OCMutableIndexPairSetRef OCIndexPairSetCreateMutableWithIndexArray(OCIndexArrayRef indexArray);
-
 /**
  * @brief Creates an immutable set from a C array of OCIndexPair.
  *
@@ -90,7 +79,6 @@ OCMutableIndexPairSetRef OCIndexPairSetCreateMutableWithIndexArray(OCIndexArrayR
  * @ingroup OCIndexPairSet
  */
 OCIndexPairSetRef OCIndexPairSetCreateWithIndexPairArray(OCIndexPair *array, int count);
-
 /**
  * @brief Creates an immutable set with a single index–value pair.
  *
@@ -100,7 +88,6 @@ OCIndexPairSetRef OCIndexPairSetCreateWithIndexPairArray(OCIndexPair *array, int
  * @ingroup OCIndexPairSet
  */
 OCIndexPairSetRef OCIndexPairSetCreateWithIndexPair(OCIndex index, OCIndex value);
-
 /**
  * @brief Creates an immutable set with two index–value pairs.
  *
@@ -113,9 +100,7 @@ OCIndexPairSetRef OCIndexPairSetCreateWithIndexPair(OCIndex index, OCIndex value
  */
 OCIndexPairSetRef OCIndexPairSetCreateWithTwoIndexPairs(
     OCIndex index1, OCIndex value1,
-    OCIndex index2, OCIndex value2
-);
-
+    OCIndex index2, OCIndex value2);
 /**
  * @brief Returns the backing OCDataRef that holds all index pairs.
  *
@@ -125,7 +110,6 @@ OCIndexPairSetRef OCIndexPairSetCreateWithTwoIndexPairs(
  * @ingroup OCIndexPairSet
  */
 OCDataRef OCIndexPairSetGetIndexPairs(OCIndexPairSetRef set);
-
 /**
  * @brief Returns the number of pairs in the set.
  *
@@ -134,7 +118,6 @@ OCDataRef OCIndexPairSetGetIndexPairs(OCIndexPairSetRef set);
  * @ingroup OCIndexPairSet
  */
 OCIndex OCIndexPairSetGetCount(OCIndexPairSetRef set);
-
 /**
  * @brief Returns a pointer to the internal OCIndexPair array.
  *
@@ -144,7 +127,6 @@ OCIndex OCIndexPairSetGetCount(OCIndexPairSetRef set);
  * @ingroup OCIndexPairSet
  */
 OCIndexPair *OCIndexPairSetGetBytesPtr(OCIndexPairSetRef set);
-
 /**
  * @brief Retrieves the value associated with a given index.
  *
@@ -154,7 +136,6 @@ OCIndexPair *OCIndexPairSetGetBytesPtr(OCIndexPairSetRef set);
  * @ingroup OCIndexPairSet
  */
 OCIndex OCIndexPairSetValueForIndex(OCIndexPairSetRef set, OCIndex index);
-
 /**
  * @brief Returns an OCIndexArray of all values in the set.
  *
@@ -164,7 +145,6 @@ OCIndex OCIndexPairSetValueForIndex(OCIndexPairSetRef set, OCIndex index);
  * @ingroup OCIndexPairSet
  */
 OCIndexArrayRef OCIndexPairSetCreateIndexArrayOfValues(OCIndexPairSetRef set);
-
 /**
  * @brief Returns an OCIndexSet containing all of the _keys_ (indexes) in the set.
  *
@@ -174,7 +154,6 @@ OCIndexArrayRef OCIndexPairSetCreateIndexArrayOfValues(OCIndexPairSetRef set);
  * @ingroup OCIndexPairSet
  */
 OCIndexSetRef OCIndexPairSetCreateIndexSetOfIndexes(OCIndexPairSetRef set);
-
 /**
  * @brief Returns the first index–value pair in the set.
  *
@@ -183,7 +162,6 @@ OCIndexSetRef OCIndexPairSetCreateIndexSetOfIndexes(OCIndexPairSetRef set);
  * @ingroup OCIndexPairSet
  */
 OCIndexPair OCIndexPairSetFirstIndex(OCIndexPairSetRef set);
-
 /**
  * @brief Returns the last index–value pair in the set.
  *
@@ -192,7 +170,6 @@ OCIndexPair OCIndexPairSetFirstIndex(OCIndexPairSetRef set);
  * @ingroup OCIndexPairSet
  */
 OCIndexPair OCIndexPairSetLastIndex(OCIndexPairSetRef set);
-
 /**
  * @brief Returns the pair immediately before the given target, by index.
  *
@@ -203,7 +180,6 @@ OCIndexPair OCIndexPairSetLastIndex(OCIndexPairSetRef set);
  * @ingroup OCIndexPairSet
  */
 OCIndexPair OCIndexPairSetIndexPairLessThanIndexPair(OCIndexPairSetRef set, OCIndexPair target);
-
 /**
  * @brief Checks if the set contains a given index (key).
  *
@@ -213,7 +189,6 @@ OCIndexPair OCIndexPairSetIndexPairLessThanIndexPair(OCIndexPairSetRef set, OCIn
  * @ingroup OCIndexPairSet
  */
 bool OCIndexPairSetContainsIndex(OCIndexPairSetRef set, OCIndex index);
-
 /**
  * @brief Checks if the set contains the exact index–value pair.
  *
@@ -223,7 +198,6 @@ bool OCIndexPairSetContainsIndex(OCIndexPairSetRef set, OCIndex index);
  * @ingroup OCIndexPairSet
  */
 bool OCIndexPairSetContainsIndexPair(OCIndexPairSetRef set, OCIndexPair pair);
-
 /**
  * @brief Adds a new index–value pair to a mutable set if the index is not already present.
  *
@@ -234,7 +208,6 @@ bool OCIndexPairSetContainsIndexPair(OCIndexPairSetRef set, OCIndexPair pair);
  * @ingroup OCIndexPairSet
  */
 bool OCIndexPairSetAddIndexPair(OCMutableIndexPairSetRef set, OCIndex index, OCIndex value);
-
 /**
  * @brief Removes the pair with the given index from a mutable set.
  *
@@ -244,7 +217,6 @@ bool OCIndexPairSetAddIndexPair(OCMutableIndexPairSetRef set, OCIndex index, OCI
  * @ingroup OCIndexPairSet
  */
 bool OCIndexPairSetRemoveIndexPairWithIndex(OCMutableIndexPairSetRef set, OCIndex index);
-
 /**
  * @brief Serializes the set into an OCDictionary suitable for plist.
  *
@@ -253,7 +225,6 @@ bool OCIndexPairSetRemoveIndexPairWithIndex(OCMutableIndexPairSetRef set, OCInde
  * @ingroup OCIndexPairSet
  */
 OCDictionaryRef OCIndexPairSetCreatePList(OCIndexPairSetRef set);
-
 /**
  * @brief Creates an OCIndexPairSet from a plist-compatible OCDictionary.
  *
@@ -262,7 +233,6 @@ OCDictionaryRef OCIndexPairSetCreatePList(OCIndexPairSetRef set);
  * @ingroup OCIndexPairSet
  */
 OCIndexPairSetRef OCIndexPairSetCreateWithPList(OCDictionaryRef dict);
-
 /**
  * @brief Returns an OCDataRef representing the internal contiguous OCIndexPair buffer.
  *
@@ -271,7 +241,6 @@ OCIndexPairSetRef OCIndexPairSetCreateWithPList(OCDictionaryRef dict);
  * @ingroup OCIndexPairSet
  */
 OCDataRef OCIndexPairSetCreateData(OCIndexPairSetRef set);
-
 /**
  * @brief Creates an OCIndexPairSet using an existing OCDataRef as backing storage.
  *
@@ -280,7 +249,6 @@ OCDataRef OCIndexPairSetCreateData(OCIndexPairSetRef set);
  * @ingroup OCIndexPairSet
  */
 OCIndexPairSetRef OCIndexPairSetCreateWithData(OCDataRef data);
-
 /**
  * @brief Creates a JSON array representation of an OCIndexPairSet.
  *
@@ -292,7 +260,6 @@ OCIndexPairSetRef OCIndexPairSetCreateWithData(OCDataRef data);
  * @ingroup OCIndexPairSet
  */
 cJSON *OCIndexPairSetCreateJSON(OCIndexPairSetRef set);
-
 /**
  * @brief Creates an OCIndexPairSet from a JSON array of index-value pairs.
  *
@@ -304,7 +271,6 @@ cJSON *OCIndexPairSetCreateJSON(OCIndexPairSetRef set);
  * @ingroup OCIndexPairSet
  */
 OCIndexPairSetRef OCIndexPairSetCreateFromJSON(cJSON *json);
-
 /**
  * @brief Logs the contents of the index-pair set to stderr for debugging.
  *
@@ -312,12 +278,8 @@ OCIndexPairSetRef OCIndexPairSetCreateFromJSON(cJSON *json);
  * @ingroup OCIndexPairSet
  */
 void OCIndexPairSetShow(OCIndexPairSetRef set);
-
-
-/** @} */ // end of OCIndexPairSet group
-
+/** @} */  // end of OCIndexPairSet group
 #ifdef __cplusplus
 }
 #endif
-
 #endif /* OCINDEXPAIRSET_H */

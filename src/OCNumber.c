@@ -1,7 +1,7 @@
 // OCNumber.c – Updated to use OCTypeAlloc and leak-safe finalization
 #include <complex.h>
-#include <stddef.h> // for NULL
 #include <inttypes.h>
+#include <stddef.h>  // for NULL
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -544,7 +544,6 @@ bool OCNumberGetValue(OCNumberRef number, OCNumberType type, void *valuePtr) {
 }
 cJSON *OCNumberCreateJSON(OCNumberRef number) {
     if (!number) return cJSON_CreateNull();
-
     switch (number->type) {
         case kOCNumberUInt8Type:
             return cJSON_CreateNumber(number->value.uint8Value);
@@ -585,9 +584,7 @@ cJSON *OCNumberCreateJSON(OCNumberRef number) {
 }
 OCNumberRef OCNumberCreateFromJSON(cJSON *json, OCNumberType type) {
     if (!json || !cJSON_IsString(json)) return NULL;
-
     const char *valueStr = cJSON_GetStringValue(json);
     if (!valueStr) return NULL;
-
     return OCNumberCreateWithStringValue(type, valueStr);
 }

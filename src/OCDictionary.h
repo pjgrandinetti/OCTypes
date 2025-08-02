@@ -9,30 +9,23 @@
  *       The caller owns any OCDictionaryRef or OCMutableDictionaryRef returned
  *       by functions with "Create" or "Copy" in the name, and must call OCRelease().
  */
-
 #ifndef OCDICTIONARY_H
 #define OCDICTIONARY_H
-
-#include <stdint.h>
 #include <stdbool.h>
-
+#include <stdint.h>
 #include "OCArray.h"
-#include "OCLibrary.h" // Ensures OCDictionaryRef and other types are available
-
+#include "OCLibrary.h"  // Ensures OCDictionaryRef and other types are available
 /**
  * @defgroup OCDictionary OCDictionary
  * @brief Dictionary types and operations.
- * @{ 
+ * @{
  */
-
 /**
  * @brief Returns the OCTypeID for OCDictionary objects.
  * @return Type identifier for OCDictionary.
  * @ingroup OCDictionary
  */
 OCTypeID OCDictionaryGetTypeID(void);
-
-
 /**
  * @brief Creates a new dictionary with initial capacity.
  *
@@ -43,7 +36,6 @@ OCTypeID OCDictionaryGetTypeID(void);
  * @ingroup OCDictionary
  */
 OCDictionaryRef OCDictionaryCreate(const void **keys, const void **values, uint64_t numValues);
-
 /**
  * @brief Creates a new mutable dictionary with initial capacity.
  *
@@ -52,7 +44,6 @@ OCDictionaryRef OCDictionaryCreate(const void **keys, const void **values, uint6
  * @ingroup OCDictionary
  */
 OCMutableDictionaryRef OCDictionaryCreateMutable(uint64_t capacity);
-
 /**
  * @brief Creates an immutable copy of a dictionary.
  *
@@ -61,7 +52,6 @@ OCMutableDictionaryRef OCDictionaryCreateMutable(uint64_t capacity);
  * @ingroup OCDictionary
  */
 OCDictionaryRef OCDictionaryCreateCopy(OCDictionaryRef theDictionary);
-
 /**
  * @brief Creates a mutable copy of a dictionary.
  *
@@ -70,7 +60,6 @@ OCDictionaryRef OCDictionaryCreateCopy(OCDictionaryRef theDictionary);
  * @ingroup OCDictionary
  */
 OCMutableDictionaryRef OCDictionaryCreateMutableCopy(OCDictionaryRef theDictionary);
-
 /**
  * @brief Gets the number of key-value pairs in a dictionary.
  *
@@ -79,7 +68,6 @@ OCMutableDictionaryRef OCDictionaryCreateMutableCopy(OCDictionaryRef theDictiona
  * @ingroup OCDictionary
  */
 uint64_t OCDictionaryGetCount(OCDictionaryRef theDictionary);
-
 /**
  * @brief Retrieves the value for a specific key.
  *
@@ -89,7 +77,6 @@ uint64_t OCDictionaryGetCount(OCDictionaryRef theDictionary);
  * @ingroup OCDictionary
  */
 const void *OCDictionaryGetValue(OCDictionaryRef theDictionary, OCStringRef key);
-
 /**
  * @brief Checks if the dictionary contains the specified key.
  *
@@ -99,7 +86,6 @@ const void *OCDictionaryGetValue(OCDictionaryRef theDictionary, OCStringRef key)
  * @ingroup OCDictionary
  */
 bool OCDictionaryContainsKey(OCDictionaryRef theDictionary, OCStringRef key);
-
 /**
  * @brief Checks if the dictionary contains the specified value.
  *
@@ -109,7 +95,6 @@ bool OCDictionaryContainsKey(OCDictionaryRef theDictionary, OCStringRef key);
  * @ingroup OCDictionary
  */
 bool OCDictionaryContainsValue(OCDictionaryRef theDictionary, const void *value);
-
 /**
  * @brief Adds or replaces a key-value pair in a mutable dictionary.
  *
@@ -120,7 +105,6 @@ bool OCDictionaryContainsValue(OCDictionaryRef theDictionary, const void *value)
  * @ingroup OCDictionary
  */
 bool OCDictionaryAddValue(OCMutableDictionaryRef theDictionary, OCStringRef key, const void *value);
-
 /**
  * @brief Sets the value for a key.
  *
@@ -134,7 +118,6 @@ bool OCDictionaryAddValue(OCMutableDictionaryRef theDictionary, OCStringRef key,
  * @ingroup OCDictionary
  */
 bool OCDictionarySetValue(OCMutableDictionaryRef theDictionary, OCStringRef key, const void *value);
-
 /**
  * @brief OCDictionaryReplaceValue replaces the value for an existing key.
  *
@@ -147,7 +130,6 @@ bool OCDictionarySetValue(OCMutableDictionaryRef theDictionary, OCStringRef key,
  * @ingroup OCDictionary
  */
 bool OCDictionaryReplaceValue(OCMutableDictionaryRef theDictionary, OCStringRef key, const void *value);
-
 /**
  * @brief Removes a key-value pair from the dictionary.
  *
@@ -157,7 +139,6 @@ bool OCDictionaryReplaceValue(OCMutableDictionaryRef theDictionary, OCStringRef 
  * @ingroup OCDictionary
  */
 bool OCDictionaryRemoveValue(OCMutableDictionaryRef theDictionary, OCStringRef key);
-
 /**
  * @brief Counts how many times a value appears in the dictionary.
  *
@@ -167,7 +148,6 @@ bool OCDictionaryRemoveValue(OCMutableDictionaryRef theDictionary, OCStringRef k
  * @ingroup OCDictionary
  */
 uint64_t OCDictionaryGetCountOfValue(OCMutableDictionaryRef theDictionary, const void *value);
-
 /**
  * @brief Retrieves all keys and values into parallel arrays.
  *
@@ -178,7 +158,6 @@ uint64_t OCDictionaryGetCountOfValue(OCMutableDictionaryRef theDictionary, const
  * @ingroup OCDictionary
  */
 bool OCDictionaryGetKeysAndValues(OCDictionaryRef theDictionary, const void **keys, const void **values);
-
 /**
  * @brief Creates an array containing all keys in the dictionary.
  *
@@ -187,7 +166,6 @@ bool OCDictionaryGetKeysAndValues(OCDictionaryRef theDictionary, const void **ke
  * @ingroup OCDictionary
  */
 OCArrayRef OCDictionaryCreateArrayWithAllKeys(OCDictionaryRef theDictionary);
-
 /**
  * @brief Creates an array containing all values in the dictionary.
  *
@@ -196,7 +174,6 @@ OCArrayRef OCDictionaryCreateArrayWithAllKeys(OCDictionaryRef theDictionary);
  * @ingroup OCDictionary
  */
 OCArrayRef OCDictionaryCreateArrayWithAllValues(OCDictionaryRef theDictionary);
-
 /**
  * @brief Returns a human-readable description of the dictionary.
  *
@@ -205,8 +182,6 @@ OCArrayRef OCDictionaryCreateArrayWithAllValues(OCDictionaryRef theDictionary);
  * @ingroup OCDictionary
  */
 OCStringRef OCDictionaryCopyFormattingDesc(OCTypeRef cf);
-
-
 /**
  * @brief Creates a JSON object representation of an OCDictionary.
  *
@@ -220,9 +195,5 @@ OCStringRef OCDictionaryCopyFormattingDesc(OCTypeRef cf);
  * @ingroup OCDictionary
  */
 cJSON *OCDictionaryCreateJSON(OCDictionaryRef dict);
-
-
 /** @} */
-
 #endif /* OCDICTIONARY_H */
-

@@ -47,11 +47,9 @@ static OCStringRef impl_OCIndexArrayCopyFormattingDesc(OCTypeRef cf) {
     return OCStringCreateWithCString("<OCIndexArray>");
 }
 static cJSON *
-impl_OCIndexArrayCopyJSON(const void *obj)
-{
+impl_OCIndexArrayCopyJSON(const void *obj) {
     return OCIndexArrayCreateJSON((OCIndexArrayRef)obj);
 }
-
 static OCMutableIndexArrayRef OCIndexArrayAllocate(void) {
     return (OCMutableIndexArrayRef)OCTypeAlloc(
         struct impl_OCIndexArray,
@@ -283,7 +281,7 @@ OCIndexArrayRef OCIndexArrayCreateFromJSON(cJSON *json) {
     OCIndex *values = malloc(sizeof(OCIndex) * count);
     if (!values) return NULL;
     for (OCIndex i = 0; i < count; i++) {
-        cJSON *item = cJSON_GetArrayItem(json, (int) i);
+        cJSON *item = cJSON_GetArrayItem(json, (int)i);
         if (!cJSON_IsNumber(item)) {
             free(values);
             return NULL;

@@ -376,7 +376,7 @@ bool OCStringWriteToFile(OCStringRef str, const char *path, OCStringRef *err) {
 // MARK: OCDataCreateWithContentsOfFile
 //-----------------------------------------------------------------------------
 OCDataRef OCDataCreateWithContentsOfFile(const char *path,
-                               OCStringRef *errorString) {
+                                         OCStringRef *errorString) {
     if (errorString) *errorString = NULL;
     FILE *fp = fopen(path, "rb");
     if (!fp) {
@@ -518,25 +518,20 @@ OCDictionaryCreateWithContentsOfFolder(const char *folderPath,
     }
     return dict;
 }
-
-bool
-OCTypeWriteJSONToFile(OCTypeRef    obj,
-                      const char  *path,
-                      OCStringRef *err)
-{
+bool OCTypeWriteJSONToFile(OCTypeRef obj,
+                           const char *path,
+                           OCStringRef *err) {
     if (err) *err = NULL;
     if (!obj || !path) {
         if (err) *err = STR("object or path was NULL");
         return false;
     }
-
     // 1) build the cJSON tree using schema-conformant method
     cJSON *root = OCTypeCopyJSON(obj);
     if (!root) {
         if (err) *err = STR("failed to build JSON");
         return false;
     }
-
     // 2) render as compact JSON
     char *utf8 = cJSON_PrintUnformatted(root);
     cJSON_Delete(root);
@@ -544,7 +539,6 @@ OCTypeWriteJSONToFile(OCTypeRef    obj,
         if (err) *err = STR("failed to serialize JSON");
         return false;
     }
-
     // 3) write it out
     OCStringRef s = OCStringCreateWithCString(utf8);
     free(utf8);
@@ -552,27 +546,31 @@ OCTypeWriteJSONToFile(OCTypeRef    obj,
     OCRelease(s);
     return ok;
 }
-
-
-
 // Read entire file into a malloc'd buffer (caller must free)
-static char * _readFile(const char *path, OCStringRef *err) {
+static char *_readFile(const char *path, OCStringRef *err) {
     FILE *f = fopen(path, "rb");
     if (!f) {
         if (err) *err = OCStringCreateWithFormat(STR("Unable to open \"%s\": %s"),
                                                  path, strerror(errno));
         return NULL;
     }
-    if (fseek(f, 0, SEEK_END) != 0) { fclose(f); return NULL; }
+    if (fseek(f, 0, SEEK_END) != 0) {
+        fclose(f);
+        return NULL;
+    }
     long len = ftell(f);
     rewind(f);
     char *buf = malloc((size_t)len + 1);
-    if (!buf) { fclose(f); return NULL; }
-    if (fread(buf,1,(size_t)len,f) != (size_t)len) {
-        free(buf); fclose(f); return NULL;
+    if (!buf) {
+        fclose(f);
+        return NULL;
+    }
+    if (fread(buf, 1, (size_t)len, f) != (size_t)len) {
+        free(buf);
+        fclose(f);
+        return NULL;
     }
     buf[len] = '\0';
     fclose(f);
     return buf;
 }
-

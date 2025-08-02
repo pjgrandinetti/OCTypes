@@ -149,7 +149,7 @@ OCStringRef OCTypeCopyFormattingDesc(const void *ptr);
  * @return A cJSON object representing the instance, or cJSON null if obj is NULL.
  * @ingroup OCType
  */
-cJSON * OCTypeCopyJSON(OCTypeRef obj);
+cJSON *OCTypeCopyJSON(OCTypeRef obj);
 /**
  * @brief Returns a generic description of an OCType instance.
  * @param ptr Pointer to the OCType instance.
@@ -203,11 +203,10 @@ const char *OCTypeNameFromTypeID(OCTypeID typeID);
  * All OCType-compatible objects must start with this structure as their first member.
  */
 typedef struct impl_OCBase {
-    OCTypeID typeID;        // 2 bytes
-    uint16_t retainCount;   // 2 bytes
-    int allocLine;          // 4 bytes
+    OCTypeID typeID;       // 2 bytes
+    uint16_t retainCount;  // 2 bytes
+    int allocLine;         // 4 bytes
     // 8 bytes total - perfectly aligned for pointers
-    
     // Virtual methods (8-byte aligned)
     void (*finalize)(const void *);
     bool (*equal)(const void *, const void *);
@@ -215,17 +214,14 @@ typedef struct impl_OCBase {
     cJSON *(*copyJSON)(const void *);
     void *(*copyDeep)(const void *);
     void *(*copyDeepMutable)(const void *);
-    
     // Debug info
     const char *allocFile;  // 8 bytes
-    
     // Flags packed together
-    bool static_instance;   // 1 byte
-    bool finalized;         // 1 byte  
-    bool tracked;           // 1 byte
+    bool static_instance;  // 1 byte
+    bool finalized;        // 1 byte
+    bool tracked;          // 1 byte
 } OCBase;
-
-//  Below is a future plan to optimize OCBase.  It will require 
+//  Below is a future plan to optimize OCBase.  It will require
 //  rewriting the getters and setters for the bools, and also
 //  modifying the OCLeakTracker to not capture the allocFile and line
 // /**
@@ -241,7 +237,6 @@ typedef struct impl_OCBase {
 //     uint16_t retainCount;   // 2 bytes
 //     uint32_t flags;         // 4 bytes (replaces 3 separate bools)
 //     // 8 bytes total - perfectly aligned for 64-bit pointers
-    
 //     // Virtual methods (8-byte aligned)
 //     void (*finalize)(const void *);
 //     bool (*equal)(const void *, const void *);
@@ -250,13 +245,11 @@ typedef struct impl_OCBase {
 //     void *(*copyDeep)(const void *);
 //     void *(*copyDeepMutable)(const void *);
 // } OCBase;
-
 // // Flag bit definitions for OCBase.flags
 // #define OC_FLAG_STATIC_INSTANCE  (1U << 0)   // 0x00000001
-// #define OC_FLAG_FINALIZED        (1U << 1)   // 0x00000002  
+// #define OC_FLAG_FINALIZED        (1U << 1)   // 0x00000002
 // #define OC_FLAG_TRACKED          (1U << 2)   // 0x00000004
 // // 29 bits remaining (bits 3-31) for future boolean flags
-
 // // Accessor macros for backward compatibility
 // #define OCTypeGetStaticInstance(obj)  ((((OCBase*)(obj))->flags & OC_FLAG_STATIC_INSTANCE) != 0)
 // #define OCTypeSetStaticInstance(obj, val) \
@@ -264,22 +257,18 @@ typedef struct impl_OCBase {
 //         if (val) ((OCBase*)(obj))->flags |= OC_FLAG_STATIC_INSTANCE; \
 //         else ((OCBase*)(obj))->flags &= ~OC_FLAG_STATIC_INSTANCE; \
 //     } while(0)
-
 // #define OCTypeGetFinalized(obj)   ((((OCBase*)(obj))->flags & OC_FLAG_FINALIZED) != 0)
 // #define OCTypeSetFinalized(obj, val) \
 //     do { \
 //         if (val) ((OCBase*)(obj))->flags |= OC_FLAG_FINALIZED; \
 //         else ((OCBase*)(obj))->flags &= ~OC_FLAG_FINALIZED; \
 //     } while(0)
-
 // #define OCTypeGetTracked(obj)     ((((OCBase*)(obj))->flags & OC_FLAG_TRACKED) != 0)
 // #define OCTypeSetTracked(obj, val) \
 //     do { \
 //         if (val) ((OCBase*)(obj))->flags |= OC_FLAG_TRACKED; \
 //         else ((OCBase*)(obj))->flags &= ~OC_FLAG_TRACKED; \
 //     } while(0)
-
-
 /**
  * @brief Allocates and initializes a new OCType-compatible object with virtual method table.
  *
@@ -294,7 +283,7 @@ typedef struct impl_OCBase {
  *
  * @param size Size in bytes of the full structure to allocate. Must be at least sizeof(OCBase).
  * @param typeID The registered OCTypeID obtained from OCRegisterType(). Must not be kOCNotATypeID.
- * @param finalize Optional finalizer function called when retain count reaches zero. 
+ * @param finalize Optional finalizer function called when retain count reaches zero.
  *                 Should clean up any resources owned by the object. May be NULL.
  * @param equal Optional equality comparison function for this type. Should compare semantic
  *              equality between two instances of the same type. May be NULL.
@@ -328,7 +317,7 @@ void *OCTypeAllocate(
     void (*finalize)(const void *),
     bool (*equal)(const void *, const void *),
     OCStringRef (*copyFormattingDesc)(OCTypeRef),
-    cJSON *(*copyJSON)(const void *), 
+    cJSON *(*copyJSON)(const void *),
     void *(*copyDeep)(const void *),
     void *(*copyDeepMutable)(const void *),
     const char *file,

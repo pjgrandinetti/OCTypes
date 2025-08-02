@@ -47,7 +47,7 @@ INSTALL_DIR := install
 INSTALL_LIB_DIR := $(INSTALL_DIR)/lib
 INSTALL_INC_DIR := $(INSTALL_DIR)/include/OCTypes
 
-.PHONY: all dirs install clean-objects clean test test-debug test-asan docs clean-docs doxygen html xcode
+.PHONY: all dirs install clean-objects clean test test-debug test-asan docs clean-docs doxygen html xcode compdb
 
 .DEFAULT_GOAL := all
 all: dirs $(LIBDIR)/libOCTypes.a
@@ -122,11 +122,37 @@ clean:
 	$(RM) -r $(BUILD_DIR) $(LIBDIR) runTests runTests.debug runTests.asan *.dSYM OCComplexParser.output *.tab.* *.yy.* $(INSTALL_DIR)
 
 # Documentation
+# Compilation database for clang-tidy and IDE integration
+compile_commands.json: dirs
+	@echo "Generating compilation database..."
+	@echo '[' > compile_commands.json
+	@comma=""; \
+	for src in $(STATIC_SRC); do \
+		echo "$$comma{" >> compile_commands.json; \
+		echo "  \"directory\": \"$(PWD)\"," >> compile_commands.json; \
+		echo "  \"command\": \"$(CC) $(CFLAGS) -c $$src -o $(OBJ_DIR)/$$(basename $$src .c).o\"," >> compile_commands.json; \
+		echo "  \"file\": \"$$src\"" >> compile_commands.json; \
+		echo "}" >> compile_commands.json; \
+		comma=","; \
+	done; \
+	for gen_src in $(GEN_C); do \
+		echo "$$comma{" >> compile_commands.json; \
+		echo "  \"directory\": \"$(PWD)\"," >> compile_commands.json; \
+		echo "  \"command\": \"$(CC) $(CFLAGS) -c $$gen_src -o $(OBJ_DIR)/$$(basename $$gen_src .c).o\"," >> compile_commands.json; \
+		echo "  \"file\": \"$$gen_src\"" >> compile_commands.json; \
+		echo "}" >> compile_commands.json; \
+		comma=","; \
+	done; \
+	echo ']' >> compile_commands.json
+	@echo "✅ Compilation database generated: compile_commands.json"
+
+compdb: compile_commands.json
+
 doxygen:
-	@echo "Generating Doxygen XML…"
+	@echo "Building Doxygen documentation…"
 	cd docs && doxygen Doxyfile
 
-html: doxygen
+html:
 	@echo "Building Sphinx HTML…"
 	cd docs && sphinx-build -W -E -b html . _build/html
 

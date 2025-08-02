@@ -156,10 +156,8 @@ OCStringRef OCArrayCopyFormattingDesc(OCTypeRef cf) {
     OCStringAppendCString(result, "]>");
     return result;
 }
-
 static cJSON *
-impl_OCArrayCopyJSON(const void *obj)
-{
+impl_OCArrayCopyJSON(const void *obj) {
     return OCArrayCreateJSON((OCArrayRef)obj);
 }
 static void impl_OCArrayFinalize(const void *theType) {
@@ -262,22 +260,17 @@ OCMutableArrayRef OCArrayCreateMutableCopy(OCArrayRef theArray) {
 }
 cJSON *OCArrayCreateJSON(OCArrayRef array) {
     if (!array) return cJSON_CreateNull();
-
     cJSON *arr = cJSON_CreateArray();
     uint64_t count = OCArrayGetCount(array);
-
     for (uint64_t i = 0; i < count; i++) {
         OCTypeRef elem = OCArrayGetValueAtIndex(array, i);
         cJSON *jsonVal = OCTypeCopyJSON(elem);
-
         if (!jsonVal) {
             fprintf(stderr, "OCArrayCreateJSON: Failed to serialize array element at index %llu. Using null.\n", (unsigned long long)i);
             jsonVal = cJSON_CreateNull();
         }
-
         cJSON_AddItemToArray(arr, jsonVal);
     }
-
     return arr;
 }
 const void *OCArrayGetValueAtIndex(OCArrayRef theArray, uint64_t index) {

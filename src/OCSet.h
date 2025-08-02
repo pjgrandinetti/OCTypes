@@ -5,17 +5,15 @@
  * OCSet provides immutable and mutable unordered collections of unique
  * OCTypeRef values. Internally, OCSet uses OCArray to manage elements
  * and enforces uniqueness via OCTypeEqual().
- */#ifndef OCSet_h
+ */ \
+#ifndef OCSet_h
 #define OCSet_h
-
 #include "OCLibrary.h"
-
 /**
  * @defgroup OCSet OCSet
  * @brief Set types and operations in OCTypes.
  * @{
  */
-
 /**
  * @brief Gets the OCTypeID for OCSet.
  *
@@ -24,7 +22,6 @@
  * @ingroup OCSet
  */
 OCTypeID OCSetGetTypeID(void);
-
 /**
  * @brief Creates a new empty immutable set.
  *
@@ -33,7 +30,6 @@ OCTypeID OCSetGetTypeID(void);
  * @ingroup OCSet
  */
 OCSetRef OCSetCreate(void);
-
 /**
  * @brief Creates a new empty mutable set.
  *
@@ -43,7 +39,6 @@ OCSetRef OCSetCreate(void);
  * @ingroup OCSet
  */
 OCMutableSetRef OCSetCreateMutable(OCIndex capacity);
-
 /**
  * @brief Creates an immutable copy of an existing set.
  *
@@ -53,7 +48,6 @@ OCMutableSetRef OCSetCreateMutable(OCIndex capacity);
  * @ingroup OCSet
  */
 OCSetRef OCSetCreateCopy(OCSetRef theSet);
-
 /**
  * @brief Creates a mutable copy of an existing set.
  *
@@ -63,7 +57,6 @@ OCSetRef OCSetCreateCopy(OCSetRef theSet);
  * @ingroup OCSet
  */
 OCMutableSetRef OCSetCreateMutableCopy(OCSetRef theSet);
-
 /**
  * @brief Returns the number of elements in the set.
  *
@@ -73,7 +66,6 @@ OCMutableSetRef OCSetCreateMutableCopy(OCSetRef theSet);
  * @ingroup OCSet
  */
 OCIndex OCSetGetCount(OCSetRef theSet);
-
 /**
  * @brief Checks whether the set contains a given value.
  *
@@ -84,7 +76,6 @@ OCIndex OCSetGetCount(OCSetRef theSet);
  * @ingroup OCSet
  */
 bool OCSetContainsValue(OCSetRef theSet, OCTypeRef value);
-
 /**
  * @brief Returns all values in the set as a new OCArray.
  *
@@ -94,7 +85,6 @@ bool OCSetContainsValue(OCSetRef theSet, OCTypeRef value);
  * @ingroup OCSet
  */
 OCArrayRef OCSetCreateValueArray(OCSetRef theSet);
-
 /**
  * @brief Adds a value to a mutable set.
  *
@@ -107,7 +97,6 @@ OCArrayRef OCSetCreateValueArray(OCSetRef theSet);
  * @ingroup OCSet
  */
 bool OCSetAddValue(OCMutableSetRef theSet, OCTypeRef value);
-
 /**
  * @brief Removes a value from a mutable set.
  *
@@ -120,7 +109,6 @@ bool OCSetAddValue(OCMutableSetRef theSet, OCTypeRef value);
  * @ingroup OCSet
  */
 bool OCSetRemoveValue(OCMutableSetRef theSet, OCTypeRef value);
-
 /**
  * @brief Removes all values from a mutable set.
  *
@@ -129,7 +117,6 @@ bool OCSetRemoveValue(OCMutableSetRef theSet, OCTypeRef value);
  * @ingroup OCSet
  */
 void OCSetRemoveAllValues(OCMutableSetRef theSet);
-
 /**
  * @brief Compares two sets for equality.
  *
@@ -140,7 +127,6 @@ void OCSetRemoveAllValues(OCMutableSetRef theSet);
  * @ingroup OCSet
  */
 bool OCSetEqual(OCSetRef set1, OCSetRef set2);
-
 /**
  * @brief Creates a JSON array representation of an OCSet.
  *
@@ -153,7 +139,6 @@ bool OCSetEqual(OCSetRef set1, OCSetRef set2);
  * @ingroup OCSet
  */
 cJSON *OCSetCreateJSON(OCSetRef set);
-
 /**
  * @brief Logs the contents of the set to stderr.
  *
@@ -162,7 +147,5 @@ cJSON *OCSetCreateJSON(OCSetRef set);
  * @ingroup OCSet
  */
 void OCSetShow(OCSetRef theSet);
-
-/** @} */ // end of OCSet group
-
-#endif /* OCSet_h */
+/** @} */  // end of OCSet group
+#endif     /* OCSet_h */

@@ -21,7 +21,7 @@
         BM_cimag,
         BM_carg
     } builtInMathFunctions;
-    
+
     #include <stdio.h>
     #include <stdarg.h>
     #include <stdlib.h>
@@ -32,7 +32,7 @@
     #else
     #include <unistd.h>
     #endif
-    
+
     #include "math.h"
     #include "OCComplexParser.tab.h"
 %}

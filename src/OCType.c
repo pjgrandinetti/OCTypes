@@ -193,7 +193,6 @@ cJSON *OCTypeCopyJSON(OCTypeRef obj) {
     if (!b->copyJSON) {
         return cJSON_CreateNull();
     }
-    
     return b->copyJSON(obj);
 }
 void *OCTypeDeepCopy(const void *obj) {
@@ -237,14 +236,12 @@ void *OCTypeAllocate(size_t size,
                      void *(*copyDeep)(const void *),
                      void *(*copyDeepMutable)(const void *),
                      const char *file,
-                     int line)
-{
+                     int line) {
     struct impl_OCType *object = calloc(1, size);
     if (!object) {
         fprintf(stderr, "OCTypeAllocate: allocation failed\n");
         exit(EXIT_FAILURE);
     }
-
     object->base.typeID = typeID;
     object->base.retainCount = 1;
     object->base.finalize = finalize;
@@ -258,7 +255,6 @@ void *OCTypeAllocate(size_t size,
     object->base.allocFile = file;
     object->base.allocLine = line;
     object->base.tracked = true;
-
     _OCTrackDebug(object, file, line);
     return object;
 }

@@ -5,18 +5,14 @@
  * OCArray provides immutable and mutable array data structures
  * with customizable memory management and equality semantics.
  */
-
 #ifndef OCArray_h
 #define OCArray_h
-
 #include "OCLibrary.h"
-
 /**
  * @defgroup OCArray OCArray
  * @brief Array types and operations in OCTypes.
  * @{
  */
-
 /**
  * @brief Callback to retain a value in the array.
  *
@@ -25,7 +21,6 @@
  * @ingroup OCArray
  */
 typedef const void *(*OCArrayRetainCallBack)(const void *value);
-
 /**
  * @brief Callback to release a value from the array.
  *
@@ -33,7 +28,6 @@ typedef const void *(*OCArrayRetainCallBack)(const void *value);
  * @ingroup OCArray
  */
 typedef void (*OCArrayReleaseCallBack)(const void *value);
-
 /**
  * @brief Callback to copy a description string of a value.
  *
@@ -42,7 +36,6 @@ typedef void (*OCArrayReleaseCallBack)(const void *value);
  * @ingroup OCArray
  */
 typedef OCStringRef (*OCArrayCopyDescriptionCallBack)(const void *value);
-
 /**
  * @brief Callback to compare two values for equality.
  *
@@ -52,31 +45,27 @@ typedef OCStringRef (*OCArrayCopyDescriptionCallBack)(const void *value);
  * @ingroup OCArray
  */
 typedef bool (*OCArrayEqualCallBack)(const void *value1, const void *value2);
-
 /**
  * @brief Struct defining callbacks for array value management.
  * @ingroup OCArray
  */
 typedef struct {
-    int64_t version; /**< Structure version (should be 0). */
-    OCArrayRetainCallBack retain; /**< Retain callback. */
-    OCArrayReleaseCallBack release; /**< Release callback. */
+    int64_t version;                                /**< Structure version (should be 0). */
+    OCArrayRetainCallBack retain;                   /**< Retain callback. */
+    OCArrayReleaseCallBack release;                 /**< Release callback. */
     OCArrayCopyDescriptionCallBack copyDescription; /**< Description callback. */
-    OCArrayEqualCallBack equal; /**< Equality comparison callback. */
+    OCArrayEqualCallBack equal;                     /**< Equality comparison callback. */
 } OCArrayCallBacks;
-
 /**
  * @brief Predefined callbacks for arrays of OCTypeRef objects.
  * @ingroup OCArray
  */
 extern const OCArrayCallBacks kOCTypeArrayCallBacks;
-
 /**
  * @brief Gets the OCTypeID for OCArray.
  * @return OCTypeID value.
  */
 OCTypeID OCArrayGetTypeID(void);
-
 /**
  * @brief Returns the number of elements in an array.
  *
@@ -85,7 +74,6 @@ OCTypeID OCArrayGetTypeID(void);
  * @ingroup OCArray
  */
 uint64_t OCArrayGetCount(OCArrayRef theArray);
-
 /**
  * @brief Creates a new immutable array.
  *
@@ -96,7 +84,6 @@ uint64_t OCArrayGetCount(OCArrayRef theArray);
  * @ingroup OCArray
  */
 OCArrayRef OCArrayCreate(const void **values, uint64_t numValues, const OCArrayCallBacks *callBacks);
-
 /**
  * @brief Creates an immutable array copy.
  *
@@ -105,7 +92,6 @@ OCArrayRef OCArrayCreate(const void **values, uint64_t numValues, const OCArrayC
  * @ingroup OCArray
  */
 OCArrayRef OCArrayCreateCopy(OCArrayRef theArray);
-
 /**
  * @brief Creates a mutable array.
  *
@@ -115,7 +101,6 @@ OCArrayRef OCArrayCreateCopy(OCArrayRef theArray);
  * @ingroup OCArray
  */
 OCMutableArrayRef OCArrayCreateMutable(uint64_t capacity, const OCArrayCallBacks *callBacks);
-
 /**
  * @brief Creates a mutable copy of an array.
  *
@@ -124,7 +109,6 @@ OCMutableArrayRef OCArrayCreateMutable(uint64_t capacity, const OCArrayCallBacks
  * @ingroup OCArray
  */
 OCMutableArrayRef OCArrayCreateMutableCopy(OCArrayRef theArray);
-
 /**
  * @brief Gets a value at a given index.
  *
@@ -134,7 +118,6 @@ OCMutableArrayRef OCArrayCreateMutableCopy(OCArrayRef theArray);
  * @ingroup OCArray
  */
 const void *OCArrayGetValueAtIndex(OCArrayRef theArray, uint64_t index);
-
 /**
  * @brief Replaces the value at the specified index in a mutable array.
  *
@@ -147,7 +130,6 @@ const void *OCArrayGetValueAtIndex(OCArrayRef theArray, uint64_t index);
  * @ingroup OCArray
  */
 bool OCArraySetValueAtIndex(OCMutableArrayRef theArray, OCIndex index, const void *value);
-
 /**
  * @brief Appends a value to the end of a mutable array.
  *
@@ -159,7 +141,6 @@ bool OCArraySetValueAtIndex(OCMutableArrayRef theArray, OCIndex index, const voi
  * @ingroup OCArray
  */
 bool OCArrayAppendValue(OCMutableArrayRef theArray, const void *value);
-
 /**
  * @brief Checks whether a value is present in the array.
  *
@@ -172,7 +153,6 @@ bool OCArrayAppendValue(OCMutableArrayRef theArray, const void *value);
  * @ingroup OCArray
  */
 bool OCArrayContainsValue(OCArrayRef theArray, const void *value);
-
 /**
  * @brief Appends a range of values from another array into a mutable array.
  *
@@ -185,7 +165,6 @@ bool OCArrayContainsValue(OCArrayRef theArray, const void *value);
  * @ingroup OCArray
  */
 bool OCArrayAppendArray(OCMutableArrayRef theArray, OCArrayRef otherArray, OCRange range);
-
 /**
  * @brief Finds the first index of a value in the array.
  *
@@ -198,7 +177,6 @@ bool OCArrayAppendArray(OCMutableArrayRef theArray, OCArrayRef otherArray, OCRan
  * @ingroup OCArray
  */
 long OCArrayGetFirstIndexOfValue(OCArrayRef theArray, const void *value);
-
 /**
  * @brief Removes a value at a specific index from a mutable array.
  *
@@ -210,7 +188,6 @@ long OCArrayGetFirstIndexOfValue(OCArrayRef theArray, const void *value);
  * @ingroup OCArray
  */
 bool OCArrayRemoveValueAtIndex(OCMutableArrayRef theArray, uint64_t index);
-
 /**
  * @brief Inserts a value into a mutable array at the specified index.
  *
@@ -223,7 +200,6 @@ bool OCArrayRemoveValueAtIndex(OCMutableArrayRef theArray, uint64_t index);
  * @ingroup OCArray
  */
 bool OCArrayInsertValueAtIndex(OCMutableArrayRef theArray, uint64_t index, const void *value);
-
 /**
  * @brief Sorts values in an array.
  *
@@ -234,7 +210,6 @@ bool OCArrayInsertValueAtIndex(OCMutableArrayRef theArray, uint64_t index, const
  * @ingroup OCArray
  */
 void OCArraySortValues(OCMutableArrayRef theArray, OCRange range, OCComparatorFunction comparator, void *context);
-
 /**
  * @brief Performs a binary search on a sorted array.
  *
@@ -247,7 +222,6 @@ void OCArraySortValues(OCMutableArrayRef theArray, OCRange range, OCComparatorFu
  * @ingroup OCArray
  */
 int64_t OCArrayBSearchValues(OCArrayRef array, OCRange range, const void *value, OCComparatorFunction comparator, void *context);
-
 /**
  * @brief Creates a new immutable array from an existing one.
  *
@@ -256,7 +230,6 @@ int64_t OCArrayBSearchValues(OCArrayRef array, OCRange range, const void *value,
  * @ingroup OCArray
  */
 OCArrayRef OCArrayCreateWithArray(OCArrayRef array);
-
 /**
  * @brief Creates a JSON array representation of an OCArray.
  *
@@ -270,8 +243,6 @@ OCArrayRef OCArrayCreateWithArray(OCArrayRef array);
  * @ingroup OCArray
  */
 cJSON *OCArrayCreateJSON(OCArrayRef array);
-
-
 /**
  * @brief Returns the callback structure associated with the array.
  *
@@ -280,7 +251,5 @@ cJSON *OCArrayCreateJSON(OCArrayRef array);
  * @ingroup OCArray
  */
 const OCArrayCallBacks *OCArrayGetCallBacks(OCArrayRef array);
-
-/** @} */ // end of OCArray group
-
-#endif /* OCArray_h */
+/** @} */  // end of OCArray group
+#endif     /* OCArray_h */

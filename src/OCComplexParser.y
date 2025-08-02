@@ -306,7 +306,7 @@ double complex ComplexNodeEvaluate(ComplexNodeRef node)
 void ComplexNodeFree(ComplexNodeRef node)
 {
     if(node==NULL) return;
-    
+
     switch(node->nodeType) {
         case '+':
         case '-':
