@@ -10,6 +10,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#include <stdbool.h>
 bool OCIndexArrayCreateAndCount_test(void);
 bool OCIndexArrayGetValueAtIndex_test(void);
 bool OCIndexArraySetValueAtIndex_test(void);

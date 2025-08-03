@@ -155,7 +155,7 @@ OC_INLINE OCRange OCRangeMake(uint64_t loc, uint64_t len) {
  */
 #define IF_NO_OBJECT_EXISTS_RETURN(OBJECT, X)                                        \
     do {                                                                             \
-        if (NULL == OBJECT) {                                                        \
+        if (NULL == (OBJECT)) {                                                      \
             fprintf(stderr, "*** WARNING - %s - object doesn't exist.\n", __func__); \
             return X;                                                                \
         }                                                                            \

@@ -31,7 +31,7 @@ repos:
       # Static analysis with clang-tidy
       - id: clang-tidy
         args:
-          - --checks=-*,readability-*,bugprone-*,performance-*,-readability-identifier-length,-readability-function-size,-readability-braces-around-statements,-readability-avoid-const-params-in-decls,-bugprone-macro-parentheses,-bugprone-reserved-identifier
+          - --checks=-*,readability-*,bugprone-*,clang-analyzer-*,performance-*,modernize-*,-modernize-use-nodiscard,-readability-identifier-length
           - --header-filter=src/.*\.h
           - --format-style=file
           - --
@@ -40,7 +40,7 @@ repos:
           - -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include
           - -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include
         files: \.(c|h)$
-        exclude: ^(build/|third_party/|.*\.tab\.(c|h)|.*Scanner\.c|src/cJSON|test_leak\.c)$
+        exclude: ^(build/|third_party/|.*\.tab\.(c|h)|.*Scanner\.c|src/cJSON\.(c|h))$
 
       # Static analysis with cppcheck
       - id: cppcheck
@@ -51,8 +51,6 @@ repos:
           - --suppress=unusedFunction
           - --suppress=unmatchedSuppression
           - --suppress=unusedStructMember:*/OCType.h
-          - --suppress=normalCheckLevelMaxBranches
-          - --suppress=toomanyconfigs
           - --inline-suppr
         files: \.(c|h)$
-        exclude: ^(build/|third_party/|.*\.tab\.(c|h)|.*Scanner\.c|src/cJSON|test_leak\.c)$
+        exclude: ^(build/|third_party/|.*\.tab\.(c|h)|.*Scanner\.c|src/cJSON\.(c|h))$
