@@ -24,7 +24,7 @@ typedef uint16_t OCTypeID;
  * @typedef OCIndex
  * @brief Index type used throughout OCTypes for array indices and counts.
  */
-typedef size_t OCIndex;
+typedef long OCIndex;
 // Forward declarations for all OCTypes opaque types
 typedef const struct impl_OCType *OCTypeRef;
 typedef const struct impl_OCString *OCStringRef;
