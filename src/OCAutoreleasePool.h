@@ -28,7 +28,7 @@
 #ifndef OCAutoreleasePool_h
 #define OCAutoreleasePool_h
 #include <stdbool.h>
-#include "OCLibrary.h"  // Ensures OCTypeRef and other necessary types are available.
+#include "OCType.h"  // Foundation types and forward declarations
 /** @defgroup OCAutoreleasePool OCAutoreleasePool
  *  @brief Implements an autorelease pool for OCTypes.
  *  @{

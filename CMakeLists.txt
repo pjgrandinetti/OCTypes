@@ -34,7 +34,7 @@ set(OCTYPE_HDR
     ${CMAKE_CURRENT_SOURCE_DIR}/src/OCBoolean.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/OCData.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/OCDictionary.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/OCLibrary.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/OCTypes.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/OCMath.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/OCNumber.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/OCString.h

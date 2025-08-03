@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>  // malloc, free, realloc
 #include <string.h>  // strlen, strcmp, memcpy, memmove
-#include "OCLibrary.h"
+#include "OCTypes.h"
 static OCTypeID kOCDataID = kOCNotATypeID;
 struct impl_OCData {
     OCBase base;

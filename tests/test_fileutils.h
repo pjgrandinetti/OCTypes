@@ -8,7 +8,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include "OCFileUtilities.h"
-#include "OCLibrary.h"
+#include "OCTypes.h"
 /**
  * Each of these returns true on success, false (after having
  * PRINTERROR-ed) on failure.

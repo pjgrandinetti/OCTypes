@@ -10,7 +10,7 @@
 #include <math.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include "OCLibrary.h"
+#include "OCTypes.h"
 #define DOUBLE_LOOSE_EPS 1e-8
 #define FLOAT_LOOSE_EPS 1.2e-6f /* a bit above 1e-6 to cover ULP rounding */
 // Use the standard library so tests that call carg()/csin()/ccos()/ctan() match exactly:

@@ -8,7 +8,8 @@
  */
 #ifndef OCBoolean_h
 #define OCBoolean_h
-#include "OCLibrary.h"  // Ensures OCBooleanRef and other types are available
+#include "OCType.h"  // Foundation types and forward declarations
+#include "cJSON.h"   // For JSON functionality
 /**
  * @defgroup OCBoolean OCBoolean
  * @brief Immutable Boolean type abstraction in OCTypes.

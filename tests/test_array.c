@@ -1,6 +1,7 @@
 #include "test_array.h"
 #include <inttypes.h>         // For PRIu64
 #include "../src/OCArray.h"   // For OCArray specific functions like OCArrayCreateMutable, OCArrayAppendValue etc.
+#include "../src/OCNumber.h"  // For OCNumberRef, OCNumberCreateWithDouble, OCNumberCreateWithSInt32
 #include "../src/OCString.h"  // For OCStringRef, OCStringCreateWithCString, OCStringEqual, OCRelease
 // Adapter for OCArraySortValues on OCStringRefs:
 OCComparisonResult OCStringCompareAdapter(const void *a, const void *b, void *ctx) {

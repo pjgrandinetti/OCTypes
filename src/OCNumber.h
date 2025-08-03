@@ -8,7 +8,8 @@
 #define OCNumber_h
 #include <complex.h>
 #include <limits.h>
-#include "OCLibrary.h"
+#include "OCType.h"
+#include "cJSON.h"
 /**
  * @note Ownership follows CoreFoundation conventions:
  *       The caller owns any OCNumberRef returned from functions with "Create"

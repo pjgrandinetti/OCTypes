@@ -1,4 +1,4 @@
-#include "OCString.h"
+#include "OCString.h"  // Own header first
 #include <complex.h>
 #include <math.h>
 #include <stdarg.h>
@@ -7,7 +7,9 @@
 #include <stdio.h>
 #include <stdlib.h>        // malloc, free, realloc
 #include <string.h>        // strlen, strcmp, memcpy, memmove
-#include "OCDictionary.h"  // for OCMutableDictionaryRef, OCDictionaryCreateMutable, etc.
+#include "OCArray.h"       // For OCArrayCallBacks, OCArrayCreateMutable, etc.
+#include "OCData.h"        // For OCDataGetLength, OCDataGetBytesPtr
+#include "OCDictionary.h"  // For OCMutableDictionaryRef, OCDictionaryCreateMutable, etc.
 static OCMutableDictionaryRef impl_constantStringTable = NULL;
 // Forward declaration for OCStringFindWithOptions
 bool OCStringFindWithOptions(OCStringRef string, OCStringRef stringToFind, OCRange rangeToSearch, OCOptionFlags compareOptions, OCRange *result);

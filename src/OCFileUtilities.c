@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
-#include "OCLibrary.h"
+#include "OCTypes.h"
 // helper: turn an OCStringRef into a malloc’d UTF-8 C string
 static char *_OCStringCopyUTF8(OCStringRef s) {
     const char *p = OCStringGetCString(s);

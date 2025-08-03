@@ -13,8 +13,11 @@
 #define OCDICTIONARY_H
 #include <stdbool.h>
 #include <stdint.h>
-#include "OCArray.h"
-#include "OCLibrary.h"  // Ensures OCDictionaryRef and other types are available
+#include "OCType.h"
+#include "cJSON.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 /**
  * @defgroup OCDictionary OCDictionary
  * @brief Dictionary types and operations.

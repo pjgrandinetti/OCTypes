@@ -6,8 +6,8 @@
 //  Updated by ChatGPT on 2025-05-11.
 //
 #include <stdio.h>
-#include "OCLibrary.h"
 #include "OCType.h"  // for OCRegisterType, OCTypeID, kOCNotATypeID
+#include "OCTypes.h"
 // Static storage of the boolean type’s OCTypeID
 static OCTypeID kOCBooleanTypeID = kOCNotATypeID;
 // Our two singletons

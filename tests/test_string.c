@@ -5,8 +5,9 @@
 #include <math.h>      // exp, log, acos, asin, cos, sin
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>         // Added for strcmp
-#include "../src/OCMath.h"  // for OCComplexFromCString, OCCompareDoubleValues
+#include <string.h>          // Added for strcmp
+#include "../src/OCArray.h"  // for OCArrayGetCount, OCArrayGetValueAtIndex
+#include "../src/OCMath.h"   // for OCComplexFromCString, OCCompareDoubleValues
 #include "../src/OCString.h"
 // ————————— existing tests —————————
 // Test equality, immutability, and creation from C-string and STR

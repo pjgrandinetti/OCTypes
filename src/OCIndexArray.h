@@ -9,7 +9,13 @@
 #ifndef OCINDEXARRAY_H
 #define OCINDEXARRAY_H
 #include <stdbool.h>
-#include "OCLibrary.h"
+#include <stdint.h>
+#include "OCNumber.h"  // For OCNumberType used in public API
+#include "OCType.h"
+#include "cJSON.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 /**
  * @defgroup OCIndexArray OCIndexArray
  * @brief Array types and operations for OCIndex values in OCTypes.

@@ -11,7 +11,8 @@
  */
 #ifndef OCData_h
 #define OCData_h
-#include "OCLibrary.h"  // Ensures OCDataRef and other types are available
+#include "OCType.h"  // Foundation types and forward declarations
+#include "cJSON.h"   // For JSON functionality
 /**
  * @defgroup OCData OCData
  * @brief Binary data buffer types and utilities.

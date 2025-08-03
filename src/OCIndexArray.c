@@ -5,10 +5,16 @@
  * arrays of OCIndex values. Includes support for copying, mutation, serialization,
  * and Base64 conversion.
  */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "OCLibrary.h"
+#include "OCIndexArray.h"  // Own header first
+#include <stdio.h>         // For printf, etc.
+#include <stdlib.h>        // For malloc, free
+#include <string.h>        // For memcpy, etc.
+#include "OCArray.h"       // For OCArray functions
+#include "OCData.h"        // For OCData functions
+#include "OCDictionary.h"  // For OCDictionary functions
+#include "OCIndexSet.h"    // For OCIndexSet functions
+#include "OCNumber.h"      // For OCNumberType definition
+#include "OCString.h"      // For OCString functions
 static OCTypeID kOCIndexArrayID = kOCNotATypeID;
 struct impl_OCIndexArray {
     OCBase base;

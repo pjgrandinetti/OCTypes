@@ -9,7 +9,11 @@
 #include <complex.h>
 #include <stdio.h>
 #include <time.h>
-#include "OCLibrary.h"
+#include "OCType.h"
+#include "cJSON.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 /**
  * @note Ownership follows CoreFoundation conventions:
  *       The caller owns any OCStringRef returned from functions with "Create"
@@ -982,5 +986,15 @@ bool characterIsDigitOrDecimalPointOrSpace(uint32_t character);
  * @endcode
  */
 OCStringRef OCCreateISO8601Timestamp(void);
+/**
+ * @brief Cleans up the internal constant string table.
+ *
+ * This function is used internally by OCTypesShutdown() to clean up
+ * resources associated with constant strings created via STR() macro.
+ *
+ * @note This is an internal function and should not be called directly
+ *       by user code. Use OCTypesShutdown() instead.
+ */
+void cleanupConstantStringTable(void);
 /** @} */  // end of OCString group
 #endif     /* OCString_h */

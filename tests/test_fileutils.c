@@ -12,7 +12,8 @@
 #include <io.h>
 #include <windows.h>
 #endif
-#include "OCLibrary.h"
+#include "../src/OCFileUtilities.h"
+#include "../src/OCString.h"
 #include "test_utils.h"
 // Cross-platform helper functions
 #ifdef _WIN32

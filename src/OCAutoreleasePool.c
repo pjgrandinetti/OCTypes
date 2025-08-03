@@ -5,7 +5,7 @@
 //
 #include <stdio.h>
 #include <stdlib.h>
-#include "OCLibrary.h"  // OCLibrary
+#include "OCTypes.h"  // Convenience header
 #ifndef FREE
 #define FREE(X)   \
     {             \

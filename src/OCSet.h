@@ -8,7 +8,8 @@
  */ \
 #ifndef OCSet_h
 #define OCSet_h
-#include "OCLibrary.h"
+#include "OCType.h"
+#include "cJSON.h"
 /**
  * @defgroup OCSet OCSet
  * @brief Set types and operations in OCTypes.

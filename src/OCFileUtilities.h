@@ -2,7 +2,7 @@
 #ifndef OCFILEUTILS_H
 #define OCFILEUTILS_H
 #include <stdbool.h>
-#include "OCLibrary.h"
+#include "OCType.h"
 #ifdef __cplusplus
 extern "C" {
 #endif

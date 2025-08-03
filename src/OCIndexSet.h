@@ -9,7 +9,8 @@
 #ifndef OCINDEXSET_H
 #define OCINDEXSET_H
 #include <stdbool.h>
-#include "OCLibrary.h"
+#include "OCType.h"
+#include "cJSON.h"
 /**
  * @defgroup OCIndexSet OCIndexSet
  * @brief APIs for immutable and mutable collections of OCIndex values.

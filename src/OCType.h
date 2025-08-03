@@ -8,19 +8,138 @@
  */
 #ifndef OCType_h
 #define OCType_h
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
-#include <stdbool.h>
 #include "cJSON.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-// Forward declarations (the actual definitions will be in OCLibrary.h)
+/**
+ * @typedef OCTypeID
+ * @brief Unique identifier for registered OCTypes.
+ */
+typedef uint16_t OCTypeID;
+/**
+ * @typedef OCIndex
+ * @brief Index type used throughout OCTypes for array indices and counts.
+ */
+typedef size_t OCIndex;
+// Forward declarations for all OCTypes opaque types
 typedef const struct impl_OCType *OCTypeRef;
 typedef const struct impl_OCString *OCStringRef;
-
+typedef struct impl_OCString *OCMutableStringRef;
+typedef const struct impl_OCArray *OCArrayRef;
+typedef struct impl_OCArray *OCMutableArrayRef;
+typedef const struct impl_OCSet *OCSetRef;
+typedef struct impl_OCSet *OCMutableSetRef;
+typedef const struct impl_OCDictionary *OCDictionaryRef;
+typedef struct impl_OCDictionary *OCMutableDictionaryRef;
+typedef const struct impl_OCBoolean *OCBooleanRef;
+typedef const struct impl_OCData *OCDataRef;
+typedef struct impl_OCData *OCMutableDataRef;
+typedef const struct impl_OCNumber *OCNumberRef;
+typedef const struct impl_OCIndexSet *OCIndexSetRef;
+typedef struct impl_OCIndexSet *OCMutableIndexSetRef;
+typedef const struct impl_OCIndexArray *OCIndexArrayRef;
+typedef struct impl_OCIndexArray *OCMutableIndexArrayRef;
+typedef const struct impl_OCIndexPairSet *OCIndexPairSetRef;
+typedef struct impl_OCIndexPairSet *OCMutableIndexPairSetRef;
+typedef struct impl_OCAutoreleasePool *OCAutoreleasePoolRef;
+/**
+ * @typedef OCOptionFlags
+ * @brief Base type for option flags, typically an unsigned long.
+ *
+ * OCOptionFlags is used throughout the OCTypes library to represent bit flags and options.
+ * This type provides a consistent way to pass multiple boolean options to functions.
+ */
+typedef unsigned long OCOptionFlags;
+/**
+ * @enum OCComparisonResult
+ * @brief Result values returned by OCComparatorFunction.
+ *
+ * These constants represent the possible outcomes when comparing two values
+ * using OCTypes comparison functions. They follow the same pattern as many
+ * standard comparison functions: negative for less-than, zero for equal,
+ * and positive for greater-than.
+ */
+typedef enum {
+    kOCCompareLessThan = -1,               /**< First value is less than the second. */
+    kOCCompareEqualTo = 0,                 /**< Values are equal. */
+    kOCCompareGreaterThan = 1,             /**< First value is greater than the second. */
+    kOCCompareUnequalDimensionalities = 2, /**< Different dimensionalities. */
+    kOCCompareNoSingleValue = 3,           /**< No singular comparison result available. */
+    kOCCompareError = 99                   /**< An error occurred during comparison. */
+} OCComparisonResult;
+/**
+ * @brief Function pointer type for comparing two values.
+ *
+ * OCComparatorFunction is used throughout OCTypes for sorting and searching operations.
+ * It's a callback function that compares two values and returns their relative order.
+ *
+ * @param val1    Pointer to the first value.
+ * @param val2    Pointer to the second value.
+ * @param context Optional user-defined context pointer.
+ * @return Comparison result as OCComparisonResult.
+ */
+typedef OCComparisonResult (*OCComparatorFunction)(const void *val1,
+                                                   const void *val2,
+                                                   void *context);
+/**
+ * @enum OCStringComparisonFlagsEnum
+ * @brief Defines constant flags for string comparison operations.
+ *
+ * These flags are used with the OCStringCompareFlags type (which is an OCOptionFlags)
+ * to modify comparison behavior. Multiple flags can be combined using bitwise OR.
+ */
+typedef enum {
+    kOCCompareCaseInsensitive = 1,        /**< Case-insensitive comparison. */
+    kOCCompareBackwards = 4,              /**< Compare from the end of the string. */
+    kOCCompareAnchored = 8,               /**< Anchor comparison to the beginning. */
+    kOCCompareNonliteral = 16,            /**< Non-literal comparison (e.g. normalization). */
+    kOCCompareLocalized = 32,             /**< Locale-aware comparison. */
+    kOCCompareNumerically = 64,           /**< Numeric-aware comparison. */
+    kOCCompareDiacriticInsensitive = 128, /**< Ignore diacritics. */
+    kOCCompareWidthInsensitive = 256,     /**< Ignore character width differences. */
+    kOCCompareForcedOrdering = 512        /**< Enforce ordering even if equal. */
+} OCStringComparisonFlagsEnum;
+/**
+ * @typedef OCStringCompareFlags
+ * @brief Type used to hold string comparison flags.
+ *
+ * This is an alias for OCOptionFlags (unsigned long).
+ * Use constants from OCStringComparisonFlagsEnum with this type.
+ */
+typedef OCOptionFlags OCStringCompareFlags;
+/**
+ * @brief A structure representing a contiguous byte or element range.
+ *
+ * OCRange is used throughout OCTypes to represent a range of elements in arrays, strings,
+ * and other indexed collections. It consists of a starting index (location) and the
+ * number of elements in the range (length).
+ */
+typedef struct {
+    uint64_t location; /**< Start index of the range. */
+    uint64_t length;   /**< Number of elements in the range. */
+} OCRange;
+#if !defined(OC_INLINE)
+#define OC_INLINE static inline
+#endif
+#if defined(OC_INLINE)
+/**
+ * @brief Convenience function to create an OCRange.
+ *
+ * @param loc Start index.
+ * @param len Number of elements.
+ * @return OCRange with the given location and length.
+ */
+OC_INLINE OCRange OCRangeMake(uint64_t loc, uint64_t len) {
+    OCRange r = {loc, len};
+    return r;
+}
+#else
+#define OCRangeMake(LOC, LEN) impl_OCRangeMake(LOC, LEN)
+#endif
 /**
  * @defgroup OCType OCType
  * @brief Core type definitions and memory management functions.

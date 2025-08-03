@@ -7,7 +7,11 @@
  */
 #ifndef OCArray_h
 #define OCArray_h
-#include "OCLibrary.h"
+#include "OCType.h"
+#include "cJSON.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 /**
  * @defgroup OCArray OCArray
  * @brief Array types and operations in OCTypes.

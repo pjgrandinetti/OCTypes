@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "OCLibrary.h"
+#include "OCTypes.h"
 static OCTypeID kOCDictionaryID = kOCNotATypeID;
 // OCDictionary Opaque Type
 struct impl_OCDictionary {

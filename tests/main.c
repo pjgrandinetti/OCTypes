@@ -7,7 +7,7 @@
 //
 // Common utilities, includes, and PRINTERROR macro
 #include "../src/OCAutoreleasePool.h"
-#include "../src/OCLibrary.h"
+#include "../src/OCTypes.h"
 #include "test_utils.h"
 // Include headers for all test modules
 #include "test_array.h"

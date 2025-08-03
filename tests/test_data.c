@@ -7,6 +7,7 @@
 //
 #include <string.h>  // for memcmp
 #include "../src/OCData.h"
+#include "../src/OCString.h"  // For OCStringGetCString
 #include "test_utils.h"
 bool dataTest0(void) {
     fprintf(stderr, "%s begin...\n", __func__);

@@ -6,8 +6,8 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "../src/OCLibrary.h"  // General OCTypes definitions
-#include "../src/OCType.h"     // For OCTypeID, OCTypeEqual, OCGetTypeID etc.
+#include "../src/OCType.h"   // For OCTypeID, OCTypeEqual, OCGetTypeID etc.
+#include "../src/OCTypes.h"  // General OCTypes definitions
 // PRINTERROR macro for consistent error reporting in tests
 // Added __FILE__ to identify which test file failed.
 #define PRINTERROR                                                                                                  \

@@ -6,7 +6,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "OCLibrary.h"
+#include "OCTypes.h"
 static OCTypeID kOCIndexPairSetID = kOCNotATypeID;
 struct impl_OCIndexPairSet {
     OCBase base;

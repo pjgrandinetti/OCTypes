@@ -1,3 +1,9 @@
+//
+//  OCArray.c
+//  OCTypes
+//
+//  Created by philip on 4/2/17.
+//
 #if (defined(__GNUC__) && (defined(_WIN32) || defined(__CYGWIN__))) || \
     (defined(_MSC_VER) && defined(_WIN32))
 // For qsort_s (C11 Annex K)
@@ -11,11 +17,13 @@
 #define _GNU_SOURCE
 #endif
 #endif
+#include "OCArray.h"  // Own header first
 #include <stdbool.h>  // For bool
 #include <stdint.h>   // For uint64_t, etc.
 #include <stdio.h>
-#include <stdlib.h>  // For qsort, qsort_r, qsort_s, malloc, etc. Must be early for feature macros.
-#include <string.h>  // For memcpy
+#include <stdlib.h>    // For qsort, qsort_r, qsort_s, malloc, etc.
+#include <string.h>    // For memcpy
+#include "OCString.h"  // For OCString functions
 #if defined(__APPLE__)
 #include <malloc/malloc.h>  // For malloc_zone_t
 #else
@@ -25,15 +33,6 @@
 #define _Nonnull
 #endif
 #endif  // end of #if defined(__APPLE__)
-//
-//  OCArray.c
-//  OCTypes
-//
-//  Created by philip on 4/2/17.
-//
-#include "OCLibrary.h"  // Should be included after system headers if it also includes them,
-                        // or ensure OCLibrary.h doesn't conflict with _GNU_SOURCE etc.
-                        // Given OCLibrary.h includes stdlib.h, stdio.h etc., defining _GNU_SOURCE first is correct.
 static OCTypeID kOCArrayID = kOCNotATypeID;
 const OCArrayCallBacks kOCTypeArrayCallBacks = {0, OCRetain, OCRelease, OCTypeCopyFormattingDesc, OCTypeEqual};
 static const OCArrayCallBacks __kOCNullArrayCallBacks = {0, NULL, NULL, NULL, NULL};

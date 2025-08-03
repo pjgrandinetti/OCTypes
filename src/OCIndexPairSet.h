@@ -8,7 +8,8 @@
 #ifndef OCINDEXPAIRSET_H
 #define OCINDEXPAIRSET_H
 #include <stdbool.h>
-#include "OCLibrary.h"
+#include "OCType.h"
+#include "cJSON.h"
 /**
  * @defgroup OCIndexPairSet OCIndexPairSet
  * @brief APIs for sets of OCIndex–OCIndex pairs (OCIndexPairSet and mutable variant).

@@ -7,7 +7,7 @@
 #include <stdio.h>  // For perror
 #include <stdlib.h>
 #include <string.h>
-#include "OCLibrary.h"
+#include "OCTypes.h"
 static char **typeIDTable = NULL;
 static OCTypeID typeIDTableCount = 0;
 void cleanupTypeIDTable(void) {

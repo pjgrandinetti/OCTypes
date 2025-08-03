@@ -27,7 +27,7 @@
 
     #include <math.h>
     #include <stdio.h>
-    #include "OCLibrary.h"
+    #include "OCTypes.h"
 
     static ComplexNodeRef ocpc_root = NULL;
     static double complex result;

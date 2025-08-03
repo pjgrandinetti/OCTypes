@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "OCLibrary.h"
+#include "OCTypes.h"
 static OCTypeID kOCIndexSetID = kOCNotATypeID;
 struct impl_OCIndexSet {
     OCBase base;

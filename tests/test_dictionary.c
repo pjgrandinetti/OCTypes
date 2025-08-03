@@ -6,8 +6,8 @@
 #include <time.h>    // for clock(), CLOCKS_PER_SEC
 #include "../src/OCArray.h"
 #include "../src/OCAutoreleasePool.h"
+#include "../src/OCBoolean.h"
 #include "../src/OCDictionary.h"
-#include "../src/OCLibrary.h"
 #include "../src/OCNumber.h"
 #include "../src/OCString.h"
 #include "../src/OCType.h"  // for OCTypeEqual

@@ -7,7 +7,7 @@
 #ifndef OCMath_h
 #define OCMath_h
 #include <complex.h>
-#include "OCLibrary.h"
+#include "OCType.h"
 /** @defgroup OCMath OCMath */
 /** @addtogroup OCMath
  *  @{
