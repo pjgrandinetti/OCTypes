@@ -1,4 +1,7 @@
-# Read the Docs configuration file
+# Read the Docs configura    # 4) Copy the output into RTD's expected dir
+    - echo "Copying HTML to RTD output…"
+    - mkdir -p "$READTHEDOCS_OUTPUT/html"
+    - cp -R docs/_build/html/. "$READTHEDOCS_OUTPUT/html" file
 # https://docs.readthedocs.io/en/stable/config-file/v2.html
 
 version: 2
