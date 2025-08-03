@@ -63,7 +63,7 @@ void _OCBooleanInitialize(void) {
     impl_kOCBooleanTrue.base.copyJSON = impl_OCBooleanCopyJSON;
     impl_kOCBooleanTrue.base.copyDeep = impl_OCBooleanDeepCopy;
     impl_kOCBooleanTrue.base.copyDeepMutable = impl_OCBooleanDeepCopy;
-    impl_kOCBooleanTrue.base.finalized = false;
+    impl_kOCBooleanTrue.base.flags.finalized = false;
     OCTypeSetStaticInstance(kOCBooleanTrue, true);
     impl_kOCBooleanFalse.base.typeID = kOCBooleanTypeID;
     impl_kOCBooleanFalse.base.finalize = impl_OCBooleanFinalize;
@@ -72,7 +72,7 @@ void _OCBooleanInitialize(void) {
     impl_kOCBooleanFalse.base.copyJSON = impl_OCBooleanCopyJSON;
     impl_kOCBooleanTrue.base.copyDeep = impl_OCBooleanDeepCopy;
     impl_kOCBooleanTrue.base.copyDeepMutable = impl_OCBooleanDeepCopy;
-    impl_kOCBooleanFalse.base.finalized = false;
+    impl_kOCBooleanFalse.base.flags.finalized = false;
     OCTypeSetStaticInstance(kOCBooleanFalse, true);
 }
 OCTypeID OCBooleanGetTypeID(void) {

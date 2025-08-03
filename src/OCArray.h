@@ -180,7 +180,7 @@ bool OCArrayAppendArray(OCMutableArrayRef theArray, OCArrayRef otherArray, OCRan
  * @return The index of the first matching value, or `kOCNotFound` if not found or if the array/value is NULL.
  * @ingroup OCArray
  */
-long OCArrayGetFirstIndexOfValue(OCArrayRef theArray, const void *value);
+OCIndex OCArrayGetFirstIndexOfValue(OCArrayRef theArray, const void *value);
 /**
  * @brief Removes a value at a specific index from a mutable array.
  *

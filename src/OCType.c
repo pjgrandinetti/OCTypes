@@ -137,8 +137,8 @@ void OCRelease(const void *ptr) {
                 theType, OCTypeIDName(theType));
         return;
     }
-    if (theType->base.static_instance) return;
-    if (theType->base.finalized) {
+    if (theType->base.flags.static_instance) return;
+    if (theType->base.flags.finalized) {
         fprintf(stderr, "ERROR: OCRelease called on (%p), an already-finalized object, typeID = %s\n",
                 theType, OCTypeIDName(theType));
         return;
@@ -150,10 +150,10 @@ void OCRelease(const void *ptr) {
     }
     if (theType->base.retainCount == 1) {
         if (theType->base.finalize) {
-            theType->base.finalized = true;
+            theType->base.flags.finalized = true;
             theType->base.finalize(theType);  // Clean up internal fields only
         }
-        if (theType->base.tracked) {
+        if (theType->base.flags.tracked) {
             impl_OCUntrack(theType);
         }
         free((void *)theType);
@@ -173,10 +173,10 @@ const void *OCRetain(const void *ptr) {
         fprintf(stderr, "*** WARNING: OCRetain called on invalid object (%p), typeID = InvalidTypeID\n", ptr);
         return ptr;
     }
-    if (theType->base.static_instance) {
+    if (theType->base.flags.static_instance) {
         // Static instances are immortal
     }
-    if (theType->base.finalized) {
+    if (theType->base.flags.finalized) {
         fprintf(stderr, "*** WARNING: OCRetain called on already-finalized object (%p), typeID = %s\n", ptr, typeName);
         return ptr;
     }
@@ -248,9 +248,9 @@ void *OCTypeAllocate(size_t size,
     object->base.copyJSON = copyJSON;
     object->base.copyDeep = copyDeep;
     object->base.copyDeepMutable = copyDeepMutable;
-    object->base.static_instance = false;
-    object->base.finalized = false;
-    object->base.tracked = true;
+    object->base.flags.static_instance = false;
+    object->base.flags.finalized = false;
+    object->base.flags.tracked = true;
     impl_OCTrack(object);
     return object;
 }
@@ -278,7 +278,7 @@ bool OCTypeGetStaticInstance(const void *ptr) {
         return false;
     }
     OCTypeRef theType = (OCTypeRef)ptr;
-    return theType->base.static_instance;
+    return theType->base.flags.static_instance;
 }
 void OCTypeSetStaticInstance(const void *ptr, bool static_instance) {
     if (NULL == ptr) {
@@ -286,12 +286,12 @@ void OCTypeSetStaticInstance(const void *ptr, bool static_instance) {
     }
     struct impl_OCType *theType = (struct impl_OCType *)ptr;
     theType->base.retainCount = 1;
-    theType->base.static_instance = static_instance;
+    theType->base.flags.static_instance = static_instance;
 }
 bool OCTypeGetFinalized(const void *ptr) {
     if (NULL == ptr) return false;
     struct impl_OCType *theType = (struct impl_OCType *)ptr;
-    return theType->base.finalized;
+    return theType->base.flags.finalized;
 }
 const char *OCTypeIDName(const void *ptr) {
     struct impl_OCType *theType = (struct impl_OCType *)ptr;

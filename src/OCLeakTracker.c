@@ -65,7 +65,7 @@ void OCReportLeaks(void) {
         for (j = 0; j < typeCount; ++j) {
             if (summaries[j].typeID == tid) {
                 summaries[j].count++;
-                if (base->static_instance) summaries[j].staticCount++;
+                if (base->flags.static_instance) summaries[j].staticCount++;
                 break;
             }
         }
@@ -86,7 +86,7 @@ void OCReportLeaks(void) {
             summaries[typeCount].typeID = tid;
             summaries[typeCount].typeName = typeName;
             summaries[typeCount].count = 1;
-            summaries[typeCount].staticCount = base->static_instance ? 1 : 0;
+            summaries[typeCount].staticCount = base->flags.static_instance ? 1 : 0;
             typeCount++;
         }
     }

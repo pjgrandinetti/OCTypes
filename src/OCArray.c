@@ -317,7 +317,7 @@ bool OCArrayRemoveValueAtIndex(OCMutableArrayRef theArray, uint64_t index) {
     theArray->count--;
     return true;
 }
-long OCArrayGetFirstIndexOfValue(OCArrayRef theArray, const void *value) {
+OCIndex OCArrayGetFirstIndexOfValue(OCArrayRef theArray, const void *value) {
     if (NULL == theArray || NULL == value) return kOCNotFound;  // Use kOCNotFound
     OCArrayEqualCallBack equalCB = NULL;
     if (theArray->callBacks) {
