@@ -8,7 +8,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "OCTypes.h"
-
 static bool ocTypesShutdownCalled = false;
 static char **typeIDTable = NULL;
 static OCTypeID typeIDTableCount = 0;
@@ -39,7 +38,6 @@ static bool TypeIDTableContainsName(const char *typeName) {
 void OCTypesShutdown(void) {
     if (ocTypesShutdownCalled) return;
     ocTypesShutdownCalled = true;
-    
     OCAutoreleasePoolCleanup();
     cleanupConstantStringTable();
 // #if defined(DEBUG)                                \

@@ -51,6 +51,8 @@ repos:
           - --suppress=unusedFunction
           - --suppress=unmatchedSuppression
           - --suppress=unusedStructMember:*/OCType.h
+          - --suppress=normalCheckLevelMaxBranches
+          - --suppress=toomanyconfigs
           - --inline-suppr
         files: \.(c|h)$
         exclude: ^(build/|third_party/|.*\.tab\.(c|h)|.*Scanner\.c|src/cJSON\.(c|h))$
