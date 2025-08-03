@@ -1,0 +1,102 @@
+# Pre-commit configuration for SITypes C library
+# See https://pre-commit.com for more information
+
+repos:
+  # General file checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: \.(md|rst)$
+      - id: end-of-file-fixer
+        exclude: \.(md|rst)$
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: ['--maxkb=1000']
+      - id: check-case-conflict
+      - id: check-executables-have-shebangs
+      - id: check-shebang-scripts-are-executable
+      - id: mixed-line-ending
+
+  # C/C++ specific tools
+  - repo: https://github.com/pocc/pre-commit-hooks
+    rev: v1.3.5
+    hooks:
+      # Code formatting with clang-format
+      - id: clang-format
+        args: [--style=file, --fallback-style=LLVM]
+        files: \.(c|h)$
+        exclude: ^(build/|third_party/|.*\.tab\.(c|h)|.*Scanner\.c)$
+
+      # Static analysis with clang-tidy
+      - id: clang-tidy
+        args:
+          - --checks=-*,readability-*,bugprone-*,clang-analyzer-*,performance-*
+          - --header-filter=src/.*\.h
+          - --format-style=file
+        files: \.(c|h)$
+        exclude: ^(build/|third_party/|.*\.tab\.(c|h)|.*Scanner\.c)$
+
+      # Static analysis with cppcheck
+      - id: cppcheck
+        args:
+          - --error-exitcode=1
+          - --enable=warning,style,performance,portability
+          - --suppress=missingIncludeSystem
+          - --suppress=unusedFunction
+          - --suppress=unmatchedSuppression
+          - --inline-suppr
+        files: \.(c|h)$
+        exclude: ^(build/|third_party/|.*\.tab\.(c|h)|.*Scanner\.c)$
+
+  # Custom local hooks for SITypes-specific checks
+  - repo: local
+    hooks:
+      # Ensure code compiles without warnings
+      - id: build-check
+        name: Build check
+        entry: make
+        args: [clean, all]
+        language: system
+        pass_filenames: false
+        files: \.(c|h|y|l)$
+
+      # Run tests to ensure functionality
+      - id: test-check
+        name: Test check
+        entry: make
+        args: [test]
+        language: system
+        pass_filenames: false
+        files: \.(c|h|y|l)$
+
+      # Check for memory leaks with AddressSanitizer
+      - id: memory-check
+        name: Memory leak check
+        entry: make
+        args: [test-asan]
+        language: system
+        pass_filenames: false
+        files: \.(c|h|y|l)$
+
+      # Verify generated files are up to date
+      - id: generated-files-check
+        name: Generated files check
+        entry: sh
+        args:
+          - -c
+          - |
+            make prepare
+            if git diff --quiet build/gen/; then
+              exit 0
+            else
+              echo "Generated files are out of date. Run 'make prepare' and commit the changes."
+              exit 1
+            fi
+        language: system
+        pass_filenames: false
+        files: \.(y|l)$
+
+# Global settings
+default_stages: [pre-commit]
+fail_fast: false

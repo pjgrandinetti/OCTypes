@@ -218,7 +218,7 @@ void *OCTypeDeepCopyMutable(const void *obj);
  * @return The OCTypeID assigned, or kOCNotATypeID on failure.
  * @ingroup OCType
  */
-OCTypeID OCRegisterType(char *typeName);
+OCTypeID OCRegisterType(const char *typeName);
 /**
  * @brief Retrieves the retain count of an OCType instance.
  * @param ptr Pointer to the OCType instance.
@@ -328,17 +328,14 @@ const char *OCTypeNameFromTypeID(OCTypeID typeID);
 typedef struct impl_OCBase {
     OCTypeID typeID;       // 2 bytes
     uint16_t retainCount;  // 2 bytes
-    int allocLine;         // 4 bytes
-    // 8 bytes total - perfectly aligned for pointers
-    // Virtual methods (8-byte aligned)
+    // 4 bytes total so far
+    // Virtual methods (8-byte aligned after padding)
     void (*finalize)(const void *);
     bool (*equal)(const void *, const void *);
     OCStringRef (*copyFormattingDesc)(OCTypeRef);
     cJSON *(*copyJSON)(const void *);
     void *(*copyDeep)(const void *);
     void *(*copyDeepMutable)(const void *);
-    // Debug info
-    const char *allocFile;  // 8 bytes
     // Flags packed together
     bool static_instance;  // 1 byte
     bool finalized;        // 1 byte
@@ -401,8 +398,7 @@ typedef struct impl_OCBase {
  * by "Create" functions for concrete types that inherit from OCBase.
  *
  * The allocated object starts with a retain count of 1 and must be released with OCRelease()
- * when no longer needed. Debug tracking information is automatically recorded for memory
- * leak detection and debugging purposes.
+ * when no longer needed. Debug tracking is automatically recorded for memory leak detection.
  *
  * @param size Size in bytes of the full structure to allocate. Must be at least sizeof(OCBase).
  * @param typeID The registered OCTypeID obtained from OCRegisterType(). Must not be kOCNotATypeID.
@@ -418,8 +414,6 @@ typedef struct impl_OCBase {
  *                 Should allocate and return a semantically equivalent but independent object. May be NULL.
  * @param copyDeepMutable Optional function to create a mutable deep copy of the object.
  *                        Similar to copyDeep but allows modification of the result. May be NULL.
- * @param file Source file name for debug tracking. Use __FILE__ macro.
- * @param line Source line number for debug tracking. Use __LINE__ macro.
  *
  * @return Pointer to a fully initialized OCType-compatible structure with retain count 1,
  *         or NULL if allocation fails or invalid parameters are provided.
@@ -442,12 +436,9 @@ void *OCTypeAllocate(
     OCStringRef (*copyFormattingDesc)(OCTypeRef),
     cJSON *(*copyJSON)(const void *),
     void *(*copyDeep)(const void *),
-    void *(*copyDeepMutable)(const void *),
-    const char *file,
-    int line);
+    void *(*copyDeepMutable)(const void *));
 /**
  * @brief Macro for typed allocation of OCType-compatible objects.
- * Automatically injects debug information.
  */
 #define OCTypeAlloc(        \
     TYPE,                   \
@@ -466,9 +457,7 @@ void *OCTypeAllocate(
         DESC_FN,            \
         JSON_FN,            \
         COPY_FN,            \
-        MUTABLE_COPY_FN,    \
-        __FILE__,           \
-        __LINE__)
+        MUTABLE_COPY_FN)
 /**
  * @brief Finalizes and cleans up resources used by the OCTypes library.
  *

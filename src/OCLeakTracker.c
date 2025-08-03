@@ -4,25 +4,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "OCType.h" /* For OCBase, OCTypeID, etc. */
 typedef struct {
     const void *ptr;
-    const char *file;
-    int line;
 } OCLeakEntry;
 static OCLeakEntry *gLeakTable = NULL;
 static size_t gLeakCount = 0;
 static pthread_mutex_t gLeakLock = PTHREAD_MUTEX_INITIALIZER;
-void _OCTrackDebug(const void *ptr, const char *file, int line) {
+void impl_OCTrack(const void *ptr) {
     pthread_mutex_lock(&gLeakLock);
     gLeakTable = realloc(gLeakTable, (gLeakCount + 1) * sizeof(OCLeakEntry));
     if (!gLeakTable) {
-        fprintf(stderr, "[LeakTracker] realloc failed at %s:%d\n", file, line);
+        fprintf(stderr, "[LeakTracker] realloc failed\n");
         abort();
     }
-    gLeakTable[gLeakCount++] = (OCLeakEntry){ptr, file, line};
+    gLeakTable[gLeakCount++] = (OCLeakEntry){ptr};
     pthread_mutex_unlock(&gLeakLock);
 }
-void _OCUntrack(const void *ptr) {
+void impl_OCUntrack(const void *ptr) {
     pthread_mutex_lock(&gLeakLock);
     for (size_t i = 0; i < gLeakCount; ++i) {
         if (gLeakTable[i].ptr == ptr) {
@@ -70,7 +69,7 @@ void OCReportLeaks(void) {
                 break;
             }
         }
-        // If it’s a new typeID, add a new summary slot
+        // If it's a new typeID, add a new summary slot
         if (j == typeCount) {
             if (typeCount == capacity) {
                 capacity *= 2;
@@ -109,16 +108,6 @@ void OCReportLeaks(void) {
     free(summaries);
     pthread_mutex_unlock(&gLeakLock);
 #endif  // !__has_feature(address_sanitizer)
-}
-size_t OCLeakCountForType(OCTypeID typeID) {
-    size_t count = 0;
-    pthread_mutex_lock(&gLeakLock);
-    for (size_t i = 0; i < gLeakCount; ++i) {
-        if (gLeakTable[i].ptr && ((OCBase *)gLeakTable[i].ptr)->typeID == typeID)
-            count++;
-    }
-    pthread_mutex_unlock(&gLeakLock);
-    return count;
 }
 void OCReportLeaksForType(OCTypeID filterTypeID) {
     pthread_mutex_lock(&gLeakLock);
@@ -167,15 +156,17 @@ void OCReportLeaksForType(OCTypeID filterTypeID) {
         }
     }
     fprintf(stderr,
-            "[OCLeakTracker] %zu object(s) of type \"%s\" (typeID %u) not finalized:\n",
+            "[OCLeakTracker] %zu object(s) of type \"%s\" (typeID %u) not finalized.\n",
             filteredCount, typeName, (unsigned)filterTypeID);
-    // Print each leak’s file/line for that type
+    pthread_mutex_unlock(&gLeakLock);
+}
+size_t OCLeakCountForType(OCTypeID typeID) {
+    size_t count = 0;
+    pthread_mutex_lock(&gLeakLock);
     for (size_t i = 0; i < gLeakCount; ++i) {
-        const OCBase *base = gLeakTable[i].ptr;
-        if (base && base->typeID == filterTypeID) {
-            fprintf(stderr, "  • leaked at %s:%d\n",
-                    gLeakTable[i].file, gLeakTable[i].line);
-        }
+        if (gLeakTable[i].ptr && ((OCBase *)gLeakTable[i].ptr)->typeID == typeID)
+            count++;
     }
     pthread_mutex_unlock(&gLeakLock);
+    return count;
 }

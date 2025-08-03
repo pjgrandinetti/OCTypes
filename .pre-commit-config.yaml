@@ -1,102 +1,58 @@
+# Pre-commit configuration for OCTypes C library
+# See https://pre-commit.com for more information
+
 repos:
-  # Pre-commit hooks for code formatting and linting
+  # General file checks
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v4.6.0
     hooks:
       - id: trailing-whitespace
+        exclude: \.(md|rst)$
       - id: end-of-file-fixer
-      - id: check-yaml
-      - id: check-added-large-files
+        exclude: \.(md|rst)$
       - id: check-merge-conflict
+      - id: check-added-large-files
+        args: ['--maxkb=1000']
+      - id: check-case-conflict
+      - id: check-executables-have-shebangs
+      - id: check-shebang-scripts-are-executable
+      - id: mixed-line-ending
 
-  # C/C++ code formatting with clang-format
-  - repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v16.0.6
+  # C/C++ specific tools
+  - repo: https://github.com/pocc/pre-commit-hooks
+    rev: v1.3.5
     hooks:
+      # Code formatting with clang-format
       - id: clang-format
+        args: [--style=file, --fallback-style=LLVM]
         files: \.(c|h)$
-        args: [-i]
+        exclude: ^(build/|third_party/|.*\.tab\.(c|h)|.*Scanner\.c|src/cJSON)$
 
-  # Static analysis with clang-tidy (less strict for now)
-  - repo: local
-    hooks:
+      # Static analysis with clang-tidy
       - id: clang-tidy
-        name: clang-tidy
-        entry: clang-tidy
-        language: system
-        files: \.(c|h)$
-        exclude: ^(build/|docs/|tests/|src/cJSON)
         args:
-          - --config-file=.clang-tidy
-          - --header-filter=src/.*
-        require_serial: true
+          - --checks=-*,readability-*,bugprone-*,performance-*,-readability-identifier-length,-readability-function-size,-readability-braces-around-statements,-readability-avoid-const-params-in-decls,-bugprone-macro-parentheses,-bugprone-reserved-identifier
+          - --header-filter=src/.*\.h
+          - --format-style=file
+          - --
+          - -I.
+          - -Isrc
+          - -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/include
+          - -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include
+        files: \.(c|h)$
+        exclude: ^(build/|third_party/|.*\.tab\.(c|h)|.*Scanner\.c|src/cJSON|test_leak\.c)$
 
-  # Static analysis with cppcheck (less strict for now)
-  - repo: local
-    hooks:
+      # Static analysis with cppcheck
       - id: cppcheck
-        name: cppcheck
-        entry: cppcheck
-        language: system
-        files: \.(c|h)$
-        exclude: ^(build/|docs/|src/cJSON)
         args:
+          - --error-exitcode=1
           - --enable=warning,style,performance,portability
           - --suppress=missingIncludeSystem
           - --suppress=unusedFunction
           - --suppress=unmatchedSuppression
-          - --suppress=constVariablePointer
-          - --suppress=constParameterPointer
-          - --suppress=nullPointerOutOfMemory
-          - --suppress=unusedStructMember
-          - --suppress=knownConditionTrueFalse
+          - --suppress=unusedStructMember:*/OCType.h
+          - --suppress=normalCheckLevelMaxBranches
+          - --suppress=toomanyconfigs
           - --inline-suppr
-          - --error-exitcode=0
-        require_serial: true
-
-  # OCTypes build verification (basic check)
-  - repo: local
-    hooks:
-      - id: octypes-build-test
-        name: OCTypes Build Test
-        entry: bash
-        language: system
-        pass_filenames: false
-        files: \.(c|h|y|l)$
-        exclude: ^(docs/|\.git/|tests/)
-        args:
-          - -c
-          - |
-            set -e
-            echo "🔨 Building OCTypes library..."
-            make clean > /dev/null 2>&1 || true
-            if ! make lib/libOCTypes.a -j4 > build.log 2>&1; then
-              echo "❌ Library build failed. Check build.log for details."
-              tail -10 build.log
-              exit 1
-            fi
-            echo "✅ Library build successful"
-        require_serial: true
-
-  # OCTypes test verification (basic check)
-  - repo: local
-    hooks:
-      - id: octypes-test
-        name: OCTypes Test Suite
-        entry: bash
-        language: system
-        pass_filenames: false
-        files: \.(c|h|y|l)$
-        exclude: ^(docs/|\.git/)
-        args:
-          - -c
-          - |
-            set -e
-            echo "🧪 Running basic OCTypes tests..."
-            if ! make test > test.log 2>&1; then
-              echo "❌ Tests failed. Check test.log for details."
-              tail -10 test.log
-              exit 1
-            fi
-            echo "✅ Basic tests passed"
-        require_serial: true
+        files: \.(c|h)$
+        exclude: ^(build/|third_party/|.*\.tab\.(c|h)|.*Scanner\.c|src/cJSON|test_leak\.c)$

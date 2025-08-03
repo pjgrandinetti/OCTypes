@@ -18,10 +18,8 @@ extern "C" {
  * Should be called immediately after allocation (e.g., in OCTypeAllocate).
  *
  * @param ptr Pointer to the allocated object.
- * @param file Source file where allocation occurred.
- * @param line Source line of allocation.
  */
-void _OCTrackDebug(const void *ptr, const char *file, int line);
+void impl_OCTrack(const void *ptr);
 /**
  * @brief Untrack an object upon finalization.
  *
@@ -29,7 +27,7 @@ void _OCTrackDebug(const void *ptr, const char *file, int line);
  *
  * @param ptr Pointer to the object being destroyed.
  */
-void _OCUntrack(const void *ptr);
+void impl_OCUntrack(const void *ptr);
 /**
  * @brief Report all currently tracked (unfinalized) objects.
  *
