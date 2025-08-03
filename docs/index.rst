@@ -50,7 +50,7 @@ This produces ``libOCTypes.a``.
    api/OCIndexPairSet
    api/OCAutoreleasePool
    api/OCMath
-   api/OCLibrary
+   api/OCTypes
    api/OCFileUtilities
 
 Indices and Tables
