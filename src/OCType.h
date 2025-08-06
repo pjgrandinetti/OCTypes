@@ -119,8 +119,8 @@ typedef OCOptionFlags OCStringCompareFlags;
  * number of elements in the range (length).
  */
 typedef struct {
-    uint64_t location; /**< Start index of the range. */
-    uint64_t length;   /**< Number of elements in the range. */
+    OCIndex location; /**< Start index of the range. */
+    OCIndex length;   /**< Number of elements in the range. */
 } OCRange;
 #if !defined(OC_INLINE)
 #define OC_INLINE static inline
@@ -133,7 +133,7 @@ typedef struct {
  * @param len Number of elements.
  * @return OCRange with the given location and length.
  */
-OC_INLINE OCRange OCRangeMake(uint64_t loc, uint64_t len) {
+OC_INLINE OCRange OCRangeMake(OCIndex loc, OCIndex len) {
     OCRange r = {loc, len};
     return r;
 }
