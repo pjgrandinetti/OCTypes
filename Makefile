@@ -42,12 +42,29 @@ RM := rm -f
 MKDIR_P := mkdir -p
 LIBDIR := lib
 
+# Platform-conditional variables for shared library
+UNAME_S := $(shell uname -s)
+ifeq ($(OS),Windows_NT)
+  SHLIB_EXT      = .dll
+  SHLIB_FLAGS    = -shared
+  SHLIB_LDFLAGS  = -Wl,--out-implib=$(LIBDIR)/libOCTypes.dll.a
+else ifeq ($(UNAME_S),Darwin)
+  SHLIB_EXT      = .dylib
+  SHLIB_FLAGS    = -dynamiclib -fPIC
+  SHLIB_LDFLAGS  = -install_name @rpath/libOCTypes.dylib
+else
+  SHLIB_EXT      = .so
+  SHLIB_FLAGS    = -shared -fPIC
+  SHLIB_LDFLAGS  =
+endif
+SHLIB = $(LIBDIR)/libOCTypes$(SHLIB_EXT)
+
 # Install target layout
 INSTALL_DIR := install
 INSTALL_LIB_DIR := $(INSTALL_DIR)/lib
 INSTALL_INC_DIR := $(INSTALL_DIR)/include/OCTypes
 
-.PHONY: all dirs install clean-objects clean test test-debug test-asan docs clean-docs doxygen html xcode compdb
+.PHONY: all dirs install install-shared clean-objects clean test test-debug test-asan docs clean-docs doxygen html xcode compdb
 
 .DEFAULT_GOAL := all
 all: dirs $(LIBDIR)/libOCTypes.a
@@ -92,6 +109,10 @@ $(OBJ_DIR)/OCString.o: CFLAGS += -Wno-unused-but-set-variable
 $(LIBDIR)/libOCTypes.a: $(OBJ) | dirs
 	$(AR) rcs $@ $^
 
+# Build shared library
+$(SHLIB): $(OBJ) | dirs
+	$(CC) $(CFLAGS) $(SHLIB_FLAGS) $(SHLIB_LDFLAGS) -o $@ $^
+
 # Test targets
 $(BIN_DIR)/runTests: $(LIBDIR)/libOCTypes.a $(TEST_OBJ)
 	$(CC) $(CFLAGS) -Isrc -Itests $(TEST_OBJ) -L$(LIBDIR) -lOCTypes -lm -o $@
@@ -113,6 +134,13 @@ test-asan: $(LIBDIR)/libOCTypes.a $(TEST_OBJ)
 install: all
 	$(MKDIR_P) $(INSTALL_LIB_DIR) $(INSTALL_INC_DIR)
 	cp $(LIBDIR)/libOCTypes.a $(INSTALL_LIB_DIR)/
+	cp src/*.h $(INSTALL_INC_DIR)/
+
+# Install both static and shared libraries
+install-shared: all $(SHLIB)
+	$(MKDIR_P) $(INSTALL_LIB_DIR) $(INSTALL_INC_DIR)
+	cp $(LIBDIR)/libOCTypes.a $(INSTALL_LIB_DIR)/
+	cp $(SHLIB) $(INSTALL_LIB_DIR)/
 	cp src/*.h $(INSTALL_INC_DIR)/
 
 clean-objects:

@@ -39,6 +39,14 @@ jobs:
         run: |
           make clean
           make test-asan
+          # Build shared library
+          if [ "$(uname)" = "Darwin" ]; then
+            make lib/libOCTypes.dylib
+            cp lib/libOCTypes.dylib libOCTypes.dylib
+          else
+            make lib/libOCTypes.so
+            cp lib/libOCTypes.so libOCTypes.so
+          fi
           cp lib/libOCTypes.a libOCTypes.a
       # ARM64 Linux build in QEMU container
       - name: Set up QEMU emulation
@@ -57,7 +65,9 @@ jobs:
             -v ${{ github.workspace }}:/src -w /src ubuntu:22.04 bash -lc "\
               apt-get update && apt-get install -y clang make flex bison unzip && \
               make clean && make test && \
-              cp lib/libOCTypes.a libOCTypes.a"
+              make lib/libOCTypes.so && \
+              cp lib/libOCTypes.a libOCTypes.a && \
+              cp lib/libOCTypes.so libOCTypes.so"
       - name: Set up MSYS2 & MinGW (Windows)
         if: runner.os == 'Windows'
         uses: msys2/setup-msys2@v2
@@ -80,13 +90,26 @@ jobs:
                        -Wno-sign-compare -Wno-unused-parameter \
                        -Wno-missing-field-initializers" \
                LEX=flex YACC="bison"
+          # Build shared library (DLL)
+          make lib/libOCTypes.dll CC=gcc \
+               CFLAGS="-std=c99 -I. -Isrc -O3 -Wall -Wextra \
+                       -Wno-sign-compare -Wno-unused-parameter \
+                       -Wno-missing-field-initializers" \
+               LEX=flex YACC="bison"
           cp lib/libOCTypes.a libOCTypes.a
+          cp lib/libOCTypes.dll libOCTypes.dll
+          cp lib/libOCTypes.dll.a libOCTypes.dll.a
 
       - name: Upload library artifact
         uses: actions/upload-artifact@v4
         with:
           name: libOCTypes-${{ matrix.label }}
-          path: libOCTypes.a
+          path: |
+            libOCTypes.a
+            libOCTypes.so
+            libOCTypes.dylib
+            libOCTypes.dll
+            libOCTypes.dll.a
 
       # Package & upload public headers on Ubuntu only
       - name: Package public headers
@@ -123,20 +146,42 @@ jobs:
         run: |
           mkdir -p packages
           for osdir in artifacts/*; do
-            lib="${osdir}/libOCTypes.a"
-            if [ ! -f "$lib" ]; then
-              echo "Skipping $osdir (no library to package)"
+            if [ ! -d "$osdir" ]; then
               continue
             fi
+
             os=$(basename "$osdir")
             # Strip the libOCTypes- prefix to get clean platform name
             platform=${os#libOCTypes-}
+
+            # Skip header artifacts
+            if [[ "$platform" == "headers" ]]; then
+              continue
+            fi
+
             zipfile="packages/libOCTypes-${platform}.zip"
 
+            # Find all library files and package them
+            files_to_zip=()
+            for lib in "${osdir}"/libOCTypes.*; do
+              if [ -f "$lib" ]; then
+                files_to_zip+=("$lib")
+              fi
+            done
+
+            if [ ${#files_to_zip[@]} -eq 0 ]; then
+              echo "Skipping $osdir (no library files to package)"
+              continue
+            fi
+
             if [[ "$platform" == windows-latest ]]; then
-              pwsh -Command "Compress-Archive -Path '${lib}' -DestinationPath '${zipfile}'"
+              # Use PowerShell for Windows
+              file_list=$(printf "'%s'," "${files_to_zip[@]}")
+              file_list=${file_list%,}  # Remove trailing comma
+              pwsh -Command "Compress-Archive -Path ${file_list} -DestinationPath '${zipfile}'"
             else
-              zip -j "${zipfile}" "${lib}"
+              # Use zip for Unix-like systems
+              zip -j "${zipfile}" "${files_to_zip[@]}"
             fi
           done
 
