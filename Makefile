@@ -67,7 +67,7 @@ INSTALL_INC_DIR := $(INSTALL_DIR)/include/OCTypes
 .PHONY: all dirs install install-shared clean-objects clean test test-debug test-asan docs clean-docs doxygen html xcode compdb
 
 .DEFAULT_GOAL := all
-all: dirs $(LIBDIR)/libOCTypes.a
+all: dirs $(LIBDIR)/libOCTypes.a $(SHLIB)
 
 dirs:
 	$(MKDIR_P) $(LIBDIR) $(BUILD_DIR) $(OBJ_DIR) $(GEN_DIR) $(BIN_DIR)
@@ -115,18 +115,18 @@ $(SHLIB): $(OBJ) | dirs
 
 # Test targets
 $(BIN_DIR)/runTests: $(LIBDIR)/libOCTypes.a $(TEST_OBJ)
-	$(CC) $(CFLAGS) -Isrc -Itests $(TEST_OBJ) -L$(LIBDIR) -lOCTypes -lm -o $@
+	$(CC) $(CFLAGS) -Isrc -Itests $(TEST_OBJ) $(LIBDIR)/libOCTypes.a -lm -o $@
 
 test: $(BIN_DIR)/runTests
 	$<
 
 test-debug: $(LIBDIR)/libOCTypes.a $(TEST_OBJ)
-	$(CC) $(CFLAGS) -g -O0 -Isrc -Itests $(TEST_OBJ) -L$(LIBDIR) -lOCTypes -lm -o $(BIN_DIR)/runTests.debug
+	$(CC) $(CFLAGS) -g -O0 -Isrc -Itests $(TEST_OBJ) $(LIBDIR)/libOCTypes.a -lm -o $(BIN_DIR)/runTests.debug
 	@echo "Launching under LLDB..."
 	@lldb -- $(BIN_DIR)/runTests.debug
 
 test-asan: $(LIBDIR)/libOCTypes.a $(TEST_OBJ)
-	$(CC) $(CFLAGS) -g -O1 -fsanitize=address -fno-omit-frame-pointer -Isrc -Itests $(TEST_OBJ) -L$(LIBDIR) -lOCTypes -lm -o $(BIN_DIR)/runTests.asan
+	$(CC) $(CFLAGS) -g -O1 -fsanitize=address -fno-omit-frame-pointer -Isrc -Itests $(TEST_OBJ) $(LIBDIR)/libOCTypes.a -lm -o $(BIN_DIR)/runTests.asan
 	@echo "Running AddressSanitizer build..."
 	@$(BIN_DIR)/runTests.asan
 
