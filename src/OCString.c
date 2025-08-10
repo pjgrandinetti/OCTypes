@@ -89,7 +89,6 @@ static ptrdiff_t oc_utf8_offset_for_index(const char *s, size_t idx) {
 static size_t oc_utf8_strlen(const char *s) {
     const char *p = s;
     size_t len = 0;
-    uint32_t prev_cp = 0;
     uint32_t cp = 0;
     bool in_emoji_sequence = false;
     // Enhanced UTF-8 code point counter that handles:
@@ -97,7 +96,7 @@ static size_t oc_utf8_strlen(const char *s) {
     // 2. Emoji ZWJ sequences (e.g., 👨‍👩‍👧‍👦)
     // 3. Regional indicators for flag emojis (e.g., 🇺🇸)
     while (*p) {
-        prev_cp = cp;
+        uint32_t prev_cp = cp;
         cp = utf8_next(&p);
         // Skip counting if this is a combining character (0x0300-0x036F, 0x1AB0-0x1AFF, 0x1DC0-0x1DFF, 0x20D0-0x20FF, 0xFE20-0xFE2F)
         if ((cp >= 0x0300 && cp <= 0x036F) ||
@@ -230,7 +229,7 @@ static void impl_OCStringFinalize(const void *theType) {
 }
 static OCStringRef impl_OCStringCopyFormattingDesc(OCTypeRef cf) {
     if (!cf) return NULL;
-    OCBase *base = (OCBase *)cf;
+    const OCBase *base = (const OCBase *)cf;
     if (base->typeID != OCStringGetTypeID()) {
         fprintf(stderr, "[OCStringCopyFormattingDesc] Warning: expected OCString typeID, got %u\n", base->typeID);
         return NULL;
@@ -289,9 +288,8 @@ void cleanupConstantStringTable(void) {
     for (size_t i = 0; i < OCArrayGetCount(keys); ++i) {
         OCStringRef key = (OCStringRef)OCArrayGetValueAtIndex(keys, i);
         OCStringRef value = (OCStringRef)OCDictionaryGetValue(impl_constantStringTable, key);
-        OCDictionaryRemoveValue(impl_constantStringTable, key);
         OCTypeSetStaticInstance(value, false);
-        OCRelease(value);
+        OCDictionaryRemoveValue(impl_constantStringTable, key);
     }
     OCRelease(keys);
     OCRelease(impl_constantStringTable);
@@ -473,10 +471,7 @@ void OCStringAppendCString(OCMutableStringRef s, const char *cString) {
         while (required_total_content_byte_len > new_capacity) {
             new_capacity *= 2;
         }
-        // Ensure new_capacity is at least required_total_content_byte_len if doubling wasn't enough or started too small.
-        if (new_capacity < required_total_content_byte_len) {
-            new_capacity = required_total_content_byte_len;
-        }
+        // The while loop ensures new_capacity >= required_total_content_byte_len
         char *new_s_string_buffer = realloc(s->string, new_capacity + 1);  // +1 for NUL
         if (NULL == new_s_string_buffer) {
             fprintf(stderr, "OCStringAppendCString: Memory allocation failed for new string buffer.\n");
@@ -808,8 +803,8 @@ int64_t OCStringFindAndReplace(OCMutableStringRef s,
     if (rangeToSearch.location + rangeToSearch.length > s->length) {
         rangeToSearch.length = s->length - rangeToSearch.location;
     }
-    // If the effective search range is empty and we're looking for a non-empty string, no match is possible.
-    if (rangeToSearch.length == 0 && findStr->length > 0) {
+    // If the effective search range is empty, no match is possible.
+    if (rangeToSearch.length == 0) {
         return 0;
     }
     // If search range is shorter than findStr, no match is possible.
@@ -957,20 +952,16 @@ static const char *parse_printf_spec(const char *p, char *out, size_t maxlen, ch
         if (*p == '*') p++;
     }
     // Length modifier ("hh", "h", "ll", "l", "j", "z", "t", "L", possibly more)
-    size_t modlen = 0;
     if ((p[0] == 'h' && p[1] == 'h')) {
         strncpy(lenmod, "hh", lenmod_max);
         p += 2;
-        modlen = 2;
     } else if ((p[0] == 'l' && p[1] == 'l')) {
         strncpy(lenmod, "ll", lenmod_max);
         p += 2;
-        modlen = 2;
     } else if (strchr("hljztL", *p)) {
         lenmod[0] = *p;
         lenmod[1] = 0;
         p++;
-        modlen = 1;
     } else {
         lenmod[0] = 0;
     }
@@ -1017,7 +1008,7 @@ static void OCStringAppendFormatWithArgumentsSafe(
                 } else if (s->base.typeID != OCStringGetTypeID()) {
                     fprintf(stderr, "[OCString] ERROR: Not an OCStringRef at %%@ index %d (typeID=%u, expected=%u)\n",
                             arg_index, s->base.typeID, OCStringGetTypeID());
-                } else if (s && s->string) {
+                } else if (s->string) {
                     OCStringAppendCString(result, s->string);
                 } else {
                     // Don't append, just print error
@@ -1078,7 +1069,7 @@ static void OCStringAppendFormatWithArgumentsSafe(
                 int v = va_arg(arglist, int);
                 snprintf(buf, sizeof(buf), subfmt, v);
             } else if (spec == 'p') {
-                void *v = va_arg(arglist, void *);
+                const void *v = va_arg(arglist, void *);
                 snprintf(buf, sizeof(buf), subfmt, v);
             } else {
                 snprintf(buf, sizeof(buf), "%s", subfmt);
@@ -1087,7 +1078,7 @@ static void OCStringAppendFormatWithArgumentsSafe(
             arg_index++;
             f = after;
         } else {
-            char tmp[2] = {*f, '\0'};
+            const char tmp[2] = {*f, '\0'};
             OCStringAppendCString(result, tmp);
             f++;
         }
@@ -1210,7 +1201,7 @@ OCStringCreateArrayBySeparatingStrings(OCStringRef string,
     // Walk through each found separator, slicing out the preceding chunk
     uint64_t prevEnd = 0;
     for (uint64_t i = 0; i < sepCount; ++i) {
-        OCRange *r = (OCRange *)OCArrayGetValueAtIndex(findResults, i);
+        const OCRange *r = (const OCRange *)OCArrayGetValueAtIndex(findResults, i);
         // substring from prevEnd of length (r->location - prevEnd)
         OCRange slice = OCRangeMake(prevEnd, r->location - prevEnd);
         OCStringRef piece = OCStringCreateWithSubstring(string, slice);
