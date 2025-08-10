@@ -12,7 +12,7 @@
 #elif defined(__linux__)
 #include <execinfo.h>
 #define HAVE_BACKTRACE 1
-#elif defined(_WIN32)
+#elif defined(_WIN32) && defined(_MSC_VER)
 #include <dbghelp.h>
 #include <windows.h>
 #define HAVE_BACKTRACE 1
