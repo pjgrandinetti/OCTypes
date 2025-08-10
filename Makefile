@@ -48,14 +48,17 @@ ifeq ($(OS),Windows_NT)
   SHLIB_EXT      = .dll
   SHLIB_FLAGS    = -shared
   SHLIB_LDFLAGS  = -Wl,--out-implib=$(LIBDIR)/libOCTypes.dll.a
+  PLATFORM_LIBS  = -ldbghelp
 else ifeq ($(UNAME_S),Darwin)
   SHLIB_EXT      = .dylib
   SHLIB_FLAGS    = -dynamiclib -fPIC
   SHLIB_LDFLAGS  = -install_name @rpath/libOCTypes.dylib
+  PLATFORM_LIBS  =
 else
   SHLIB_EXT      = .so
   SHLIB_FLAGS    = -shared -fPIC
   SHLIB_LDFLAGS  =
+  PLATFORM_LIBS  =
 endif
 SHLIB = $(LIBDIR)/libOCTypes$(SHLIB_EXT)
 
@@ -111,22 +114,22 @@ $(LIBDIR)/libOCTypes.a: $(OBJ) | dirs
 
 # Build shared library
 $(SHLIB): $(OBJ) | dirs
-	$(CC) $(CFLAGS) $(SHLIB_FLAGS) $(SHLIB_LDFLAGS) -o $@ $^
+	$(CC) $(CFLAGS) $(SHLIB_FLAGS) $(SHLIB_LDFLAGS) -o $@ $^ $(PLATFORM_LIBS)
 
 # Test targets
 $(BIN_DIR)/runTests: $(LIBDIR)/libOCTypes.a $(TEST_OBJ)
-	$(CC) $(CFLAGS) -Isrc -Itests $(TEST_OBJ) $(LIBDIR)/libOCTypes.a -lm -o $@
+	$(CC) $(CFLAGS) -Isrc -Itests $(TEST_OBJ) $(LIBDIR)/libOCTypes.a -lm $(PLATFORM_LIBS) -o $@
 
 test: $(BIN_DIR)/runTests
 	$<
 
 test-debug: $(LIBDIR)/libOCTypes.a $(TEST_OBJ)
-	$(CC) $(CFLAGS) -g -O0 -Isrc -Itests $(TEST_OBJ) $(LIBDIR)/libOCTypes.a -lm -o $(BIN_DIR)/runTests.debug
+	$(CC) $(CFLAGS) -g -O0 -Isrc -Itests $(TEST_OBJ) $(LIBDIR)/libOCTypes.a -lm $(PLATFORM_LIBS) -o $(BIN_DIR)/runTests.debug
 	@echo "Launching under LLDB..."
 	@lldb -- $(BIN_DIR)/runTests.debug
 
 test-asan: $(LIBDIR)/libOCTypes.a $(TEST_OBJ)
-	$(CC) $(CFLAGS) -g -O1 -fsanitize=address -fno-omit-frame-pointer -Isrc -Itests $(TEST_OBJ) $(LIBDIR)/libOCTypes.a -lm -o $(BIN_DIR)/runTests.asan
+	$(CC) $(CFLAGS) -g -O1 -fsanitize=address -fno-omit-frame-pointer -Isrc -Itests $(TEST_OBJ) $(LIBDIR)/libOCTypes.a -lm $(PLATFORM_LIBS) -o $(BIN_DIR)/runTests.asan
 	@echo "Running AddressSanitizer build..."
 	@$(BIN_DIR)/runTests.asan
 
