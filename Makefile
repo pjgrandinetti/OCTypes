@@ -133,18 +133,15 @@ test-asan: $(LIBDIR)/libOCTypes.a $(TEST_OBJ)
 	@echo "Running AddressSanitizer build..."
 	@$(BIN_DIR)/runTests.asan
 
-# Install target: package headers and library
+# Install target: package headers and both libraries
 install: all
-	$(MKDIR_P) $(INSTALL_LIB_DIR) $(INSTALL_INC_DIR)
-	cp $(LIBDIR)/libOCTypes.a $(INSTALL_LIB_DIR)/
-	cp src/*.h $(INSTALL_INC_DIR)/
-
-# Install both static and shared libraries
-install-shared: all $(SHLIB)
 	$(MKDIR_P) $(INSTALL_LIB_DIR) $(INSTALL_INC_DIR)
 	cp $(LIBDIR)/libOCTypes.a $(INSTALL_LIB_DIR)/
 	cp $(SHLIB) $(INSTALL_LIB_DIR)/
 	cp src/*.h $(INSTALL_INC_DIR)/
+
+# Install both static and shared libraries (alias for install)
+install-shared: install
 
 clean-objects:
 	$(RM) $(OBJ)
