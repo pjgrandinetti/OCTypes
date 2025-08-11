@@ -5,6 +5,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include "OCType.h" /* For OCBase, OCTypeID, etc. */
+// Dynamic leak tracking control
+static bool gLeakTrackingEnabled = false;
+static bool gLeakTrackingInitialized = false;
 // Stack trace support
 #ifdef __APPLE__
 #include <execinfo.h>
@@ -63,7 +66,23 @@ static void print_stack_trace(void **frames, int depth) {
     fprintf(stderr, "    (stack trace not available on this platform)\n");
 #endif
 }
+// Function to initialize leak tracking based on environment variable
+static void initialize_leak_tracking_if_needed() {
+    if (gLeakTrackingInitialized) {
+        return;
+    }
+    const char *env_value = getenv("OC_LEAK_TRACKING");
+    gLeakTrackingEnabled = (env_value != NULL && strcmp(env_value, "1") == 0);
+    gLeakTrackingInitialized = true;
+    if (gLeakTrackingEnabled) {
+        printf("OCLeakTracker: Leak tracking ENABLED (OC_LEAK_TRACKING=1)\n");
+    }
+}
 void impl_OCTrack(const void *ptr) {
+    initialize_leak_tracking_if_needed();
+    if (!gLeakTrackingEnabled) {
+        return;
+    }
     pthread_mutex_lock(&gLeakLock);
     gLeakTable = realloc(gLeakTable, (gLeakCount + 1) * sizeof(OCLeakEntry));
     if (!gLeakTable) {
@@ -78,6 +97,10 @@ void impl_OCTrack(const void *ptr) {
     pthread_mutex_unlock(&gLeakLock);
 }
 void impl_OCTrackWithHint(const void *ptr, const char *hint) {
+    initialize_leak_tracking_if_needed();
+    if (!gLeakTrackingEnabled) {
+        return;
+    }
     pthread_mutex_lock(&gLeakLock);
     gLeakTable = realloc(gLeakTable, (gLeakCount + 1) * sizeof(OCLeakEntry));
     if (!gLeakTable) {
@@ -92,6 +115,10 @@ void impl_OCTrackWithHint(const void *ptr, const char *hint) {
     pthread_mutex_unlock(&gLeakLock);
 }
 void impl_OCUntrack(const void *ptr) {
+    initialize_leak_tracking_if_needed();
+    if (!gLeakTrackingEnabled) {
+        return;
+    }
     pthread_mutex_lock(&gLeakLock);
     for (size_t i = 0; i < gLeakCount; ++i) {
         if (gLeakTable[i].ptr == ptr) {
@@ -102,6 +129,10 @@ void impl_OCUntrack(const void *ptr) {
     pthread_mutex_unlock(&gLeakLock);
 }
 void OCReportLeaks(void) {
+    initialize_leak_tracking_if_needed();
+    if (!gLeakTrackingEnabled) {
+        return;  // Silent when disabled - this is called during normal cleanup
+    }
     // Do nothing under AddressSanitizer:
 #if !__has_feature(address_sanitizer)
     pthread_mutex_lock(&gLeakLock);
@@ -180,6 +211,10 @@ void OCReportLeaks(void) {
 #endif  // !__has_feature(address_sanitizer)
 }
 void OCReportLeaksDetailed(void) {
+    initialize_leak_tracking_if_needed();
+    if (!gLeakTrackingEnabled) {
+        return;  // Silent when disabled - this is called during normal cleanup
+    }
     // Do nothing under AddressSanitizer:
 #if !__has_feature(address_sanitizer)
     pthread_mutex_lock(&gLeakLock);
@@ -261,6 +296,11 @@ void OCReportLeaksDetailed(void) {
 #endif  // !__has_feature(address_sanitizer)
 }
 void OCReportLeaksForType(OCTypeID filterTypeID) {
+    initialize_leak_tracking_if_needed();
+    if (!gLeakTrackingEnabled) {
+        // Silent when disabled
+        return;
+    }
     pthread_mutex_lock(&gLeakLock);
     // Count how many leaked entries match filterTypeID
     size_t filteredCount = 0;
@@ -312,6 +352,11 @@ void OCReportLeaksForType(OCTypeID filterTypeID) {
     pthread_mutex_unlock(&gLeakLock);
 }
 void OCReportLeaksForTypeDetailed(OCTypeID filterTypeID) {
+    initialize_leak_tracking_if_needed();
+    if (!gLeakTrackingEnabled) {
+        // Silent when disabled
+        return;
+    }
     pthread_mutex_lock(&gLeakLock);
     // Count and collect leaked entries matching filterTypeID
     size_t actual_leaks = 0;
@@ -398,6 +443,10 @@ void OCReportLeaksForTypeDetailed(OCTypeID filterTypeID) {
     pthread_mutex_unlock(&gLeakLock);
 }
 size_t OCLeakCountForType(OCTypeID typeID) {
+    initialize_leak_tracking_if_needed();
+    if (!gLeakTrackingEnabled) {
+        return 0;  // Return 0 when leak tracking is disabled
+    }
     size_t count = 0;
     pthread_mutex_lock(&gLeakLock);
     for (size_t i = 0; i < gLeakCount; ++i) {
@@ -408,6 +457,10 @@ size_t OCLeakCountForType(OCTypeID typeID) {
     return count;
 }
 size_t OCActualLeakCountForType(OCTypeID typeID) {
+    initialize_leak_tracking_if_needed();
+    if (!gLeakTrackingEnabled) {
+        return 0;  // Return 0 when leak tracking is disabled
+    }
     size_t count = 0;
     pthread_mutex_lock(&gLeakLock);
     for (size_t i = 0; i < gLeakCount; ++i) {
@@ -420,6 +473,11 @@ size_t OCActualLeakCountForType(OCTypeID typeID) {
     return count;
 }
 void OCReportLeaksForTypeExcludingStatic(OCTypeID typeID) {
+    initialize_leak_tracking_if_needed();
+    if (!gLeakTrackingEnabled) {
+        // Silent when disabled
+        return;
+    }
     // Do nothing under AddressSanitizer:
 #if !__has_feature(address_sanitizer)
     pthread_mutex_lock(&gLeakLock);
@@ -440,6 +498,11 @@ void OCReportLeaksForTypeExcludingStatic(OCTypeID typeID) {
 #endif
 }
 void OCReportLeaksExcludingStatic(void) {
+    initialize_leak_tracking_if_needed();
+    if (!gLeakTrackingEnabled) {
+        // Silent when disabled
+        return;
+    }
     // Do nothing under AddressSanitizer:
 #if !__has_feature(address_sanitizer)
     pthread_mutex_lock(&gLeakLock);
@@ -517,6 +580,11 @@ void OCReportLeaksExcludingStatic(void) {
 #endif  // !__has_feature(address_sanitizer)
 }
 void OCReportLeaksForTypeDetailedExcludingStatic(OCTypeID filterTypeID) {
+    initialize_leak_tracking_if_needed();
+    if (!gLeakTrackingEnabled) {
+        // Silent when disabled
+        return;
+    }
     pthread_mutex_lock(&gLeakLock);
     // Count only actual leaks (non-static instances) matching filterTypeID
     size_t actual_leaks = 0;

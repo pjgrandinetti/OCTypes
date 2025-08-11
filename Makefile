@@ -67,7 +67,7 @@ INSTALL_DIR := install
 INSTALL_LIB_DIR := $(INSTALL_DIR)/lib
 INSTALL_INC_DIR := $(INSTALL_DIR)/include/OCTypes
 
-.PHONY: all dirs install install-shared clean-objects clean test test-debug test-asan docs clean-docs doxygen html xcode compdb
+.PHONY: all dirs install install-shared clean-objects clean test test-debug test-asan docs clean-docs doxygen html xcode compdb help
 
 .DEFAULT_GOAL := all
 all: dirs $(LIBDIR)/libOCTypes.a $(SHLIB)
@@ -197,3 +197,42 @@ xcode:
 	@echo "Generating Xcode project in build-xcode..."
 	@mkdir -p build-xcode
 	@cmake -G "Xcode" -S . -B build-xcode
+
+# Help target
+help:
+	@echo "OCTypes Makefile - Available targets:"
+	@echo ""
+	@echo "Building:"
+	@echo "  all                 - Build static and dynamic libraries (default)"
+	@echo "  lib/libOCTypes.a    - Build static library only"
+	@echo "  lib/libOCTypes.dylib - Build dynamic library only"
+	@echo "  dirs                - Create build directories"
+	@echo ""
+	@echo "Testing:"
+	@echo "  test                - Run all tests"
+	@echo "  test-debug          - Run tests with debug output"
+	@echo "  test-asan           - Run tests with AddressSanitizer"
+	@echo ""
+	@echo "Installation:"
+	@echo "  install             - Install to install/ directory"
+	@echo "  install-shared      - Install shared libraries"
+	@echo ""
+	@echo "Documentation:"
+	@echo "  docs                - Generate HTML documentation"
+	@echo "  doxygen             - Generate Doxygen documentation"
+	@echo "  html                - Generate Sphinx HTML documentation"
+	@echo "  clean-docs          - Clean documentation files"
+	@echo ""
+	@echo "Development:"
+	@echo "  xcode               - Generate Xcode project"
+	@echo "  compdb              - Generate compile_commands.json"
+	@echo ""
+	@echo "Cleaning:"
+	@echo "  clean-objects       - Remove object files"
+	@echo "  clean               - Full clean"
+	@echo ""
+	@echo "Examples:"
+	@echo "  make                       # Build libraries"
+	@echo "  make test                  # Run test suite"
+	@echo "  OC_LEAK_TRACKING=1 make test  # Run tests with leak tracking"
+	@echo "  make install               # Install to local install/ directory"
