@@ -6,7 +6,7 @@
 #define _USE_MATH_DEFINES
 #endif
 #include <complex.h>  // creal, cimag, conj, cexp, clog, csin, ccos, casin, cacos, cargument
-#include <math.h>     // exp, log, acos, asin, cos, sin, sqrt
+#include <math.h>     // exp, log, acos, asin, cos, sin, sqrt, isinf, isnan
 #include <stdio.h>
 #include <stdlib.h>
 // Fallback definition for M_PI if not available
@@ -210,6 +210,72 @@ bool complex_parser_Test0(void) {
     if (OCCompareDoubleValuesLoose(creal(z), 0.0) != kOCCompareEqualTo ||
         OCCompareDoubleValuesLoose(cimag(z), 1.0) != kOCCompareEqualTo)
         PRINTFAILURE("sqrt(-1)");
+
+    // ——— Infinity tests ———
+    z = OCComplexFromCString("inf");
+    if (!isinf(creal(z)) || cimag(z) != 0.0)
+        PRINTFAILURE("inf");
+
+    z = OCComplexFromCString("∞");
+    if (!isinf(creal(z)) || cimag(z) != 0.0)
+        PRINTFAILURE("∞");
+
+    z = OCComplexFromCString("-inf");
+    if (!isinf(creal(z)) || creal(z) > 0 || cimag(z) != 0.0)
+        PRINTFAILURE("-inf");
+
+    z = OCComplexFromCString("-∞");
+    if (!isinf(creal(z)) || creal(z) > 0 || cimag(z) != 0.0)
+        PRINTFAILURE("-∞");
+
+    // Infinity arithmetic
+    z = OCComplexFromCString("inf + 5");
+    if (!isinf(creal(z)))
+        PRINTFAILURE("inf + 5");
+
+    z = OCComplexFromCString("2 * inf");
+    if (!isinf(creal(z)))
+        PRINTFAILURE("2 * inf");
+
+    z = OCComplexFromCString("∞ - 100");
+    if (!isinf(creal(z)))
+        PRINTFAILURE("∞ - 100");
+
+    z = OCComplexFromCString("5 / inf");
+    if (creal(z) != 0.0 || cimag(z) != 0.0)
+        PRINTFAILURE("5 / inf");
+
+    // Infinity in complex expressions
+    z = OCComplexFromCString("inf + 3*I");
+    if (!isinf(creal(z)) || cimag(z) != 3.0)
+        PRINTFAILURE("inf + 3*I");
+
+    z = OCComplexFromCString("2 + inf*I");
+    if (!isnan(creal(z)) || !isinf(cimag(z)))
+        PRINTFAILURE("2 + inf*I");
+
+    // Infinity with functions
+    z = OCComplexFromCString("|inf|");
+    if (!isinf(creal(z)) || cimag(z) != 0.0)
+        PRINTFAILURE("|inf|");
+
+    z = OCComplexFromCString("sin(inf)");
+    if (!isnan(creal(z))) // sin(inf) should be NaN
+        PRINTFAILURE("sin(inf)");
+
+    z = OCComplexFromCString("exp(inf)");
+    if (!isinf(creal(z)))
+        PRINTFAILURE("exp(inf)");
+
+    // Infinity with parentheses and precedence
+    z = OCComplexFromCString("(inf + 5) * 2");
+    if (!isinf(creal(z)))
+        PRINTFAILURE("(inf + 5) * 2");
+
+    z = OCComplexFromCString("inf^2");
+    if (!isinf(creal(z)))
+        PRINTFAILURE("inf^2");
+
     if (!success)
         fprintf(stderr, "%s FAILED.\n", __func__);
     else
