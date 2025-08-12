@@ -130,8 +130,8 @@ test-debug: $(LIBDIR)/libOCTypes.a $(TEST_OBJ)
 
 test-asan: $(LIBDIR)/libOCTypes.a $(TEST_OBJ)
 	$(CC) $(CFLAGS) -g -O1 -fsanitize=address -fno-omit-frame-pointer -Isrc -Itests $(TEST_OBJ) $(LIBDIR)/libOCTypes.a -lm $(PLATFORM_LIBS) -o $(BIN_DIR)/runTests.asan
-	@echo "Running AddressSanitizer build..."
-	@$(BIN_DIR)/runTests.asan
+	@echo "Running AddressSanitizer build with leak tracking..."
+	@OC_LEAK_TRACKING=1 $(BIN_DIR)/runTests.asan
 
 # Install target: package headers and both libraries
 install: all
