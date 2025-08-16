@@ -20,9 +20,9 @@ jobs:
           - os: ubuntu-latest
             arch: x64
             label: ubuntu-latest.x64
-          - os: ubuntu-24.04-arm64
+          - os: ubuntu-latest
             arch: arm64
-            label: ubuntu-24.04-arm64
+            label: ubuntu-latest.arm64
           - os: macos-latest
             arch: x64
             label: macos-latest
@@ -49,21 +49,24 @@ jobs:
           fi
           cp lib/libOCTypes.a libOCTypes.a
 
-      # Native ARM64 Linux build (if GitHub Education provides access)
-      - name: Install dependencies (ARM64 Linux)
+      # ARM64 Linux build in QEMU container (optimized)
+      - name: Set up QEMU emulation
         if: matrix.arch == 'arm64'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y clang make flex bison unzip
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: linux/arm64
 
-      - name: Build & test (ARM64 Linux)
+      - name: Build & test in ARM64 container
         if: matrix.arch == 'arm64'
         run: |
-          make clean
-          make test
-          make lib/libOCTypes.so
-          cp lib/libOCTypes.a libOCTypes.a
-          cp lib/libOCTypes.so libOCTypes.so
+          docker run --rm --platform=linux/arm64 \
+            -v ${{ github.workspace }}:/src -w /src ubuntu:22.04 bash -lc "\
+              apt-get update && apt-get install -y clang make flex bison unzip && \
+              make clean && make test && \
+              make lib/libOCTypes.so && \
+              cp lib/libOCTypes.a libOCTypes.a && \
+              cp lib/libOCTypes.so libOCTypes.so"
+
       - name: Set up MSYS2 & MinGW (Windows)
         if: runner.os == 'Windows'
         uses: msys2/setup-msys2@v2
