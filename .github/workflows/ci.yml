@@ -20,9 +20,6 @@ jobs:
           - os: ubuntu-latest
             arch: x64
             label: ubuntu-latest.x64
-          - os: ubuntu-latest
-            arch: arm64
-            label: ubuntu-latest.arm64
           - os: macos-latest
             arch: x64
             label: macos-latest
@@ -48,24 +45,6 @@ jobs:
             cp lib/libOCTypes.so libOCTypes.so
           fi
           cp lib/libOCTypes.a libOCTypes.a
-
-      # ARM64 Linux build in QEMU container (optimized)
-      - name: Set up QEMU emulation
-        if: matrix.arch == 'arm64'
-        uses: docker/setup-qemu-action@v3
-        with:
-          platforms: linux/arm64
-
-      - name: Build & test in ARM64 container
-        if: matrix.arch == 'arm64'
-        run: |
-          docker run --rm --platform=linux/arm64 \
-            -v ${{ github.workspace }}:/src -w /src ubuntu:22.04 bash -lc "\
-              apt-get update && apt-get install -y clang make flex bison unzip && \
-              make clean && make test && \
-              make lib/libOCTypes.so && \
-              cp lib/libOCTypes.a libOCTypes.a && \
-              cp lib/libOCTypes.so libOCTypes.so"
 
       - name: Set up MSYS2 & MinGW (Windows)
         if: runner.os == 'Windows'
@@ -124,9 +103,41 @@ jobs:
           name: libOCTypes-headers
           path: header-pkg/libOCTypes-headers.zip
 
+  # ARM64 Linux build: only run on releases (tags) for faster development cycles
+  build-arm64:
+    name: Build & Test (ubuntu-latest.arm64)
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up QEMU emulation
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: linux/arm64
+
+      - name: Build & test in ARM64 container
+        run: |
+          docker run --rm --platform=linux/arm64 \
+            -v ${{ github.workspace }}:/src -w /src ubuntu:22.04 bash -lc "\
+              apt-get update && apt-get install -y clang make flex bison unzip && \
+              make clean && make test && \
+              make lib/libOCTypes.so && \
+              cp lib/libOCTypes.a libOCTypes.a && \
+              cp lib/libOCTypes.so libOCTypes.so"
+
+      - name: Upload library artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: libOCTypes-ubuntu-latest.arm64
+          path: |
+            libOCTypes.a
+            libOCTypes.so
+
   release:
     name: Package & Release
-    needs: [build]
+    needs: [build, build-arm64]
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
     steps:
