@@ -45,25 +45,25 @@ void OCTypesShutdown(void) {
     //     && !(defined(__clang__) && __has_feature(address_sanitizer))
 #if !defined(__SANITIZE_ADDRESS__) && !(defined(__clang__) && __has_feature(address_sanitizer))
     if (TypeIDTableContainsName("OCString"))
-        OCReportLeaksForType(OCStringGetTypeID());
+        OCReportLeaksForTypeDetailed(OCStringGetTypeID());
     if (TypeIDTableContainsName("OCNumber"))
-        OCReportLeaksForType(OCNumberGetTypeID());
+        OCReportLeaksForTypeDetailed(OCNumberGetTypeID());
     if (TypeIDTableContainsName("OCBoolean"))
-        OCReportLeaksForType(OCBooleanGetTypeID());
+        OCReportLeaksForTypeDetailed(OCBooleanGetTypeID());
     if (TypeIDTableContainsName("OCData"))
-        OCReportLeaksForType(OCDataGetTypeID());
+        OCReportLeaksForTypeDetailed(OCDataGetTypeID());
     if (TypeIDTableContainsName("OCArray"))
-        OCReportLeaksForType(OCArrayGetTypeID());
+        OCReportLeaksForTypeDetailed(OCArrayGetTypeID());
     if (TypeIDTableContainsName("OCSet"))
-        OCReportLeaksForType(OCSetGetTypeID());
+        OCReportLeaksForTypeDetailed(OCSetGetTypeID());
     if (TypeIDTableContainsName("OCIndexArray"))
-        OCReportLeaksForType(OCIndexArrayGetTypeID());
+        OCReportLeaksForTypeDetailed(OCIndexArrayGetTypeID());
     if (TypeIDTableContainsName("OCIndexSet"))
-        OCReportLeaksForType(OCIndexSetGetTypeID());
+        OCReportLeaksForTypeDetailed(OCIndexSetGetTypeID());
     if (TypeIDTableContainsName("OCIndexPairSet"))
-        OCReportLeaksForType(OCIndexPairSetGetTypeID());
+        OCReportLeaksForTypeDetailed(OCIndexPairSetGetTypeID());
     if (TypeIDTableContainsName("OCDictionary"))
-        OCReportLeaksForType(OCDictionaryGetTypeID());
+        OCReportLeaksForTypeDetailed(OCDictionaryGetTypeID());
 #endif
     cleanupTypeIDTable();
 }
