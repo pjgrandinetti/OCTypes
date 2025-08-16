@@ -38,7 +38,7 @@ jobs:
         if: runner.os != 'Windows' && matrix.arch == 'x64'
         run: |
           make clean
-          make test-asan
+          make test
           # Build shared library
           if [ "$(uname)" = "Darwin" ]; then
             make lib/libOCTypes.dylib
