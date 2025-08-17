@@ -1,4 +1,6 @@
 // OCFileUtils.c
+#define _GNU_SOURCE
+#define _POSIX_C_SOURCE 200809L
 #include <dirent.h>
 #include <errno.h>
 #include <limits.h>
@@ -7,6 +9,10 @@
 #include <string.h>
 #include <sys/stat.h>
 #include "OCTypes.h"
+// Fallback for PATH_MAX if not defined
+#ifndef PATH_MAX
+#define PATH_MAX 4096
+#endif
 // helper: turn an OCStringRef into a malloc’d UTF-8 C string
 static char *_OCStringCopyUTF8(OCStringRef s) {
     const char *p = OCStringGetCString(s);
