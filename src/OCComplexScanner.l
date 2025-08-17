@@ -3,6 +3,10 @@
 /* Prevent flex from including unistd.h automatically */
 %option nounistd
 %{
+    #define _GNU_SOURCE
+    #define _POSIX_C_SOURCE 200809L
+    #define _DEFAULT_SOURCE
+
     typedef const struct impl_complexNode * ComplexNodeRef;
     typedef const struct impl_complexNumberValue * ComplexNumberRef;
     typedef const struct impl_complexNodeFunction * ComplexNumberFunctionRef;
@@ -27,6 +31,9 @@
     #include <stdlib.h>
     #include <complex.h>
     #include <stdbool.h>
+    #ifndef _WIN32
+    #include <unistd.h>  // For fileno() and isatty() on POSIX systems
+    #endif
     #ifdef _WIN32
     #include <io.h>
     #else
