@@ -34,11 +34,6 @@
  *  @{
  */
 /**
- * @brief A reference to an opaque autorelease pool.
- * @ingroup OCAutoreleasePool
- */
-typedef struct impl_OCAutoreleasePool *OCAutoreleasePoolRef;
-/**
  * @brief Creates a new autorelease pool. The caller must release it when done.
  * @return A reference to the newly created autorelease pool.
  * @ingroup OCAutoreleasePool
