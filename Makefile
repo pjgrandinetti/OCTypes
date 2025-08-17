@@ -12,7 +12,8 @@ YFLAGS    = -d
 INCLUDES  := -I . -I src
 WARNINGS  := -Wall -Wextra -Wno-sign-compare -Wno-unused-parameter -Wno-missing-field-initializers
 OPT       := -O3
-CFLAGS    := -fPIC $(INCLUDES) $(WARNINGS) $(OPT) -g
+CSTD      := -std=c99
+CFLAGS    := -fPIC $(CSTD) $(INCLUDES) $(WARNINGS) $(OPT) -g
 ifeq ($(OC_LEAK_TRACKING),1)
   CFLAGS  += -DOC_LEAK_TRACKING
 endif
