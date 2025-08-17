@@ -1,4 +1,7 @@
-#include "OCString.h"  // Own header first
+#define _GNU_SOURCE
+#define _POSIX_C_SOURCE 200809L
+#define _DEFAULT_SOURCE  // For strcasecmp
+#include "OCString.h"    // Own header first
 #include <complex.h>
 #include <math.h>
 #include <stdarg.h>
@@ -7,6 +10,8 @@
 #include <stdio.h>
 #include <stdlib.h>        // malloc, free, realloc
 #include <string.h>        // strlen, strcmp, memcpy, memmove
+#include <strings.h>       // strcasecmp
+#include <time.h>          // time_t, gmtime_r
 #include "OCArray.h"       // For OCArrayCallBacks, OCArrayCreateMutable, etc.
 #include "OCData.h"        // For OCDataGetLength, OCDataGetBytesPtr
 #include "OCDictionary.h"  // For OCMutableDictionaryRef, OCDictionaryCreateMutable, etc.
