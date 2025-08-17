@@ -18,20 +18,14 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  # modest parallelism to reduce wall time (and minutes)
-  MAKEFLAGS: -j2
-
 jobs:
-  # Fast, cheap PR signal (Ubuntu only). Also runs on tags so we reuse artifacts.
   build-core:
     name: Build & Test (ubuntu-latest.x64)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v5
-        with:
-          fetch-depth: 1
+        with: { fetch-depth: 1 }
 
       - name: Install deps
         run: |
@@ -46,19 +40,18 @@ jobs:
           restore-keys: |
             ccache-linux-
 
-      - name: Build & test (Ubuntu)
+      - name: Build & test (Ubuntu, -j1)
         run: |
           set -euxo pipefail
           ccache --zero-stats || true
-          make clean
-          make test CC="ccache clang"
-          make lib/libOCTypes.so CC="ccache clang"
+          make -j1 clean
+          make -j1 test CC="ccache clang"
+          make -j1 lib/libOCTypes.so CC="ccache clang"
           cp lib/libOCTypes.so libOCTypes.so
           cp lib/libOCTypes.a  libOCTypes.a
           ccache --show-stats || true
 
-      # Only package headers on the canonical build (saves time elsewhere)
-      - name: Package public headers
+      - name: Package public headers (tags only)
         if: startsWith(github.ref, 'refs/tags/')
         run: |
           set -euxo pipefail
@@ -66,8 +59,7 @@ jobs:
           cp src/*.h header-pkg/include/
           zip -j header-pkg/libOCTypes-headers.zip header-pkg/include/*.h
 
-      # Upload artifacts only for releases
-      - name: Upload Ubuntu artifacts (tag only)
+      - name: Upload Ubuntu artifacts (tags only)
         if: startsWith(github.ref, 'refs/tags/')
         uses: actions/upload-artifact@v4
         with:
@@ -78,7 +70,7 @@ jobs:
           compression-level: 9
           if-no-files-found: error
 
-      - name: Upload headers (tag only)
+      - name: Upload headers (tags only)
         if: startsWith(github.ref, 'refs/tags/')
         uses: actions/upload-artifact@v4
         with:
@@ -86,16 +78,13 @@ jobs:
           path: header-pkg/libOCTypes-headers.zip
           compression-level: 9
 
-  # macOS and Windows only on tags (keeps PR minutes low)
   build-macos:
     if: startsWith(github.ref, 'refs/tags/')
     name: Build & Test (macos-latest)
     runs-on: macos-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 1
+      - uses: actions/checkout@v5
+        with: { fetch-depth: 1 }
 
       - name: Install deps
         run: |
@@ -112,13 +101,13 @@ jobs:
           restore-keys: |
             ccache-macos-
 
-      - name: Build & test (macOS)
+      - name: Build & test (macOS, -j1)
         run: |
           set -euxo pipefail
           ccache --zero-stats || true
-          make clean
-          make test CC="ccache clang"
-          make lib/libOCTypes.dylib CC="ccache clang"
+          make -j1 clean
+          make -j1 test CC="ccache clang"
+          make -j1 lib/libOCTypes.dylib CC="ccache clang"
           cp lib/libOCTypes.dylib libOCTypes.dylib
           cp lib/libOCTypes.a     libOCTypes.a
           ccache --show-stats || true
@@ -138,10 +127,8 @@ jobs:
     name: Build & Test (windows-latest)
     runs-on: windows-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 1
+      - uses: actions/checkout@v5
+        with: { fetch-depth: 1 }
 
       - name: Set up MSYS2 & MinGW
         uses: msys2/setup-msys2@v2
@@ -159,25 +146,26 @@ jobs:
       - name: Cache ccache (MSYS2)
         uses: actions/cache@v4
         with:
-          path: C:\Users\runneradmin\.ccache
+          # MSYS2 HOME maps here on hosted runners
+          path: C:\msys64\home\runneradmin\.ccache
           key: ccache-windows-${{ hashFiles('Makefile', 'src/**/*.c', 'src/**/*.h', 'tests/**/*.c', 'tests/**/*.h') }}
           restore-keys: |
             ccache-windows-
 
-      - name: Build & test (Windows)
+      - name: Build & test (Windows, -j1)
         shell: msys2 {0}
         run: |
           set -euxo pipefail
           ccache --zero-stats || true
-          make clean
-          make test CC="ccache gcc" \
+          make -j1 clean
+          make -j1 test CC="ccache gcc" \
                CFLAGS="-std=c99 -I. -Isrc -O3 -Wall -Wextra -Wno-sign-compare -Wno-unused-parameter -Wno-missing-field-initializers" \
                LEX=flex YACC="bison"
-          make lib/libOCTypes.dll CC="ccache gcc" \
+          make -j1 lib/libOCTypes.dll CC="ccache gcc" \
                CFLAGS="-std=c99 -I. -Isrc -O3 -Wall -Wextra -Wno-sign-compare -Wno-unused-parameter -Wno-missing-field-initializers" \
                LEX=flex YACC="bison"
-          cp lib/libOCTypes.a    libOCTypes.a
-          cp lib/libOCTypes.dll  libOCTypes.dll
+          cp lib/libOCTypes.a     libOCTypes.a
+          cp lib/libOCTypes.dll   libOCTypes.dll
           cp lib/libOCTypes.dll.a libOCTypes.dll.a
           ccache --show-stats || true
 
@@ -192,30 +180,27 @@ jobs:
           compression-level: 9
           if-no-files-found: error
 
-  # ARM64 Linux only on tags (as you had)
   build-arm64:
     if: startsWith(github.ref, 'refs/tags/')
     name: Build & Test (ubuntu-latest.arm64)
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 1
+      - uses: actions/checkout@v5
+        with: { fetch-depth: 1 }
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
         with:
           platforms: linux/arm64
 
-      - name: Build & test in ARM64 container
+      - name: Build & test in ARM64 container (-j1)
         run: |
           set -euxo pipefail
           docker run --rm --platform=linux/arm64 \
             -v ${{ github.workspace }}:/src -w /src ubuntu:22.04 bash -lc "\
               apt-get update && apt-get install -y clang make flex bison unzip && \
-              make clean && make test CC=clang && \
-              make lib/libOCTypes.so CC=clang && \
+              make -j1 clean && make -j1 test CC=clang && \
+              make -j1 lib/libOCTypes.so CC=clang && \
               cp lib/libOCTypes.a libOCTypes.a && \
               cp lib/libOCTypes.so libOCTypes.so"
 
@@ -274,4 +259,3 @@ jobs:
           files: packages/*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
