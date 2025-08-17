@@ -36,6 +36,12 @@
     #include <io.h>
     #endif
 
+    // Explicit function declarations for robustness on all platforms
+    #ifndef _WIN32
+    extern int fileno(FILE *stream);
+    extern int isatty(int fd);
+    #endif
+
     #include "math.h"
     #include "OCComplexParser.tab.h"
 %}
