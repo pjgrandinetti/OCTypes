@@ -1,10 +1,15 @@
 // tests/test_fileutils.c
+#ifndef _WIN32
+// Enable POSIX functions like mkstemp, mkdtemp
+#define _GNU_SOURCE
+#endif
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
 #ifndef _WIN32
+#include <limits.h>
 #include <unistd.h>
 #else
 #include <direct.h>

@@ -8,6 +8,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include "OCTypes.h"
+// Compiler compatibility for __has_feature
+#ifndef __has_feature
+#define __has_feature(x) 0
+#endif
 static bool ocTypesShutdownCalled = false;
 static char **typeIDTable = NULL;
 static OCTypeID typeIDTableCount = 0;

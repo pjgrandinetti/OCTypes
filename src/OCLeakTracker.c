@@ -5,6 +5,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include "OCType.h" /* For OCBase, OCTypeID, etc. */
+// Compiler compatibility for __has_feature
+#ifndef __has_feature
+#define __has_feature(x) 0
+#endif
 // Dynamic leak tracking control
 static bool gLeakTrackingEnabled = false;
 static bool gLeakTrackingInitialized = false;
@@ -247,9 +251,9 @@ void OCReportLeaksDetailed(void) {
         fprintf(stderr, "Found %zu static instance(s) (expected, not leaks)\n", static_instances);
     }
     fprintf(stderr, "\n");
-    size_t leak_index = 1;
     // First, report actual leaks (non-static instances)
     if (actual_leaks > 0) {
+        size_t leak_index = 1;
         fprintf(stderr, "=== ACTUAL MEMORY LEAKS ===\n");
         for (size_t i = 0; i < gLeakCount; ++i) {
             const OCBase *base = gLeakTable[i].ptr;
