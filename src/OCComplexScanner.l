@@ -31,13 +31,9 @@
     #include <stdlib.h>
     #include <complex.h>
     #include <stdbool.h>
-    #ifndef _WIN32
-    #include <unistd.h>  // For fileno() and isatty() on POSIX systems
-    #endif
+    #include <unistd.h>    // For fileno() and isatty() on POSIX systems
     #ifdef _WIN32
     #include <io.h>
-    #else
-    #include <unistd.h>
     #endif
 
     #include "math.h"
