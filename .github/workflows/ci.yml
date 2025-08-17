@@ -22,10 +22,16 @@ jobs:
   build-core:
     name: Build & Test (ubuntu-latest.x64)
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      CCACHE_BASEDIR: ${{ github.workspace }}
+      CCACHE_COMPRESS: "1"
+      CCACHE_MAXSIZE: "200M"
     steps:
       - name: Checkout
         uses: actions/checkout@v5
-        with: { fetch-depth: 1 }
+        with:
+          fetch-depth: 1
 
       - name: Install deps
         run: |
@@ -79,16 +85,22 @@ jobs:
           compression-level: 9
 
   build-macos:
-    if: startsWith(github.ref, 'refs/tags/')
     name: Build & Test (macos-latest)
     runs-on: macos-latest
+    timeout-minutes: 25
+    env:
+      CCACHE_BASEDIR: ${{ github.workspace }}
+      CCACHE_COMPRESS: "1"
+      CCACHE_MAXSIZE: "200M"
+      HOMEBREW_NO_AUTO_UPDATE: "1"
+      HOMEBREW_NO_INSTALL_CLEANUP: "1"
     steps:
       - uses: actions/checkout@v5
-        with: { fetch-depth: 1 }
+        with:
+          fetch-depth: 1
 
       - name: Install deps
         run: |
-          brew update
           brew install flex bison ccache
           echo "$(brew --prefix bison)/bin" >> $GITHUB_PATH
           echo "$(brew --prefix flex)/bin"  >> $GITHUB_PATH
@@ -112,7 +124,8 @@ jobs:
           cp lib/libOCTypes.a     libOCTypes.a
           ccache --show-stats || true
 
-      - name: Upload macOS artifacts
+      - name: Upload macOS artifacts (tags only)
+        if: startsWith(github.ref, 'refs/tags/')
         uses: actions/upload-artifact@v4
         with:
           name: libOCTypes-macos-latest
@@ -123,12 +136,13 @@ jobs:
           if-no-files-found: error
 
   build-windows:
-    if: startsWith(github.ref, 'refs/tags/')
     name: Build & Test (windows-latest)
     runs-on: windows-latest
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v5
-        with: { fetch-depth: 1 }
+        with:
+          fetch-depth: 1
 
       - name: Set up MSYS2 & MinGW
         uses: msys2/setup-msys2@v2
@@ -146,7 +160,6 @@ jobs:
       - name: Cache ccache (MSYS2)
         uses: actions/cache@v4
         with:
-          # MSYS2 HOME maps here on hosted runners
           path: C:\msys64\home\runneradmin\.ccache
           key: ccache-windows-${{ hashFiles('Makefile', 'src/**/*.c', 'src/**/*.h', 'tests/**/*.c', 'tests/**/*.h') }}
           restore-keys: |
@@ -169,7 +182,8 @@ jobs:
           cp lib/libOCTypes.dll.a libOCTypes.dll.a
           ccache --show-stats || true
 
-      - name: Upload Windows artifacts
+      - name: Upload Windows artifacts (tags only)
+        if: startsWith(github.ref, 'refs/tags/')
         uses: actions/upload-artifact@v4
         with:
           name: libOCTypes-windows-latest
@@ -184,9 +198,11 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/')
     name: Build & Test (ubuntu-latest.arm64)
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v5
-        with: { fetch-depth: 1 }
+        with:
+          fetch-depth: 1
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -259,3 +275,4 @@ jobs:
           files: packages/*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
