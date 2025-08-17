@@ -2,151 +2,249 @@ name: CI & Release
 
 on:
   push:
-    branches:
-      - master
-    tags:
-      - 'v*.*.*'
+    branches: [ master ]
+    tags: [ 'v*.*.*' ]
+    paths-ignore:
+      - '**/*.md'
+      - 'docs/**'
   pull_request:
-    branches:
-      - master
+    branches: [ master ]
+    paths-ignore:
+      - '**/*.md'
+      - 'docs/**'
+  workflow_dispatch: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # modest parallelism to reduce wall time (and minutes)
+  MAKEFLAGS: -j2
 
 jobs:
-  build:
-    name: Build & Test (${{ matrix.label }})
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        include:
-          - os: ubuntu-latest
-            arch: x64
-            label: ubuntu-latest.x64
-          - os: macos-latest
-            arch: x64
-            label: macos-latest
-          - os: windows-latest
-            arch: x64
-            label: windows-latest
-
+  # Fast, cheap PR signal (Ubuntu only). Also runs on tags so we reuse artifacts.
+  build-core:
+    name: Build & Test (ubuntu-latest.x64)
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v5
-
-      - name: Build & test on Linux/macOS
-        if: runner.os != 'Windows' && matrix.arch == 'x64'
-        run: |
-          make clean
-          make test
-          # Build shared library
-          if [ "$(uname)" = "Darwin" ]; then
-            make lib/libOCTypes.dylib
-            cp lib/libOCTypes.dylib libOCTypes.dylib
-          else
-            make lib/libOCTypes.so
-            cp lib/libOCTypes.so libOCTypes.so
-          fi
-          cp lib/libOCTypes.a libOCTypes.a
-
-      - name: Set up MSYS2 & MinGW (Windows)
-        if: runner.os == 'Windows'
-        uses: msys2/setup-msys2@v2
         with:
-          msystem: MINGW64
-          update: true
-          install: |
-            mingw-w64-x86_64-toolchain
-            make
-            flex
-            bison
+          fetch-depth: 1
 
-      - name: Build & test on Windows
-        if: runner.os == 'Windows'
-        shell: msys2 {0}
+      - name: Install deps
         run: |
-          make clean
-          make test CC=gcc \
-               CFLAGS="-std=c99 -I. -Isrc -O3 -Wall -Wextra \
-                       -Wno-sign-compare -Wno-unused-parameter \
-                       -Wno-missing-field-initializers" \
-               LEX=flex YACC="bison"
-          # Build shared library (DLL)
-          make lib/libOCTypes.dll CC=gcc \
-               CFLAGS="-std=c99 -I. -Isrc -O3 -Wall -Wextra \
-                       -Wno-sign-compare -Wno-unused-parameter \
-                       -Wno-missing-field-initializers" \
-               LEX=flex YACC="bison"
-          cp lib/libOCTypes.a libOCTypes.a
-          cp lib/libOCTypes.dll libOCTypes.dll
-          cp lib/libOCTypes.dll.a libOCTypes.dll.a
+          sudo apt-get update
+          sudo apt-get install -y clang make flex bison zip unzip ccache
 
-      - name: Upload library artifact
-        uses: actions/upload-artifact@v4
+      - name: Cache ccache
+        uses: actions/cache@v4
         with:
-          name: libOCTypes-${{ matrix.label }}
-          path: |
-            libOCTypes.a
-            libOCTypes.so
-            libOCTypes.dylib
-            libOCTypes.dll
-            libOCTypes.dll.a
+          path: ~/.ccache
+          key: ccache-linux-${{ hashFiles('Makefile', 'src/**/*.c', 'src/**/*.h', 'tests/**/*.c', 'tests/**/*.h') }}
+          restore-keys: |
+            ccache-linux-
 
-      # Package & upload public headers on Ubuntu only
+      - name: Build & test (Ubuntu)
+        run: |
+          set -euxo pipefail
+          ccache --zero-stats || true
+          make clean
+          make test CC="ccache clang"
+          make lib/libOCTypes.so CC="ccache clang"
+          cp lib/libOCTypes.so libOCTypes.so
+          cp lib/libOCTypes.a  libOCTypes.a
+          ccache --show-stats || true
+
+      # Only package headers on the canonical build (saves time elsewhere)
       - name: Package public headers
-        if: matrix.os == 'ubuntu-latest' && matrix.arch == 'x64'
+        if: startsWith(github.ref, 'refs/tags/')
         run: |
+          set -euxo pipefail
           mkdir -p header-pkg/include
           cp src/*.h header-pkg/include/
           zip -j header-pkg/libOCTypes-headers.zip header-pkg/include/*.h
-      - name: Upload headers artifact
-        if: matrix.os == 'ubuntu-latest' && matrix.arch == 'x64'
+
+      # Upload artifacts only for releases
+      - name: Upload Ubuntu artifacts (tag only)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: actions/upload-artifact@v4
+        with:
+          name: libOCTypes-ubuntu-latest.x64
+          path: |
+            libOCTypes.a
+            libOCTypes.so
+          compression-level: 9
+          if-no-files-found: error
+
+      - name: Upload headers (tag only)
+        if: startsWith(github.ref, 'refs/tags/')
         uses: actions/upload-artifact@v4
         with:
           name: libOCTypes-headers
           path: header-pkg/libOCTypes-headers.zip
+          compression-level: 9
 
-  # ARM64 Linux build: only run on releases (tags) for faster development cycles
+  # macOS and Windows only on tags (keeps PR minutes low)
+  build-macos:
+    if: startsWith(github.ref, 'refs/tags/')
+    name: Build & Test (macos-latest)
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+
+      - name: Install deps
+        run: |
+          brew update
+          brew install flex bison ccache
+          echo "$(brew --prefix bison)/bin" >> $GITHUB_PATH
+          echo "$(brew --prefix flex)/bin"  >> $GITHUB_PATH
+
+      - name: Cache ccache
+        uses: actions/cache@v4
+        with:
+          path: ~/.ccache
+          key: ccache-macos-${{ hashFiles('Makefile', 'src/**/*.c', 'src/**/*.h', 'tests/**/*.c', 'tests/**/*.h') }}
+          restore-keys: |
+            ccache-macos-
+
+      - name: Build & test (macOS)
+        run: |
+          set -euxo pipefail
+          ccache --zero-stats || true
+          make clean
+          make test CC="ccache clang"
+          make lib/libOCTypes.dylib CC="ccache clang"
+          cp lib/libOCTypes.dylib libOCTypes.dylib
+          cp lib/libOCTypes.a     libOCTypes.a
+          ccache --show-stats || true
+
+      - name: Upload macOS artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: libOCTypes-macos-latest
+          path: |
+            libOCTypes.a
+            libOCTypes.dylib
+          compression-level: 9
+          if-no-files-found: error
+
+  build-windows:
+    if: startsWith(github.ref, 'refs/tags/')
+    name: Build & Test (windows-latest)
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+
+      - name: Set up MSYS2 & MinGW
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          cache: true
+          install: >
+            mingw-w64-x86_64-toolchain
+            make
+            flex
+            bison
+            mingw-w64-x86_64-ccache
+
+      - name: Cache ccache (MSYS2)
+        uses: actions/cache@v4
+        with:
+          path: C:\Users\runneradmin\.ccache
+          key: ccache-windows-${{ hashFiles('Makefile', 'src/**/*.c', 'src/**/*.h', 'tests/**/*.c', 'tests/**/*.h') }}
+          restore-keys: |
+            ccache-windows-
+
+      - name: Build & test (Windows)
+        shell: msys2 {0}
+        run: |
+          set -euxo pipefail
+          ccache --zero-stats || true
+          make clean
+          make test CC="ccache gcc" \
+               CFLAGS="-std=c99 -I. -Isrc -O3 -Wall -Wextra -Wno-sign-compare -Wno-unused-parameter -Wno-missing-field-initializers" \
+               LEX=flex YACC="bison"
+          make lib/libOCTypes.dll CC="ccache gcc" \
+               CFLAGS="-std=c99 -I. -Isrc -O3 -Wall -Wextra -Wno-sign-compare -Wno-unused-parameter -Wno-missing-field-initializers" \
+               LEX=flex YACC="bison"
+          cp lib/libOCTypes.a    libOCTypes.a
+          cp lib/libOCTypes.dll  libOCTypes.dll
+          cp lib/libOCTypes.dll.a libOCTypes.dll.a
+          ccache --show-stats || true
+
+      - name: Upload Windows artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: libOCTypes-windows-latest
+          path: |
+            libOCTypes.a
+            libOCTypes.dll
+            libOCTypes.dll.a
+          compression-level: 9
+          if-no-files-found: error
+
+  # ARM64 Linux only on tags (as you had)
   build-arm64:
+    if: startsWith(github.ref, 'refs/tags/')
     name: Build & Test (ubuntu-latest.arm64)
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/')
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
 
-      - name: Set up QEMU emulation
+      - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
         with:
           platforms: linux/arm64
 
       - name: Build & test in ARM64 container
         run: |
+          set -euxo pipefail
           docker run --rm --platform=linux/arm64 \
             -v ${{ github.workspace }}:/src -w /src ubuntu:22.04 bash -lc "\
               apt-get update && apt-get install -y clang make flex bison unzip && \
-              make clean && make test && \
-              make lib/libOCTypes.so && \
+              make clean && make test CC=clang && \
+              make lib/libOCTypes.so CC=clang && \
               cp lib/libOCTypes.a libOCTypes.a && \
               cp lib/libOCTypes.so libOCTypes.so"
 
-      - name: Upload library artifact
+      - name: Upload ARM64 artifacts
         uses: actions/upload-artifact@v4
         with:
           name: libOCTypes-ubuntu-latest.arm64
           path: |
             libOCTypes.a
             libOCTypes.so
+          compression-level: 9
+          if-no-files-found: error
 
   release:
-    name: Package & Release
-    needs: [build, build-arm64]
-    runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
+    name: Package & Release
+    needs: [build-core, build-macos, build-windows, build-arm64]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - name: Download build artifacts
+      - name: Install zip
+        run: sudo apt-get update && sudo apt-get install -y zip
+
+      - name: Download artifacts
         uses: actions/download-artifact@v5
         with:
           path: artifacts
 
-      # Copy the header bundle into the packages folder
       - name: Copy header bundle
         run: |
           mkdir -p packages
@@ -154,48 +252,21 @@ jobs:
 
       - name: Package libraries into ZIPs
         run: |
+          set -euxo pipefail
           mkdir -p packages
           for osdir in artifacts/*; do
-            if [ ! -d "$osdir" ]; then
-              continue
-            fi
-
-            os=$(basename "$osdir")
-            # Strip the libOCTypes- prefix to get clean platform name
-            platform=${os#libOCTypes-}
-
-            # Skip header artifacts
-            if [[ "$platform" == "headers" ]]; then
-              continue
-            fi
-
-            zipfile="packages/libOCTypes-${platform}.zip"
-
-            # Find all library files and package them
-            files_to_zip=()
-            for lib in "${osdir}"/libOCTypes.*; do
-              if [ -f "$lib" ]; then
-                files_to_zip+=("$lib")
-              fi
-            done
-
-            if [ ${#files_to_zip[@]} -eq 0 ]; then
-              echo "Skipping $osdir (no library files to package)"
-              continue
-            fi
-
-            if [[ "$platform" == windows-latest ]]; then
-              # Use PowerShell for Windows
-              file_list=$(printf "'%s'," "${files_to_zip[@]}")
-              file_list=${file_list%,}  # Remove trailing comma
-              pwsh -Command "Compress-Archive -Path ${file_list} -DestinationPath '${zipfile}'"
-            else
-              # Use zip for Unix-like systems
-              zip -j "${zipfile}" "${files_to_zip[@]}"
-            fi
+            [ -d "$osdir" ] || continue
+            base="$(basename "$osdir")"
+            platform="${base#libOCTypes-}"
+            [ "$platform" = "headers" ] && continue
+            files=( "$osdir"/libOCTypes.* )
+            found=0
+            for f in "${files[@]}"; do [ -f "$f" ] && found=1 && break; done
+            [ $found -eq 1 ] || { echo "Skipping $osdir (no library files)"; continue; }
+            zip -j "packages/libOCTypes-${platform}.zip" "${files[@]}"
           done
 
-      - name: Create or update GitHub Release and upload assets
+      - name: Create/Update GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
@@ -203,3 +274,4 @@ jobs:
           files: packages/*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
