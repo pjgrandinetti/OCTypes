@@ -315,3 +315,10 @@ const char *OCTypeNameFromTypeID(OCTypeID typeID) {
     const char *name = typeIDTable[typeID - 1];
     return (name != NULL) ? name : "UnnamedType";
 }
+// ============================================================================
+// OCRange utility function
+// ============================================================================
+OCRange OCRangeMake(OCIndex loc, OCIndex len) {
+    OCRange r = {loc, len};
+    return r;
+}

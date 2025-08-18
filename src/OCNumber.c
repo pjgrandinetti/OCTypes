@@ -588,3 +588,183 @@ OCNumberRef OCNumberCreateFromJSON(cJSON *json, OCNumberType type) {
     if (!valueStr) return NULL;
     return OCNumberCreateWithStringValue(type, valueStr);
 }
+// ============================================================================
+// Try-get Accessor Implementations
+// ============================================================================
+bool OCNumberTryGetUInt8(OCNumberRef n, uint8_t *out) {
+    return OCNumberGetValue(n, kOCNumberUInt8Type, out);
+}
+bool OCNumberTryGetSInt8(OCNumberRef n, int8_t *out) {
+    return OCNumberGetValue(n, kOCNumberSInt8Type, out);
+}
+bool OCNumberTryGetUInt16(OCNumberRef n, uint16_t *out) {
+    return OCNumberGetValue(n, kOCNumberUInt16Type, out);
+}
+bool OCNumberTryGetSInt16(OCNumberRef n, int16_t *out) {
+    return OCNumberGetValue(n, kOCNumberSInt16Type, out);
+}
+bool OCNumberTryGetUInt32(OCNumberRef n, uint32_t *out) {
+    return OCNumberGetValue(n, kOCNumberUInt32Type, out);
+}
+bool OCNumberTryGetSInt32(OCNumberRef n, int32_t *out) {
+    return OCNumberGetValue(n, kOCNumberSInt32Type, out);
+}
+bool OCNumberTryGetUInt64(OCNumberRef n, uint64_t *out) {
+    return OCNumberGetValue(n, kOCNumberUInt64Type, out);
+}
+bool OCNumberTryGetSInt64(OCNumberRef n, int64_t *out) {
+    return OCNumberGetValue(n, kOCNumberSInt64Type, out);
+}
+bool OCNumberTryGetFloat32(OCNumberRef n, float *out) {
+    return OCNumberGetValue(n, kOCNumberFloat32Type, out);
+}
+bool OCNumberTryGetFloat64(OCNumberRef n, double *out) {
+    return OCNumberGetValue(n, kOCNumberFloat64Type, out);
+}
+bool OCNumberTryGetComplex64(OCNumberRef n, float complex *out) {
+    return OCNumberGetValue(n, kOCNumberComplex64Type, out);
+}
+bool OCNumberTryGetComplex128(OCNumberRef n, double complex *out) {
+    return OCNumberGetValue(n, kOCNumberComplex128Type, out);
+}
+bool OCNumberTryGetFloat(OCNumberRef n, float *out) {
+    return OCNumberTryGetFloat32(n, out);
+}
+bool OCNumberTryGetDouble(OCNumberRef n, double *out) {
+    return OCNumberTryGetFloat64(n, out);
+}
+bool OCNumberTryGetFloatComplex(OCNumberRef n, float complex *out) {
+    return OCNumberTryGetComplex64(n, out);
+}
+bool OCNumberTryGetDoubleComplex(OCNumberRef n, double complex *out) {
+    return OCNumberTryGetComplex128(n, out);
+}
+bool OCNumberTryGetInt(OCNumberRef n, int *out) {
+    if (!n || !out) return false;
+    OCNumberType type = OCNumberGetType(n);
+    switch (type) {
+        case kOCNumberSInt8Type: {
+            int8_t v;
+            if (OCNumberTryGetSInt8(n, &v)) {
+                *out = (int)v;
+                return true;
+            }
+            break;
+        }
+        case kOCNumberSInt16Type: {
+            int16_t v;
+            if (OCNumberTryGetSInt16(n, &v)) {
+                *out = (int)v;
+                return true;
+            }
+            break;
+        }
+        case kOCNumberSInt32Type: {
+            int32_t v;
+            if (OCNumberTryGetSInt32(n, &v)) {
+                *out = (int)v;
+                return true;
+            }
+            break;
+        }
+        case kOCNumberSInt64Type: {
+            int64_t v;
+            if (OCNumberTryGetSInt64(n, &v)) {
+                if (v < (int64_t)INT_MIN || v > (int64_t)INT_MAX) return false;  // overflow check
+                *out = (int)v;
+                return true;
+            }
+            break;
+        }
+        default:
+            break;
+    }
+    return false;
+}
+bool OCNumberTryGetLong(OCNumberRef n, long *out) {
+    if (!n || !out) return false;
+    OCNumberType type = OCNumberGetType(n);
+    switch (type) {
+        case kOCNumberSInt8Type: {
+            int8_t v;
+            if (OCNumberTryGetSInt8(n, &v)) {
+                *out = (long)v;
+                return true;
+            }
+            break;
+        }
+        case kOCNumberSInt16Type: {
+            int16_t v;
+            if (OCNumberTryGetSInt16(n, &v)) {
+                *out = (long)v;
+                return true;
+            }
+            break;
+        }
+        case kOCNumberSInt32Type: {
+            int32_t v;
+            if (OCNumberTryGetSInt32(n, &v)) {
+                *out = (long)v;
+                return true;
+            }
+            break;
+        }
+        case kOCNumberSInt64Type: {
+            int64_t v;
+            if (OCNumberTryGetSInt64(n, &v)) {
+                // Optional: validate that v fits into a long if long < int64_t
+#if LONG_MAX < INT64_MAX || LONG_MIN > INT64_MIN
+                if (v < (int64_t)LONG_MIN || v > (int64_t)LONG_MAX) return false;
+#endif
+                *out = (long)v;
+                return true;
+            }
+            break;
+        }
+        default:
+            break;
+    }
+    return false;
+}
+bool OCNumberTryGetOCIndex(OCNumberRef n, OCIndex *out) {
+    if (!n || !out) return false;
+    OCNumberType type = OCNumberGetType(n);
+    switch (type) {
+        case kOCNumberSInt8Type: {
+            int8_t v;
+            if (OCNumberTryGetSInt8(n, &v)) {
+                *out = (OCIndex)v;
+                return true;
+            }
+            break;
+        }
+        case kOCNumberSInt16Type: {
+            int16_t v;
+            if (OCNumberTryGetSInt16(n, &v)) {
+                *out = (OCIndex)v;
+                return true;
+            }
+            break;
+        }
+        case kOCNumberSInt32Type: {
+            int32_t v;
+            if (OCNumberTryGetSInt32(n, &v)) {
+                *out = (OCIndex)v;
+                return true;
+            }
+            break;
+        }
+        case kOCNumberSInt64Type: {
+            int64_t v;
+            if (OCNumberTryGetSInt64(n, &v)) {
+                // Optional: clamp or validate if OCIndex is narrower
+                *out = (OCIndex)v;
+                return true;
+            }
+            break;
+        }
+        default:
+            break;
+    }
+    return false;
+}

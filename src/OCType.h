@@ -125,7 +125,6 @@ typedef struct {
 #if !defined(OC_INLINE)
 #define OC_INLINE static inline
 #endif
-#if defined(OC_INLINE)
 /**
  * @brief Convenience function to create an OCRange.
  *
@@ -133,13 +132,7 @@ typedef struct {
  * @param len Number of elements.
  * @return OCRange with the given location and length.
  */
-OC_INLINE OCRange OCRangeMake(OCIndex loc, OCIndex len) {
-    OCRange r = {loc, len};
-    return r;
-}
-#else
-#define OCRangeMake(LOC, LEN) impl_OCRangeMake(LOC, LEN)
-#endif
+OCRange OCRangeMake(OCIndex loc, OCIndex len);
 /**
  * @defgroup OCType OCType
  * @brief Core type definitions and memory management functions.
