@@ -31,7 +31,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
         with:
-          fetch-depth: 1
+          fetch-depth: 0  # Fetch all history and tags for version detection
 
       - name: Install deps
         run: |
@@ -97,7 +97,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-          fetch-depth: 1
+          fetch-depth: 0  # Fetch all history and tags for version detection
 
       - name: Install deps
         run: |
@@ -142,7 +142,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-          fetch-depth: 1
+          fetch-depth: 0  # Fetch all history and tags for version detection
 
       - name: Set up MSYS2 & MinGW
         uses: msys2/setup-msys2@v2
@@ -202,7 +202,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-          fetch-depth: 1
+          fetch-depth: 0  # Fetch all history and tags for version detection
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -275,4 +275,3 @@ jobs:
           files: packages/*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
