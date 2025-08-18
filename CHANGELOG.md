@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.1.6] - 2025-08-18
+### Fixed
+- Windows build and install improvements
+- GitHub Actions build fixes
+- Build system refactoring under build/ directory
+
 ## [v0.1.1] - 2025-05-20
 ### Added
 - Created `CHANGELOG.md` to track project releases.
