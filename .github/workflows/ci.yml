@@ -52,9 +52,9 @@ jobs:
           ccache --zero-stats || true
           make -j1 clean
           make -j1 test CC="ccache clang"
-          make -j1 build/lib/libOCTypes.so CC="ccache clang"
-          cp build/lib/libOCTypes.so libOCTypes.so
-          cp build/lib/libOCTypes.a  libOCTypes.a
+          make install-shared CC="ccache clang"
+          test -f install/lib/libOCTypes.a
+          test -f install/lib/libOCTypes.so
           ccache --show-stats || true
 
       - name: Package public headers (tags only)
@@ -70,9 +70,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: libOCTypes-ubuntu-latest.x64
-          path: |
-            libOCTypes.a
-            libOCTypes.so
+          path: install/lib/libOCTypes.*
           compression-level: 9
           if-no-files-found: error
 
@@ -119,9 +117,9 @@ jobs:
           ccache --zero-stats || true
           make -j1 clean
           make -j1 test CC="ccache clang"
-          make -j1 build/lib/libOCTypes.dylib CC="ccache clang"
-          cp build/lib/libOCTypes.dylib libOCTypes.dylib
-          cp build/lib/libOCTypes.a     libOCTypes.a
+          make install-shared CC="ccache clang"
+          test -f install/lib/libOCTypes.a
+          test -f install/lib/libOCTypes.dylib
           ccache --show-stats || true
 
       - name: Upload macOS artifacts (tags only)
@@ -129,9 +127,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: libOCTypes-macos-latest
-          path: |
-            libOCTypes.a
-            libOCTypes.dylib
+          path: install/lib/libOCTypes.*
           compression-level: 9
           if-no-files-found: error
 
@@ -174,12 +170,12 @@ jobs:
           make -j1 test CC="ccache gcc" \
                CFLAGS="-std=c99 -I. -Isrc -O3 -Wall -Wextra -Wno-sign-compare -Wno-unused-parameter -Wno-missing-field-initializers" \
                LEX=flex YACC="bison"
-          make -j1 build/lib/libOCTypes.dll CC="ccache gcc" \
+          make install-shared CC="ccache gcc" \
                CFLAGS="-std=c99 -I. -Isrc -O3 -Wall -Wextra -Wno-sign-compare -Wno-unused-parameter -Wno-missing-field-initializers" \
                LEX=flex YACC="bison"
-          cp build/lib/libOCTypes.a     libOCTypes.a
-          cp build/lib/libOCTypes.dll   libOCTypes.dll
-          cp build/lib/libOCTypes.dll.a libOCTypes.dll.a
+          test -f install/lib/libOCTypes.a
+          test -f install/lib/libOCTypes.dll
+          test -f install/lib/libOCTypes.dll.a
           ccache --show-stats || true
 
       - name: Upload Windows artifacts (tags only)
@@ -187,10 +183,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: libOCTypes-windows-latest
-          path: |
-            libOCTypes.a
-            libOCTypes.dll
-            libOCTypes.dll.a
+          path: install/lib/libOCTypes.*
           compression-level: 9
           if-no-files-found: error
 
@@ -216,17 +209,14 @@ jobs:
             -v ${{ github.workspace }}:/src -w /src ubuntu:22.04 bash -lc "\
               apt-get update && apt-get install -y clang make flex bison unzip && \
               make -j1 clean && make -j1 test CC=clang && \
-              make -j1 build/lib/libOCTypes.so CC=clang && \
-              cp build/lib/libOCTypes.a libOCTypes.a && \
-              cp build/lib/libOCTypes.so libOCTypes.so"
+              make install-shared CC=clang && \
+              test -f install/lib/libOCTypes.a && test -f install/lib/libOCTypes.so"
 
       - name: Upload ARM64 artifacts
         uses: actions/upload-artifact@v4
         with:
           name: libOCTypes-ubuntu-latest.arm64
-          path: |
-            libOCTypes.a
-            libOCTypes.so
+          path: install/lib/libOCTypes.*
           compression-level: 9
           if-no-files-found: error
 
