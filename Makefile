@@ -26,7 +26,7 @@ OBJ_DIR    := $(BUILD_DIR)/obj
 GEN_DIR    := $(BUILD_DIR)/gen
 BIN_DIR    := $(BUILD_DIR)/bin
 LIBDIR     := lib
-INSTALL_DIR      := install
+INSTALL_DIR      ?= install
 INSTALL_LIB_DIR  := $(INSTALL_DIR)/lib
 INSTALL_INC_DIR  := $(INSTALL_DIR)/include/OCTypes
 
