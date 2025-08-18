@@ -25,7 +25,7 @@ BUILD_DIR  := build
 OBJ_DIR    := $(BUILD_DIR)/obj
 GEN_DIR    := $(BUILD_DIR)/gen
 BIN_DIR    := $(BUILD_DIR)/bin
-LIBDIR     := lib
+LIBDIR     := $(BUILD_DIR)/lib
 INSTALL_DIR      ?= install
 INSTALL_LIB_DIR  := $(INSTALL_DIR)/lib
 INSTALL_INC_DIR  := $(INSTALL_DIR)/include/OCTypes
@@ -193,9 +193,10 @@ xcode:
 
 # ───────── Clean / Help ─────────
 clean:
-	$(RM) -r $(BUILD_DIR) $(LIBDIR) $(INSTALL_DIR) $(BIN_DIR) \
+	$(RM) -r $(BUILD_DIR) $(INSTALL_DIR) \
 	      runTests runTests.debug runTests.asan *.dSYM \
 	      OCComplexParser.output *.tab.* *.yy.* compile_commands.json
+	$(RM) -r lib  # Remove old lib directory if it exists
 
 help:
 	@echo "OCTypes Makefile — targets:"
