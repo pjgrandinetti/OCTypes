@@ -66,7 +66,7 @@ VERSION_PATCH := $(shell echo $(VERSION) | cut -d. -f3)
 
 # Platform
 UNAME_S := $(shell uname -s)
-ifeq ($(OS),Windows_NT)
+ifneq ($(findstring MINGW,$(UNAME_S)),)
   SHLIB_EXT     = .dll
   SHLIB_FLAGS   = -shared -Wl,--export-all-symbols -Wl,--enable-auto-import
   SHLIB_LDFLAGS = -Wl,--out-implib=$(LIBDIR)/libOCTypes.dll.a
@@ -147,7 +147,7 @@ install: all
 	$(MKDIR_P) $(INSTALL_LIB_DIR) $(INSTALL_INC_DIR)
 	cp $(LIBDIR)/libOCTypes.a $(INSTALL_LIB_DIR)/
 	cp $(SHLIB)               $(INSTALL_LIB_DIR)/
-ifeq ($(OS), Windows_NT)
+ifneq ($(findstring MINGW,$(UNAME_S)),)
 	@if [ -f $(LIBDIR)/libOCTypes.dll.a ]; then cp $(LIBDIR)/libOCTypes.dll.a $(INSTALL_LIB_DIR)/; fi
 endif
 	cp src/*.h                $(INSTALL_INC_DIR)/
