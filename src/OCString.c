@@ -8,6 +8,10 @@
 #include <stddef.h>  // ptrdiff_t, size_t
 #include <stdint.h>  // uint32_t
 #include <stdio.h>
+#ifdef _WIN32
+#include <signal.h>  // For Windows signal handling
+#include <setjmp.h>  // For setjmp/longjmp
+#endif
 #include <stdlib.h>        // malloc, free, realloc
 #include <string.h>        // strlen, strcmp, memcpy, memmove
 #include <strings.h>       // strcasecmp
@@ -978,6 +982,19 @@ static const char *parse_printf_spec(const char *p, char *out, size_t maxlen, ch
     out[len] = '\0';
     return p;
 }
+#ifdef _WIN32
+// Windows-specific: Signal handling for va_arg safety
+static jmp_buf va_arg_jmpbuf;
+static volatile int va_arg_segfault = 0;
+
+static void va_arg_signal_handler(int sig) {
+    if (sig == SIGSEGV) {
+        va_arg_segfault = 1;
+        longjmp(va_arg_jmpbuf, 1);
+    }
+}
+#endif
+
 /**
  * @brief Appends formatted text to a mutable OCString.
  * @param result Mutable OCString.
@@ -997,11 +1014,30 @@ static void OCStringAppendFormatWithArgumentsSafe(
     const char *f = format->string;
     va_list arglist;
     va_copy(arglist, args);
+    
+    #ifdef _WIN32
+    // Set up signal handler for Windows va_arg protection
+    void (*old_handler)(int) = signal(SIGSEGV, va_arg_signal_handler);
+    va_arg_segfault = 0;
+    
+    if (setjmp(va_arg_jmpbuf) != 0) {
+        // We caught a segfault from va_arg - insufficient arguments
+        fprintf(stderr, "[OCString] WARNING: Caught segfault due to insufficient arguments\n");
+        OCStringAppendCString(result, "[INSUFFICIENT_ARGS]");
+        signal(SIGSEGV, old_handler);  // Restore original handler
+        va_end(arglist);
+        return;
+    }
+    #endif
+    
     while (*f) {
         if (f[0] == '%' && f[1] == '@') {
             if (arg_index >= max_args) {
                 OCStringAppendCString(result, "[MISSING]");
                 fprintf(stderr, "[OCString] ERROR: Not enough arguments for %%@ (index %d)\n", arg_index);
+                arg_index++;
+                f += 2;
+                continue;
             } else {
                 OCStringRef s = va_arg(arglist, OCStringRef);
                 // Defensive: check plausibility before dereferencing
@@ -1019,9 +1055,9 @@ static void OCStringAppendFormatWithArgumentsSafe(
                     // Don't append, just print error
                     fprintf(stderr, "[OCString] ERROR: OCStringRef->string is NULL at %%@ index %d\n", arg_index);
                 }
+                arg_index++;
+                f += 2;
             }
-            arg_index++;
-            f += 2;
         } else if (f[0] == '%' && f[1] == '%') {
             OCStringAppendCString(result, "%");
             f += 2;
@@ -1088,6 +1124,12 @@ static void OCStringAppendFormatWithArgumentsSafe(
             f++;
         }
     }
+    
+    #ifdef _WIN32
+    // Restore original signal handler
+    signal(SIGSEGV, old_handler);
+    #endif
+    
     va_end(arglist);
 }
 // Helper to count how many format arguments are expected (including %@)
