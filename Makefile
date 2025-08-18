@@ -147,6 +147,9 @@ install: all
 	$(MKDIR_P) $(INSTALL_LIB_DIR) $(INSTALL_INC_DIR)
 	cp $(LIBDIR)/libOCTypes.a $(INSTALL_LIB_DIR)/
 	cp $(SHLIB)               $(INSTALL_LIB_DIR)/
+ifeq ($(OS), Windows_NT)
+	@if [ -f $(LIBDIR)/libOCTypes.dll.a ]; then cp $(LIBDIR)/libOCTypes.dll.a $(INSTALL_LIB_DIR)/; fi
+endif
 	cp src/*.h                $(INSTALL_INC_DIR)/
 
 install-shared: install
