@@ -62,7 +62,7 @@ MKDIR_P  := mkdir -p
 UNAME_S := $(shell uname -s)
 ifeq ($(OS),Windows_NT)
   SHLIB_EXT     = .dll
-  SHLIB_FLAGS   = -shared
+  SHLIB_FLAGS   = -shared -Wl,--export-all-symbols -Wl,--enable-auto-import
   SHLIB_LDFLAGS = -Wl,--out-implib=$(LIBDIR)/libOCTypes.dll.a
   PLATFORM_LIBS = -ldbghelp
 else ifeq ($(UNAME_S),Darwin)
