@@ -71,6 +71,8 @@ ifneq ($(findstring MINGW,$(UNAME_S)),)
   SHLIB_FLAGS   = -shared -Wl,--export-all-symbols -Wl,--enable-auto-import
   SHLIB_LDFLAGS = -Wl,--out-implib=$(LIBDIR)/libOCTypes.dll.a
   PLATFORM_LIBS = -ldbghelp
+  # Suppress #pragma mark warnings on Windows/MinGW
+  CFLAGS += -Wno-unknown-pragmas
 else ifeq ($(UNAME_S),Darwin)
   SHLIB_EXT     = .dylib
   SHLIB_FLAGS   = -dynamiclib -fPIC
