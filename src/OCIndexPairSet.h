@@ -219,22 +219,6 @@ bool OCIndexPairSetAddIndexPair(OCMutableIndexPairSetRef set, OCIndex index, OCI
  */
 bool OCIndexPairSetRemoveIndexPairWithIndex(OCMutableIndexPairSetRef set, OCIndex index);
 /**
- * @brief Serializes the set into an OCDictionary suitable for plist.
- *
- * @param set The OCIndexPairSetRef instance.
- * @return A new OCDictionaryRef representing the set, or NULL on error.
- * @ingroup OCIndexPairSet
- */
-OCDictionaryRef OCIndexPairSetCreatePList(OCIndexPairSetRef set);
-/**
- * @brief Creates an OCIndexPairSet from a plist-compatible OCDictionary.
- *
- * @param dict An OCDictionaryRef previously created by OCIndexPairSetCreatePList().
- * @return A new OCIndexPairSetRef reconstructed from dict, or NULL on error.
- * @ingroup OCIndexPairSet
- */
-OCIndexPairSetRef OCIndexPairSetCreateWithPList(OCDictionaryRef dict);
-/**
  * @brief Returns an OCDataRef representing the internal contiguous OCIndexPair buffer.
  *
  * @param set The OCIndexPairSetRef instance.
