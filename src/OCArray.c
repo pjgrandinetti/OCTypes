@@ -272,6 +272,7 @@ cJSON *OCArrayCreateJSON(OCArrayRef array) {
     }
     return arr;
 }
+
 const void *OCArrayGetValueAtIndex(OCArrayRef theArray, uint64_t index) {
     if (NULL == theArray) return NULL;
     if (index >= theArray->count) return NULL;
