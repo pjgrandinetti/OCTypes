@@ -22,7 +22,9 @@ struct impl_OCData {
     uint64_t capacity;
 };
 OCTypeID OCDataGetTypeID(void) {
-    if (kOCDataID == kOCNotATypeID) kOCDataID = OCRegisterType("OCData");
+    if (kOCDataID == kOCNotATypeID) {
+        kOCDataID = OCRegisterType("OCData", (OCTypeRef (*)(cJSON *))OCDataCreateFromJSONTyped);
+    }
     return kOCDataID;
 }
 static bool impl_OCDataEqual(const void *a_, const void *b_) {
@@ -83,6 +85,12 @@ static cJSON *
 impl_OCDataCopyJSON(const void *obj) {
     return OCDataCreateJSON((OCDataRef)obj);
 }
+
+static cJSON *
+impl_OCDataCopyJSONTyped(const void *obj) {
+    return OCDataCreateJSONTyped((OCDataRef)obj);
+}
+
 static void impl_OCDataFinalize(const void *obj) {
     OCDataRef data = (OCDataRef)obj;
     if (data->bytes) free(data->bytes);
@@ -94,6 +102,7 @@ static struct impl_OCData *OCDataAllocate() {
                        impl_OCDataEqual,
                        OCDataCopyFormattingDesc,
                        impl_OCDataCopyJSON,
+                       impl_OCDataCopyJSONTyped,
                        impl_OCDataDeepCopy,
                        impl_OCDataDeepCopyMutable);
 }
@@ -437,7 +446,7 @@ cJSON *OCDataCreateJSONTyped(OCDataRef data) {
         return cJSON_CreateNull();
     }
     cJSON *entry = cJSON_CreateObject();
-    cJSON_AddStringToObject(entry, "type", "binary");
+    cJSON_AddStringToObject(entry, "type", "OCData");
     cJSON_AddStringToObject(entry, "encoding", "base64");
     cJSON_AddStringToObject(entry, "value", OCStringGetCString(b64));
     OCRelease(b64);
@@ -450,7 +459,7 @@ OCDataRef OCDataCreateFromJSONTyped(cJSON *json) {
     cJSON *encoding = cJSON_GetObjectItem(json, "encoding");
     cJSON *value = cJSON_GetObjectItem(json, "value");
     if (!cJSON_IsString(type) || !cJSON_IsString(value)) return NULL;
-    if (strcmp(type->valuestring, "binary") != 0) return NULL;
+    if (strcmp(type->valuestring, "OCData") != 0) return NULL;
     
     // Check encoding - default to base64 if not specified for backward compatibility
     if (encoding && cJSON_IsString(encoding)) {

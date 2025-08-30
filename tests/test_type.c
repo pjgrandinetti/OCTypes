@@ -4,7 +4,7 @@
 // Original typeTest0 implementation
 bool typeTest0(void) {
     fprintf(stderr, "%s begin...\n", __func__);
-    OCTypeID tid = OCRegisterType("MyType");
+    OCTypeID tid = OCRegisterType("MyType", NULL);
     if (tid == kOCNotATypeID) PRINTERROR;
     fprintf(stderr, "%s end...without problems\n", __func__);
     return true;

@@ -206,12 +206,18 @@ void *OCTypeDeepCopy(const void *obj);
  */
 void *OCTypeDeepCopyMutable(const void *obj);
 /**
- * @brief Registers a new OCType with the system.
+ * @brief Registers a new OCType with the system and optional JSON factory.
+ *
+ * This function registers a type name with the OCTypes system and optionally
+ * associates a JSON factory function for creating instances from typed JSON.
+ * 
  * @param typeName A null-terminated C string representing the type name.
+ * @param factory Optional function pointer to create instances from typed JSON.
+ *                Pass NULL if the type doesn't support typed JSON serialization.
  * @return The OCTypeID assigned, or kOCNotATypeID on failure.
  * @ingroup OCType
  */
-OCTypeID OCRegisterType(const char *typeName);
+OCTypeID OCRegisterType(const char *typeName, OCTypeRef (*factory)(cJSON *));
 /**
  * @brief Retrieves the retain count of an OCType instance.
  * @param ptr Pointer to the OCType instance.
@@ -266,6 +272,43 @@ OCStringRef OCTypeCopyFormattingDesc(const void *ptr);
  * @ingroup OCType
  */
 cJSON *OCTypeCopyJSON(OCTypeRef obj);
+
+/**
+ * @brief Returns a self-describing JSON representation of an OCType instance.
+ *
+ * This function serializes the given OCType instance to a cJSON object that includes
+ * type information, making the JSON self-describing. The output typically contains
+ * a "type" field identifying the OCType subclass and a "value" field with the
+ * actual data.
+ *
+ * Unlike OCTypeCopyJSON(), the resulting JSON can be deserialized without external
+ * knowledge of the expected type, making it suitable for generic storage and
+ * transmission scenarios.
+ *
+ * The returned cJSON object must be freed by the caller using cJSON_Delete().
+ *
+ * @param obj Pointer to the OCType instance. If NULL, returns a JSON null.
+ * @return A self-describing cJSON object, or cJSON null if obj is NULL or lacks typed JSON support.
+ * @ingroup OCType
+ */
+cJSON *OCTypeCopyJSONTyped(OCTypeRef obj);
+
+/**
+ * @brief Creates an OCType instance from a self-describing JSON object.
+ *
+ * This function deserializes a cJSON object that was created by OCTypeCopyJSONTyped()
+ * or follows the same self-describing format. The JSON object must contain type
+ * information to determine which OCType subclass to instantiate.
+ *
+ * The function examines the "type" field in the JSON object and dispatches to the
+ * appropriate createFromJSONTyped implementation for that type.
+ *
+ * @param json A cJSON object containing self-describing type information.
+ * @return A new OCType instance with retain count 1, or NULL if deserialization fails.
+ * @note The returned object must be released with OCRelease() when no longer needed.
+ * @ingroup OCType
+ */
+OCTypeRef OCTypeCreateFromJSONTyped(cJSON *json);
 /**
  * @brief Returns a generic description of an OCType instance.
  * @param ptr Pointer to the OCType instance.
@@ -327,6 +370,7 @@ typedef struct impl_OCBase {
     bool (*equal)(const void *, const void *);
     OCStringRef (*copyFormattingDesc)(OCTypeRef);
     cJSON *(*copyJSON)(const void *);
+    cJSON *(*copyJSONTyped)(const void *);
     void *(*copyDeep)(const void *);
     void *(*copyDeepMutable)(const void *);
     // Flags packed together in a single byte
@@ -383,6 +427,7 @@ void *OCTypeAllocate(
     bool (*equal)(const void *, const void *),
     OCStringRef (*copyFormattingDesc)(OCTypeRef),
     cJSON *(*copyJSON)(const void *),
+    cJSON *(*copyJSONTyped)(const void *),
     void *(*copyDeep)(const void *),
     void *(*copyDeepMutable)(const void *));
 /**
@@ -395,6 +440,7 @@ void *OCTypeAllocate(
     EQUAL_FN,               \
     DESC_FN,                \
     JSON_FN,                \
+    JSON_TYPED_FN,          \
     COPY_FN,                \
     MUTABLE_COPY_FN)        \
     (TYPE *)OCTypeAllocate( \
@@ -404,6 +450,7 @@ void *OCTypeAllocate(
         EQUAL_FN,           \
         DESC_FN,            \
         JSON_FN,            \
+        JSON_TYPED_FN,      \
         COPY_FN,            \
         MUTABLE_COPY_FN)
 /**

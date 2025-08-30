@@ -223,6 +223,31 @@ OCIndexSetRef OCIndexSetCreateFromJSON(cJSON *json);
  * @ingroup OCIndexSet
  */
 cJSON *OCIndexSetCreateJSON(OCIndexSetRef set);
+
+/**
+ * @brief Creates a typed JSON object representation of an OCIndexSet.
+ *
+ * Creates a JSON object with type information for proper deserialization.
+ * The result includes "type": "OCIndexSet" and "value": array of indices.
+ *
+ * @param set An OCIndexSetRef to serialize.
+ * @return A new cJSON object with type information, or cJSON null on failure.
+ *         The caller is responsible for managing the returned cJSON object.
+ * @ingroup OCIndexSet
+ */
+cJSON *OCIndexSetCreateJSONTyped(OCIndexSetRef set);
+
+/**
+ * @brief Creates an OCIndexSet from typed JSON representation.
+ *
+ * Deserializes a JSON object created by OCIndexSetCreateJSONTyped back into an OCIndexSet.
+ * Expects a JSON object with "type": "OCIndexSet" and "value": array of numeric indices.
+ *
+ * @param json A cJSON object with "type": "OCIndexSet" and "value" array.
+ * @return A new OCIndexSetRef on success, or NULL on failure.
+ * @ingroup OCIndexSet
+ */
+OCIndexSetRef OCIndexSetCreateFromJSONTyped(cJSON *json);
 /**
  * @brief Logs the contents of the set to stderr for debugging.
  *

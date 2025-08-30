@@ -59,8 +59,9 @@ OCNumberType OCNumberTypeFromName(const char *name) {
     return kOCNumberTypeInvalid;  // Unrecognized name
 }
 OCTypeID OCNumberGetTypeID(void) {
-    if (kOCNumberID == kOCNotATypeID)
-        kOCNumberID = OCRegisterType("OCNumber");
+    if (kOCNumberID == kOCNotATypeID) {
+        kOCNumberID = OCRegisterType("OCNumber", (OCTypeRef (*)(cJSON *))OCNumberCreateFromJSONTyped);
+    }
     return kOCNumberID;
 }
 static bool impl_OCNumberEqual(const void *a_, const void *b_) {
@@ -211,6 +212,14 @@ static cJSON *
 impl_OCNumberCopyJSON(const void *obj) {
     return OCNumberCreateJSON((OCNumberRef)obj);
 }
+
+/// @internal
+/// Serialize an OCNumber with type information into cJSON.
+static cJSON *
+impl_OCNumberCopyJSONTyped(const void *obj) {
+    return OCNumberCreateJSONTyped((OCNumberRef)obj);
+}
+
 static void *impl_OCNumberDeepCopy(const void *obj) {
     const OCNumberRef src = (const OCNumberRef)obj;
     if (!src) return NULL;
@@ -228,6 +237,7 @@ static struct impl_OCNumber *OCNumberAllocate(void) {
         impl_OCNumberEqual,
         impl_OCNumberCopyFormattingDesc,
         impl_OCNumberCopyJSON,
+        impl_OCNumberCopyJSONTyped,
         impl_OCNumberDeepCopy,
         impl_OCNumberDeepCopyMutable);
 }
@@ -588,6 +598,138 @@ OCNumberRef OCNumberCreateFromJSON(cJSON *json, OCNumberType type) {
     if (!valueStr) return NULL;
     return OCNumberCreateWithStringValue(type, valueStr);
 }
+
+cJSON *OCNumberCreateJSONTyped(OCNumberRef number) {
+    if (!number) return cJSON_CreateNull();
+    
+    cJSON *entry = cJSON_CreateObject();
+    cJSON_AddStringToObject(entry, "type", "OCNumber");
+    
+    const char *subTypeName = OCNumberGetTypeName(number->type);
+    cJSON_AddStringToObject(entry, "subtype", subTypeName ? subTypeName : "unknown");
+    
+    // For most numeric types, we can use the JSON number representation
+    // For complex numbers, we use string representation
+    switch (number->type) {
+        case kOCNumberUInt8Type:
+            cJSON_AddNumberToObject(entry, "value", number->value.uint8Value);
+            break;
+        case kOCNumberSInt8Type:
+            cJSON_AddNumberToObject(entry, "value", number->value.int8Value);
+            break;
+        case kOCNumberUInt16Type:
+            cJSON_AddNumberToObject(entry, "value", number->value.uint16Value);
+            break;
+        case kOCNumberSInt16Type:
+            cJSON_AddNumberToObject(entry, "value", number->value.int16Value);
+            break;
+        case kOCNumberUInt32Type:
+            cJSON_AddNumberToObject(entry, "value", number->value.uint32Value);
+            break;
+        case kOCNumberSInt32Type:
+            cJSON_AddNumberToObject(entry, "value", number->value.int32Value);
+            break;
+        case kOCNumberUInt64Type:
+            cJSON_AddNumberToObject(entry, "value", (double)number->value.uint64Value);
+            break;
+        case kOCNumberSInt64Type:
+            cJSON_AddNumberToObject(entry, "value", (double)number->value.int64Value);
+            break;
+        case kOCNumberFloat32Type:
+            cJSON_AddNumberToObject(entry, "value", number->value.floatValue);
+            break;
+        case kOCNumberFloat64Type:
+            cJSON_AddNumberToObject(entry, "value", number->value.doubleValue);
+            break;
+        case kOCNumberComplex64Type:
+        case kOCNumberComplex128Type: {
+            // Complex numbers: serialize as string
+            OCStringRef valueStr = OCNumberCreateStringValue(number);
+            if (!valueStr) {
+                fprintf(stderr, "OCNumberCreateJSONTyped: Failed to convert OCNumber to string.\n");
+                cJSON_AddStringToObject(entry, "value", "");
+            } else {
+                const char *s = OCStringGetCString(valueStr);
+                cJSON_AddStringToObject(entry, "value", s ? s : "");
+                OCRelease(valueStr);
+            }
+            break;
+        }
+        default:
+            cJSON_AddStringToObject(entry, "value", "");
+            break;
+    }
+    
+    return entry;
+}
+
+OCNumberRef OCNumberCreateFromJSONTyped(cJSON *json) {
+    if (!json || !cJSON_IsObject(json)) return NULL;
+    
+    cJSON *type = cJSON_GetObjectItem(json, "type");
+    cJSON *subtype = cJSON_GetObjectItem(json, "subtype");
+    cJSON *value = cJSON_GetObjectItem(json, "value");
+    
+    if (!cJSON_IsString(type) || !cJSON_IsString(subtype) || !value) return NULL;
+    
+    const char *typeName = cJSON_GetStringValue(type);
+    const char *subtypeName = cJSON_GetStringValue(subtype);
+    if (!typeName || !subtypeName || strcmp(typeName, "OCNumber") != 0) return NULL;
+    
+    OCNumberType numberType = OCNumberTypeFromName(subtypeName);
+    if (numberType == kOCNumberTypeInvalid) return NULL;
+    
+    // Handle complex numbers (stored as strings)
+    if (numberType == kOCNumberComplex64Type || numberType == kOCNumberComplex128Type) {
+        if (!cJSON_IsString(value)) return NULL;
+        const char *valueStr = cJSON_GetStringValue(value);
+        if (!valueStr) return NULL;
+        return OCNumberCreateWithStringValue(numberType, valueStr);
+    }
+    
+    // Handle regular numeric types
+    if (!cJSON_IsNumber(value)) return NULL;
+    double numValue = cJSON_GetNumberValue(value);
+    
+    union __Number val;
+    switch (numberType) {
+        case kOCNumberUInt8Type:
+            val.uint8Value = (uint8_t)numValue;
+            break;
+        case kOCNumberSInt8Type:
+            val.int8Value = (int8_t)numValue;
+            break;
+        case kOCNumberUInt16Type:
+            val.uint16Value = (uint16_t)numValue;
+            break;
+        case kOCNumberSInt16Type:
+            val.int16Value = (int16_t)numValue;
+            break;
+        case kOCNumberUInt32Type:
+            val.uint32Value = (uint32_t)numValue;
+            break;
+        case kOCNumberSInt32Type:
+            val.int32Value = (int32_t)numValue;
+            break;
+        case kOCNumberUInt64Type:
+            val.uint64Value = (uint64_t)numValue;
+            break;
+        case kOCNumberSInt64Type:
+            val.int64Value = (int64_t)numValue;
+            break;
+        case kOCNumberFloat32Type:
+            val.floatValue = (float)numValue;
+            break;
+        case kOCNumberFloat64Type:
+            val.doubleValue = numValue;
+            break;
+        default:
+            return NULL;
+    }
+    
+    return OCNumberCreate(numberType, &val);
+}
+
 // ============================================================================
 // Try-get Accessor Implementations
 // ============================================================================

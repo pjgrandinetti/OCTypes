@@ -249,6 +249,7 @@ static cJSON *
 impl_OCStringCopyJSON(const void *obj) {
     return OCStringCreateJSON((OCStringRef)obj);
 }
+
 static void *impl_OCStringDeepCopy(const void *obj) {
     OCStringRef src = (OCStringRef)obj;
     if (!src) return NULL;
@@ -260,7 +261,7 @@ static void *impl_OCStringDeepCopyMutable(const void *obj) {
     return OCStringCreateMutableCopy(src);  // Returns OCMutableStringRef
 }
 OCTypeID OCStringGetTypeID(void) {
-    if (kOCStringID == kOCNotATypeID) kOCStringID = OCRegisterType("OCString");
+    if (kOCStringID == kOCNotATypeID) kOCStringID = OCRegisterType("OCString", (OCTypeRef (*)(cJSON *))OCStringCreateFromJSON);
     return kOCStringID;
 }
 static struct impl_OCString *OCStringAllocate() {
@@ -269,6 +270,7 @@ static struct impl_OCString *OCStringAllocate() {
                                             impl_OCStringFinalize,
                                             impl_OCStringEqual,
                                             impl_OCStringCopyFormattingDesc,
+                                            impl_OCStringCopyJSON,
                                             impl_OCStringCopyJSON,
                                             impl_OCStringDeepCopy,
                                             impl_OCStringDeepCopyMutable);

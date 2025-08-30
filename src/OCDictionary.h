@@ -198,5 +198,25 @@ OCStringRef OCDictionaryCopyFormattingDesc(OCTypeRef cf);
  * @ingroup OCDictionary
  */
 cJSON *OCDictionaryCreateJSON(OCDictionaryRef dict);
+
+/**
+ * @brief Creates a typed cJSON object from an OCDictionary.
+ *
+ * @param dict A valid OCDictionaryRef.
+ * @return A new cJSON object with "type" and "value" fields,
+ *         or NULL on failure. The caller is responsible for managing
+ *         the returned cJSON object.
+ */
+cJSON *OCDictionaryCreateJSONTyped(OCDictionaryRef dict);
+
+/**
+ * @brief Creates an OCDictionary from a typed cJSON object.
+ *
+ * @param json A cJSON object with "type": "OCDictionary" and 
+ *             "value": {object with key-value pairs}.
+ * @return A new OCDictionaryRef, or NULL on failure.
+ *         The caller is responsible for releasing the returned dictionary.
+ */
+OCDictionaryRef OCDictionaryCreateFromJSONTyped(cJSON *json);
 /** @} */
 #endif /* OCDICTIONARY_H */

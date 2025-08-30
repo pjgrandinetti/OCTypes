@@ -196,6 +196,26 @@ OCIndexArrayRef OCIndexArrayCreateFromJSON(cJSON *json);
  *         The caller is responsible for managing the returned cJSON object.
  */
 cJSON *OCIndexArrayCreateJSON(const void *obj);
+
+/**
+ * @brief Creates a typed cJSON object from an OCIndexArray.
+ *
+ * @param array A valid OCIndexArrayRef.
+ * @return A new cJSON object with "type" and "value" fields,
+ *         or NULL on failure. The caller is responsible for managing
+ *         the returned cJSON object.
+ */
+cJSON *OCIndexArrayCreateJSONTyped(OCIndexArrayRef array);
+
+/**
+ * @brief Creates an OCIndexArray from a typed cJSON object.
+ *
+ * @param json A cJSON object with "type": "OCIndexArray" and 
+ *             "value": [array of numbers].
+ * @return A new OCIndexArrayRef, or NULL on failure.
+ *         The caller is responsible for releasing the returned array.
+ */
+OCIndexArrayRef OCIndexArrayCreateFromJSONTyped(cJSON *json);
 /**
  * @brief Logs the contents of the array to stderr, for debugging.
  *

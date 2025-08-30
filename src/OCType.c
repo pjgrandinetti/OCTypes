@@ -15,6 +15,7 @@
 static bool ocTypesShutdownCalled = false;
 static char **typeIDTable = NULL;
 static OCTypeID typeIDTableCount = 0;
+static OCTypeRef (*createFromJSONTypedTable[256])(cJSON *) = {NULL};
 void cleanupTypeIDTable(void) {
     if (typeIDTable) {
         for (OCTypeID i = 0; i < typeIDTableCount; i++) {
@@ -23,6 +24,10 @@ void cleanupTypeIDTable(void) {
         free(typeIDTable);
         typeIDTable = NULL;
         typeIDTableCount = 0;
+    }
+    // Clear the function pointer table
+    for (int i = 0; i < 256; i++) {
+        createFromJSONTypedTable[i] = NULL;
     }
 }
 int OCTypeIDTableGetCount(void) {
@@ -103,8 +108,14 @@ bool OCTypeEqual(const void *theType1, const void *theType2) {
     }
     return typeRef1->base.equal(theType1, theType2);
 }
-// Registers a new type and returns its unique type ID.
-OCTypeID OCRegisterType(const char *typeName) {
+/**
+ * @brief Registers a new OCType with the system and optional JSON factory.
+ * @param typeName A null-terminated C string representing the type name.
+ * @param factory Optional function pointer to create instances from typed JSON.
+ * @return The OCTypeID assigned, or kOCNotATypeID on failure.
+ * @ingroup OCType
+ */
+OCTypeID OCRegisterType(const char *typeName, OCTypeRef (*factory)(cJSON *)) {
     // Return an invalid type ID if typeName is NULL.
     if (NULL == typeName) {
         return kOCNotATypeID;
@@ -120,6 +131,10 @@ OCTypeID OCRegisterType(const char *typeName) {
     // Check if the type name is already registered.
     for (uint32_t index = 0; index < typeIDTableCount; index++) {
         if (strcmp(typeIDTable[index], typeName) == 0) {
+            // Update the factory if provided
+            if (factory) {
+                createFromJSONTypedTable[index] = factory;
+            }
             return index + 1;
         }
     }
@@ -131,11 +146,18 @@ OCTypeID OCRegisterType(const char *typeName) {
             exit(EXIT_FAILURE);  // Exit if memory allocation fails
         }
         strcpy(typeIDTable[typeIDTableCount], typeName);
+        
+        // Register the factory function if provided
+        if (factory) {
+            createFromJSONTypedTable[typeIDTableCount] = factory;
+        }
+        
         typeIDTableCount++;
         return typeIDTableCount;
     }
     return kOCNotATypeID;
 }
+
 void OCRelease(const void *ptr) {
     struct impl_OCType *theType = (struct impl_OCType *)ptr;
     if (NULL == theType) return;
@@ -202,6 +224,44 @@ cJSON *OCTypeCopyJSON(OCTypeRef obj) {
     }
     return b->copyJSON(obj);
 }
+
+cJSON *OCTypeCopyJSONTyped(OCTypeRef obj) {
+    if (!obj) return cJSON_CreateNull();
+    OCBase *b = (OCBase *)obj;
+    if (!b->copyJSONTyped) {
+        return cJSON_CreateNull();
+    }
+    return b->copyJSONTyped(obj);
+}
+
+OCTypeRef OCTypeCreateFromJSONTyped(cJSON *json) {
+    if (!json) return NULL;
+    
+    // Handle native JSON types directly (no type wrapper needed)
+    if (cJSON_IsString(json)) return (OCTypeRef)OCStringCreateFromJSON(json);
+    if (cJSON_IsBool(json)) return (OCTypeRef)OCBooleanCreateFromJSON(json);
+    if (cJSON_IsNumber(json)) return (OCTypeRef)OCNumberCreateFromJSON(json, kOCNumberFloat64Type);
+    
+    // Handle wrapped types with type information
+    if (!cJSON_IsObject(json)) return NULL;
+    
+    cJSON *type = cJSON_GetObjectItem(json, "type");
+    const char *typeName = cJSON_IsString(type) ? cJSON_GetStringValue(type) : NULL;
+    if (!typeName) return NULL;
+    
+    // Look up the type in our registry and call the registered factory function
+    for (OCTypeID i = 0; i < typeIDTableCount; i++) {
+        if (typeIDTable[i] && strcmp(typeIDTable[i], typeName) == 0) {
+            OCTypeRef (*factory)(cJSON *) = createFromJSONTypedTable[i];
+            if (factory) return factory(json);
+            fprintf(stderr, "OCTypeCreateFromJSONTyped: No factory registered for type '%s'\n", typeName);
+            return NULL;
+        }
+    }
+    
+    fprintf(stderr, "OCTypeCreateFromJSONTyped: Unknown type '%s'\n", typeName);
+    return NULL;
+}
 void *OCTypeDeepCopy(const void *obj) {
     if (!obj) return NULL;
     const struct impl_OCType *type = (const struct impl_OCType *)obj;
@@ -240,6 +300,7 @@ void *OCTypeAllocate(size_t size,
                      bool (*equal)(const void *, const void *),
                      OCStringRef (*copyDesc)(OCTypeRef),
                      cJSON *(*copyJSON)(const void *),
+                     cJSON *(*copyJSONTyped)(const void *),
                      void *(*copyDeep)(const void *),
                      void *(*copyDeepMutable)(const void *)) {
     struct impl_OCType *object = calloc(1, size);
@@ -253,11 +314,13 @@ void *OCTypeAllocate(size_t size,
     object->base.equal = equal;
     object->base.copyFormattingDesc = copyDesc;
     object->base.copyJSON = copyJSON;
+    object->base.copyJSONTyped = copyJSONTyped;
     object->base.copyDeep = copyDeep;
     object->base.copyDeepMutable = copyDeepMutable;
     object->base.flags.static_instance = false;
     object->base.flags.finalized = false;
     object->base.flags.tracked = true;
+    
     impl_OCTrack(object);
     return object;
 }
