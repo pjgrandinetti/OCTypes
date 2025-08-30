@@ -629,12 +629,20 @@ cJSON *OCNumberCreateJSONTyped(OCNumberRef number) {
         case kOCNumberSInt32Type:
             cJSON_AddNumberToObject(entry, "value", number->value.int32Value);
             break;
-        case kOCNumberUInt64Type:
-            cJSON_AddNumberToObject(entry, "value", (double)number->value.uint64Value);
+        case kOCNumberUInt64Type: {
+            // Use string representation to preserve precision
+            char buffer[32];
+            snprintf(buffer, sizeof(buffer), "%" PRIu64, number->value.uint64Value);
+            cJSON_AddStringToObject(entry, "value", buffer);
             break;
-        case kOCNumberSInt64Type:
-            cJSON_AddNumberToObject(entry, "value", (double)number->value.int64Value);
+        }
+        case kOCNumberSInt64Type: {
+            // Use string representation to preserve precision
+            char buffer[32];
+            snprintf(buffer, sizeof(buffer), "%" PRId64, number->value.int64Value);
+            cJSON_AddStringToObject(entry, "value", buffer);
             break;
+        }
         case kOCNumberFloat32Type:
             cJSON_AddNumberToObject(entry, "value", number->value.floatValue);
             break;
@@ -679,6 +687,24 @@ OCNumberRef OCNumberCreateFromJSONTyped(cJSON *json) {
     OCNumberType numberType = OCNumberTypeFromName(subtypeName);
     if (numberType == kOCNumberTypeInvalid) return NULL;
 
+    // Handle 64-bit integers (stored as strings for precision)
+    if (numberType == kOCNumberUInt64Type || numberType == kOCNumberSInt64Type) {
+        if (!cJSON_IsString(value)) return NULL;
+        const char *valueStr = cJSON_GetStringValue(value);
+        if (!valueStr) return NULL;
+
+        union __Number val;
+        char *endptr;
+        if (numberType == kOCNumberUInt64Type) {
+            val.uint64Value = strtoull(valueStr, &endptr, 10);
+            if (*endptr != '\0') return NULL; // Invalid number
+        } else {
+            val.int64Value = strtoll(valueStr, &endptr, 10);
+            if (*endptr != '\0') return NULL; // Invalid number
+        }
+        return OCNumberCreate(numberType, &val);
+    }
+
     // Handle complex numbers (stored as strings)
     if (numberType == kOCNumberComplex64Type || numberType == kOCNumberComplex128Type) {
         if (!cJSON_IsString(value)) return NULL;
@@ -710,12 +736,6 @@ OCNumberRef OCNumberCreateFromJSONTyped(cJSON *json) {
             break;
         case kOCNumberSInt32Type:
             val.int32Value = (int32_t)numValue;
-            break;
-        case kOCNumberUInt64Type:
-            val.uint64Value = (uint64_t)numValue;
-            break;
-        case kOCNumberSInt64Type:
-            val.int64Value = (int64_t)numValue;
             break;
         case kOCNumberFloat32Type:
             val.floatValue = (float)numValue;
