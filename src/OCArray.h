@@ -7,8 +7,10 @@
  */
 #ifndef OCArray_h
 #define OCArray_h
+
 #include "OCType.h"
 #include "cJSON.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -247,6 +249,35 @@ OCArrayRef OCArrayCreateWithArray(OCArrayRef array);
  * @ingroup OCArray
  */
 cJSON *OCArrayCreateJSON(OCArrayRef array);
+
+/**
+ * @brief Serializes an OCArray to a self-describing JSON object.
+ *
+ * Creates a JSON object that contains type information and the array data.
+ * Each element is serialized using typed JSON serialization when available.
+ * The resulting JSON object has a "type" field set to "OCArray" and a "data"
+ * field containing the array elements.
+ *
+ * @param array A valid OCArrayRef.
+ * @return A new self-describing cJSON object on success, or cJSON null on failure.
+ *         The caller is responsible for managing the returned cJSON object.
+ * @ingroup OCArray
+ */
+cJSON *OCArrayCreateJSONTyped(OCArrayRef array);
+
+/**
+ * @brief Create an OCArrayRef from a self-describing JSON object.
+ *
+ * Parses a JSON object that contains type information and array data.
+ * The JSON object should have a "type" field set to "OCArray" and a "data"
+ * field containing the array elements. Elements are deserialized recursively
+ * when possible.
+ *
+ * @param json A cJSON object with type and data fields.
+ * @return A newly allocated OCArrayRef, or NULL on failure.
+ * @ingroup OCArray
+ */
+OCArrayRef OCArrayCreateFromJSONTyped(cJSON *json);
 /**
  * @brief Returns the callback structure associated with the array.
  *

@@ -249,6 +249,7 @@ static cJSON *
 impl_OCStringCopyJSON(const void *obj) {
     return OCStringCreateJSON((OCStringRef)obj);
 }
+
 static void *impl_OCStringDeepCopy(const void *obj) {
     OCStringRef src = (OCStringRef)obj;
     if (!src) return NULL;
@@ -260,7 +261,7 @@ static void *impl_OCStringDeepCopyMutable(const void *obj) {
     return OCStringCreateMutableCopy(src);  // Returns OCMutableStringRef
 }
 OCTypeID OCStringGetTypeID(void) {
-    if (kOCStringID == kOCNotATypeID) kOCStringID = OCRegisterType("OCString");
+    if (kOCStringID == kOCNotATypeID) kOCStringID = OCRegisterType("OCString", (OCTypeRef (*)(cJSON *))OCStringCreateFromJSON);
     return kOCStringID;
 }
 static struct impl_OCString *OCStringAllocate() {
@@ -269,6 +270,7 @@ static struct impl_OCString *OCStringAllocate() {
                                             impl_OCStringFinalize,
                                             impl_OCStringEqual,
                                             impl_OCStringCopyFormattingDesc,
+                                            impl_OCStringCopyJSON,
                                             impl_OCStringCopyJSON,
                                             impl_OCStringDeepCopy,
                                             impl_OCStringDeepCopyMutable);
@@ -1014,12 +1016,12 @@ static void OCStringAppendFormatWithArgumentsSafe(
     const char *f = format->string;
     va_list arglist;
     va_copy(arglist, args);
-    
+
     #ifdef _WIN32
     // Set up signal handler for Windows va_arg protection
     void (*old_handler)(int) = signal(SIGSEGV, va_arg_signal_handler);
     va_arg_segfault = 0;
-    
+
     if (setjmp(va_arg_jmpbuf) != 0) {
         // We caught a segfault from va_arg - insufficient arguments
         fprintf(stderr, "[OCString] WARNING: Caught segfault due to insufficient arguments\n");
@@ -1029,7 +1031,7 @@ static void OCStringAppendFormatWithArgumentsSafe(
         return;
     }
     #endif
-    
+
     while (*f) {
         if (f[0] == '%' && f[1] == '@') {
             if (arg_index >= max_args) {
@@ -1124,12 +1126,12 @@ static void OCStringAppendFormatWithArgumentsSafe(
             f++;
         }
     }
-    
+
     #ifdef _WIN32
     // Restore original signal handler
     signal(SIGSEGV, old_handler);
     #endif
-    
+
     va_end(arglist);
 }
 // Helper to count how many format arguments are expected (including %@)

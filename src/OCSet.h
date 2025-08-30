@@ -140,6 +140,31 @@ bool OCSetEqual(OCSetRef set1, OCSetRef set2);
  * @ingroup OCSet
  */
 cJSON *OCSetCreateJSON(OCSetRef set);
+
+/**
+ * @brief Creates a typed JSON object representation of an OCSet.
+ *
+ * Each element in the set is serialized using typed JSON serialization.
+ * The result includes type information for proper deserialization.
+ *
+ * @param set An OCSetRef to serialize.
+ * @return A new cJSON object with "type": "OCSet" and "value" array, or cJSON null on failure.
+ *         The caller is responsible for managing the returned cJSON object.
+ * @ingroup OCSet
+ */
+cJSON *OCSetCreateJSONTyped(OCSetRef set);
+
+/**
+ * @brief Creates an OCSet from typed JSON representation.
+ *
+ * Deserializes a JSON object created by OCSetCreateJSONTyped back into an OCSet.
+ * Uses the global type registry to deserialize each element.
+ *
+ * @param json A cJSON object with "type": "OCSet" and "value" array.
+ * @return A new OCSetRef on success, or NULL on failure.
+ * @ingroup OCSet
+ */
+OCSetRef OCSetCreateFromJSONTyped(cJSON *json);
 /**
  * @brief Logs the contents of the set to stderr.
  *

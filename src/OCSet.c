@@ -6,6 +6,7 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "OCTypes.h"
 static OCTypeID kOCSetID = kOCNotATypeID;
 struct impl_OCSet {
@@ -72,6 +73,11 @@ impl_OCSetCopyJSON(const void *obj) {
     }
     return arr;
 }
+
+static cJSON *
+impl_OCSetCopyJSONTyped(const void *obj) {
+    return OCSetCreateJSONTyped((OCSetRef)obj);
+}
 static void *impl_OCSetDeepCopy(const void *obj) {
     OCSetRef src = (OCSetRef)obj;
     if (!src || !src->elements) return NULL;
@@ -96,7 +102,7 @@ static void *impl_OCSetDeepCopyMutable(const void *obj) {
 }
 OCTypeID OCSetGetTypeID(void) {
     if (kOCSetID == kOCNotATypeID) {
-        kOCSetID = OCRegisterType("OCSet");
+        kOCSetID = OCRegisterType("OCSet", (OCTypeRef (*)(cJSON *))OCSetCreateFromJSONTyped);
     }
     return kOCSetID;
 }
@@ -108,6 +114,7 @@ static struct impl_OCSet *OCSetAllocate(void) {
         impl_OCSetEqual,
         impl_OCSetCopyFormattingDesc,
         impl_OCSetCopyJSON,
+        impl_OCSetCopyJSONTyped,
         impl_OCSetDeepCopy,
         impl_OCSetDeepCopyMutable);
     set->elements = NULL;
@@ -185,6 +192,68 @@ cJSON *OCSetCreateJSON(OCSetRef set) {
         cJSON_AddItemToArray(arr, item);
     }
     return arr;
+}
+
+cJSON *OCSetCreateJSONTyped(OCSetRef set) {
+    if (!set) return cJSON_CreateNull();
+
+    cJSON *entry = cJSON_CreateObject();
+    cJSON_AddStringToObject(entry, "type", "OCSet");
+
+    cJSON *arr = cJSON_CreateArray();
+    OCArrayRef elems = set->elements;
+    OCIndex count = OCArrayGetCount(elems);
+    for (OCIndex i = 0; i < count; i++) {
+        OCTypeRef v = (OCTypeRef)OCArrayGetValueAtIndex(elems, i);
+
+        // Use the global typed JSON serialization function
+        cJSON *item = OCTypeCopyJSONTyped(v);
+
+        if (!item) {
+            fprintf(stderr, "OCSetCreateJSONTyped: Failed to serialize set element at index %llu. Using null.\n", (unsigned long long)i);
+            item = cJSON_CreateNull();
+        }
+        cJSON_AddItemToArray(arr, item);
+    }
+
+    cJSON_AddItemToObject(entry, "value", arr);
+    return entry;
+}
+
+OCSetRef OCSetCreateFromJSONTyped(cJSON *json) {
+    if (!json || !cJSON_IsObject(json)) return NULL;
+
+    cJSON *type = cJSON_GetObjectItem(json, "type");
+    cJSON *value = cJSON_GetObjectItem(json, "value");
+
+    if (!cJSON_IsString(type) || !cJSON_IsArray(value)) return NULL;
+
+    const char *typeName = cJSON_GetStringValue(type);
+    if (!typeName || strcmp(typeName, "OCSet") != 0) return NULL;
+
+    int arraySize = cJSON_GetArraySize(value);
+    if (arraySize < 0) return NULL;
+
+    // Create mutable set to build up the result
+    OCMutableSetRef result = OCSetCreateMutable(arraySize);
+    if (!result) return NULL;
+
+    for (int i = 0; i < arraySize; i++) {
+        cJSON *elem = cJSON_GetArrayItem(value, i);
+
+        // Use the global factory function to deserialize each element
+        OCTypeRef obj = OCTypeCreateFromJSONTyped(elem);
+
+        if (obj) {
+            OCSetAddValue(result, obj);
+            OCRelease(obj); // OCSetAddValue retains
+        } else {
+            fprintf(stderr, "OCSetCreateFromJSONTyped: Cannot deserialize element at index %d\n", i);
+            // Skip undeserializable elements
+        }
+    }
+
+    return result;
 }
 void OCSetShow(OCSetRef theSet) {
     if (!theSet) return;

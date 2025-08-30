@@ -168,6 +168,35 @@ cJSON *OCNumberCreateJSON(OCNumberRef number);
  * @ingroup OCNumber
  */
 OCNumberRef OCNumberCreateFromJSON(cJSON *json, OCNumberType type);
+
+/**
+ * @brief Serializes an OCNumber to a self-describing JSON object.
+ *
+ * Creates a JSON object that contains type information and the numeric value.
+ * The resulting JSON object has a "type" field set to "OCNumber", a "subtype"
+ * field indicating the specific OCNumberType, and a "value" field containing
+ * the actual numeric data.
+ *
+ * @param number A valid OCNumberRef.
+ * @return A new self-describing cJSON object on success, or cJSON null on failure.
+ *         The caller is responsible for managing the returned cJSON object.
+ * @ingroup OCNumber
+ */
+cJSON *OCNumberCreateJSONTyped(OCNumberRef number);
+
+/**
+ * @brief Create an OCNumberRef from a self-describing JSON object.
+ *
+ * Parses a JSON object that contains type information and a numeric value.
+ * The JSON object should have a "type" field set to "OCNumber", a "subtype"
+ * field indicating the specific OCNumberType, and a "value" field containing
+ * the actual numeric data.
+ *
+ * @param json A cJSON object with type, subtype, and value fields.
+ * @return A newly allocated OCNumberRef, or NULL on failure.
+ * @ingroup OCNumber
+ */
+OCNumberRef OCNumberCreateFromJSONTyped(cJSON *json);
 /**
  * @name Convenience Constructors
  * Create OCNumberRefs for native types.

@@ -24,6 +24,7 @@
 #include "test_number.h"
 #include "test_string.h"
 #include "test_type.h"
+#include "test_json_typed.h"
 // Note: The OCStringCompareAdapter is now in test_array.c
 // Note: The extern declaration for raise_to_integer_power is now in test_math.h
 int main(int argc, const char* argv[]) {
@@ -101,6 +102,10 @@ int main(int argc, const char* argv[]) {
     if (!test_dictionary_write_simple()) failures++;
     if (!test_dictionary_write_empty()) failures++;
     if (!test_dictionary_write_error()) failures++;
+
+    // JSONTyped roundtrip tests
+    if (!runAllJSONTypedTests()) failures++;
+
     if (failures) {
         fprintf(stderr, "\n%d test(s) failed.\n", failures);
         OCAutoreleasePoolRelease(pool);

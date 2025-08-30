@@ -48,6 +48,7 @@ impl_OCBooleanCopyJSON(const void *cf) {
                ? cJSON_CreateTrue()
                : cJSON_CreateFalse();
 }
+
 static void *
 impl_OCBooleanDeepCopy(const void *cf) {
     // booleans are singletons, so “deep copy” is just the same object:
@@ -55,12 +56,13 @@ impl_OCBooleanDeepCopy(const void *cf) {
 }
 // Made _OCBooleanInitialize externally visible
 void _OCBooleanInitialize(void) {
-    kOCBooleanTypeID = OCRegisterType("OCBoolean");
+    kOCBooleanTypeID = OCRegisterType("OCBoolean", (OCTypeRef (*)(cJSON *))OCBooleanCreateFromJSON);
     impl_kOCBooleanTrue.base.typeID = kOCBooleanTypeID;
     impl_kOCBooleanTrue.base.finalize = impl_OCBooleanFinalize;
     impl_kOCBooleanTrue.base.equal = impl_OCBooleanEqual;
     impl_kOCBooleanTrue.base.copyFormattingDesc = impl_OCBooleanCopyFormattingDesc;
     impl_kOCBooleanTrue.base.copyJSON = impl_OCBooleanCopyJSON;
+    impl_kOCBooleanTrue.base.copyJSONTyped = impl_OCBooleanCopyJSON;
     impl_kOCBooleanTrue.base.copyDeep = impl_OCBooleanDeepCopy;
     impl_kOCBooleanTrue.base.copyDeepMutable = impl_OCBooleanDeepCopy;
     impl_kOCBooleanTrue.base.flags.finalized = false;
@@ -70,8 +72,9 @@ void _OCBooleanInitialize(void) {
     impl_kOCBooleanFalse.base.equal = impl_OCBooleanEqual;
     impl_kOCBooleanFalse.base.copyFormattingDesc = impl_OCBooleanCopyFormattingDesc;
     impl_kOCBooleanFalse.base.copyJSON = impl_OCBooleanCopyJSON;
-    impl_kOCBooleanTrue.base.copyDeep = impl_OCBooleanDeepCopy;
-    impl_kOCBooleanTrue.base.copyDeepMutable = impl_OCBooleanDeepCopy;
+    impl_kOCBooleanFalse.base.copyJSONTyped = impl_OCBooleanCopyJSON;
+    impl_kOCBooleanFalse.base.copyDeep = impl_OCBooleanDeepCopy;
+    impl_kOCBooleanFalse.base.copyDeepMutable = impl_OCBooleanDeepCopy;
     impl_kOCBooleanFalse.base.flags.finalized = false;
     OCTypeSetStaticInstance(kOCBooleanFalse, true);
 }

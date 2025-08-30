@@ -14,7 +14,7 @@ struct impl_OCDictionary {
 };
 OCTypeID OCDictionaryGetTypeID(void) {
     if (kOCDictionaryID == kOCNotATypeID)
-        kOCDictionaryID = OCRegisterType("OCDictionary");
+        kOCDictionaryID = OCRegisterType("OCDictionary", (OCTypeRef (*)(cJSON *))OCDictionaryCreateFromJSONTyped);
     return kOCDictionaryID;
 }
 static bool impl_OCDictionaryEqual(const void *theType1, const void *theType2) {
@@ -131,6 +131,11 @@ static cJSON *
 impl_OCDictionaryCopyJSON(const void *obj) {
     return OCDictionaryCreateJSON((OCDictionaryRef)obj);
 }
+
+static cJSON *
+impl_OCDictionaryCopyJSONTyped(const void *obj) {
+    return OCDictionaryCreateJSONTyped((OCDictionaryRef)obj);
+}
 static struct impl_OCDictionary *OCDictionaryAllocate() {
     struct impl_OCDictionary *dict = OCTypeAlloc(
         struct impl_OCDictionary,
@@ -139,6 +144,7 @@ static struct impl_OCDictionary *OCDictionaryAllocate() {
         impl_OCDictionaryEqual,
         OCDictionaryCopyFormattingDesc,
         impl_OCDictionaryCopyJSON,
+        impl_OCDictionaryCopyJSONTyped,
         impl_OCDictionaryDeepCopy,
         impl_OCDictionaryDeepCopyMutable);
     return dict;
@@ -388,4 +394,72 @@ cJSON *OCDictionaryCreateJSON(OCDictionaryRef dict) {
     }
     OCRelease(keys);
     return root;
+}
+
+cJSON *OCDictionaryCreateJSONTyped(OCDictionaryRef dict) {
+    if (!dict) return cJSON_CreateNull();
+
+    cJSON *entry = cJSON_CreateObject();
+    cJSON_AddStringToObject(entry, "type", "OCDictionary");
+
+    cJSON *root = cJSON_CreateObject();
+    OCArrayRef keys = OCDictionaryCreateArrayWithAllKeys(dict);
+    uint64_t n = OCArrayGetCount(keys);
+    for (uint64_t i = 0; i < n; i++) {
+        OCStringRef key = OCArrayGetValueAtIndex(keys, i);
+        const char *k = OCStringGetCString(key);
+        OCTypeRef v = (OCTypeRef)OCDictionaryGetValue(dict, key);
+        cJSON *child = OCTypeCopyJSONTyped(v);
+        if (!child) {
+            fprintf(stderr, "OCDictionaryCreateJSONTyped: Failed to serialize value for key '%s'. Using null.\n", k);
+            child = cJSON_CreateNull();
+        }
+        cJSON_AddItemToObject(root, k, child);
+    }
+    OCRelease(keys);
+
+    cJSON_AddItemToObject(entry, "value", root);
+    return entry;
+}
+
+OCDictionaryRef OCDictionaryCreateFromJSONTyped(cJSON *json) {
+    if (!json || !cJSON_IsObject(json)) return NULL;
+
+    cJSON *type = cJSON_GetObjectItem(json, "type");
+    cJSON *value = cJSON_GetObjectItem(json, "value");
+
+    if (!cJSON_IsString(type) || !cJSON_IsObject(value)) return NULL;
+
+    const char *typeName = cJSON_GetStringValue(type);
+    if (!typeName || strcmp(typeName, "OCDictionary") != 0) return NULL;
+
+    OCMutableDictionaryRef result = OCDictionaryCreateMutable(0);
+    if (!result) return NULL;
+
+    cJSON *item = NULL;
+    cJSON_ArrayForEach(item, value) {
+        if (!item->string) {
+            fprintf(stderr, "OCDictionaryCreateFromJSONTyped: Invalid key in object\n");
+            continue;
+        }
+
+        OCStringRef key = OCStringCreateWithCString(item->string);
+        if (!key) {
+            fprintf(stderr, "OCDictionaryCreateFromJSONTyped: Failed to create key string\n");
+            continue;
+        }
+
+        OCTypeRef val = OCTypeCreateFromJSONTyped(item);
+        if (!val) {
+            fprintf(stderr, "OCDictionaryCreateFromJSONTyped: Failed to deserialize value for key '%s'\n", item->string);
+            OCRelease(key);
+            continue;
+        }
+
+        OCDictionarySetValue(result, key, val);
+        OCRelease(key);
+        OCRelease(val);
+    }
+
+    return result;
 }

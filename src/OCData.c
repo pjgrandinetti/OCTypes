@@ -22,7 +22,9 @@ struct impl_OCData {
     uint64_t capacity;
 };
 OCTypeID OCDataGetTypeID(void) {
-    if (kOCDataID == kOCNotATypeID) kOCDataID = OCRegisterType("OCData");
+    if (kOCDataID == kOCNotATypeID) {
+        kOCDataID = OCRegisterType("OCData", (OCTypeRef (*)(cJSON *))OCDataCreateFromJSONTyped);
+    }
     return kOCDataID;
 }
 static bool impl_OCDataEqual(const void *a_, const void *b_) {
@@ -83,6 +85,12 @@ static cJSON *
 impl_OCDataCopyJSON(const void *obj) {
     return OCDataCreateJSON((OCDataRef)obj);
 }
+
+static cJSON *
+impl_OCDataCopyJSONTyped(const void *obj) {
+    return OCDataCreateJSONTyped((OCDataRef)obj);
+}
+
 static void impl_OCDataFinalize(const void *obj) {
     OCDataRef data = (OCDataRef)obj;
     if (data->bytes) free(data->bytes);
@@ -94,6 +102,7 @@ static struct impl_OCData *OCDataAllocate() {
                        impl_OCDataEqual,
                        OCDataCopyFormattingDesc,
                        impl_OCDataCopyJSON,
+                       impl_OCDataCopyJSONTyped,
                        impl_OCDataDeepCopy,
                        impl_OCDataDeepCopyMutable);
 }
@@ -420,6 +429,46 @@ cJSON *OCDataCreateJSON(OCDataRef data) {
 OCDataRef OCDataCreateFromJSON(cJSON *json) {
     if (!json || !cJSON_IsString(json)) return NULL;
     const char *encoded = json->valuestring;
+    if (!encoded) return NULL;
+    OCStringRef b64 = OCStringCreateWithCString(encoded);
+    if (!b64) return NULL;
+    OCDataRef result = OCDataCreateFromBase64EncodedString(b64);
+    OCRelease(b64);
+    return result;
+}
+
+
+cJSON *OCDataCreateJSONTyped(OCDataRef data) {
+    if (!data) return cJSON_CreateNull();
+    OCStringRef b64 = OCDataCreateBase64EncodedString(data, OCBase64EncodingOptionsNone);
+    if (!b64) {
+        fprintf(stderr, "OCDataCreateJSONTyped: Failed to Base64 encode OCData.\n");
+        return cJSON_CreateNull();
+    }
+    cJSON *entry = cJSON_CreateObject();
+    cJSON_AddStringToObject(entry, "type", "OCData");
+    cJSON_AddStringToObject(entry, "encoding", "base64");
+    cJSON_AddStringToObject(entry, "value", OCStringGetCString(b64));
+    OCRelease(b64);
+    return entry;
+}
+
+OCDataRef OCDataCreateFromJSONTyped(cJSON *json) {
+    if (!json || !cJSON_IsObject(json)) return NULL;
+    cJSON *type = cJSON_GetObjectItem(json, "type");
+    cJSON *encoding = cJSON_GetObjectItem(json, "encoding");
+    cJSON *value = cJSON_GetObjectItem(json, "value");
+    if (!cJSON_IsString(type) || !cJSON_IsString(value)) return NULL;
+    if (strcmp(type->valuestring, "OCData") != 0) return NULL;
+
+    // Check encoding - default to base64 if not specified for backward compatibility
+    if (encoding && cJSON_IsString(encoding)) {
+        if (strcmp(encoding->valuestring, "base64") != 0) {
+            return NULL; // Unsupported encoding
+        }
+    }
+
+    const char *encoded = value->valuestring;
     if (!encoded) return NULL;
     OCStringRef b64 = OCStringCreateWithCString(encoded);
     if (!b64) return NULL;

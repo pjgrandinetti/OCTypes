@@ -159,6 +159,12 @@ static cJSON *
 impl_OCArrayCopyJSON(const void *obj) {
     return OCArrayCreateJSON((OCArrayRef)obj);
 }
+
+static cJSON *
+impl_OCArrayCopyJSONTyped(const void *obj) {
+    return OCArrayCreateJSONTyped((OCArrayRef)obj);
+}
+
 static void impl_OCArrayFinalize(const void *theType) {
     if (NULL == theType) return;
     struct impl_OCArray *theArray = (struct impl_OCArray *)theType;
@@ -179,7 +185,9 @@ static void impl_OCArrayFinalize(const void *theType) {
     }
 }
 OCTypeID OCArrayGetTypeID(void) {
-    if (kOCArrayID == kOCNotATypeID) kOCArrayID = OCRegisterType("OCArray");
+    if (kOCArrayID == kOCNotATypeID) {
+        kOCArrayID = OCRegisterType("OCArray", (OCTypeRef (*)(cJSON *))OCArrayCreateFromJSONTyped);
+    }
     return kOCArrayID;
 }
 static struct impl_OCArray *OCArrayAllocate() {
@@ -190,6 +198,7 @@ static struct impl_OCArray *OCArrayAllocate() {
         impl_OCArrayEqual,
         OCArrayCopyFormattingDesc,
         impl_OCArrayCopyJSON,
+        impl_OCArrayCopyJSONTyped,
         impl_OCArrayDeepCopy,
         impl_OCArrayDeepCopyMutable  // ← NEW!
     );
@@ -272,6 +281,68 @@ cJSON *OCArrayCreateJSON(OCArrayRef array) {
     }
     return arr;
 }
+
+cJSON *OCArrayCreateJSONTyped(OCArrayRef array) {
+    if (!array) return cJSON_CreateNull();
+
+    cJSON *entry = cJSON_CreateObject();
+    cJSON_AddStringToObject(entry, "type", "OCArray");
+
+    cJSON *arr = cJSON_CreateArray();
+    uint64_t count = OCArrayGetCount(array);
+    for (uint64_t i = 0; i < count; i++) {
+        OCTypeRef elem = OCArrayGetValueAtIndex(array, i);
+
+        // Use the global typed JSON serialization function
+        cJSON *jsonVal = OCTypeCopyJSONTyped(elem);
+
+        if (!jsonVal) {
+            fprintf(stderr, "OCArrayCreateJSONTyped: Failed to serialize array element at index %llu. Using null.\n", (unsigned long long)i);
+            jsonVal = cJSON_CreateNull();
+        }
+        cJSON_AddItemToArray(arr, jsonVal);
+    }
+
+    cJSON_AddItemToObject(entry, "value", arr);
+    return entry;
+}
+
+OCArrayRef OCArrayCreateFromJSONTyped(cJSON *json) {
+    if (!json || !cJSON_IsObject(json)) return NULL;
+
+    cJSON *type = cJSON_GetObjectItem(json, "type");
+    cJSON *value = cJSON_GetObjectItem(json, "value");
+
+    if (!cJSON_IsString(type) || !cJSON_IsArray(value)) return NULL;
+
+    const char *typeName = cJSON_GetStringValue(type);
+    if (!typeName || strcmp(typeName, "OCArray") != 0) return NULL;
+
+    int arraySize = cJSON_GetArraySize(value);
+    if (arraySize < 0) return NULL;
+
+    // Create mutable array to build up the result
+    OCMutableArrayRef result = OCArrayCreateMutable(arraySize, &kOCTypeArrayCallBacks);
+    if (!result) return NULL;
+
+    for (int i = 0; i < arraySize; i++) {
+        cJSON *elem = cJSON_GetArrayItem(value, i);
+
+        // Use the global factory function to deserialize each element
+        OCTypeRef obj = OCTypeCreateFromJSONTyped(elem);
+
+        if (obj) {
+            OCArrayAppendValue(result, obj);
+            OCRelease(obj); // OCArrayAppendValue retains
+        } else {
+            fprintf(stderr, "OCArrayCreateFromJSONTyped: Cannot deserialize element at index %d\n", i);
+            // Skip undeserializable elements
+        }
+    }
+
+    return result;
+}
+
 const void *OCArrayGetValueAtIndex(OCArrayRef theArray, uint64_t index) {
     if (NULL == theArray) return NULL;
     if (index >= theArray->count) return NULL;
