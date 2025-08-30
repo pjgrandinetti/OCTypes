@@ -284,53 +284,53 @@ cJSON *OCArrayCreateJSON(OCArrayRef array) {
 
 cJSON *OCArrayCreateJSONTyped(OCArrayRef array) {
     if (!array) return cJSON_CreateNull();
-    
+
     cJSON *entry = cJSON_CreateObject();
     cJSON_AddStringToObject(entry, "type", "OCArray");
-    
+
     cJSON *arr = cJSON_CreateArray();
     uint64_t count = OCArrayGetCount(array);
     for (uint64_t i = 0; i < count; i++) {
         OCTypeRef elem = OCArrayGetValueAtIndex(array, i);
-        
+
         // Use the global typed JSON serialization function
         cJSON *jsonVal = OCTypeCopyJSONTyped(elem);
-        
+
         if (!jsonVal) {
             fprintf(stderr, "OCArrayCreateJSONTyped: Failed to serialize array element at index %llu. Using null.\n", (unsigned long long)i);
             jsonVal = cJSON_CreateNull();
         }
         cJSON_AddItemToArray(arr, jsonVal);
     }
-    
+
     cJSON_AddItemToObject(entry, "value", arr);
     return entry;
 }
 
 OCArrayRef OCArrayCreateFromJSONTyped(cJSON *json) {
     if (!json || !cJSON_IsObject(json)) return NULL;
-    
+
     cJSON *type = cJSON_GetObjectItem(json, "type");
     cJSON *value = cJSON_GetObjectItem(json, "value");
-    
+
     if (!cJSON_IsString(type) || !cJSON_IsArray(value)) return NULL;
-    
+
     const char *typeName = cJSON_GetStringValue(type);
     if (!typeName || strcmp(typeName, "OCArray") != 0) return NULL;
-    
+
     int arraySize = cJSON_GetArraySize(value);
     if (arraySize < 0) return NULL;
-    
+
     // Create mutable array to build up the result
     OCMutableArrayRef result = OCArrayCreateMutable(arraySize, &kOCTypeArrayCallBacks);
     if (!result) return NULL;
-    
+
     for (int i = 0; i < arraySize; i++) {
         cJSON *elem = cJSON_GetArrayItem(value, i);
-        
+
         // Use the global factory function to deserialize each element
         OCTypeRef obj = OCTypeCreateFromJSONTyped(elem);
-        
+
         if (obj) {
             OCArrayAppendValue(result, obj);
             OCRelease(obj); // OCArrayAppendValue retains
@@ -339,7 +339,7 @@ OCArrayRef OCArrayCreateFromJSONTyped(cJSON *json) {
             // Skip undeserializable elements
         }
     }
-    
+
     return result;
 }
 

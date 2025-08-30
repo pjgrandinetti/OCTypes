@@ -212,7 +212,7 @@ cJSON *OCDictionaryCreateJSONTyped(OCDictionaryRef dict);
 /**
  * @brief Creates an OCDictionary from a typed cJSON object.
  *
- * @param json A cJSON object with "type": "OCDictionary" and 
+ * @param json A cJSON object with "type": "OCDictionary" and
  *             "value": {object with key-value pairs}.
  * @return A new OCDictionaryRef, or NULL on failure.
  *         The caller is responsible for releasing the returned dictionary.

@@ -601,13 +601,13 @@ OCNumberRef OCNumberCreateFromJSON(cJSON *json, OCNumberType type) {
 
 cJSON *OCNumberCreateJSONTyped(OCNumberRef number) {
     if (!number) return cJSON_CreateNull();
-    
+
     cJSON *entry = cJSON_CreateObject();
     cJSON_AddStringToObject(entry, "type", "OCNumber");
-    
+
     const char *subTypeName = OCNumberGetTypeName(number->type);
     cJSON_AddStringToObject(entry, "subtype", subTypeName ? subTypeName : "unknown");
-    
+
     // For most numeric types, we can use the JSON number representation
     // For complex numbers, we use string representation
     switch (number->type) {
@@ -659,26 +659,26 @@ cJSON *OCNumberCreateJSONTyped(OCNumberRef number) {
             cJSON_AddStringToObject(entry, "value", "");
             break;
     }
-    
+
     return entry;
 }
 
 OCNumberRef OCNumberCreateFromJSONTyped(cJSON *json) {
     if (!json || !cJSON_IsObject(json)) return NULL;
-    
+
     cJSON *type = cJSON_GetObjectItem(json, "type");
     cJSON *subtype = cJSON_GetObjectItem(json, "subtype");
     cJSON *value = cJSON_GetObjectItem(json, "value");
-    
+
     if (!cJSON_IsString(type) || !cJSON_IsString(subtype) || !value) return NULL;
-    
+
     const char *typeName = cJSON_GetStringValue(type);
     const char *subtypeName = cJSON_GetStringValue(subtype);
     if (!typeName || !subtypeName || strcmp(typeName, "OCNumber") != 0) return NULL;
-    
+
     OCNumberType numberType = OCNumberTypeFromName(subtypeName);
     if (numberType == kOCNumberTypeInvalid) return NULL;
-    
+
     // Handle complex numbers (stored as strings)
     if (numberType == kOCNumberComplex64Type || numberType == kOCNumberComplex128Type) {
         if (!cJSON_IsString(value)) return NULL;
@@ -686,11 +686,11 @@ OCNumberRef OCNumberCreateFromJSONTyped(cJSON *json) {
         if (!valueStr) return NULL;
         return OCNumberCreateWithStringValue(numberType, valueStr);
     }
-    
+
     // Handle regular numeric types
     if (!cJSON_IsNumber(value)) return NULL;
     double numValue = cJSON_GetNumberValue(value);
-    
+
     union __Number val;
     switch (numberType) {
         case kOCNumberUInt8Type:
@@ -726,7 +726,7 @@ OCNumberRef OCNumberCreateFromJSONTyped(cJSON *json) {
         default:
             return NULL;
     }
-    
+
     return OCNumberCreate(numberType, &val);
 }
 

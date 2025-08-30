@@ -398,10 +398,10 @@ cJSON *OCDictionaryCreateJSON(OCDictionaryRef dict) {
 
 cJSON *OCDictionaryCreateJSONTyped(OCDictionaryRef dict) {
     if (!dict) return cJSON_CreateNull();
-    
+
     cJSON *entry = cJSON_CreateObject();
     cJSON_AddStringToObject(entry, "type", "OCDictionary");
-    
+
     cJSON *root = cJSON_CreateObject();
     OCArrayRef keys = OCDictionaryCreateArrayWithAllKeys(dict);
     uint64_t n = OCArrayGetCount(keys);
@@ -417,49 +417,49 @@ cJSON *OCDictionaryCreateJSONTyped(OCDictionaryRef dict) {
         cJSON_AddItemToObject(root, k, child);
     }
     OCRelease(keys);
-    
+
     cJSON_AddItemToObject(entry, "value", root);
     return entry;
 }
 
 OCDictionaryRef OCDictionaryCreateFromJSONTyped(cJSON *json) {
     if (!json || !cJSON_IsObject(json)) return NULL;
-    
+
     cJSON *type = cJSON_GetObjectItem(json, "type");
     cJSON *value = cJSON_GetObjectItem(json, "value");
-    
+
     if (!cJSON_IsString(type) || !cJSON_IsObject(value)) return NULL;
-    
+
     const char *typeName = cJSON_GetStringValue(type);
     if (!typeName || strcmp(typeName, "OCDictionary") != 0) return NULL;
-    
+
     OCMutableDictionaryRef result = OCDictionaryCreateMutable(0);
     if (!result) return NULL;
-    
+
     cJSON *item = NULL;
     cJSON_ArrayForEach(item, value) {
         if (!item->string) {
             fprintf(stderr, "OCDictionaryCreateFromJSONTyped: Invalid key in object\n");
             continue;
         }
-        
+
         OCStringRef key = OCStringCreateWithCString(item->string);
         if (!key) {
             fprintf(stderr, "OCDictionaryCreateFromJSONTyped: Failed to create key string\n");
             continue;
         }
-        
+
         OCTypeRef val = OCTypeCreateFromJSONTyped(item);
         if (!val) {
             fprintf(stderr, "OCDictionaryCreateFromJSONTyped: Failed to deserialize value for key '%s'\n", item->string);
             OCRelease(key);
             continue;
         }
-        
+
         OCDictionarySetValue(result, key, val);
         OCRelease(key);
         OCRelease(val);
     }
-    
+
     return result;
 }

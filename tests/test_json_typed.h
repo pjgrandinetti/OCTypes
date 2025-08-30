@@ -3,7 +3,7 @@
  * @brief Header for JSONTyped serialization roundtrip tests.
  *
  * Tests the comprehensive JSONTyped serialization system across all OCTypes.
- * Each test performs a complete roundtrip: create object → serialize to JSONTyped → 
+ * Each test performs a complete roundtrip: create object → serialize to JSONTyped →
  * deserialize from JSONTyped → verify equality with original.
  */
 #ifndef test_json_typed_h

@@ -460,14 +460,14 @@ OCDataRef OCDataCreateFromJSONTyped(cJSON *json) {
     cJSON *value = cJSON_GetObjectItem(json, "value");
     if (!cJSON_IsString(type) || !cJSON_IsString(value)) return NULL;
     if (strcmp(type->valuestring, "OCData") != 0) return NULL;
-    
+
     // Check encoding - default to base64 if not specified for backward compatibility
     if (encoding && cJSON_IsString(encoding)) {
         if (strcmp(encoding->valuestring, "base64") != 0) {
             return NULL; // Unsupported encoding
         }
     }
-    
+
     const char *encoded = value->valuestring;
     if (!encoded) return NULL;
     OCStringRef b64 = OCStringCreateWithCString(encoded);

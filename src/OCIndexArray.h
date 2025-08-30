@@ -210,7 +210,7 @@ cJSON *OCIndexArrayCreateJSONTyped(OCIndexArrayRef array);
 /**
  * @brief Creates an OCIndexArray from a typed cJSON object.
  *
- * @param json A cJSON object with "type": "OCIndexArray" and 
+ * @param json A cJSON object with "type": "OCIndexArray" and
  *             "value": [array of numbers].
  * @return A new OCIndexArrayRef, or NULL on failure.
  *         The caller is responsible for releasing the returned array.

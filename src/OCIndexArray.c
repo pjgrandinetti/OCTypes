@@ -319,38 +319,38 @@ cJSON *OCIndexArrayCreateJSON(const void *obj) {
 
 cJSON *OCIndexArrayCreateJSONTyped(OCIndexArrayRef array) {
     if (!array) return cJSON_CreateNull();
-    
+
     cJSON *entry = cJSON_CreateObject();
     cJSON_AddStringToObject(entry, "type", "OCIndexArray");
-    
+
     OCIndex count = OCIndexArrayGetCount(array);
     cJSON *arr = cJSON_CreateArray();
     for (OCIndex i = 0; i < count; i++) {
         OCIndex v = OCIndexArrayGetValueAtIndex(array, i);
         cJSON_AddItemToArray(arr, cJSON_CreateNumber((double)v));
     }
-    
+
     cJSON_AddItemToObject(entry, "value", arr);
     return entry;
 }
 
 OCIndexArrayRef OCIndexArrayCreateFromJSONTyped(cJSON *json) {
     if (!json || !cJSON_IsObject(json)) return NULL;
-    
+
     cJSON *type = cJSON_GetObjectItem(json, "type");
     cJSON *value = cJSON_GetObjectItem(json, "value");
-    
+
     if (!cJSON_IsString(type) || !cJSON_IsArray(value)) return NULL;
-    
+
     const char *typeName = cJSON_GetStringValue(type);
     if (!typeName || strcmp(typeName, "OCIndexArray") != 0) return NULL;
-    
+
     int count = cJSON_GetArraySize(value);
     if (count < 0) return NULL;
-    
+
     OCIndex *values = malloc(sizeof(OCIndex) * count);
     if (!values) return NULL;
-    
+
     for (int i = 0; i < count; i++) {
         cJSON *item = cJSON_GetArrayItem(value, i);
         if (!cJSON_IsNumber(item)) {
@@ -360,7 +360,7 @@ OCIndexArrayRef OCIndexArrayCreateFromJSONTyped(cJSON *json) {
         }
         values[i] = (OCIndex)item->valuedouble;
     }
-    
+
     OCIndexArrayRef result = OCIndexArrayCreate(values, count);
     free(values);
     return result;

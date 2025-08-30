@@ -291,40 +291,40 @@ OCIndexSetRef OCIndexSetCreateFromJSON(cJSON *json) {
 
 cJSON *OCIndexSetCreateJSONTyped(OCIndexSetRef set) {
     if (!set) return cJSON_CreateNull();
-    
+
     cJSON *entry = cJSON_CreateObject();
     cJSON_AddStringToObject(entry, "type", "OCIndexSet");
-    
+
     OCIndex count = OCIndexSetGetCount(set);
     OCIndex *buf = OCIndexSetGetBytesPtr(set);
     if (!buf) {
         cJSON_AddItemToObject(entry, "value", cJSON_CreateArray());
         return entry;
     }
-    
+
     cJSON *arr = cJSON_CreateArray();
     for (OCIndex i = 0; i < count; i++) {
         cJSON_AddItemToArray(arr, cJSON_CreateNumber((double)buf[i]));
     }
-    
+
     cJSON_AddItemToObject(entry, "value", arr);
     return entry;
 }
 
 OCIndexSetRef OCIndexSetCreateFromJSONTyped(cJSON *json) {
     if (!json || !cJSON_IsObject(json)) return NULL;
-    
+
     cJSON *type = cJSON_GetObjectItem(json, "type");
     cJSON *value = cJSON_GetObjectItem(json, "value");
-    
+
     if (!cJSON_IsString(type) || !cJSON_IsArray(value)) return NULL;
-    
+
     const char *typeName = cJSON_GetStringValue(type);
     if (!typeName || strcmp(typeName, "OCIndexSet") != 0) return NULL;
-    
+
     OCMutableIndexSetRef set = OCIndexSetCreateMutable();
     if (!set) return NULL;
-    
+
     int count = cJSON_GetArraySize(value);
     for (int i = 0; i < count; i++) {
         cJSON *item = cJSON_GetArrayItem(value, i);
@@ -335,7 +335,7 @@ OCIndexSetRef OCIndexSetCreateFromJSONTyped(cJSON *json) {
         }
         OCIndexSetAddIndex(set, (OCIndex)item->valuedouble);
     }
-    
+
     return set;
 }
 void OCIndexSetShow(OCIndexSetRef set) {

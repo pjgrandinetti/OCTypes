@@ -210,7 +210,7 @@ void *OCTypeDeepCopyMutable(const void *obj);
  *
  * This function registers a type name with the OCTypes system and optionally
  * associates a JSON factory function for creating instances from typed JSON.
- * 
+ *
  * @param typeName A null-terminated C string representing the type name.
  * @param factory Optional function pointer to create instances from typed JSON.
  *                Pass NULL if the type doesn't support typed JSON serialization.

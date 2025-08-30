@@ -196,54 +196,54 @@ cJSON *OCSetCreateJSON(OCSetRef set) {
 
 cJSON *OCSetCreateJSONTyped(OCSetRef set) {
     if (!set) return cJSON_CreateNull();
-    
+
     cJSON *entry = cJSON_CreateObject();
     cJSON_AddStringToObject(entry, "type", "OCSet");
-    
+
     cJSON *arr = cJSON_CreateArray();
     OCArrayRef elems = set->elements;
     OCIndex count = OCArrayGetCount(elems);
     for (OCIndex i = 0; i < count; i++) {
         OCTypeRef v = (OCTypeRef)OCArrayGetValueAtIndex(elems, i);
-        
+
         // Use the global typed JSON serialization function
         cJSON *item = OCTypeCopyJSONTyped(v);
-        
+
         if (!item) {
             fprintf(stderr, "OCSetCreateJSONTyped: Failed to serialize set element at index %llu. Using null.\n", (unsigned long long)i);
             item = cJSON_CreateNull();
         }
         cJSON_AddItemToArray(arr, item);
     }
-    
+
     cJSON_AddItemToObject(entry, "value", arr);
     return entry;
 }
 
 OCSetRef OCSetCreateFromJSONTyped(cJSON *json) {
     if (!json || !cJSON_IsObject(json)) return NULL;
-    
+
     cJSON *type = cJSON_GetObjectItem(json, "type");
     cJSON *value = cJSON_GetObjectItem(json, "value");
-    
+
     if (!cJSON_IsString(type) || !cJSON_IsArray(value)) return NULL;
-    
+
     const char *typeName = cJSON_GetStringValue(type);
     if (!typeName || strcmp(typeName, "OCSet") != 0) return NULL;
-    
+
     int arraySize = cJSON_GetArraySize(value);
     if (arraySize < 0) return NULL;
-    
+
     // Create mutable set to build up the result
     OCMutableSetRef result = OCSetCreateMutable(arraySize);
     if (!result) return NULL;
-    
+
     for (int i = 0; i < arraySize; i++) {
         cJSON *elem = cJSON_GetArrayItem(value, i);
-        
+
         // Use the global factory function to deserialize each element
         OCTypeRef obj = OCTypeCreateFromJSONTyped(elem);
-        
+
         if (obj) {
             OCSetAddValue(result, obj);
             OCRelease(obj); // OCSetAddValue retains
@@ -252,7 +252,7 @@ OCSetRef OCSetCreateFromJSONTyped(cJSON *json) {
             // Skip undeserializable elements
         }
     }
-    
+
     return result;
 }
 void OCSetShow(OCSetRef theSet) {

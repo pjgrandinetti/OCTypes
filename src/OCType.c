@@ -146,12 +146,12 @@ OCTypeID OCRegisterType(const char *typeName, OCTypeRef (*factory)(cJSON *)) {
             exit(EXIT_FAILURE);  // Exit if memory allocation fails
         }
         strcpy(typeIDTable[typeIDTableCount], typeName);
-        
+
         // Register the factory function if provided
         if (factory) {
             createFromJSONTypedTable[typeIDTableCount] = factory;
         }
-        
+
         typeIDTableCount++;
         return typeIDTableCount;
     }
@@ -236,19 +236,19 @@ cJSON *OCTypeCopyJSONTyped(OCTypeRef obj) {
 
 OCTypeRef OCTypeCreateFromJSONTyped(cJSON *json) {
     if (!json) return NULL;
-    
+
     // Handle native JSON types directly (no type wrapper needed)
     if (cJSON_IsString(json)) return (OCTypeRef)OCStringCreateFromJSON(json);
     if (cJSON_IsBool(json)) return (OCTypeRef)OCBooleanCreateFromJSON(json);
     if (cJSON_IsNumber(json)) return (OCTypeRef)OCNumberCreateFromJSON(json, kOCNumberFloat64Type);
-    
+
     // Handle wrapped types with type information
     if (!cJSON_IsObject(json)) return NULL;
-    
+
     cJSON *type = cJSON_GetObjectItem(json, "type");
     const char *typeName = cJSON_IsString(type) ? cJSON_GetStringValue(type) : NULL;
     if (!typeName) return NULL;
-    
+
     // Look up the type in our registry and call the registered factory function
     for (OCTypeID i = 0; i < typeIDTableCount; i++) {
         if (typeIDTable[i] && strcmp(typeIDTable[i], typeName) == 0) {
@@ -258,7 +258,7 @@ OCTypeRef OCTypeCreateFromJSONTyped(cJSON *json) {
             return NULL;
         }
     }
-    
+
     fprintf(stderr, "OCTypeCreateFromJSONTyped: Unknown type '%s'\n", typeName);
     return NULL;
 }
@@ -320,7 +320,7 @@ void *OCTypeAllocate(size_t size,
     object->base.flags.static_instance = false;
     object->base.flags.finalized = false;
     object->base.flags.tracked = true;
-    
+
     impl_OCTrack(object);
     return object;
 }

@@ -218,17 +218,17 @@ OCIndexPairSetRef OCIndexPairSetCreateFromJSON(cJSON *json) {
 
 cJSON *OCIndexPairSetCreateJSONTyped(OCIndexPairSetRef set) {
     if (!set) return cJSON_CreateNull();
-    
+
     cJSON *entry = cJSON_CreateObject();
     cJSON_AddStringToObject(entry, "type", "OCIndexPairSet");
-    
+
     OCIndex count = OCIndexPairSetGetCount(set);
     OCIndexPair *pairs = OCIndexPairSetGetBytesPtr(set);
     if (!pairs) {
         cJSON_AddItemToObject(entry, "value", cJSON_CreateArray());
         return entry;
     }
-    
+
     cJSON *arr = cJSON_CreateArray();
     for (OCIndex i = 0; i < count; i++) {
         cJSON *pair = cJSON_CreateArray();
@@ -236,28 +236,28 @@ cJSON *OCIndexPairSetCreateJSONTyped(OCIndexPairSetRef set) {
         cJSON_AddItemToArray(pair, cJSON_CreateNumber((double)pairs[i].value));
         cJSON_AddItemToArray(arr, pair);
     }
-    
+
     cJSON_AddItemToObject(entry, "value", arr);
     return entry;
 }
 
 OCIndexPairSetRef OCIndexPairSetCreateFromJSONTyped(cJSON *json) {
     if (!json || !cJSON_IsObject(json)) return NULL;
-    
+
     cJSON *type = cJSON_GetObjectItem(json, "type");
     cJSON *value = cJSON_GetObjectItem(json, "value");
-    
+
     if (!cJSON_IsString(type) || !cJSON_IsArray(value)) return NULL;
-    
+
     const char *typeName = cJSON_GetStringValue(type);
     if (!typeName || strcmp(typeName, "OCIndexPairSet") != 0) return NULL;
-    
+
     int count = cJSON_GetArraySize(value);
     if (count < 0) return NULL;
-    
+
     OCIndexPair *pairs = malloc(count * sizeof(OCIndexPair));
     if (!pairs) return NULL;
-    
+
     for (int i = 0; i < count; i++) {
         cJSON *pair = cJSON_GetArrayItem(value, i);
         if (!cJSON_IsArray(pair) || cJSON_GetArraySize(pair) != 2) {
@@ -275,7 +275,7 @@ OCIndexPairSetRef OCIndexPairSetCreateFromJSONTyped(cJSON *json) {
         pairs[i].index = (OCIndex)indexNode->valuedouble;
         pairs[i].value = (OCIndex)valueNode->valuedouble;
     }
-    
+
     OCIndexPairSetRef result = OCIndexPairSetCreateWithIndexPairArray(pairs, count);
     free(pairs);
     return result;
