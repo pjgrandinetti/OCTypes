@@ -216,22 +216,13 @@ const void *OCRetain(const void *ptr) {
     theType->base.retainCount++;
     return ptr;
 }
-cJSON *OCTypeCopyJSON(OCTypeRef obj) {
+cJSON *OCTypeCopyJSON(OCTypeRef obj, bool typed) {
     if (!obj) return cJSON_CreateNull();
     OCBase *b = (OCBase *)obj;
     if (!b->copyJSON) {
         return cJSON_CreateNull();
     }
-    return b->copyJSON(obj);
-}
-
-cJSON *OCTypeCopyJSONTyped(OCTypeRef obj) {
-    if (!obj) return cJSON_CreateNull();
-    OCBase *b = (OCBase *)obj;
-    if (!b->copyJSONTyped) {
-        return cJSON_CreateNull();
-    }
-    return b->copyJSONTyped(obj);
+    return b->copyJSON(obj, typed);
 }
 
 OCTypeRef OCTypeCreateFromJSONTyped(cJSON *json) {
@@ -241,6 +232,17 @@ OCTypeRef OCTypeCreateFromJSONTyped(cJSON *json) {
     if (cJSON_IsString(json)) return (OCTypeRef)OCStringCreateFromJSON(json);
     if (cJSON_IsBool(json)) return (OCTypeRef)OCBooleanCreateFromJSON(json);
     if (cJSON_IsNumber(json)) return (OCTypeRef)OCNumberCreateFromJSON(json, kOCNumberFloat64Type);
+    if (cJSON_IsArray(json)) return (OCTypeRef)OCArrayCreateFromJSONTyped(json);
+    if (cJSON_IsObject(json)) {
+        // Check if this is a wrapped type with type information
+        cJSON *type = cJSON_GetObjectItem(json, "type");
+        if (type && cJSON_IsString(type)) {
+            // This is a wrapped type, handle below
+        } else {
+            // This is a native JSON object (dictionary)
+            return (OCTypeRef)OCDictionaryCreateFromJSONTyped(json);
+        }
+    }
 
     // Handle wrapped types with type information
     if (!cJSON_IsObject(json)) return NULL;
@@ -299,8 +301,7 @@ void *OCTypeAllocate(size_t size,
                      void (*finalize)(const void *),
                      bool (*equal)(const void *, const void *),
                      OCStringRef (*copyDesc)(OCTypeRef),
-                     cJSON *(*copyJSON)(const void *),
-                     cJSON *(*copyJSONTyped)(const void *),
+                     cJSON *(*copyJSON)(const void *, bool),
                      void *(*copyDeep)(const void *),
                      void *(*copyDeepMutable)(const void *)) {
     struct impl_OCType *object = calloc(1, size);
@@ -314,7 +315,6 @@ void *OCTypeAllocate(size_t size,
     object->base.equal = equal;
     object->base.copyFormattingDesc = copyDesc;
     object->base.copyJSON = copyJSON;
-    object->base.copyJSONTyped = copyJSONTyped;
     object->base.copyDeep = copyDeep;
     object->base.copyDeepMutable = copyDeepMutable;
     object->base.flags.static_instance = false;

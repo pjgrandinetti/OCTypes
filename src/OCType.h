@@ -254,56 +254,45 @@ const void *OCRetain(const void *ptr);
  */
 OCStringRef OCTypeCopyFormattingDesc(const void *ptr);
 /**
- * @brief Returns a schema-bound JSON representation of an OCType instance.
+ * @brief Returns a JSON representation of an OCType instance.
  *
- * This function serializes the given OCType instance to a cJSON object
- * following your library's schema conventions. The output does not include
- * type information (e.g., no "__type__" field), and assumes that any
- * deserialization will occur in a context where the expected type is known
- * a priori.
+ * This function serializes the given OCType instance to a cJSON object. The behavior
+ * depends on the `typed` parameter and the OCType subclass:
+ *
+ * **When typed=false:**
+ * - Returns a schema-bound JSON representation without type information
+ * - Assumes deserialization will occur in a context where the expected type is known
+ * - The resulting JSON is not self-describing
+ *
+ * **When typed=true:**
+ * - **Native JSON types** (OCString, OCBoolean, OCArray, OCDictionary): Serialized as
+ *   native JSON without type wrappers (e.g., strings as JSON strings, arrays as JSON arrays)
+ * - **Non-native JSON types** (OCNumber, OCData, custom types): Serialized with type
+ *   information in a wrapper object containing "type" and "value" fields
+ * - The resulting JSON can be deserialized without external knowledge of the expected type
  *
  * The returned cJSON object must be freed by the caller using cJSON_Delete().
  *
- * @note The resulting JSON is not self-describing. Deserialization requires
- *       external knowledge of the expected OCType subclass.
- *
  * @param obj Pointer to the OCType instance. If NULL, returns a JSON null.
+ * @param typed If true, use self-describing format when necessary; if false, use schema-bound format.
  * @return A cJSON object representing the instance, or cJSON null if obj is NULL.
  * @ingroup OCType
  */
-cJSON *OCTypeCopyJSON(OCTypeRef obj);
-
-/**
- * @brief Returns a self-describing JSON representation of an OCType instance.
- *
- * This function serializes the given OCType instance to a cJSON object that includes
- * type information, making the JSON self-describing. The output typically contains
- * a "type" field identifying the OCType subclass and a "value" field with the
- * actual data.
- *
- * Unlike OCTypeCopyJSON(), the resulting JSON can be deserialized without external
- * knowledge of the expected type, making it suitable for generic storage and
- * transmission scenarios.
- *
- * The returned cJSON object must be freed by the caller using cJSON_Delete().
- *
- * @param obj Pointer to the OCType instance. If NULL, returns a JSON null.
- * @return A self-describing cJSON object, or cJSON null if obj is NULL or lacks typed JSON support.
- * @ingroup OCType
- */
-cJSON *OCTypeCopyJSONTyped(OCTypeRef obj);
+cJSON *OCTypeCopyJSON(OCTypeRef obj, bool typed);
 
 /**
  * @brief Creates an OCType instance from a self-describing JSON object.
  *
- * This function deserializes a cJSON object that was created by OCTypeCopyJSONTyped()
- * or follows the same self-describing format. The JSON object must contain type
- * information to determine which OCType subclass to instantiate.
+ * This function deserializes a cJSON object that was created by OCTypeCopyJSON()
+ * with typed=true or follows the same self-describing format. The function handles both wrapped and
+ * unwrapped JSON based on the input:
  *
- * The function examines the "type" field in the JSON object and dispatches to the
- * appropriate createFromJSONTyped implementation for that type.
+ * - **Native JSON types**: Directly handles JSON strings, booleans, arrays, and objects
+ *   without requiring type wrappers.
+ * - **Wrapped types**: Examines the "type" field in JSON objects and dispatches to the
+ *   appropriate createFromJSONTyped implementation for that type.
  *
- * @param json A cJSON object containing self-describing type information.
+ * @param json A cJSON object that may contain self-describing type information or be a native JSON type.
  * @return A new OCType instance with retain count 1, or NULL if deserialization fails.
  * @note The returned object must be released with OCRelease() when no longer needed.
  * @ingroup OCType
@@ -369,8 +358,7 @@ typedef struct impl_OCBase {
     void (*finalize)(const void *);
     bool (*equal)(const void *, const void *);
     OCStringRef (*copyFormattingDesc)(OCTypeRef);
-    cJSON *(*copyJSON)(const void *);
-    cJSON *(*copyJSONTyped)(const void *);
+    cJSON *(*copyJSON)(const void *, bool typed);
     void *(*copyDeep)(const void *);
     void *(*copyDeepMutable)(const void *);
     // Flags packed together in a single byte
@@ -426,8 +414,7 @@ void *OCTypeAllocate(
     void (*finalize)(const void *),
     bool (*equal)(const void *, const void *),
     OCStringRef (*copyFormattingDesc)(OCTypeRef),
-    cJSON *(*copyJSON)(const void *),
-    cJSON *(*copyJSONTyped)(const void *),
+    cJSON *(*copyJSON)(const void *, bool typed),
     void *(*copyDeep)(const void *),
     void *(*copyDeepMutable)(const void *));
 /**
@@ -440,7 +427,6 @@ void *OCTypeAllocate(
     EQUAL_FN,               \
     DESC_FN,                \
     JSON_FN,                \
-    JSON_TYPED_FN,          \
     COPY_FN,                \
     MUTABLE_COPY_FN)        \
     (TYPE *)OCTypeAllocate( \
@@ -450,7 +436,6 @@ void *OCTypeAllocate(
         EQUAL_FN,           \
         DESC_FN,            \
         JSON_FN,            \
-        JSON_TYPED_FN,      \
         COPY_FN,            \
         MUTABLE_COPY_FN)
 /**

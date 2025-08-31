@@ -54,13 +54,8 @@ static OCStringRef impl_OCIndexArrayCopyFormattingDesc(OCTypeRef cf) {
     return OCStringCreateWithCString("<OCIndexArray>");
 }
 static cJSON *
-impl_OCIndexArrayCopyJSON(const void *obj) {
-    return OCIndexArrayCreateJSON((OCIndexArrayRef)obj);
-}
-
-static cJSON *
-impl_OCIndexArrayCopyJSONTyped(const void *obj) {
-    return OCIndexArrayCreateJSONTyped((OCIndexArrayRef)obj);
+impl_OCIndexArrayCopyJSON(const void *obj, bool typed) {
+    return OCIndexArrayCreateJSON((OCIndexArrayRef)obj, typed);
 }
 static OCMutableIndexArrayRef OCIndexArrayAllocate(void) {
     return (OCMutableIndexArrayRef)OCTypeAlloc(
@@ -70,7 +65,6 @@ static OCMutableIndexArrayRef OCIndexArrayAllocate(void) {
         impl_OCIndexArrayEqual,
         impl_OCIndexArrayCopyFormattingDesc,
         impl_OCIndexArrayCopyJSON,
-        impl_OCIndexArrayCopyJSONTyped,
         impl_OCIndexArrayDeepCopy,
         impl_OCIndexArrayDeepCopyMutable);
 }
@@ -305,24 +299,9 @@ OCIndexArrayRef OCIndexArrayCreateFromJSON(cJSON *json) {
     free(values);
     return result;
 }
-cJSON *OCIndexArrayCreateJSON(const void *obj) {
-    if (!obj) return cJSON_CreateNull();
-    OCIndexArrayRef array = (OCIndexArrayRef)obj;
-    OCIndex count = OCIndexArrayGetCount(array);
-    cJSON *arr = cJSON_CreateArray();
-    for (OCIndex i = 0; i < count; i++) {
-        OCIndex v = OCIndexArrayGetValueAtIndex(array, i);
-        cJSON_AddItemToArray(arr, cJSON_CreateNumber((double)v));
-    }
-    return arr;
-}
-
-cJSON *OCIndexArrayCreateJSONTyped(OCIndexArrayRef array) {
+cJSON *OCIndexArrayCreateJSON(OCIndexArrayRef array, bool typed) {
     if (!array) return cJSON_CreateNull();
 
-    cJSON *entry = cJSON_CreateObject();
-    cJSON_AddStringToObject(entry, "type", "OCIndexArray");
-
     OCIndex count = OCIndexArrayGetCount(array);
     cJSON *arr = cJSON_CreateArray();
     for (OCIndex i = 0; i < count; i++) {
@@ -330,8 +309,16 @@ cJSON *OCIndexArrayCreateJSONTyped(OCIndexArrayRef array) {
         cJSON_AddItemToArray(arr, cJSON_CreateNumber((double)v));
     }
 
-    cJSON_AddItemToObject(entry, "value", arr);
-    return entry;
+    if (typed) {
+        // For typed serialization, OCIndexArray needs wrapping since it's not a native JSON type
+        cJSON *entry = cJSON_CreateObject();
+        cJSON_AddStringToObject(entry, "type", "OCIndexArray");
+        cJSON_AddItemToObject(entry, "value", arr);
+        return entry;
+    } else {
+        // For untyped serialization, serialize as a plain JSON array
+        return arr;
+    }
 }
 
 OCIndexArrayRef OCIndexArrayCreateFromJSONTyped(cJSON *json) {

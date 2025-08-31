@@ -232,18 +232,21 @@ OCStringRef OCDataCreateBase64EncodedString(OCDataRef data, OCBase64EncodingOpti
  */
 OCDataRef OCDataCreateFromBase64EncodedString(OCStringRef base64String);
 /**
- * @brief Creates a JSON string from OCData by Base64-encoding its contents.
+ * @brief Creates a JSON representation from OCData by Base64-encoding its contents.
  *
- * This function serializes raw binary data into a cJSON string node using Base64 encoding.
- * The result can be safely embedded in a JSON structure and later decoded.
+ * This function serializes raw binary data into JSON format. When typed=false,
+ * it returns a simple Base64-encoded string. When typed=true, it returns a 
+ * structured JSON object with "type": "OCData", "encoding": "base64", and 
+ * "value": "<base64-encoded-data>" fields.
  *
  * @param data An OCDataRef to serialize. Must not be NULL.
- * @return A new cJSON string node containing Base64-encoded data,
+ * @param typed If false, returns Base64 string; if true, returns typed object.
+ * @return A new cJSON string or object containing Base64-encoded data,
  *         or cJSON null if serialization fails.
  *         Caller is responsible for managing the returned cJSON object.
  * @ingroup OCData
  */
-cJSON *OCDataCreateJSON(OCDataRef data);
+cJSON *OCDataCreateJSON(OCDataRef data, bool typed);
 /**
  * @brief Creates an OCDataRef from a Base64-encoded JSON string.
  *
@@ -256,23 +259,9 @@ cJSON *OCDataCreateJSON(OCDataRef data);
  */
 OCDataRef OCDataCreateFromJSON(cJSON *json);
 /**
- * @brief Creates a typed JSON object from OCData by Base64-encoding its contents.
- *
- * This function serializes raw binary data into a structured JSON object with 
- * "type": "binary", "encoding": "base64", and "value": "<base64-encoded-data>" fields. 
- * This format provides explicit type information for binary data serialization.
- *
- * @param data An OCDataRef to serialize. Must not be NULL.
- * @return A new cJSON object with type, encoding, and value fields,
- *         or cJSON null if serialization fails.
- *         Caller is responsible for managing the returned cJSON object.
- * @ingroup OCData
- */
-cJSON *OCDataCreateJSONTyped(OCDataRef data);
-/**
  * @brief Creates an OCDataRef from a typed JSON object with Base64-encoded data.
  *
- * This function expects a cJSON object with "type": "binary", "encoding": "base64", 
+ * This function expects a cJSON object with "type": "OCData", "encoding": "base64", 
  * and "value": "<base64-data>" fields. The encoding field is optional and defaults
  * to base64 for backward compatibility.
  *

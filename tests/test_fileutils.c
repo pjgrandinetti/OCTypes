@@ -329,7 +329,7 @@ bool test_dictionary_write_simple(void) {
     close(fd);
     // Write to file
     OCStringRef err = NULL;
-    if (!OCTypeWriteJSONToFile((OCTypeRef)dict, tmpl, &err)) {
+    if (!OCTypeWriteJSONToFile((OCTypeRef)dict, false, false, tmpl, &err)) {
         OCRelease(err);
         OCRelease(dict);
         PRINTERROR;
@@ -369,7 +369,7 @@ bool test_dictionary_write_empty(void) {
     close(fd);
     // Write dictionary to JSON file
     OCStringRef err = NULL;
-    if (!OCTypeWriteJSONToFile((OCTypeRef)dict, tmpl, &err)) {
+    if (!OCTypeWriteJSONToFile((OCTypeRef)dict, false, false, tmpl, &err)) {
         OCRelease(err);
         OCRelease(dict);
         PRINTERROR;
@@ -409,7 +409,7 @@ bool test_dictionary_write_error(void) {
     OCDictionarySetValue(dict, STR("x"), STR("y"));
     const char *badpath = "/no_such_dir/ocdict.json";
     OCStringRef err = NULL;
-    bool ok = OCTypeWriteJSONToFile((OCTypeRef)dict, badpath, &err);
+    bool ok = OCTypeWriteJSONToFile((OCTypeRef)dict, false, true, badpath, &err);
     if (ok || err == NULL) {
         if (err) OCRelease(err);
         OCStringRef maybe = OCStringCreateWithContentsOfFile(badpath, NULL);

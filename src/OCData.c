@@ -82,13 +82,8 @@ OCStringRef OCDataCopyFormattingDesc(OCTypeRef cf) {
     return result;
 }
 static cJSON *
-impl_OCDataCopyJSON(const void *obj) {
-    return OCDataCreateJSON((OCDataRef)obj);
-}
-
-static cJSON *
-impl_OCDataCopyJSONTyped(const void *obj) {
-    return OCDataCreateJSONTyped((OCDataRef)obj);
+impl_OCDataCopyJSON(const void *obj, bool typed) {
+    return OCDataCreateJSON((OCDataRef)obj, typed);
 }
 
 static void impl_OCDataFinalize(const void *obj) {
@@ -102,7 +97,6 @@ static struct impl_OCData *OCDataAllocate() {
                        impl_OCDataEqual,
                        OCDataCopyFormattingDesc,
                        impl_OCDataCopyJSON,
-                       impl_OCDataCopyJSONTyped,
                        impl_OCDataDeepCopy,
                        impl_OCDataDeepCopyMutable);
 }
@@ -414,17 +408,30 @@ OCDataRef OCDataCreateFromBase64EncodedString(OCStringRef base64String) {
     free(decoded);
     return data;
 }
-cJSON *OCDataCreateJSON(OCDataRef data) {
+cJSON *OCDataCreateJSON(OCDataRef data, bool typed) {
     if (!data) return cJSON_CreateNull();
+    
     OCStringRef b64 = OCDataCreateBase64EncodedString(data, OCBase64EncodingOptionsNone);
     if (!b64) {
-        fprintf(stderr, "OCDataCreateJSON: Failed to Base64 encode OCData.\n");
+        const char *funcName = typed ? "OCDataCreateJSONTyped" : "OCDataCreateJSON";
+        fprintf(stderr, "%s: Failed to Base64 encode OCData.\n", funcName);
         return cJSON_CreateNull();
     }
-    const char *s = OCStringGetCString(b64);
-    cJSON *node = cJSON_CreateString(s ? s : "");
+    
+    const char *encoded_str = OCStringGetCString(b64);
+    cJSON *result;
+    
+    if (typed) {
+        result = cJSON_CreateObject();
+        cJSON_AddStringToObject(result, "type", "OCData");
+        cJSON_AddStringToObject(result, "encoding", "base64");
+        cJSON_AddStringToObject(result, "value", encoded_str ? encoded_str : "");
+    } else {
+        result = cJSON_CreateString(encoded_str ? encoded_str : "");
+    }
+    
     OCRelease(b64);
-    return node;
+    return result;
 }
 OCDataRef OCDataCreateFromJSON(cJSON *json) {
     if (!json || !cJSON_IsString(json)) return NULL;
@@ -435,22 +442,6 @@ OCDataRef OCDataCreateFromJSON(cJSON *json) {
     OCDataRef result = OCDataCreateFromBase64EncodedString(b64);
     OCRelease(b64);
     return result;
-}
-
-
-cJSON *OCDataCreateJSONTyped(OCDataRef data) {
-    if (!data) return cJSON_CreateNull();
-    OCStringRef b64 = OCDataCreateBase64EncodedString(data, OCBase64EncodingOptionsNone);
-    if (!b64) {
-        fprintf(stderr, "OCDataCreateJSONTyped: Failed to Base64 encode OCData.\n");
-        return cJSON_CreateNull();
-    }
-    cJSON *entry = cJSON_CreateObject();
-    cJSON_AddStringToObject(entry, "type", "OCData");
-    cJSON_AddStringToObject(entry, "encoding", "base64");
-    cJSON_AddStringToObject(entry, "value", OCStringGetCString(b64));
-    OCRelease(b64);
-    return entry;
 }
 
 OCDataRef OCDataCreateFromJSONTyped(cJSON *json) {

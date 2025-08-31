@@ -24,6 +24,9 @@
 #include <stdlib.h>    // For qsort, qsort_r, qsort_s, malloc, etc.
 #include <string.h>    // For memcpy
 #include "OCString.h"  // For OCString functions
+#include "OCBoolean.h" // For OCBoolean functions  
+#include "OCNumber.h"  // For OCNumber functions
+#include "OCDictionary.h" // For OCDictionary functions
 #if defined(__APPLE__)
 #include <malloc/malloc.h>  // For malloc_zone_t
 #else
@@ -156,13 +159,8 @@ OCStringRef OCArrayCopyFormattingDesc(OCTypeRef cf) {
     return result;
 }
 static cJSON *
-impl_OCArrayCopyJSON(const void *obj) {
-    return OCArrayCreateJSON((OCArrayRef)obj);
-}
-
-static cJSON *
-impl_OCArrayCopyJSONTyped(const void *obj) {
-    return OCArrayCreateJSONTyped((OCArrayRef)obj);
+impl_OCArrayCopyJSON(const void *obj, bool typed) {
+    return OCArrayCreateJSON((OCArrayRef)obj, typed);
 }
 
 static void impl_OCArrayFinalize(const void *theType) {
@@ -198,7 +196,6 @@ static struct impl_OCArray *OCArrayAllocate() {
         impl_OCArrayEqual,
         OCArrayCopyFormattingDesc,
         impl_OCArrayCopyJSON,
-        impl_OCArrayCopyJSONTyped,
         impl_OCArrayDeepCopy,
         impl_OCArrayDeepCopyMutable  // ← NEW!
     );
@@ -266,59 +263,35 @@ OCMutableArrayRef OCArrayCreateMutableCopy(OCArrayRef theArray) {
     }
     return newMutableArray;
 }
-cJSON *OCArrayCreateJSON(OCArrayRef array) {
+cJSON *OCArrayCreateJSON(OCArrayRef array, bool typed) {
     if (!array) return cJSON_CreateNull();
+    
     cJSON *arr = cJSON_CreateArray();
     uint64_t count = OCArrayGetCount(array);
     for (uint64_t i = 0; i < count; i++) {
         OCTypeRef elem = OCArrayGetValueAtIndex(array, i);
-        cJSON *jsonVal = OCTypeCopyJSON(elem);
+        
+        // Use typed or untyped serialization based on parameter
+        cJSON *jsonVal = OCTypeCopyJSON(elem, typed);
+        
         if (!jsonVal) {
-            fprintf(stderr, "OCArrayCreateJSON: Failed to serialize array element at index %llu. Using null.\n", (unsigned long long)i);
+            const char *funcName = typed ? "OCArrayCreateJSON(typed)" : "OCArrayCreateJSON";
+            fprintf(stderr, "%s: Failed to serialize array element at index %llu. Using null.\n", funcName, (unsigned long long)i);
             jsonVal = cJSON_CreateNull();
         }
         cJSON_AddItemToArray(arr, jsonVal);
     }
+    
+    // Arrays are native JSON types, no wrapping needed even for typed serialization
     return arr;
 }
 
-cJSON *OCArrayCreateJSONTyped(OCArrayRef array) {
-    if (!array) return cJSON_CreateNull();
-
-    cJSON *entry = cJSON_CreateObject();
-    cJSON_AddStringToObject(entry, "type", "OCArray");
-
-    cJSON *arr = cJSON_CreateArray();
-    uint64_t count = OCArrayGetCount(array);
-    for (uint64_t i = 0; i < count; i++) {
-        OCTypeRef elem = OCArrayGetValueAtIndex(array, i);
-
-        // Use the global typed JSON serialization function
-        cJSON *jsonVal = OCTypeCopyJSONTyped(elem);
-
-        if (!jsonVal) {
-            fprintf(stderr, "OCArrayCreateJSONTyped: Failed to serialize array element at index %llu. Using null.\n", (unsigned long long)i);
-            jsonVal = cJSON_CreateNull();
-        }
-        cJSON_AddItemToArray(arr, jsonVal);
-    }
-
-    cJSON_AddItemToObject(entry, "value", arr);
-    return entry;
-}
-
 OCArrayRef OCArrayCreateFromJSONTyped(cJSON *json) {
-    if (!json || !cJSON_IsObject(json)) return NULL;
+    // Arrays are native JSON types, so even "typed" deserialization 
+    // expects a native JSON array, not a wrapped object
+    if (!json || !cJSON_IsArray(json)) return NULL;
 
-    cJSON *type = cJSON_GetObjectItem(json, "type");
-    cJSON *value = cJSON_GetObjectItem(json, "value");
-
-    if (!cJSON_IsString(type) || !cJSON_IsArray(value)) return NULL;
-
-    const char *typeName = cJSON_GetStringValue(type);
-    if (!typeName || strcmp(typeName, "OCArray") != 0) return NULL;
-
-    int arraySize = cJSON_GetArraySize(value);
+    int arraySize = cJSON_GetArraySize(json);
     if (arraySize < 0) return NULL;
 
     // Create mutable array to build up the result
@@ -326,9 +299,9 @@ OCArrayRef OCArrayCreateFromJSONTyped(cJSON *json) {
     if (!result) return NULL;
 
     for (int i = 0; i < arraySize; i++) {
-        cJSON *elem = cJSON_GetArrayItem(value, i);
+        cJSON *elem = cJSON_GetArrayItem(json, i);
 
-        // Use the global factory function to deserialize each element
+        // Use the global typed factory function to deserialize each element
         OCTypeRef obj = OCTypeCreateFromJSONTyped(elem);
 
         if (obj) {

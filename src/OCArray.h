@@ -237,43 +237,44 @@ int64_t OCArrayBSearchValues(OCArrayRef array, OCRange range, const void *value,
  */
 OCArrayRef OCArrayCreateWithArray(OCArrayRef array);
 /**
- * @brief Creates a JSON array representation of an OCArray.
+ * @brief Serializes an OCArray to JSON format.
  *
- * Each element in the OCArray is serialized using its registered JSON serialization
- * callback. If a type-specific JSON representation is unavailable, a generic fallback
- * will be used instead.
+ * Creates a JSON array representation of the OCArray. If the typed parameter
+ * is true, each element is serialized using typed JSON serialization when
+ * available. If false, each element uses untyped serialization.
+ * 
+ * Arrays are native JSON types, so they are not wrapped in type information
+ * even when typed=true.
  *
  * @param array A valid OCArrayRef.
+ * @param typed If true, use typed serialization for elements; if false, use untyped.
  * @return A new cJSON array on success, or cJSON null on failure.
  *         The caller is responsible for managing the returned cJSON object.
  * @ingroup OCArray
  */
-cJSON *OCArrayCreateJSON(OCArrayRef array);
+cJSON *OCArrayCreateJSON(OCArrayRef array, bool typed);
 
 /**
- * @brief Serializes an OCArray to a self-describing JSON object.
+ * @brief Create an OCArrayRef from a JSON array.
  *
- * Creates a JSON object that contains type information and the array data.
- * Each element is serialized using typed JSON serialization when available.
- * The resulting JSON object has a "type" field set to "OCArray" and a "data"
- * field containing the array elements.
+ * Parses a native JSON array and deserializes each element using
+ * non-typed deserialization. Arrays are native JSON types, so no
+ * unwrapping is needed.
  *
- * @param array A valid OCArrayRef.
- * @return A new self-describing cJSON object on success, or cJSON null on failure.
- *         The caller is responsible for managing the returned cJSON object.
+ * @param json A cJSON array.
+ * @return A newly allocated OCArrayRef, or NULL on failure.
  * @ingroup OCArray
  */
-cJSON *OCArrayCreateJSONTyped(OCArrayRef array);
+OCArrayRef OCArrayCreateFromJSON(cJSON *json);
 
 /**
- * @brief Create an OCArrayRef from a self-describing JSON object.
+ * @brief Create an OCArrayRef from a JSON array with typed element deserialization.
  *
- * Parses a JSON object that contains type information and array data.
- * The JSON object should have a "type" field set to "OCArray" and a "data"
- * field containing the array elements. Elements are deserialized recursively
- * when possible.
+ * Parses a native JSON array and deserializes each element using
+ * typed deserialization. Arrays are native JSON types, so the input
+ * is still a native JSON array, not a wrapped object.
  *
- * @param json A cJSON object with type and data fields.
+ * @param json A cJSON array.
  * @return A newly allocated OCArrayRef, or NULL on failure.
  * @ingroup OCArray
  */

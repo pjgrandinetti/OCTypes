@@ -148,7 +148,8 @@ OCDictionaryRef OCDictionaryCreateWithContentsOfFolder(const char *folderPath,
  * @return      true on success.
  * @ingroup OCFileUtilities
  */
-bool OCTypeWriteJSONToFile(OCTypeRef obj, const char *path, OCStringRef *err);
+// JSON serialization to file
+bool OCTypeWriteJSONToFile(OCTypeRef obj, bool typed, bool formatted, const char *path, OCStringRef *error);
 /** @} */  // end of OCFileUtilities group
 #ifdef __cplusplus
 }

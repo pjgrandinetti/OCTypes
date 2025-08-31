@@ -32,7 +32,7 @@ bool jsonTypedTest_OCData(void) {
     }
 
     // Serialize to JSONTyped
-    cJSON *json = OCDataCreateJSONTyped(originalData);
+    cJSON *json = OCDataCreateJSON(originalData, true);
     if (!json) {
         JSON_TEST_LOG(test_name, "FAIL: Could not serialize to JSONTyped");
         OCRelease(originalData);
@@ -119,7 +119,7 @@ bool jsonTypedTest_OCArray(void) {
     OCRelease(nestedArray);
 
     // Serialize to JSONTyped
-    cJSON *json = OCArrayCreateJSONTyped(originalArray);
+    cJSON *json = OCArrayCreateJSON(originalArray, true);
     if (!json) {
         JSON_TEST_LOG(test_name, "FAIL: Could not serialize to JSONTyped");
         OCRelease(originalArray);
@@ -190,7 +190,7 @@ bool jsonTypedTest_OCNumber(void) {
         }
 
         // Serialize to JSONTyped
-        cJSON *json = OCNumberCreateJSONTyped(testCases[i].number);
+        cJSON *json = OCNumberCreateJSON(testCases[i].number, true);
         if (!json) {
             fprintf(stderr, "[%s] FAIL: Could not serialize %s to JSONTyped\n", test_name, testCases[i].typeName);
             OCRelease(testCases[i].number);
@@ -252,7 +252,7 @@ bool jsonTypedTest_OCString(void) {
         }
 
         // Use global JSONTyped functions since OCString uses native JSON
-        cJSON *json = OCTypeCopyJSONTyped((OCTypeRef)originalString);
+        cJSON *json = OCTypeCopyJSON((OCTypeRef)originalString, true);
         if (!json) {
             fprintf(stderr, "[%s] FAIL: Could not serialize string %zu to JSONTyped\n", test_name, i);
             OCRelease(originalString);
@@ -302,7 +302,7 @@ bool jsonTypedTest_OCBoolean(void) {
 
     for (int i = 0; i < 2; i++) {
         // Use global JSONTyped functions
-        cJSON *json = OCTypeCopyJSONTyped((OCTypeRef)testBooleans[i]);
+        cJSON *json = OCTypeCopyJSON((OCTypeRef)testBooleans[i], true);
         if (!json) {
             fprintf(stderr, "[%s] FAIL: Could not serialize %s to JSONTyped\n", test_name, boolNames[i]);
             allPassed = false;
@@ -374,7 +374,7 @@ bool jsonTypedTest_OCDictionary(void) {
     OCDictionarySetValue(originalDict, key4, nestedDict);
 
     // Serialize to JSONTyped
-    cJSON *json = OCDictionaryCreateJSONTyped(originalDict);
+    cJSON *json = OCDictionaryCreateJSON(originalDict, true);
     if (!json) {
         JSON_TEST_LOG(test_name, "FAIL: Could not serialize to JSONTyped");
         // Cleanup keys
@@ -453,7 +453,7 @@ bool jsonTypedTest_OCSet(void) {
     OCRelease(testStr);
 
     // Serialize to JSONTyped
-    cJSON *json = OCSetCreateJSONTyped(originalSet);
+    cJSON *json = OCSetCreateJSON(originalSet, true);
     if (!json) {
         JSON_TEST_LOG(test_name, "FAIL: Could not serialize to JSONTyped");
         OCRelease(originalSet);
@@ -514,7 +514,7 @@ bool jsonTypedTest_OCIndexSet(void) {
     OCIndexSetAddIndex(originalSet, 20);
 
     // Serialize to JSONTyped
-    cJSON *json = OCIndexSetCreateJSONTyped(originalSet);
+    cJSON *json = OCIndexSetCreateJSON(originalSet, true);
     if (!json) {
         JSON_TEST_LOG(test_name, "FAIL: Could not serialize to JSONTyped");
         OCRelease(originalSet);
@@ -574,7 +574,7 @@ bool jsonTypedTest_OCIndexArray(void) {
     OCIndexArrayAppendValue(originalArray, 50);
 
     // Serialize to JSONTyped
-    cJSON *json = OCIndexArrayCreateJSONTyped(originalArray);
+    cJSON *json = OCIndexArrayCreateJSON(originalArray, true);
     if (!json) {
         JSON_TEST_LOG(test_name, "FAIL: Could not serialize to JSONTyped");
         OCRelease(originalArray);
@@ -633,7 +633,7 @@ bool jsonTypedTest_OCIndexPairSet(void) {
     OCIndexPairSetAddIndexPair(originalSet, 3, 30);
 
     // Serialize to JSONTyped
-    cJSON *json = OCIndexPairSetCreateJSONTyped(originalSet);
+    cJSON *json = OCIndexPairSetCreateJSON(originalSet, true);
     if (!json) {
         JSON_TEST_LOG(test_name, "FAIL: Could not serialize to JSONTyped");
         OCRelease(originalSet);
@@ -710,9 +710,9 @@ bool jsonTypedTest_GlobalFunctions(void) {
         }
 
         // Use global JSONTyped function
-        cJSON *json = OCTypeCopyJSONTyped(testObjects[i]);
+        cJSON *json = OCTypeCopyJSON(testObjects[i], true);
         if (!json) {
-            fprintf(stderr, "[%s] FAIL: OCTypeCopyJSONTyped failed for %s\n", test_name, typeNames[i]);
+            fprintf(stderr, "[%s] FAIL: OCTypeCopyJSON failed for %s\n", test_name, typeNames[i]);
             OCRelease(testObjects[i]);
             allPassed = false;
             continue;

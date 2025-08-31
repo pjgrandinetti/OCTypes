@@ -129,30 +129,22 @@ void OCSetRemoveAllValues(OCMutableSetRef theSet);
  */
 bool OCSetEqual(OCSetRef set1, OCSetRef set2);
 /**
- * @brief Creates a JSON array representation of an OCSet.
+ * @brief Creates a JSON representation of an OCSet.
  *
- * Each element in the set is serialized using its registered OCType JSON handler.
- * If an element fails to serialize, a null is inserted and a warning is printed.
+ * For untyped serialization (typed=false), creates a JSON array where each element
+ * is serialized using untyped serialization. Note that this loses type information
+ * and the set will be indistinguishable from an array upon deserialization.
+ *
+ * For typed serialization (typed=true), creates a JSON object with "type": "OCSet"
+ * and "value" array, where each element is serialized with type information.
  *
  * @param set An OCSetRef to serialize.
- * @return A new cJSON array on success, or cJSON null on failure.
+ * @param typed Whether to include type information in the serialization.
+ * @return A new cJSON object/array on success, or cJSON null on failure.
  *         The caller is responsible for managing the returned cJSON object.
  * @ingroup OCSet
  */
-cJSON *OCSetCreateJSON(OCSetRef set);
-
-/**
- * @brief Creates a typed JSON object representation of an OCSet.
- *
- * Each element in the set is serialized using typed JSON serialization.
- * The result includes type information for proper deserialization.
- *
- * @param set An OCSetRef to serialize.
- * @return A new cJSON object with "type": "OCSet" and "value" array, or cJSON null on failure.
- *         The caller is responsible for managing the returned cJSON object.
- * @ingroup OCSet
- */
-cJSON *OCSetCreateJSONTyped(OCSetRef set);
+cJSON *OCSetCreateJSON(OCSetRef set, bool typed);
 
 /**
  * @brief Creates an OCSet from typed JSON representation.

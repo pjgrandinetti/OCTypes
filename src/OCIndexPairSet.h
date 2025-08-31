@@ -235,16 +235,23 @@ OCDataRef OCIndexPairSetCreateData(OCIndexPairSetRef set);
  */
 OCIndexPairSetRef OCIndexPairSetCreateWithData(OCDataRef data);
 /**
- * @brief Creates a JSON array representation of an OCIndexPairSet.
+ * @brief Creates a JSON representation of an OCIndexPairSet.
  *
- * Each pair in the set is serialized as a 2-element JSON array: `[index, value]`.
+ * For untyped serialization (typed=false), creates a JSON array where each pair
+ * is serialized as a 2-element JSON array: `[index, value]`. Note that this loses
+ * type information and the index pair set will be indistinguishable from a regular
+ * array upon deserialization.
+ *
+ * For typed serialization (typed=true), creates a JSON object with 
+ * "type": "OCIndexPairSet" and "value" array containing the index-value pairs.
  *
  * @param set An OCIndexPairSetRef to serialize.
- * @return A new cJSON array on success, or cJSON null on failure.
+ * @param typed Whether to include type information in the serialization.
+ * @return A new cJSON object/array on success, or cJSON null on failure.
  *         Caller is responsible for managing the returned cJSON object.
  * @ingroup OCIndexPairSet
  */
-cJSON *OCIndexPairSetCreateJSON(OCIndexPairSetRef set);
+cJSON *OCIndexPairSetCreateJSON(OCIndexPairSetRef set, bool typed);
 
 /**
  * @brief Creates an OCIndexPairSet from a JSON array of index-value pairs.
@@ -259,22 +266,9 @@ cJSON *OCIndexPairSetCreateJSON(OCIndexPairSetRef set);
 OCIndexPairSetRef OCIndexPairSetCreateFromJSON(cJSON *json);
 
 /**
- * @brief Creates a typed JSON object representation of an OCIndexPairSet.
- *
- * Creates a JSON object with type information for proper deserialization.
- * The result includes "type": "OCIndexPairSet" and "value": array of index-value pairs.
- *
- * @param set An OCIndexPairSetRef to serialize.
- * @return A new cJSON object with type information, or cJSON null on failure.
- *         Caller is responsible for managing the returned cJSON object.
- * @ingroup OCIndexPairSet
- */
-cJSON *OCIndexPairSetCreateJSONTyped(OCIndexPairSetRef set);
-
-/**
  * @brief Creates an OCIndexPairSet from typed JSON representation.
  *
- * Deserializes a JSON object created by OCIndexPairSetCreateJSONTyped back into an OCIndexPairSet.
+ * Deserializes a JSON object created with typed serialization back into an OCIndexPairSet.
  * Expects a JSON object with "type": "OCIndexPairSet" and "value": array of index-value pairs.
  *
  * @param json A cJSON object with "type": "OCIndexPairSet" and "value" array.

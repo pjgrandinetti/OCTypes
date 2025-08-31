@@ -154,12 +154,21 @@ bool OCNumberGetValue(OCNumberRef number, OCNumberType type, void *valuePtr);
  */
 int OCNumberTypeSize(OCNumberType type);
 /**
- * @brief Serialize to cJSON (value encoded as string).
+ * @brief Serialize an OCNumber to JSON.
+ *
+ * For untyped serialization (typed=false), real numbers are serialized as JSON
+ * numbers, and complex numbers as JSON strings. Type information is lost.
+ *
+ * For typed serialization (typed=true), creates a self-describing JSON object
+ * with "type": "OCNumber", "subtype" field indicating the specific OCNumberType,
+ * and "value" field containing the numeric data.
+ *
  * @param number An OCNumberRef.
- * @return cJSON object (caller responsible).
+ * @param typed Whether to include type information in the serialization.
+ * @return cJSON object on success (caller responsible), or cJSON null on failure.
  * @ingroup OCNumber
  */
-cJSON *OCNumberCreateJSON(OCNumberRef number);
+cJSON *OCNumberCreateJSON(OCNumberRef number, bool typed);
 /**
  * @brief Deserialize from cJSON using specified type.
  * @param json A cJSON string node.
@@ -168,21 +177,6 @@ cJSON *OCNumberCreateJSON(OCNumberRef number);
  * @ingroup OCNumber
  */
 OCNumberRef OCNumberCreateFromJSON(cJSON *json, OCNumberType type);
-
-/**
- * @brief Serializes an OCNumber to a self-describing JSON object.
- *
- * Creates a JSON object that contains type information and the numeric value.
- * The resulting JSON object has a "type" field set to "OCNumber", a "subtype"
- * field indicating the specific OCNumberType, and a "value" field containing
- * the actual numeric data.
- *
- * @param number A valid OCNumberRef.
- * @return A new self-describing cJSON object on success, or cJSON null on failure.
- *         The caller is responsible for managing the returned cJSON object.
- * @ingroup OCNumber
- */
-cJSON *OCNumberCreateJSONTyped(OCNumberRef number);
 
 /**
  * @brief Create an OCNumberRef from a self-describing JSON object.

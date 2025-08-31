@@ -525,30 +525,32 @@ OCDictionaryCreateWithContentsOfFolder(const char *folderPath,
     return dict;
 }
 bool OCTypeWriteJSONToFile(OCTypeRef obj,
+                           bool typed,
+                           bool formatted,
                            const char *path,
-                           OCStringRef *err) {
-    if (err) *err = NULL;
+                           OCStringRef *error) {
+    if (error) *error = NULL;
     if (!obj || !path) {
-        if (err) *err = STR("object or path was NULL");
+        if (error) *error = STR("object or path was NULL");
         return false;
     }
     // 1) build the cJSON tree using schema-conformant method
-    cJSON *root = OCTypeCopyJSON(obj);
+    cJSON *root = OCTypeCopyJSON(obj, typed);
     if (!root) {
-        if (err) *err = STR("failed to build JSON");
+        if (error) *error = STR("failed to build JSON");
         return false;
     }
-    // 2) render as compact JSON
-    char *utf8 = cJSON_PrintUnformatted(root);
+    // 2) render as compact or formatted JSON
+    char *utf8 = formatted ? cJSON_Print(root) : cJSON_PrintUnformatted(root);
     cJSON_Delete(root);
     if (!utf8) {
-        if (err) *err = STR("failed to serialize JSON");
+        if (error) *error = STR("failed to serialize JSON");
         return false;
     }
     // 3) write it out
     OCStringRef s = OCStringCreateWithCString(utf8);
     free(utf8);
-    bool ok = OCStringWriteToFile(s, path, err);
+    bool ok = OCStringWriteToFile(s, path, error);
     OCRelease(s);
     return ok;
 }

@@ -42,11 +42,8 @@ static OCStringRef impl_OCBooleanCopyFormattingDesc(OCTypeRef cf) {
 }
 // JSON‐serializer for our two singletons:
 static cJSON *
-impl_OCBooleanCopyJSON(const void *cf) {
-    if (!cf) return cJSON_CreateNull();
-    return (cf == (OCTypeRef)kOCBooleanTrue)
-               ? cJSON_CreateTrue()
-               : cJSON_CreateFalse();
+impl_OCBooleanCopyJSON(const void *cf, bool typed) {
+    return OCBooleanCreateJSON((OCBooleanRef)cf, typed);
 }
 
 static void *
@@ -62,7 +59,6 @@ void _OCBooleanInitialize(void) {
     impl_kOCBooleanTrue.base.equal = impl_OCBooleanEqual;
     impl_kOCBooleanTrue.base.copyFormattingDesc = impl_OCBooleanCopyFormattingDesc;
     impl_kOCBooleanTrue.base.copyJSON = impl_OCBooleanCopyJSON;
-    impl_kOCBooleanTrue.base.copyJSONTyped = impl_OCBooleanCopyJSON;
     impl_kOCBooleanTrue.base.copyDeep = impl_OCBooleanDeepCopy;
     impl_kOCBooleanTrue.base.copyDeepMutable = impl_OCBooleanDeepCopy;
     impl_kOCBooleanTrue.base.flags.finalized = false;
@@ -72,7 +68,6 @@ void _OCBooleanInitialize(void) {
     impl_kOCBooleanFalse.base.equal = impl_OCBooleanEqual;
     impl_kOCBooleanFalse.base.copyFormattingDesc = impl_OCBooleanCopyFormattingDesc;
     impl_kOCBooleanFalse.base.copyJSON = impl_OCBooleanCopyJSON;
-    impl_kOCBooleanFalse.base.copyJSONTyped = impl_OCBooleanCopyJSON;
     impl_kOCBooleanFalse.base.copyDeep = impl_OCBooleanDeepCopy;
     impl_kOCBooleanFalse.base.copyDeepMutable = impl_OCBooleanDeepCopy;
     impl_kOCBooleanFalse.base.flags.finalized = false;
@@ -90,12 +85,24 @@ OCBooleanRef OCBooleanGetWithBool(bool value) {
 OCStringRef OCBooleanCreateStringValue(OCBooleanRef boolean) {
     return OCStringCreateWithCString(OCBooleanGetValue(boolean) ? "true" : "false");
 }
-cJSON *OCBooleanCreateJSON(OCBooleanRef boolean) {
+cJSON *OCBooleanCreateJSON(OCBooleanRef boolean, bool typed) {
     if (!boolean) return cJSON_CreateNull();
+    
+    // Booleans are native JSON types, no wrapping needed even for typed serialization
     return (boolean == kOCBooleanTrue) ? cJSON_CreateTrue() : cJSON_CreateFalse();
 }
 OCBooleanRef OCBooleanCreateFromJSON(cJSON *json) {
     if (!json) return NULL;
+    if (cJSON_IsTrue(json)) return kOCBooleanTrue;
+    if (cJSON_IsFalse(json)) return kOCBooleanFalse;
+    return NULL;
+}
+
+OCBooleanRef OCBooleanCreateFromJSONTyped(cJSON *json) {
+    if (!json) return NULL;
+    
+    // For typed deserialization, booleans are stored as native JSON booleans
+    // No unwrapping needed since booleans are native JSON types
     if (cJSON_IsTrue(json)) return kOCBooleanTrue;
     if (cJSON_IsFalse(json)) return kOCBooleanFalse;
     return NULL;

@@ -51,33 +51,10 @@ static OCStringRef impl_OCSetCopyFormattingDesc(OCTypeRef cf) {
     return result;
 }
 static cJSON *
-impl_OCSetCopyJSON(const void *obj) {
-    if (!obj) return cJSON_CreateNull();
-    OCSetRef set = (OCSetRef)obj;
-    cJSON *arr = cJSON_CreateArray();
-    // your impl stores elements in an OCArrayRef called `elements`
-    OCArrayRef elems = set->elements;
-    OCIndex count = OCArrayGetCount(elems);
-    for (OCIndex i = 0; i < count; i++) {
-        OCTypeRef v = (OCTypeRef)OCArrayGetValueAtIndex(elems, i);
-        // ask the element for its own JSON representation…
-        cJSON *item = OCTypeCopyJSON(v);
-        if (!item) {
-            // …or fall back to a string
-            OCStringRef desc = OCTypeCopyFormattingDesc(v);
-            const char *s = desc ? OCStringGetCString(desc) : "";
-            item = cJSON_CreateString(s);
-            OCRelease(desc);
-        }
-        cJSON_AddItemToArray(arr, item);
-    }
-    return arr;
+impl_OCSetCopyJSON(const void *obj, bool typed) {
+    return OCSetCreateJSON((OCSetRef)obj, typed);
 }
 
-static cJSON *
-impl_OCSetCopyJSONTyped(const void *obj) {
-    return OCSetCreateJSONTyped((OCSetRef)obj);
-}
 static void *impl_OCSetDeepCopy(const void *obj) {
     OCSetRef src = (OCSetRef)obj;
     if (!src || !src->elements) return NULL;
@@ -114,7 +91,6 @@ static struct impl_OCSet *OCSetAllocate(void) {
         impl_OCSetEqual,
         impl_OCSetCopyFormattingDesc,
         impl_OCSetCopyJSON,
-        impl_OCSetCopyJSONTyped,
         impl_OCSetDeepCopy,
         impl_OCSetDeepCopyMutable);
     set->elements = NULL;
@@ -177,47 +153,34 @@ void OCSetRemoveAllValues(OCMutableSetRef theSet) {
 bool OCSetEqual(OCSetRef a, OCSetRef b) {
     return impl_OCSetEqual(a, b);
 }
-cJSON *OCSetCreateJSON(OCSetRef set) {
+cJSON *OCSetCreateJSON(OCSetRef set, bool typed) {
     if (!set) return cJSON_CreateNull();
+
+    // Build the array of elements first (common to both paths)
     cJSON *arr = cJSON_CreateArray();
     OCArrayRef elems = set->elements;
     OCIndex count = OCArrayGetCount(elems);
+    
     for (OCIndex i = 0; i < count; i++) {
         OCTypeRef v = (OCTypeRef)OCArrayGetValueAtIndex(elems, i);
-        cJSON *item = OCTypeCopyJSON(v);
+        cJSON *item = OCTypeCopyJSON(v, typed);
         if (!item) {
             fprintf(stderr, "OCSetCreateJSON: Failed to serialize set element at index %llu. Using null.\n", (unsigned long long)i);
             item = cJSON_CreateNull();
         }
         cJSON_AddItemToArray(arr, item);
     }
-    return arr;
-}
 
-cJSON *OCSetCreateJSONTyped(OCSetRef set) {
-    if (!set) return cJSON_CreateNull();
-
-    cJSON *entry = cJSON_CreateObject();
-    cJSON_AddStringToObject(entry, "type", "OCSet");
-
-    cJSON *arr = cJSON_CreateArray();
-    OCArrayRef elems = set->elements;
-    OCIndex count = OCArrayGetCount(elems);
-    for (OCIndex i = 0; i < count; i++) {
-        OCTypeRef v = (OCTypeRef)OCArrayGetValueAtIndex(elems, i);
-
-        // Use the global typed JSON serialization function
-        cJSON *item = OCTypeCopyJSONTyped(v);
-
-        if (!item) {
-            fprintf(stderr, "OCSetCreateJSONTyped: Failed to serialize set element at index %llu. Using null.\n", (unsigned long long)i);
-            item = cJSON_CreateNull();
-        }
-        cJSON_AddItemToArray(arr, item);
+    if (typed) {
+        // For typed serialization, OCSet needs wrapping since it's not a native JSON type
+        cJSON *entry = cJSON_CreateObject();
+        cJSON_AddStringToObject(entry, "type", "OCSet");
+        cJSON_AddItemToObject(entry, "value", arr);
+        return entry;
+    } else {
+        // For untyped serialization, return the plain JSON array
+        return arr;
     }
-
-    cJSON_AddItemToObject(entry, "value", arr);
-    return entry;
 }
 
 OCSetRef OCSetCreateFromJSONTyped(cJSON *json) {

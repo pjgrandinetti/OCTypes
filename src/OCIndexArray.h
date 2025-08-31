@@ -189,23 +189,21 @@ OCIndexArrayRef OCIndexArrayCreateFromDictionary(OCDictionaryRef dictionary);
  */
 OCIndexArrayRef OCIndexArrayCreateFromJSON(cJSON *json);
 /**
- * @brief Creates a cJSON array from an OCIndexArray.
+ * @brief Creates a JSON representation of an OCIndexArray.
  *
- * @param obj A valid OCIndexArrayRef cast to void*.
- * @return A new cJSON array node containing numeric elements.
- *         The caller is responsible for managing the returned cJSON object.
- */
-cJSON *OCIndexArrayCreateJSON(const void *obj);
-
-/**
- * @brief Creates a typed cJSON object from an OCIndexArray.
+ * For untyped serialization (typed=false), creates a JSON array of numeric values.
+ * Note that this loses type information and the index array will be indistinguishable 
+ * from a regular array upon deserialization.
+ *
+ * For typed serialization (typed=true), creates a JSON object with "type": "OCIndexArray"
+ * and "value" array containing the numeric indices.
  *
  * @param array A valid OCIndexArrayRef.
- * @return A new cJSON object with "type" and "value" fields,
- *         or NULL on failure. The caller is responsible for managing
- *         the returned cJSON object.
+ * @param typed Whether to include type information in the serialization.
+ * @return A new cJSON object/array on success, or cJSON null on failure.
+ *         The caller is responsible for managing the returned cJSON object.
  */
-cJSON *OCIndexArrayCreateJSONTyped(OCIndexArrayRef array);
+cJSON *OCIndexArrayCreateJSON(OCIndexArrayRef array, bool typed);
 
 /**
  * @brief Creates an OCIndexArray from a typed cJSON object.

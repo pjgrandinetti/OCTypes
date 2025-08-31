@@ -68,16 +68,19 @@ OCBooleanRef OCBooleanGetWithBool(bool value);
  */
 OCStringRef OCBooleanCreateStringValue(OCBooleanRef boolean);
 /**
- * @brief Creates a JSON boolean representation of an OCBooleanRef.
+ * @brief Creates a JSON representation of an OCBooleanRef.
  *
- * This function maps `kOCBooleanTrue` to JSON true and `kOCBooleanFalse` to JSON false.
+ * Since booleans are native JSON types, both typed and untyped serialization
+ * produce the same result: a JSON boolean (true or false).
  *
  * @param boolean A valid OCBooleanRef (kOCBooleanTrue or kOCBooleanFalse).
+ * @param typed Whether to include type information (ignored for booleans).
  * @return A new cJSON boolean node, or cJSON null if input is NULL.
  *         Caller is responsible for managing the returned cJSON object.
  * @ingroup OCBoolean
  */
-cJSON *OCBooleanCreateJSON(OCBooleanRef boolean);
+cJSON *OCBooleanCreateJSON(OCBooleanRef boolean, bool typed);
+
 /**
  * @brief Creates an OCBooleanRef from a JSON boolean node.
  *
@@ -89,5 +92,18 @@ cJSON *OCBooleanCreateJSON(OCBooleanRef boolean);
  * @ingroup OCBoolean
  */
 OCBooleanRef OCBooleanCreateFromJSON(cJSON *json);
+
+/**
+ * @brief Creates an OCBooleanRef from a JSON boolean node using typed deserialization.
+ *
+ * For booleans, this behaves identically to OCBooleanCreateFromJSON since
+ * booleans are native JSON types and don't require unwrapping.
+ *
+ * @param json A cJSON boolean node.
+ * @return `kOCBooleanTrue` or `kOCBooleanFalse`, or NULL if input is invalid.
+ *         Returned object is a singleton and must not be released.
+ * @ingroup OCBoolean
+ */
+OCBooleanRef OCBooleanCreateFromJSONTyped(cJSON *json);
 /** @} */  // end of OCBoolean group
 #endif     /* OCBoolean_h */

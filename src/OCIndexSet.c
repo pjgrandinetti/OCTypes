@@ -44,13 +44,8 @@ static OCStringRef impl_OCIndexSetCopyFormattingDesc(OCTypeRef cf) {
     return desc;
 }
 static cJSON *
-impl_OCIndexSetCopyJSON(const void *obj) {
-    return OCIndexSetCreateJSON((OCIndexSetRef)obj);
-}
-
-static cJSON *
-impl_OCIndexSetCopyJSONTyped(const void *obj) {
-    return OCIndexSetCreateJSONTyped((OCIndexSetRef)obj);
+impl_OCIndexSetCopyJSON(const void *obj, bool typed) {
+    return OCIndexSetCreateJSON((OCIndexSetRef)obj, typed);
 }
 OCMutableIndexSetRef OCIndexSetAllocate(void);
 static void *impl_OCIndexSetDeepCopy(const void *obj) {
@@ -95,7 +90,6 @@ OCMutableIndexSetRef OCIndexSetAllocate(void) {
         impl_OCIndexSetEqual,
         impl_OCIndexSetCopyFormattingDesc,
         impl_OCIndexSetCopyJSON,
-        impl_OCIndexSetCopyJSONTyped,
         impl_OCIndexSetDeepCopy,
         impl_OCIndexSetDeepCopyMutable);
 }
@@ -262,16 +256,42 @@ OCIndexSetRef OCIndexSetCreateWithData(OCDataRef data) {
     s->indexes = (OCMutableDataRef)OCDataCreateCopy(data);
     return s;
 }
-cJSON *OCIndexSetCreateJSON(OCIndexSetRef set) {
+cJSON *OCIndexSetCreateJSON(OCIndexSetRef set, bool typed) {
     if (!set) return cJSON_CreateNull();
+
+    // Build the array of indexes (common to both typed and untyped)
+    cJSON *arr = cJSON_CreateArray();
+    if (!arr) return cJSON_CreateNull();
+
     OCIndex count = OCIndexSetGetCount(set);
     OCIndex *buf = OCIndexSetGetBytesPtr(set);
-    if (!buf) return cJSON_CreateNull();
-    cJSON *arr = cJSON_CreateArray();
-    for (OCIndex i = 0; i < count; i++) {
-        cJSON_AddItemToArray(arr, cJSON_CreateNumber((double)buf[i]));
+    
+    // Add indexes to array (if any exist)
+    if (buf && count > 0) {
+        for (OCIndex i = 0; i < count; i++) {
+            cJSON *item = cJSON_CreateNumber((double)buf[i]);
+            if (!item) {
+                cJSON_Delete(arr);
+                return cJSON_CreateNull();
+            }
+            cJSON_AddItemToArray(arr, item);
+        }
     }
-    return arr;
+
+    if (typed) {
+        // For typed serialization, OCIndexSet needs wrapping since it's not a native JSON type
+        cJSON *entry = cJSON_CreateObject();
+        if (!entry) {
+            cJSON_Delete(arr);
+            return cJSON_CreateNull();
+        }
+        cJSON_AddStringToObject(entry, "type", "OCIndexSet");
+        cJSON_AddItemToObject(entry, "value", arr);
+        return entry;
+    } else {
+        // For untyped serialization, return the plain JSON array
+        return arr;
+    }
 }
 
 OCIndexSetRef OCIndexSetCreateFromJSON(cJSON *json) {
@@ -287,28 +307,6 @@ OCIndexSetRef OCIndexSetCreateFromJSON(cJSON *json) {
         OCIndexSetAddIndex(set, (OCIndex)item->valuedouble);
     }
     return set;
-}
-
-cJSON *OCIndexSetCreateJSONTyped(OCIndexSetRef set) {
-    if (!set) return cJSON_CreateNull();
-
-    cJSON *entry = cJSON_CreateObject();
-    cJSON_AddStringToObject(entry, "type", "OCIndexSet");
-
-    OCIndex count = OCIndexSetGetCount(set);
-    OCIndex *buf = OCIndexSetGetBytesPtr(set);
-    if (!buf) {
-        cJSON_AddItemToObject(entry, "value", cJSON_CreateArray());
-        return entry;
-    }
-
-    cJSON *arr = cJSON_CreateArray();
-    for (OCIndex i = 0; i < count; i++) {
-        cJSON_AddItemToArray(arr, cJSON_CreateNumber((double)buf[i]));
-    }
-
-    cJSON_AddItemToObject(entry, "value", arr);
-    return entry;
 }
 
 OCIndexSetRef OCIndexSetCreateFromJSONTyped(cJSON *json) {

@@ -87,15 +87,17 @@ OCStringRef OCStringCreateWithCString(const char *string);
  */
 OCMutableStringRef OCStringCreateMutableCopy(OCStringRef theString);
 /**
- * @brief Create a JSON string from an OCStringRef.
+ * @brief Serialize an OCStringRef to JSON.
  *
- * Converts the OCStringRef to a UTF-8 C string and returns it
- * as a cJSON string node. If the input is NULL, a JSON null is returned.
+ * Creates a cJSON string node from the given OCStringRef. Since strings are
+ * native JSON types, both typed and untyped serialization produce the same
+ * result: a JSON string.
  *
  * @param str The OCStringRef to serialize.
+ * @param typed Whether to use typed serialization (ignored for strings).
  * @return A cJSON string node or cJSON null on failure.
  */
-cJSON *OCStringCreateJSON(OCStringRef str);
+cJSON *OCStringCreateJSON(OCStringRef str, bool typed);
 /**
  * @brief Create an OCStringRef from a cJSON string node.
  *
@@ -107,6 +109,17 @@ cJSON *OCStringCreateJSON(OCStringRef str);
  * @return A newly allocated OCStringRef, or NULL on failure.
  */
 OCStringRef OCStringCreateFromJSON(cJSON *json);
+
+/**
+ * @brief Create an OCStringRef from a cJSON node using typed deserialization.
+ *
+ * For strings, this behaves identically to OCStringCreateFromJSON since
+ * strings are native JSON types and don't require unwrapping.
+ *
+ * @param json A cJSON node expected to be a string.
+ * @return A newly allocated OCStringRef, or NULL on failure.
+ */
+OCStringRef OCStringCreateFromJSONTyped(cJSON *json);
 /**
  * @brief Creates an OCString by decoding raw data as UTF-8 text.
  *
