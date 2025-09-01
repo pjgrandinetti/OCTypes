@@ -264,18 +264,6 @@ cJSON *OCIndexPairSetCopyAsJSON(OCIndexPairSetRef set, bool typed);
  * @ingroup OCIndexPairSet
  */
 OCIndexPairSetRef OCIndexPairSetCreateFromJSON(cJSON *json);
-
-/**
- * @brief Creates an OCIndexPairSet from typed JSON representation.
- *
- * Deserializes a JSON object created with typed serialization back into an OCIndexPairSet.
- * Expects a JSON object with "type": "OCIndexPairSet" and "value": array of index-value pairs.
- *
- * @param json A cJSON object with "type": "OCIndexPairSet" and "value" array.
- * @return A new OCIndexPairSetRef on success, or NULL on failure.
- * @ingroup OCIndexPairSet
- */
-OCIndexPairSetRef OCIndexPairSetCreateFromJSONTyped(cJSON *json);
 /**
  * @brief Logs the contents of the index-pair set to stderr for debugging.
  *

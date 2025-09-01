@@ -206,15 +206,6 @@ OCIndexArrayRef OCIndexArrayCreateFromJSON(cJSON *json);
 cJSON *OCIndexArrayCopyAsJSON(OCIndexArrayRef array, bool typed);
 
 /**
- * @brief Creates an OCIndexArray from a typed cJSON object.
- *
- * @param json A cJSON object with "type": "OCIndexArray" and
- *             "value": [array of numbers].
- * @return A new OCIndexArrayRef, or NULL on failure.
- *         The caller is responsible for releasing the returned array.
- */
-OCIndexArrayRef OCIndexArrayCreateFromJSONTyped(cJSON *json);
-/**
  * @brief Logs the contents of the array to stderr, for debugging.
  *
  * @param theIndexArray The OCIndexArrayRef instance.

@@ -40,7 +40,7 @@ bool jsonTypedTest_OCData(void) {
     }
 
     // Deserialize from JSONTyped
-    OCDataRef deserializedData = OCDataCreateFromJSONTyped(json);
+    OCDataRef deserializedData = OCDataCreateFromJSON(json);
     if (!deserializedData) {
         JSON_TEST_LOG(test_name, "FAIL: Could not deserialize from JSONTyped");
         cJSON_Delete(json);
@@ -522,7 +522,7 @@ bool jsonTypedTest_OCIndexSet(void) {
     }
 
     // Deserialize from JSONTyped
-    OCIndexSetRef deserializedSet = OCIndexSetCreateFromJSONTyped(json);
+    OCIndexSetRef deserializedSet = OCIndexSetCreateFromJSON(json);
     if (!deserializedSet) {
         JSON_TEST_LOG(test_name, "FAIL: Could not deserialize from JSONTyped");
         cJSON_Delete(json);
@@ -582,7 +582,7 @@ bool jsonTypedTest_OCIndexArray(void) {
     }
 
     // Deserialize from JSONTyped
-    OCIndexArrayRef deserializedArray = OCIndexArrayCreateFromJSONTyped(json);
+    OCIndexArrayRef deserializedArray = OCIndexArrayCreateFromJSON(json);
     if (!deserializedArray) {
         JSON_TEST_LOG(test_name, "FAIL: Could not deserialize from JSONTyped");
         cJSON_Delete(json);
@@ -641,7 +641,7 @@ bool jsonTypedTest_OCIndexPairSet(void) {
     }
 
     // Deserialize from JSONTyped
-    OCIndexPairSetRef deserializedSet = OCIndexPairSetCreateFromJSONTyped(json);
+    OCIndexPairSetRef deserializedSet = OCIndexPairSetCreateFromJSON(json);
     if (!deserializedSet) {
         JSON_TEST_LOG(test_name, "FAIL: Could not deserialize from JSONTyped");
         cJSON_Delete(json);

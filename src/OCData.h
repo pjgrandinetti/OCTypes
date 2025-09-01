@@ -258,18 +258,5 @@ cJSON *OCDataCopyAsJSON(OCDataRef data, bool typed);
  * @ingroup OCData
  */
 OCDataRef OCDataCreateFromJSON(cJSON *json);
-/**
- * @brief Creates an OCDataRef from a typed JSON object with Base64-encoded data.
- *
- * This function expects a cJSON object with "type": "OCData", "encoding": "base64",
- * and "value": "<base64-data>" fields. The encoding field is optional and defaults
- * to base64 for backward compatibility.
- *
- * @param json A cJSON object with type, encoding, and value fields.
- * @return A new OCDataRef on success, or NULL on failure.
- *         Caller is responsible for releasing the returned OCDataRef.
- * @ingroup OCData
- */
-OCDataRef OCDataCreateFromJSONTyped(cJSON *json);
 /** @} */  // end of OCData group
 #endif     /* OCData_h */

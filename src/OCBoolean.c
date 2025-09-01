@@ -98,15 +98,6 @@ OCBooleanRef OCBooleanCreateFromJSON(cJSON *json) {
     return NULL;
 }
 
-OCBooleanRef OCBooleanCreateFromJSONTyped(cJSON *json) {
-    if (!json) return NULL;
-
-    // For typed deserialization, booleans are stored as native JSON booleans
-    // No unwrapping needed since booleans are native JSON types
-    if (cJSON_IsTrue(json)) return kOCBooleanTrue;
-    if (cJSON_IsFalse(json)) return kOCBooleanFalse;
-    return NULL;
-}
 // Automatically initialize boolean type at load time
 __attribute__((constructor)) static void OCBooleanModuleInitialize(void) {
     _OCBooleanInitialize();

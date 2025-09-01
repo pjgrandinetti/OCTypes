@@ -93,17 +93,5 @@ cJSON *OCBooleanCopyAsJSON(OCBooleanRef boolean, bool typed);
  */
 OCBooleanRef OCBooleanCreateFromJSON(cJSON *json);
 
-/**
- * @brief Creates an OCBooleanRef from a JSON boolean node using typed deserialization.
- *
- * For booleans, this behaves identically to OCBooleanCreateFromJSON since
- * booleans are native JSON types and don't require unwrapping.
- *
- * @param json A cJSON boolean node.
- * @return `kOCBooleanTrue` or `kOCBooleanFalse`, or NULL if input is invalid.
- *         Returned object is a singleton and must not be released.
- * @ingroup OCBoolean
- */
-OCBooleanRef OCBooleanCreateFromJSONTyped(cJSON *json);
 /** @} */  // end of OCBoolean group
 #endif     /* OCBoolean_h */

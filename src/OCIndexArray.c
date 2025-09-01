@@ -22,7 +22,7 @@ struct impl_OCIndexArray {
 };
 OCTypeID OCIndexArrayGetTypeID(void) {
     if (kOCIndexArrayID == kOCNotATypeID) {
-        kOCIndexArrayID = OCRegisterType("OCIndexArray", (OCTypeRef (*)(cJSON *))OCIndexArrayCreateFromJSONTyped);
+        kOCIndexArrayID = OCRegisterType("OCIndexArray", (OCTypeRef (*)(cJSON *))OCIndexArrayCreateFromJSON);
     }
     return kOCIndexArrayID;
 }
@@ -282,23 +282,6 @@ OCDictionaryRef OCIndexArrayCreateDictionary(OCIndexArrayRef array) {
 OCIndexArrayRef OCIndexArrayCreateFromDictionary(OCDictionaryRef dict) {
     return dict ? OCIndexArrayCreateWithData(OCDictionaryGetValue(dict, STR("indexes"))) : NULL;
 }
-OCIndexArrayRef OCIndexArrayCreateFromJSON(cJSON *json) {
-    if (!cJSON_IsArray(json)) return NULL;
-    OCIndex count = cJSON_GetArraySize(json);
-    OCIndex *values = malloc(sizeof(OCIndex) * count);
-    if (!values) return NULL;
-    for (OCIndex i = 0; i < count; i++) {
-        cJSON *item = cJSON_GetArrayItem(json, (int)i);
-        if (!cJSON_IsNumber(item)) {
-            free(values);
-            return NULL;
-        }
-        values[i] = (OCIndex)item->valuedouble;
-    }
-    OCIndexArrayRef result = OCIndexArrayCreate(values, count);
-    free(values);
-    return result;
-}
 cJSON *OCIndexArrayCopyAsJSON(OCIndexArrayRef array, bool typed) {
     if (!array) return cJSON_CreateNull();
 
@@ -321,27 +304,41 @@ cJSON *OCIndexArrayCopyAsJSON(OCIndexArrayRef array, bool typed) {
     }
 }
 
-OCIndexArrayRef OCIndexArrayCreateFromJSONTyped(cJSON *json) {
-    if (!json || !cJSON_IsObject(json)) return NULL;
+OCIndexArrayRef OCIndexArrayCreateFromJSON(cJSON *json) {
+    if (!json) return NULL;
+    
+    cJSON *arrayToProcess = NULL;
+    
+    // Check if typed format (object with type/value structure)
+    if (cJSON_IsObject(json)) {
+        cJSON *type = cJSON_GetObjectItem(json, "type");
+        cJSON *value = cJSON_GetObjectItem(json, "value");
 
-    cJSON *type = cJSON_GetObjectItem(json, "type");
-    cJSON *value = cJSON_GetObjectItem(json, "value");
+        if (!cJSON_IsString(type) || !cJSON_IsArray(value)) return NULL;
 
-    if (!cJSON_IsString(type) || !cJSON_IsArray(value)) return NULL;
+        const char *typeName = cJSON_GetStringValue(type);
+        if (!typeName || strcmp(typeName, "OCIndexArray") != 0) return NULL;
 
-    const char *typeName = cJSON_GetStringValue(type);
-    if (!typeName || strcmp(typeName, "OCIndexArray") != 0) return NULL;
-
-    int count = cJSON_GetArraySize(value);
+        arrayToProcess = value;
+    }
+    // Handle untyped format (direct array)
+    else if (cJSON_IsArray(json)) {
+        arrayToProcess = json;
+    }
+    else {
+        return NULL;
+    }
+    
+    // Process the array
+    int count = cJSON_GetArraySize(arrayToProcess);
     if (count < 0) return NULL;
 
     OCIndex *values = malloc(sizeof(OCIndex) * count);
     if (!values) return NULL;
 
     for (int i = 0; i < count; i++) {
-        cJSON *item = cJSON_GetArrayItem(value, i);
+        cJSON *item = cJSON_GetArrayItem(arrayToProcess, i);
         if (!cJSON_IsNumber(item)) {
-            fprintf(stderr, "OCIndexArrayCreateFromJSONTyped: Invalid index at position %d\n", i);
             free(values);
             return NULL;
         }
@@ -352,6 +349,7 @@ OCIndexArrayRef OCIndexArrayCreateFromJSONTyped(cJSON *json) {
     free(values);
     return result;
 }
+
 void OCIndexArrayShow(OCIndexArrayRef array) {
     fprintf(stderr, "(");
     OCIndex count = OCIndexArrayGetCount(array);
