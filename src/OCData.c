@@ -83,7 +83,7 @@ OCStringRef OCDataCopyFormattingDesc(OCTypeRef cf) {
 }
 static cJSON *
 impl_OCDataCopyJSON(const void *obj, bool typed) {
-    return OCDataCreateJSON((OCDataRef)obj, typed);
+    return OCDataCopyAsJSON((OCDataRef)obj, typed);
 }
 
 static void impl_OCDataFinalize(const void *obj) {
@@ -408,19 +408,19 @@ OCDataRef OCDataCreateFromBase64EncodedString(OCStringRef base64String) {
     free(decoded);
     return data;
 }
-cJSON *OCDataCreateJSON(OCDataRef data, bool typed) {
+cJSON *OCDataCopyAsJSON(OCDataRef data, bool typed) {
     if (!data) return cJSON_CreateNull();
-    
+
     OCStringRef b64 = OCDataCreateBase64EncodedString(data, OCBase64EncodingOptionsNone);
     if (!b64) {
-        const char *funcName = typed ? "OCDataCreateJSONTyped" : "OCDataCreateJSON";
+        const char *funcName = typed ? "OCDataCopyAsJSONTyped" : "OCDataCopyAsJSON";
         fprintf(stderr, "%s: Failed to Base64 encode OCData.\n", funcName);
         return cJSON_CreateNull();
     }
-    
+
     const char *encoded_str = OCStringGetCString(b64);
     cJSON *result;
-    
+
     if (typed) {
         result = cJSON_CreateObject();
         cJSON_AddStringToObject(result, "type", "OCData");
@@ -429,7 +429,7 @@ cJSON *OCDataCreateJSON(OCDataRef data, bool typed) {
     } else {
         result = cJSON_CreateString(encoded_str ? encoded_str : "");
     }
-    
+
     OCRelease(b64);
     return result;
 }

@@ -43,7 +43,7 @@ static OCStringRef impl_OCBooleanCopyFormattingDesc(OCTypeRef cf) {
 // JSON‐serializer for our two singletons:
 static cJSON *
 impl_OCBooleanCopyJSON(const void *cf, bool typed) {
-    return OCBooleanCreateJSON((OCBooleanRef)cf, typed);
+    return OCBooleanCopyAsJSON((OCBooleanRef)cf, typed);
 }
 
 static void *
@@ -85,9 +85,9 @@ OCBooleanRef OCBooleanGetWithBool(bool value) {
 OCStringRef OCBooleanCreateStringValue(OCBooleanRef boolean) {
     return OCStringCreateWithCString(OCBooleanGetValue(boolean) ? "true" : "false");
 }
-cJSON *OCBooleanCreateJSON(OCBooleanRef boolean, bool typed) {
+cJSON *OCBooleanCopyAsJSON(OCBooleanRef boolean, bool typed) {
     if (!boolean) return cJSON_CreateNull();
-    
+
     // Booleans are native JSON types, no wrapping needed even for typed serialization
     return (boolean == kOCBooleanTrue) ? cJSON_CreateTrue() : cJSON_CreateFalse();
 }
@@ -100,7 +100,7 @@ OCBooleanRef OCBooleanCreateFromJSON(cJSON *json) {
 
 OCBooleanRef OCBooleanCreateFromJSONTyped(cJSON *json) {
     if (!json) return NULL;
-    
+
     // For typed deserialization, booleans are stored as native JSON booleans
     // No unwrapping needed since booleans are native JSON types
     if (cJSON_IsTrue(json)) return kOCBooleanTrue;

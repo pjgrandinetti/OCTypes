@@ -189,8 +189,8 @@ OCStringRef OCDictionaryCopyFormattingDesc(OCTypeRef cf);
  * @brief Creates a JSON object representation of an OCDictionary.
  *
  * This function serializes a dictionary into JSON format. When typed=false,
- * it returns a simple JSON object with key-value pairs. When typed=true, 
- * it returns a structured JSON object with "type": "OCDictionary" and 
+ * it returns a simple JSON object with key-value pairs. When typed=true,
+ * it returns a structured JSON object with "type": "OCDictionary" and
  * "value": {object with key-value pairs} fields.
  *
  * Each key is serialized using its OCString value. Each value is serialized
@@ -202,7 +202,7 @@ OCStringRef OCDictionaryCopyFormattingDesc(OCTypeRef cf);
  *         Caller is responsible for managing the returned cJSON object.
  * @ingroup OCDictionary
  */
-cJSON *OCDictionaryCreateJSON(OCDictionaryRef dict, bool typed);
+cJSON *OCDictionaryCopyAsJSON(OCDictionaryRef dict, bool typed);
 
 /**
  * @brief Creates an OCDictionary from a typed cJSON object.

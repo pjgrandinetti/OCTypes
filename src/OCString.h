@@ -97,7 +97,7 @@ OCMutableStringRef OCStringCreateMutableCopy(OCStringRef theString);
  * @param typed Whether to use typed serialization (ignored for strings).
  * @return A cJSON string node or cJSON null on failure.
  */
-cJSON *OCStringCreateJSON(OCStringRef str, bool typed);
+cJSON *OCStringCopyAsJSON(OCStringRef str, bool typed);
 /**
  * @brief Create an OCStringRef from a cJSON string node.
  *

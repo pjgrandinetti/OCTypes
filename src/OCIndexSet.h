@@ -214,7 +214,7 @@ OCIndexSetRef OCIndexSetCreateFromJSON(cJSON *json);
  * @brief Creates a JSON representation of an OCIndexSet.
  *
  * For untyped serialization (typed=false), creates a JSON array of numeric values.
- * Note that this loses type information and the index set will be indistinguishable 
+ * Note that this loses type information and the index set will be indistinguishable
  * from a regular array upon deserialization.
  *
  * For typed serialization (typed=true), creates a JSON object with "type": "OCIndexSet"
@@ -226,7 +226,7 @@ OCIndexSetRef OCIndexSetCreateFromJSON(cJSON *json);
  *         The caller is responsible for managing the returned cJSON object.
  * @ingroup OCIndexSet
  */
-cJSON *OCIndexSetCreateJSON(OCIndexSetRef set, bool typed);
+cJSON *OCIndexSetCopyAsJSON(OCIndexSetRef set, bool typed);
 
 /**
  * @brief Creates an OCIndexSet from typed JSON representation.

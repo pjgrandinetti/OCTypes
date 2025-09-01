@@ -192,7 +192,7 @@ OCIndexArrayRef OCIndexArrayCreateFromJSON(cJSON *json);
  * @brief Creates a JSON representation of an OCIndexArray.
  *
  * For untyped serialization (typed=false), creates a JSON array of numeric values.
- * Note that this loses type information and the index array will be indistinguishable 
+ * Note that this loses type information and the index array will be indistinguishable
  * from a regular array upon deserialization.
  *
  * For typed serialization (typed=true), creates a JSON object with "type": "OCIndexArray"
@@ -203,7 +203,7 @@ OCIndexArrayRef OCIndexArrayCreateFromJSON(cJSON *json);
  * @return A new cJSON object/array on success, or cJSON null on failure.
  *         The caller is responsible for managing the returned cJSON object.
  */
-cJSON *OCIndexArrayCreateJSON(OCIndexArrayRef array, bool typed);
+cJSON *OCIndexArrayCopyAsJSON(OCIndexArrayRef array, bool typed);
 
 /**
  * @brief Creates an OCIndexArray from a typed cJSON object.

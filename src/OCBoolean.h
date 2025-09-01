@@ -79,7 +79,7 @@ OCStringRef OCBooleanCreateStringValue(OCBooleanRef boolean);
  *         Caller is responsible for managing the returned cJSON object.
  * @ingroup OCBoolean
  */
-cJSON *OCBooleanCreateJSON(OCBooleanRef boolean, bool typed);
+cJSON *OCBooleanCopyAsJSON(OCBooleanRef boolean, bool typed);
 
 /**
  * @brief Creates an OCBooleanRef from a JSON boolean node.

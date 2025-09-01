@@ -55,7 +55,7 @@ static OCStringRef impl_OCIndexArrayCopyFormattingDesc(OCTypeRef cf) {
 }
 static cJSON *
 impl_OCIndexArrayCopyJSON(const void *obj, bool typed) {
-    return OCIndexArrayCreateJSON((OCIndexArrayRef)obj, typed);
+    return OCIndexArrayCopyAsJSON((OCIndexArrayRef)obj, typed);
 }
 static OCMutableIndexArrayRef OCIndexArrayAllocate(void) {
     return (OCMutableIndexArrayRef)OCTypeAlloc(
@@ -299,7 +299,7 @@ OCIndexArrayRef OCIndexArrayCreateFromJSON(cJSON *json) {
     free(values);
     return result;
 }
-cJSON *OCIndexArrayCreateJSON(OCIndexArrayRef array, bool typed) {
+cJSON *OCIndexArrayCopyAsJSON(OCIndexArrayRef array, bool typed) {
     if (!array) return cJSON_CreateNull();
 
     OCIndex count = OCIndexArrayGetCount(array);

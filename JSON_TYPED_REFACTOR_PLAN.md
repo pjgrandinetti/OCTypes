@@ -4,7 +4,7 @@
 Implement comprehensive typed JSON serialization across all OCType classes to enable full round-trip fidelity while maintaining backward compatibility.
 
 ## Current State
-- ✅ `OCDataCreateJSONTyped`/`OCDataCreateFromJSONTyped` implemented
+- ✅ `OCDataCopyAsJSONTyped`/`OCDataCreateFromJSONTyped` implemented
 - ❌ All other OCType classes use untyped JSON (information loss)
 
 ## Target Architecture

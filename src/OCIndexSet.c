@@ -45,7 +45,7 @@ static OCStringRef impl_OCIndexSetCopyFormattingDesc(OCTypeRef cf) {
 }
 static cJSON *
 impl_OCIndexSetCopyJSON(const void *obj, bool typed) {
-    return OCIndexSetCreateJSON((OCIndexSetRef)obj, typed);
+    return OCIndexSetCopyAsJSON((OCIndexSetRef)obj, typed);
 }
 OCMutableIndexSetRef OCIndexSetAllocate(void);
 static void *impl_OCIndexSetDeepCopy(const void *obj) {
@@ -256,7 +256,7 @@ OCIndexSetRef OCIndexSetCreateWithData(OCDataRef data) {
     s->indexes = (OCMutableDataRef)OCDataCreateCopy(data);
     return s;
 }
-cJSON *OCIndexSetCreateJSON(OCIndexSetRef set, bool typed) {
+cJSON *OCIndexSetCopyAsJSON(OCIndexSetRef set, bool typed) {
     if (!set) return cJSON_CreateNull();
 
     // Build the array of indexes (common to both typed and untyped)
@@ -265,7 +265,7 @@ cJSON *OCIndexSetCreateJSON(OCIndexSetRef set, bool typed) {
 
     OCIndex count = OCIndexSetGetCount(set);
     OCIndex *buf = OCIndexSetGetBytesPtr(set);
-    
+
     // Add indexes to array (if any exist)
     if (buf && count > 0) {
         for (OCIndex i = 0; i < count; i++) {

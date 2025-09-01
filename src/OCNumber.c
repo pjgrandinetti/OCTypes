@@ -210,7 +210,7 @@ static OCStringRef impl_OCNumberCopyFormattingDesc(OCTypeRef theType) {
 /// Serialize an OCNumber (including all integer widths, floats & complexes) into cJSON.
 static cJSON *
 impl_OCNumberCopyJSON(const void *obj, bool typed) {
-    return OCNumberCreateJSON((OCNumberRef)obj, typed);
+    return OCNumberCopyAsJSON((OCNumberRef)obj, typed);
 }
 
 static void *impl_OCNumberDeepCopy(const void *obj) {
@@ -544,7 +544,7 @@ bool OCNumberGetValue(OCNumberRef number, OCNumberType type, void *valuePtr) {
     }
     return true;
 }
-cJSON *OCNumberCreateJSON(OCNumberRef number, bool typed) {
+cJSON *OCNumberCopyAsJSON(OCNumberRef number, bool typed) {
     if (!number) return cJSON_CreateNull();
 
     cJSON *result = NULL;
@@ -638,12 +638,12 @@ cJSON *OCNumberCreateJSON(OCNumberRef number, bool typed) {
             cJSON_Delete(result);
             return cJSON_CreateNull();
         }
-        
+
         cJSON_AddStringToObject(entry, "type", "OCNumber");
-        
+
         const char *subTypeName = OCNumberGetTypeName(number->type);
         cJSON_AddStringToObject(entry, "subtype", subTypeName ? subTypeName : "unknown");
-        
+
         cJSON_AddItemToObject(entry, "value", result);
         return entry;
     }

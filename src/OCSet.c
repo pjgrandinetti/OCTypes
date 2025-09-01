@@ -52,7 +52,7 @@ static OCStringRef impl_OCSetCopyFormattingDesc(OCTypeRef cf) {
 }
 static cJSON *
 impl_OCSetCopyJSON(const void *obj, bool typed) {
-    return OCSetCreateJSON((OCSetRef)obj, typed);
+    return OCSetCopyAsJSON((OCSetRef)obj, typed);
 }
 
 static void *impl_OCSetDeepCopy(const void *obj) {
@@ -153,14 +153,14 @@ void OCSetRemoveAllValues(OCMutableSetRef theSet) {
 bool OCSetEqual(OCSetRef a, OCSetRef b) {
     return impl_OCSetEqual(a, b);
 }
-cJSON *OCSetCreateJSON(OCSetRef set, bool typed) {
+cJSON *OCSetCopyAsJSON(OCSetRef set, bool typed) {
     if (!set) return cJSON_CreateNull();
 
     // Build the array of elements first (common to both paths)
     cJSON *arr = cJSON_CreateArray();
     OCArrayRef elems = set->elements;
     OCIndex count = OCArrayGetCount(elems);
-    
+
     for (OCIndex i = 0; i < count; i++) {
         OCTypeRef v = (OCTypeRef)OCArrayGetValueAtIndex(elems, i);
         cJSON *item = OCTypeCopyJSON(v, typed);

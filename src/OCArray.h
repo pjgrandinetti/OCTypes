@@ -242,7 +242,7 @@ OCArrayRef OCArrayCreateWithArray(OCArrayRef array);
  * Creates a JSON array representation of the OCArray. If the typed parameter
  * is true, each element is serialized using typed JSON serialization when
  * available. If false, each element uses untyped serialization.
- * 
+ *
  * Arrays are native JSON types, so they are not wrapped in type information
  * even when typed=true.
  *
@@ -252,7 +252,7 @@ OCArrayRef OCArrayCreateWithArray(OCArrayRef array);
  *         The caller is responsible for managing the returned cJSON object.
  * @ingroup OCArray
  */
-cJSON *OCArrayCreateJSON(OCArrayRef array, bool typed);
+cJSON *OCArrayCopyAsJSON(OCArrayRef array, bool typed);
 
 /**
  * @brief Create an OCArrayRef from a JSON array.

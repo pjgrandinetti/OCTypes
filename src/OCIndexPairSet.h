@@ -242,7 +242,7 @@ OCIndexPairSetRef OCIndexPairSetCreateWithData(OCDataRef data);
  * type information and the index pair set will be indistinguishable from a regular
  * array upon deserialization.
  *
- * For typed serialization (typed=true), creates a JSON object with 
+ * For typed serialization (typed=true), creates a JSON object with
  * "type": "OCIndexPairSet" and "value" array containing the index-value pairs.
  *
  * @param set An OCIndexPairSetRef to serialize.
@@ -251,7 +251,7 @@ OCIndexPairSetRef OCIndexPairSetCreateWithData(OCDataRef data);
  *         Caller is responsible for managing the returned cJSON object.
  * @ingroup OCIndexPairSet
  */
-cJSON *OCIndexPairSetCreateJSON(OCIndexPairSetRef set, bool typed);
+cJSON *OCIndexPairSetCopyAsJSON(OCIndexPairSetRef set, bool typed);
 
 /**
  * @brief Creates an OCIndexPairSet from a JSON array of index-value pairs.

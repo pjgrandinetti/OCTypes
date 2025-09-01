@@ -38,7 +38,7 @@ static OCStringRef impl_OCIndexPairSetCopyFormattingDesc(OCTypeRef cf) {
 }
 static cJSON *
 impl_OCIndexPairSetCopyJSON(const void *obj, bool typed) {
-    return OCIndexPairSetCreateJSON((OCIndexPairSetRef)obj, typed);
+    return OCIndexPairSetCopyAsJSON((OCIndexPairSetRef)obj, typed);
 }
 static OCMutableIndexPairSetRef OCIndexPairSetAllocate(void);
 static void *impl_OCIndexPairSetDeepCopy(const void *obj) {
@@ -170,7 +170,7 @@ bool OCIndexPairSetContainsIndex(OCIndexPairSetRef s, OCIndex index) {
             return true;
     return false;
 }
-cJSON *OCIndexPairSetCreateJSON(OCIndexPairSetRef set, bool typed) {
+cJSON *OCIndexPairSetCopyAsJSON(OCIndexPairSetRef set, bool typed) {
     if (!set) return cJSON_CreateNull();
 
     OCIndex count = OCIndexPairSetGetCount(set);

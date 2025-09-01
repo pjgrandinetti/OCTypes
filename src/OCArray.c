@@ -24,7 +24,7 @@
 #include <stdlib.h>    // For qsort, qsort_r, qsort_s, malloc, etc.
 #include <string.h>    // For memcpy
 #include "OCString.h"  // For OCString functions
-#include "OCBoolean.h" // For OCBoolean functions  
+#include "OCBoolean.h" // For OCBoolean functions
 #include "OCNumber.h"  // For OCNumber functions
 #include "OCDictionary.h" // For OCDictionary functions
 #if defined(__APPLE__)
@@ -158,9 +158,8 @@ OCStringRef OCArrayCopyFormattingDesc(OCTypeRef cf) {
     OCStringAppendCString(result, "]>");
     return result;
 }
-static cJSON *
-impl_OCArrayCopyJSON(const void *obj, bool typed) {
-    return OCArrayCreateJSON((OCArrayRef)obj, typed);
+static cJSON *impl_OCArrayCopyJSON(const void *obj, bool typed) {
+    return OCArrayCopyAsJSON((OCArrayRef)obj, typed);
 }
 
 static void impl_OCArrayFinalize(const void *theType) {
@@ -263,31 +262,31 @@ OCMutableArrayRef OCArrayCreateMutableCopy(OCArrayRef theArray) {
     }
     return newMutableArray;
 }
-cJSON *OCArrayCreateJSON(OCArrayRef array, bool typed) {
+cJSON *OCArrayCopyAsJSON(OCArrayRef array, bool typed) {
     if (!array) return cJSON_CreateNull();
-    
+
     cJSON *arr = cJSON_CreateArray();
     uint64_t count = OCArrayGetCount(array);
     for (uint64_t i = 0; i < count; i++) {
         OCTypeRef elem = OCArrayGetValueAtIndex(array, i);
-        
+
         // Use typed or untyped serialization based on parameter
         cJSON *jsonVal = OCTypeCopyJSON(elem, typed);
-        
+
         if (!jsonVal) {
-            const char *funcName = typed ? "OCArrayCreateJSON(typed)" : "OCArrayCreateJSON";
+            const char *funcName = typed ? "OCArrayCopyAsJSON(typed)" : "OCArrayCopyAsJSON";
             fprintf(stderr, "%s: Failed to serialize array element at index %llu. Using null.\n", funcName, (unsigned long long)i);
             jsonVal = cJSON_CreateNull();
         }
         cJSON_AddItemToArray(arr, jsonVal);
     }
-    
+
     // Arrays are native JSON types, no wrapping needed even for typed serialization
     return arr;
 }
 
 OCArrayRef OCArrayCreateFromJSONTyped(cJSON *json) {
-    // Arrays are native JSON types, so even "typed" deserialization 
+    // Arrays are native JSON types, so even "typed" deserialization
     // expects a native JSON array, not a wrapped object
     if (!json || !cJSON_IsArray(json)) return NULL;
 

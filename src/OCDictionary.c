@@ -129,7 +129,7 @@ static void impl_OCDictionaryFinalize(const void *theType) {
 }
 static cJSON *
 impl_OCDictionaryCopyJSON(const void *obj, bool typed) {
-    return OCDictionaryCreateJSON((OCDictionaryRef)obj, typed);
+    return OCDictionaryCopyAsJSON((OCDictionaryRef)obj, typed);
 }
 static struct impl_OCDictionary *OCDictionaryAllocate() {
     struct impl_OCDictionary *dict = OCTypeAlloc(
@@ -370,23 +370,23 @@ OCArrayRef OCDictionaryCreateArrayWithAllValues(OCDictionaryRef theDictionary) {
     free(keys);
     return array;
 }
-cJSON *OCDictionaryCreateJSON(OCDictionaryRef dict, bool typed) {
+cJSON *OCDictionaryCopyAsJSON(OCDictionaryRef dict, bool typed) {
     if (!dict) return cJSON_CreateNull();
 
     cJSON *root = cJSON_CreateObject();
     OCArrayRef keys = OCDictionaryCreateArrayWithAllKeys(dict);
     uint64_t n = OCArrayGetCount(keys);
-    
+
     for (uint64_t i = 0; i < n; i++) {
         OCStringRef key = OCArrayGetValueAtIndex(keys, i);
         const char *k = OCStringGetCString(key);
         OCTypeRef v = (OCTypeRef)OCDictionaryGetValue(dict, key);
-        
+
         // Use typed or untyped serialization based on parameter
         cJSON *child = OCTypeCopyJSON(v, typed);
-        
+
         if (!child) {
-            const char *funcName = typed ? "OCDictionaryCreateJSON(typed)" : "OCDictionaryCreateJSON";
+            const char *funcName = typed ? "OCDictionaryCopyAsJSON(typed)" : "OCDictionaryCopyAsJSON";
             fprintf(stderr, "%s: Failed to serialize value for key '%s'. Using null.\n", funcName, k);
             child = cJSON_CreateNull();
         }

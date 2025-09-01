@@ -168,7 +168,7 @@ int OCNumberTypeSize(OCNumberType type);
  * @return cJSON object on success (caller responsible), or cJSON null on failure.
  * @ingroup OCNumber
  */
-cJSON *OCNumberCreateJSON(OCNumberRef number, bool typed);
+cJSON *OCNumberCopyAsJSON(OCNumberRef number, bool typed);
 /**
  * @brief Deserialize from cJSON using specified type.
  * @param json A cJSON string node.

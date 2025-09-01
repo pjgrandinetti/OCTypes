@@ -247,7 +247,7 @@ static OCStringRef impl_OCStringCopyFormattingDesc(OCTypeRef cf) {
 }
 static cJSON *
 impl_OCStringCopyJSON(const void *obj, bool typed) {
-    return OCStringCreateJSON((OCStringRef)obj, typed);
+    return OCStringCopyAsJSON((OCStringRef)obj, typed);
 }
 
 static void *impl_OCStringDeepCopy(const void *obj) {
@@ -278,10 +278,10 @@ static struct impl_OCString *OCStringAllocate() {
     obj->capacity = 0;
     return obj;
 }
-cJSON *OCStringCreateJSON(OCStringRef str, bool typed) {
+cJSON *OCStringCopyAsJSON(OCStringRef str, bool typed) {
     if (!str) return cJSON_CreateNull();
     const char *s = OCStringGetCString(str);
-    
+
     // Strings are native JSON types, no wrapping needed even for typed serialization
     return cJSON_CreateString(s ? s : "");
 }
@@ -293,7 +293,7 @@ OCStringRef OCStringCreateFromJSON(cJSON *json) {
 
 OCStringRef OCStringCreateFromJSONTyped(cJSON *json) {
     if (!json || !cJSON_IsString(json)) return NULL;
-    
+
     // For typed serialization, strings are stored as native JSON strings
     // No unwrapping needed since strings are native JSON types
     const char *s = json->valuestring;

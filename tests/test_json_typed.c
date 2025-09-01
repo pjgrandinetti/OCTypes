@@ -32,7 +32,7 @@ bool jsonTypedTest_OCData(void) {
     }
 
     // Serialize to JSONTyped
-    cJSON *json = OCDataCreateJSON(originalData, true);
+    cJSON *json = OCDataCopyAsJSON(originalData, true);
     if (!json) {
         JSON_TEST_LOG(test_name, "FAIL: Could not serialize to JSONTyped");
         OCRelease(originalData);
@@ -119,7 +119,7 @@ bool jsonTypedTest_OCArray(void) {
     OCRelease(nestedArray);
 
     // Serialize to JSONTyped
-    cJSON *json = OCArrayCreateJSON(originalArray, true);
+    cJSON *json = OCArrayCopyAsJSON(originalArray, true);
     if (!json) {
         JSON_TEST_LOG(test_name, "FAIL: Could not serialize to JSONTyped");
         OCRelease(originalArray);
@@ -190,7 +190,7 @@ bool jsonTypedTest_OCNumber(void) {
         }
 
         // Serialize to JSONTyped
-        cJSON *json = OCNumberCreateJSON(testCases[i].number, true);
+        cJSON *json = OCNumberCopyAsJSON(testCases[i].number, true);
         if (!json) {
             fprintf(stderr, "[%s] FAIL: Could not serialize %s to JSONTyped\n", test_name, testCases[i].typeName);
             OCRelease(testCases[i].number);
@@ -374,7 +374,7 @@ bool jsonTypedTest_OCDictionary(void) {
     OCDictionarySetValue(originalDict, key4, nestedDict);
 
     // Serialize to JSONTyped
-    cJSON *json = OCDictionaryCreateJSON(originalDict, true);
+    cJSON *json = OCDictionaryCopyAsJSON(originalDict, true);
     if (!json) {
         JSON_TEST_LOG(test_name, "FAIL: Could not serialize to JSONTyped");
         // Cleanup keys
@@ -453,7 +453,7 @@ bool jsonTypedTest_OCSet(void) {
     OCRelease(testStr);
 
     // Serialize to JSONTyped
-    cJSON *json = OCSetCreateJSON(originalSet, true);
+    cJSON *json = OCSetCopyAsJSON(originalSet, true);
     if (!json) {
         JSON_TEST_LOG(test_name, "FAIL: Could not serialize to JSONTyped");
         OCRelease(originalSet);
@@ -514,7 +514,7 @@ bool jsonTypedTest_OCIndexSet(void) {
     OCIndexSetAddIndex(originalSet, 20);
 
     // Serialize to JSONTyped
-    cJSON *json = OCIndexSetCreateJSON(originalSet, true);
+    cJSON *json = OCIndexSetCopyAsJSON(originalSet, true);
     if (!json) {
         JSON_TEST_LOG(test_name, "FAIL: Could not serialize to JSONTyped");
         OCRelease(originalSet);
@@ -574,7 +574,7 @@ bool jsonTypedTest_OCIndexArray(void) {
     OCIndexArrayAppendValue(originalArray, 50);
 
     // Serialize to JSONTyped
-    cJSON *json = OCIndexArrayCreateJSON(originalArray, true);
+    cJSON *json = OCIndexArrayCopyAsJSON(originalArray, true);
     if (!json) {
         JSON_TEST_LOG(test_name, "FAIL: Could not serialize to JSONTyped");
         OCRelease(originalArray);
@@ -633,7 +633,7 @@ bool jsonTypedTest_OCIndexPairSet(void) {
     OCIndexPairSetAddIndexPair(originalSet, 3, 30);
 
     // Serialize to JSONTyped
-    cJSON *json = OCIndexPairSetCreateJSON(originalSet, true);
+    cJSON *json = OCIndexPairSetCopyAsJSON(originalSet, true);
     if (!json) {
         JSON_TEST_LOG(test_name, "FAIL: Could not serialize to JSONTyped");
         OCRelease(originalSet);

@@ -144,7 +144,7 @@ bool OCSetEqual(OCSetRef set1, OCSetRef set2);
  *         The caller is responsible for managing the returned cJSON object.
  * @ingroup OCSet
  */
-cJSON *OCSetCreateJSON(OCSetRef set, bool typed);
+cJSON *OCSetCopyAsJSON(OCSetRef set, bool typed);
 
 /**
  * @brief Creates an OCSet from typed JSON representation.
