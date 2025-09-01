@@ -77,7 +77,7 @@ static void *impl_OCIndexSetDeepCopyMutable(const void *obj) {
 // -- Type Registration --
 OCTypeID OCIndexSetGetTypeID(void) {
     if (kOCIndexSetID == kOCNotATypeID) {
-        kOCIndexSetID = OCRegisterType("OCIndexSet", (OCTypeRef (*)(cJSON *))OCIndexSetCreateFromJSON);
+        kOCIndexSetID = OCRegisterType("OCIndexSet", (OCTypeRef (*)(cJSON *, OCStringRef *))OCIndexSetCreateFromJSON);
     }
     return kOCIndexSetID;
 }
@@ -294,8 +294,11 @@ cJSON *OCIndexSetCopyAsJSON(OCIndexSetRef set, bool typed) {
     }
 }
 
-OCIndexSetRef OCIndexSetCreateFromJSON(cJSON *json) {
-    if (!json) return NULL;
+OCIndexSetRef OCIndexSetCreateFromJSON(cJSON *json, OCStringRef *outError) {
+    if (!json) {
+        if (outError) *outError = STR("JSON input is NULL");
+        return NULL;
+    }
     
     cJSON *arrayToProcess = NULL;
     
@@ -304,10 +307,16 @@ OCIndexSetRef OCIndexSetCreateFromJSON(cJSON *json) {
         cJSON *type = cJSON_GetObjectItem(json, "type");
         cJSON *value = cJSON_GetObjectItem(json, "value");
 
-        if (!cJSON_IsString(type) || !cJSON_IsArray(value)) return NULL;
+        if (!cJSON_IsString(type) || !cJSON_IsArray(value)) {
+            if (outError) *outError = STR("Invalid typed JSON format: missing or invalid type/value fields");
+            return NULL;
+        }
 
         const char *typeName = cJSON_GetStringValue(type);
-        if (!typeName || strcmp(typeName, "OCIndexSet") != 0) return NULL;
+        if (!typeName || strcmp(typeName, "OCIndexSet") != 0) {
+            if (outError) *outError = STR("Invalid type: expected OCIndexSet");
+            return NULL;
+        }
 
         arrayToProcess = value;
     }
@@ -316,21 +325,30 @@ OCIndexSetRef OCIndexSetCreateFromJSON(cJSON *json) {
         arrayToProcess = json;
     }
     else {
+        if (outError) *outError = STR("Invalid JSON: expected object or array");
         return NULL;
     }
     
     // Process the array
     OCMutableIndexSetRef set = OCIndexSetCreateMutable();
-    if (!set) return NULL;
+    if (!set) {
+        if (outError) *outError = STR("Failed to create mutable index set");
+        return NULL;
+    }
 
     int count = cJSON_GetArraySize(arrayToProcess);
     for (int i = 0; i < count; i++) {
         cJSON *item = cJSON_GetArrayItem(arrayToProcess, i);
         if (!cJSON_IsNumber(item)) {
+            if (outError) *outError = STR("Invalid array element: expected number");
             OCRelease(set);
             return NULL;
         }
-        OCIndexSetAddIndex(set, (OCIndex)item->valuedouble);
+        if (!OCIndexSetAddIndex(set, (OCIndex)item->valuedouble)) {
+            if (outError) *outError = STR("Failed to add index to set");
+            OCRelease(set);
+            return NULL;
+        }
     }
 
     return set;

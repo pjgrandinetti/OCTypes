@@ -209,7 +209,7 @@ OCIndexSetRef OCIndexSetCreateWithData(OCDataRef data);
  *         The caller is responsible for releasing the returned OCIndexSet.
  * @ingroup OCIndexSet
  */
-OCIndexSetRef OCIndexSetCreateFromJSON(cJSON *json);
+OCIndexSetRef OCIndexSetCreateFromJSON(cJSON *json, OCStringRef *outError);
 /**
  * @brief Creates a JSON representation of an OCIndexSet.
  *

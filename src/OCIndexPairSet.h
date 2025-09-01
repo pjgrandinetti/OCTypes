@@ -259,11 +259,12 @@ cJSON *OCIndexPairSetCopyAsJSON(OCIndexPairSetRef set, bool typed);
  * Each item in the JSON array must be a 2-element array: `[index, value]`.
  *
  * @param json A cJSON array of index pairs.
+ * @param outError Optional pointer to receive error information if deserialization fails.
  * @return A new OCIndexPairSetRef on success, or NULL on failure.
  *         Caller is responsible for releasing the returned set.
  * @ingroup OCIndexPairSet
  */
-OCIndexPairSetRef OCIndexPairSetCreateFromJSON(cJSON *json);
+OCIndexPairSetRef OCIndexPairSetCreateFromJSON(cJSON *json, OCStringRef *outError);
 /**
  * @brief Logs the contents of the index-pair set to stderr for debugging.
  *

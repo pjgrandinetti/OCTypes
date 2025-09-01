@@ -106,20 +106,11 @@ cJSON *OCStringCopyAsJSON(OCStringRef str, bool typed);
  * (caller must call OCRelease when done).
  *
  * @param json A cJSON node expected to be a string.
+ * @param outError Optional pointer to receive an error string on failure.
  * @return A newly allocated OCStringRef, or NULL on failure.
  */
-OCStringRef OCStringCreateFromJSON(cJSON *json);
+OCStringRef OCStringCreateFromJSON(cJSON *json, OCStringRef *outError);
 
-/**
- * @brief Create an OCStringRef from a cJSON node using typed deserialization.
- *
- * For strings, this behaves identically to OCStringCreateFromJSON since
- * strings are native JSON types and don't require unwrapping.
- *
- * @param json A cJSON node expected to be a string.
- * @return A newly allocated OCStringRef, or NULL on failure.
- */
-OCStringRef OCStringCreateFromJSONTyped(cJSON *json);
 /**
  * @brief Creates an OCString by decoding raw data as UTF-8 text.
  *

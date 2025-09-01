@@ -23,7 +23,7 @@ struct impl_OCData {
 };
 OCTypeID OCDataGetTypeID(void) {
     if (kOCDataID == kOCNotATypeID) {
-        kOCDataID = OCRegisterType("OCData", (OCTypeRef (*)(cJSON *))OCDataCreateFromJSON);
+        kOCDataID = OCRegisterType("OCData", (OCTypeRef (*)(cJSON *, OCStringRef *))OCDataCreateFromJSON);
     }
     return kOCDataID;
 }
@@ -433,44 +433,73 @@ cJSON *OCDataCopyAsJSON(OCDataRef data, bool typed) {
     OCRelease(b64);
     return result;
 }
-OCDataRef OCDataCreateFromJSON(cJSON *json) {
-    if (!json) return NULL;
+OCDataRef OCDataCreateFromJSON(cJSON *json, OCStringRef *outError) {
+    if (!json) {
+        if (outError) *outError = STR("JSON input is NULL");
+        return NULL;
+    }
     
     // Check if typed format (object with type/value structure)
     if (cJSON_IsObject(json)) {
         cJSON *type = cJSON_GetObjectItem(json, "type");
         cJSON *encoding = cJSON_GetObjectItem(json, "encoding");
         cJSON *value = cJSON_GetObjectItem(json, "value");
-        if (!cJSON_IsString(type) || !cJSON_IsString(value)) return NULL;
-        if (strcmp(type->valuestring, "OCData") != 0) return NULL;
+        if (!cJSON_IsString(type) || !cJSON_IsString(value)) {
+            if (outError) *outError = STR("Invalid typed JSON format: missing or invalid type/value fields");
+            return NULL;
+        }
+        if (strcmp(type->valuestring, "OCData") != 0) {
+            if (outError) *outError = STR("Invalid type: expected OCData");
+            return NULL;
+        }
 
         // Check encoding - default to base64 if not specified for backward compatibility
         if (encoding && cJSON_IsString(encoding)) {
             if (strcmp(encoding->valuestring, "base64") != 0) {
-                return NULL; // Unsupported encoding
+                if (outError) *outError = STR("Unsupported encoding: only base64 is supported");
+                return NULL;
             }
         }
 
         const char *encoded = value->valuestring;
-        if (!encoded) return NULL;
+        if (!encoded) {
+            if (outError) *outError = STR("Invalid value: encoded string is NULL");
+            return NULL;
+        }
         OCStringRef b64 = OCStringCreateWithCString(encoded);
-        if (!b64) return NULL;
+        if (!b64) {
+            if (outError) *outError = STR("Failed to create string from encoded data");
+            return NULL;
+        }
         OCDataRef result = OCDataCreateFromBase64EncodedString(b64);
         OCRelease(b64);
+        if (!result && outError) {
+            *outError = STR("Failed to decode base64 data");
+        }
         return result;
     }
     
     // Handle untyped format (direct string)
     if (cJSON_IsString(json)) {
         const char *encoded = json->valuestring;
-        if (!encoded) return NULL;
+        if (!encoded) {
+            if (outError) *outError = STR("Invalid string: encoded data is NULL");
+            return NULL;
+        }
         OCStringRef b64 = OCStringCreateWithCString(encoded);
-        if (!b64) return NULL;
+        if (!b64) {
+            if (outError) *outError = STR("Failed to create string from encoded data");
+            return NULL;
+        }
         OCDataRef result = OCDataCreateFromBase64EncodedString(b64);
         OCRelease(b64);
+        if (!result && outError) {
+            *outError = STR("Failed to decode base64 data");
+        }
         return result;
     }
     
+    if (outError) *outError = STR("Invalid JSON: expected object or string");
     return NULL;
 }
 

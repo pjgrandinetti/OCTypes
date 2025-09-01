@@ -79,7 +79,7 @@ static void *impl_OCSetDeepCopyMutable(const void *obj) {
 }
 OCTypeID OCSetGetTypeID(void) {
     if (kOCSetID == kOCNotATypeID) {
-        kOCSetID = OCRegisterType("OCSet", (OCTypeRef (*)(cJSON *))OCSetCreateFromJSONTyped);
+        kOCSetID = OCRegisterType("OCSet", (OCTypeRef (*)(cJSON *, OCStringRef *))OCSetCreateFromJSONTyped);
     }
     return kOCSetID;
 }
@@ -183,37 +183,64 @@ cJSON *OCSetCopyAsJSON(OCSetRef set, bool typed) {
     }
 }
 
-OCSetRef OCSetCreateFromJSONTyped(cJSON *json) {
-    if (!json || !cJSON_IsObject(json)) return NULL;
+OCSetRef OCSetCreateFromJSONTyped(cJSON *json, OCStringRef *outError) {
+    if (!json) {
+        if (outError) *outError = STR("JSON input is NULL");
+        return NULL;
+    }
+    
+    if (!cJSON_IsObject(json)) {
+        if (outError) *outError = STR("JSON input is not an object");
+        return NULL;
+    }
 
     cJSON *type = cJSON_GetObjectItem(json, "type");
     cJSON *value = cJSON_GetObjectItem(json, "value");
 
-    if (!cJSON_IsString(type) || !cJSON_IsArray(value)) return NULL;
+    if (!cJSON_IsString(type) || !cJSON_IsArray(value)) {
+        if (outError) *outError = STR("Invalid typed JSON format: missing or invalid type/value fields");
+        return NULL;
+    }
 
     const char *typeName = cJSON_GetStringValue(type);
-    if (!typeName || strcmp(typeName, "OCSet") != 0) return NULL;
+    if (!typeName || strcmp(typeName, "OCSet") != 0) {
+        if (outError) *outError = STR("Invalid type: expected OCSet");
+        return NULL;
+    }
 
     int arraySize = cJSON_GetArraySize(value);
-    if (arraySize < 0) return NULL;
+    if (arraySize < 0) {
+        if (outError) *outError = STR("Invalid array size");
+        return NULL;
+    }
 
     // Create mutable set to build up the result
     OCMutableSetRef result = OCSetCreateMutable(arraySize);
-    if (!result) return NULL;
+    if (!result) {
+        if (outError) *outError = STR("Failed to create mutable set");
+        return NULL;
+    }
 
     for (int i = 0; i < arraySize; i++) {
         cJSON *elem = cJSON_GetArrayItem(value, i);
 
         // Use the global factory function to deserialize each element
-        OCTypeRef obj = OCTypeCreateFromJSONTyped(elem);
+        OCStringRef elementError = NULL;
+        OCTypeRef obj = OCTypeCreateFromJSONTyped(elem, &elementError);
 
-        if (obj) {
-            OCSetAddValue(result, obj);
-            OCRelease(obj); // OCSetAddValue retains
-        } else {
-            fprintf(stderr, "OCSetCreateFromJSONTyped: Cannot deserialize element at index %d\n", i);
-            // Skip undeserializable elements
+        if (!obj) {
+            if (outError) *outError = elementError ? elementError : STR("Failed to deserialize set element");
+            OCRelease(result);
+            return NULL;
         }
+
+        if (!OCSetAddValue(result, obj)) {
+            if (outError) *outError = STR("Failed to add element to set");
+            OCRelease(obj);
+            OCRelease(result);
+            return NULL;
+        }
+        OCRelease(obj); // OCSetAddValue retains
     }
 
     return result;

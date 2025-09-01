@@ -153,10 +153,11 @@ cJSON *OCSetCopyAsJSON(OCSetRef set, bool typed);
  * Uses the global type registry to deserialize each element.
  *
  * @param json A cJSON object with "type": "OCSet" and "value" array.
+ * @param outError Optional pointer to receive error information if deserialization fails.
  * @return A new OCSetRef on success, or NULL on failure.
  * @ingroup OCSet
  */
-OCSetRef OCSetCreateFromJSONTyped(cJSON *json);
+OCSetRef OCSetCreateFromJSONTyped(cJSON *json, OCStringRef *outError);
 /**
  * @brief Logs the contents of the set to stderr.
  *

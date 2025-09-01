@@ -209,9 +209,10 @@ cJSON *OCDictionaryCopyAsJSON(OCDictionaryRef dict, bool typed);
  *
  * @param json A cJSON object with "type": "OCDictionary" and
  *             "value": {object with key-value pairs}.
+ * @param outError Optional pointer to receive an error string on failure.
  * @return A new OCDictionaryRef, or NULL on failure.
  *         The caller is responsible for releasing the returned dictionary.
  */
-OCDictionaryRef OCDictionaryCreateFromJSONTyped(cJSON *json);
+OCDictionaryRef OCDictionaryCreateFromJSONTyped(cJSON *json, OCStringRef *outError);
 /** @} */
 #endif /* OCDICTIONARY_H */

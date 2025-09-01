@@ -87,11 +87,13 @@ cJSON *OCBooleanCopyAsJSON(OCBooleanRef boolean, bool typed);
  * This function maps JSON true to `kOCBooleanTrue` and false to `kOCBooleanFalse`.
  *
  * @param json A cJSON boolean node.
+ * @param json A cJSON node expected to be a boolean.
+ * @param outError Optional pointer to receive an error string on failure.
  * @return `kOCBooleanTrue` or `kOCBooleanFalse`, or NULL if input is invalid.
  *         Returned object is a singleton and must not be released.
  * @ingroup OCBoolean
  */
-OCBooleanRef OCBooleanCreateFromJSON(cJSON *json);
+OCBooleanRef OCBooleanCreateFromJSON(cJSON *json, OCStringRef *outError);
 
 /** @} */  // end of OCBoolean group
 #endif     /* OCBoolean_h */

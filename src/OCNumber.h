@@ -173,10 +173,11 @@ cJSON *OCNumberCopyAsJSON(OCNumberRef number, bool typed);
  * @brief Deserialize from cJSON using specified type.
  * @param json A cJSON string node.
  * @param type Expected OCNumberType.
+ * @param outError Optional pointer to receive an error string on failure.
  * @return New OCNumberRef or NULL.
  * @ingroup OCNumber
  */
-OCNumberRef OCNumberCreateFromJSON(cJSON *json, OCNumberType type);
+OCNumberRef OCNumberCreateFromJSON(cJSON *json, OCNumberType type, OCStringRef *outError);
 
 /**
  * @brief Create an OCNumberRef from a self-describing JSON object.
@@ -187,10 +188,11 @@ OCNumberRef OCNumberCreateFromJSON(cJSON *json, OCNumberType type);
  * the actual numeric data.
  *
  * @param json A cJSON object with type, subtype, and value fields.
+ * @param outError Optional pointer to receive an error string on failure.
  * @return A newly allocated OCNumberRef, or NULL on failure.
  * @ingroup OCNumber
  */
-OCNumberRef OCNumberCreateFromJSONTyped(cJSON *json);
+OCNumberRef OCNumberCreateFromJSONTyped(cJSON *json, OCStringRef *outError);
 /**
  * @name Convenience Constructors
  * Create OCNumberRefs for native types.

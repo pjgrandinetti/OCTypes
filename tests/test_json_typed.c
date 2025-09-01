@@ -40,7 +40,7 @@ bool jsonTypedTest_OCData(void) {
     }
 
     // Deserialize from JSONTyped
-    OCDataRef deserializedData = OCDataCreateFromJSON(json);
+    OCDataRef deserializedData = OCDataCreateFromJSON(json, NULL);
     if (!deserializedData) {
         JSON_TEST_LOG(test_name, "FAIL: Could not deserialize from JSONTyped");
         cJSON_Delete(json);
@@ -127,7 +127,7 @@ bool jsonTypedTest_OCArray(void) {
     }
 
     // Deserialize from JSONTyped
-    OCArrayRef deserializedArray = OCArrayCreateFromJSONTyped(json);
+    OCArrayRef deserializedArray = OCArrayCreateFromJSONTyped(json, NULL);
     if (!deserializedArray) {
         JSON_TEST_LOG(test_name, "FAIL: Could not deserialize from JSONTyped");
         cJSON_Delete(json);
@@ -199,7 +199,7 @@ bool jsonTypedTest_OCNumber(void) {
         }
 
         // Deserialize from JSONTyped
-        OCNumberRef deserializedNumber = OCNumberCreateFromJSONTyped(json);
+        OCNumberRef deserializedNumber = OCNumberCreateFromJSONTyped(json, NULL);
         if (!deserializedNumber) {
             fprintf(stderr, "[%s] FAIL: Could not deserialize %s from JSONTyped\n", test_name, testCases[i].typeName);
             cJSON_Delete(json);
@@ -261,7 +261,7 @@ bool jsonTypedTest_OCString(void) {
         }
 
         // Deserialize from JSONTyped
-        OCStringRef deserializedString = (OCStringRef)OCTypeCreateFromJSONTyped(json);
+        OCStringRef deserializedString = (OCStringRef)OCTypeCreateFromJSONTyped(json, NULL);
         if (!deserializedString) {
             fprintf(stderr, "[%s] FAIL: Could not deserialize string %zu from JSONTyped\n", test_name, i);
             cJSON_Delete(json);
@@ -310,7 +310,7 @@ bool jsonTypedTest_OCBoolean(void) {
         }
 
         // Deserialize from JSONTyped
-        OCBooleanRef deserializedBoolean = (OCBooleanRef)OCTypeCreateFromJSONTyped(json);
+        OCBooleanRef deserializedBoolean = (OCBooleanRef)OCTypeCreateFromJSONTyped(json, NULL);
         if (!deserializedBoolean) {
             fprintf(stderr, "[%s] FAIL: Could not deserialize %s from JSONTyped\n", test_name, boolNames[i]);
             cJSON_Delete(json);
@@ -385,7 +385,7 @@ bool jsonTypedTest_OCDictionary(void) {
     }
 
     // Deserialize from JSONTyped
-    OCDictionaryRef deserializedDict = OCDictionaryCreateFromJSONTyped(json);
+    OCDictionaryRef deserializedDict = OCDictionaryCreateFromJSONTyped(json, NULL);
     if (!deserializedDict) {
         JSON_TEST_LOG(test_name, "FAIL: Could not deserialize from JSONTyped");
         cJSON_Delete(json);
@@ -461,7 +461,7 @@ bool jsonTypedTest_OCSet(void) {
     }
 
     // Deserialize from JSONTyped
-    OCSetRef deserializedSet = OCSetCreateFromJSONTyped(json);
+    OCSetRef deserializedSet = OCSetCreateFromJSONTyped(json, NULL);
     if (!deserializedSet) {
         JSON_TEST_LOG(test_name, "FAIL: Could not deserialize from JSONTyped");
         cJSON_Delete(json);
@@ -522,7 +522,7 @@ bool jsonTypedTest_OCIndexSet(void) {
     }
 
     // Deserialize from JSONTyped
-    OCIndexSetRef deserializedSet = OCIndexSetCreateFromJSON(json);
+    OCIndexSetRef deserializedSet = OCIndexSetCreateFromJSON(json, NULL);
     if (!deserializedSet) {
         JSON_TEST_LOG(test_name, "FAIL: Could not deserialize from JSONTyped");
         cJSON_Delete(json);
@@ -582,7 +582,7 @@ bool jsonTypedTest_OCIndexArray(void) {
     }
 
     // Deserialize from JSONTyped
-    OCIndexArrayRef deserializedArray = OCIndexArrayCreateFromJSON(json);
+    OCIndexArrayRef deserializedArray = OCIndexArrayCreateFromJSON(json, NULL);
     if (!deserializedArray) {
         JSON_TEST_LOG(test_name, "FAIL: Could not deserialize from JSONTyped");
         cJSON_Delete(json);
@@ -641,7 +641,7 @@ bool jsonTypedTest_OCIndexPairSet(void) {
     }
 
     // Deserialize from JSONTyped
-    OCIndexPairSetRef deserializedSet = OCIndexPairSetCreateFromJSON(json);
+    OCIndexPairSetRef deserializedSet = OCIndexPairSetCreateFromJSON(json, NULL);
     if (!deserializedSet) {
         JSON_TEST_LOG(test_name, "FAIL: Could not deserialize from JSONTyped");
         cJSON_Delete(json);
@@ -719,7 +719,7 @@ bool jsonTypedTest_GlobalFunctions(void) {
         }
 
         // Use global deserialization function
-        OCTypeRef deserializedObject = OCTypeCreateFromJSONTyped(json);
+        OCTypeRef deserializedObject = OCTypeCreateFromJSONTyped(json, NULL);
         if (!deserializedObject) {
             fprintf(stderr, "[%s] FAIL: OCTypeCreateFromJSONTyped failed for %s\n", test_name, typeNames[i]);
             cJSON_Delete(json);

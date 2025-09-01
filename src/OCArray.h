@@ -255,19 +255,6 @@ OCArrayRef OCArrayCreateWithArray(OCArrayRef array);
 cJSON *OCArrayCopyAsJSON(OCArrayRef array, bool typed);
 
 /**
- * @brief Create an OCArrayRef from a JSON array.
- *
- * Parses a native JSON array and deserializes each element using
- * non-typed deserialization. Arrays are native JSON types, so no
- * unwrapping is needed.
- *
- * @param json A cJSON array.
- * @return A newly allocated OCArrayRef, or NULL on failure.
- * @ingroup OCArray
- */
-OCArrayRef OCArrayCreateFromJSON(cJSON *json);
-
-/**
  * @brief Create an OCArrayRef from a JSON array with typed element deserialization.
  *
  * Parses a native JSON array and deserializes each element using
@@ -275,10 +262,11 @@ OCArrayRef OCArrayCreateFromJSON(cJSON *json);
  * is still a native JSON array, not a wrapped object.
  *
  * @param json A cJSON array.
+ * @param outError Optional pointer to receive an error string on failure.
  * @return A newly allocated OCArrayRef, or NULL on failure.
  * @ingroup OCArray
  */
-OCArrayRef OCArrayCreateFromJSONTyped(cJSON *json);
+OCArrayRef OCArrayCreateFromJSONTyped(cJSON *json, OCStringRef *outError);
 /**
  * @brief Returns the callback structure associated with the array.
  *

@@ -60,7 +60,7 @@ OCNumberType OCNumberTypeFromName(const char *name) {
 }
 OCTypeID OCNumberGetTypeID(void) {
     if (kOCNumberID == kOCNotATypeID) {
-        kOCNumberID = OCRegisterType("OCNumber", (OCTypeRef (*)(cJSON *))OCNumberCreateFromJSONTyped);
+        kOCNumberID = OCRegisterType("OCNumber", (OCTypeRef (*)(cJSON *, OCStringRef *))OCNumberCreateFromJSONTyped);
     }
     return kOCNumberID;
 }
@@ -650,57 +650,120 @@ cJSON *OCNumberCopyAsJSON(OCNumberRef number, bool typed) {
 
     return result;
 }
-OCNumberRef OCNumberCreateFromJSON(cJSON *json, OCNumberType type) {
-    if (!json || !cJSON_IsString(json)) return NULL;
+OCNumberRef OCNumberCreateFromJSON(cJSON *json, OCNumberType type, OCStringRef *outError) {
+    if (!json) {
+        if (outError) *outError = STR("JSON input is NULL");
+        return NULL;
+    }
+    
+    if (!cJSON_IsString(json)) {
+        if (outError) *outError = STR("JSON input is not a string");
+        return NULL;
+    }
+    
     const char *valueStr = cJSON_GetStringValue(json);
-    if (!valueStr) return NULL;
-    return OCNumberCreateWithStringValue(type, valueStr);
+    if (!valueStr) {
+        if (outError) *outError = STR("Failed to get string value from JSON");
+        return NULL;
+    }
+    
+    OCNumberRef result = OCNumberCreateWithStringValue(type, valueStr);
+    if (!result && outError) {
+        *outError = STR("Failed to create OCNumber from string value");
+    }
+    return result;
 }
 
-OCNumberRef OCNumberCreateFromJSONTyped(cJSON *json) {
-    if (!json || !cJSON_IsObject(json)) return NULL;
+OCNumberRef OCNumberCreateFromJSONTyped(cJSON *json, OCStringRef *outError) {
+    if (!json) {
+        if (outError) *outError = STR("JSON input is NULL");
+        return NULL;
+    }
+    
+    if (!cJSON_IsObject(json)) {
+        if (outError) *outError = STR("JSON input is not an object");
+        return NULL;
+    }
 
     cJSON *type = cJSON_GetObjectItem(json, "type");
     cJSON *subtype = cJSON_GetObjectItem(json, "subtype");
     cJSON *value = cJSON_GetObjectItem(json, "value");
 
-    if (!cJSON_IsString(type) || !cJSON_IsString(subtype) || !value) return NULL;
+    if (!cJSON_IsString(type) || !cJSON_IsString(subtype) || !value) {
+        if (outError) *outError = STR("Invalid typed JSON format: missing or invalid type/subtype/value fields");
+        return NULL;
+    }
 
     const char *typeName = cJSON_GetStringValue(type);
     const char *subtypeName = cJSON_GetStringValue(subtype);
-    if (!typeName || !subtypeName || strcmp(typeName, "OCNumber") != 0) return NULL;
+    if (!typeName || !subtypeName || strcmp(typeName, "OCNumber") != 0) {
+        if (outError) *outError = STR("Invalid type: expected OCNumber");
+        return NULL;
+    }
 
     OCNumberType numberType = OCNumberTypeFromName(subtypeName);
-    if (numberType == kOCNumberTypeInvalid) return NULL;
+    if (numberType == kOCNumberTypeInvalid) {
+        if (outError) *outError = STR("Invalid number subtype");
+        return NULL;
+    }
 
     // Handle 64-bit integers (stored as strings for precision)
     if (numberType == kOCNumberUInt64Type || numberType == kOCNumberSInt64Type) {
-        if (!cJSON_IsString(value)) return NULL;
+        if (!cJSON_IsString(value)) {
+            if (outError) *outError = STR("Invalid 64-bit integer value: expected string");
+            return NULL;
+        }
         const char *valueStr = cJSON_GetStringValue(value);
-        if (!valueStr) return NULL;
+        if (!valueStr) {
+            if (outError) *outError = STR("Invalid value string: NULL");
+            return NULL;
+        }
 
         union __Number val;
         char *endptr;
         if (numberType == kOCNumberUInt64Type) {
             val.uint64Value = strtoull(valueStr, &endptr, 10);
-            if (*endptr != '\0') return NULL; // Invalid number
+            if (*endptr != '\0') {
+                if (outError) *outError = STR("Invalid uint64 number format");
+                return NULL;
+            }
         } else {
             val.int64Value = strtoll(valueStr, &endptr, 10);
-            if (*endptr != '\0') return NULL; // Invalid number
+            if (*endptr != '\0') {
+                if (outError) *outError = STR("Invalid int64 number format");
+                return NULL;
+            }
         }
-        return OCNumberCreate(numberType, &val);
+        OCNumberRef result = OCNumberCreate(numberType, &val);
+        if (!result && outError) {
+            *outError = STR("Failed to create OCNumber");
+        }
+        return result;
     }
 
     // Handle complex numbers (stored as strings)
     if (numberType == kOCNumberComplex64Type || numberType == kOCNumberComplex128Type) {
-        if (!cJSON_IsString(value)) return NULL;
+        if (!cJSON_IsString(value)) {
+            if (outError) *outError = STR("Invalid complex number value: expected string");
+            return NULL;
+        }
         const char *valueStr = cJSON_GetStringValue(value);
-        if (!valueStr) return NULL;
-        return OCNumberCreateWithStringValue(numberType, valueStr);
+        if (!valueStr) {
+            if (outError) *outError = STR("Invalid value string: NULL");
+            return NULL;
+        }
+        OCNumberRef result = OCNumberCreateWithStringValue(numberType, valueStr);
+        if (!result && outError) {
+            *outError = STR("Failed to create complex number from string");
+        }
+        return result;
     }
 
     // Handle regular numeric types
-    if (!cJSON_IsNumber(value)) return NULL;
+    if (!cJSON_IsNumber(value)) {
+        if (outError) *outError = STR("Invalid numeric value: expected number");
+        return NULL;
+    }
     double numValue = cJSON_GetNumberValue(value);
 
     union __Number val;
@@ -730,10 +793,15 @@ OCNumberRef OCNumberCreateFromJSONTyped(cJSON *json) {
             val.doubleValue = numValue;
             break;
         default:
+            if (outError) *outError = STR("Unsupported number type");
             return NULL;
     }
 
-    return OCNumberCreate(numberType, &val);
+    OCNumberRef result = OCNumberCreate(numberType, &val);
+    if (!result && outError) {
+        *outError = STR("Failed to create OCNumber");
+    }
+    return result;
 }
 
 // ============================================================================

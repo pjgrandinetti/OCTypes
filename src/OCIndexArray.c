@@ -22,7 +22,7 @@ struct impl_OCIndexArray {
 };
 OCTypeID OCIndexArrayGetTypeID(void) {
     if (kOCIndexArrayID == kOCNotATypeID) {
-        kOCIndexArrayID = OCRegisterType("OCIndexArray", (OCTypeRef (*)(cJSON *))OCIndexArrayCreateFromJSON);
+        kOCIndexArrayID = OCRegisterType("OCIndexArray", (OCTypeRef (*)(cJSON *, OCStringRef *))OCIndexArrayCreateFromJSON);
     }
     return kOCIndexArrayID;
 }
@@ -304,8 +304,11 @@ cJSON *OCIndexArrayCopyAsJSON(OCIndexArrayRef array, bool typed) {
     }
 }
 
-OCIndexArrayRef OCIndexArrayCreateFromJSON(cJSON *json) {
-    if (!json) return NULL;
+OCIndexArrayRef OCIndexArrayCreateFromJSON(cJSON *json, OCStringRef *outError) {
+    if (!json) {
+        if (outError) *outError = STR("JSON input is NULL");
+        return NULL;
+    }
     
     cJSON *arrayToProcess = NULL;
     
@@ -314,10 +317,16 @@ OCIndexArrayRef OCIndexArrayCreateFromJSON(cJSON *json) {
         cJSON *type = cJSON_GetObjectItem(json, "type");
         cJSON *value = cJSON_GetObjectItem(json, "value");
 
-        if (!cJSON_IsString(type) || !cJSON_IsArray(value)) return NULL;
+        if (!cJSON_IsString(type) || !cJSON_IsArray(value)) {
+            if (outError) *outError = STR("Invalid typed JSON format: missing or invalid type/value fields");
+            return NULL;
+        }
 
         const char *typeName = cJSON_GetStringValue(type);
-        if (!typeName || strcmp(typeName, "OCIndexArray") != 0) return NULL;
+        if (!typeName || strcmp(typeName, "OCIndexArray") != 0) {
+            if (outError) *outError = STR("Invalid type: expected OCIndexArray");
+            return NULL;
+        }
 
         arrayToProcess = value;
     }
@@ -326,19 +335,27 @@ OCIndexArrayRef OCIndexArrayCreateFromJSON(cJSON *json) {
         arrayToProcess = json;
     }
     else {
+        if (outError) *outError = STR("Invalid JSON: expected object or array");
         return NULL;
     }
     
     // Process the array
     int count = cJSON_GetArraySize(arrayToProcess);
-    if (count < 0) return NULL;
+    if (count < 0) {
+        if (outError) *outError = STR("Invalid array size");
+        return NULL;
+    }
 
     OCIndex *values = malloc(sizeof(OCIndex) * count);
-    if (!values) return NULL;
+    if (!values) {
+        if (outError) *outError = STR("Failed to allocate memory for values");
+        return NULL;
+    }
 
     for (int i = 0; i < count; i++) {
         cJSON *item = cJSON_GetArrayItem(arrayToProcess, i);
         if (!cJSON_IsNumber(item)) {
+            if (outError) *outError = STR("Invalid array element: expected number");
             free(values);
             return NULL;
         }
@@ -347,6 +364,9 @@ OCIndexArrayRef OCIndexArrayCreateFromJSON(cJSON *json) {
 
     OCIndexArrayRef result = OCIndexArrayCreate(values, count);
     free(values);
+    if (!result && outError) {
+        *outError = STR("Failed to create OCIndexArray");
+    }
     return result;
 }
 

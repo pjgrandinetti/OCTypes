@@ -217,7 +217,7 @@ void *OCTypeDeepCopyMutable(const void *obj);
  * @return The OCTypeID assigned, or kOCNotATypeID on failure.
  * @ingroup OCType
  */
-OCTypeID OCRegisterType(const char *typeName, OCTypeRef (*factory)(cJSON *));
+OCTypeID OCRegisterType(const char *typeName, OCTypeRef (*factory)(cJSON *, OCStringRef *));
 /**
  * @brief Retrieves the retain count of an OCType instance.
  * @param ptr Pointer to the OCType instance.
@@ -297,7 +297,7 @@ cJSON *OCTypeCopyJSON(OCTypeRef obj, bool typed);
  * @note The returned object must be released with OCRelease() when no longer needed.
  * @ingroup OCType
  */
-OCTypeRef OCTypeCreateFromJSONTyped(cJSON *json);
+OCTypeRef OCTypeCreateFromJSONTyped(cJSON *json, OCStringRef *outError);
 /**
  * @brief Returns a generic description of an OCType instance.
  * @param ptr Pointer to the OCType instance.

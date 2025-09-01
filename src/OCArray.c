@@ -183,7 +183,7 @@ static void impl_OCArrayFinalize(const void *theType) {
 }
 OCTypeID OCArrayGetTypeID(void) {
     if (kOCArrayID == kOCNotATypeID) {
-        kOCArrayID = OCRegisterType("OCArray", (OCTypeRef (*)(cJSON *))OCArrayCreateFromJSONTyped);
+        kOCArrayID = OCRegisterType("OCArray", (OCTypeRef (*)(cJSON *, OCStringRef *))OCArrayCreateFromJSONTyped);
     }
     return kOCArrayID;
 }
@@ -285,30 +285,51 @@ cJSON *OCArrayCopyAsJSON(OCArrayRef array, bool typed) {
     return arr;
 }
 
-OCArrayRef OCArrayCreateFromJSONTyped(cJSON *json) {
+OCArrayRef OCArrayCreateFromJSONTyped(cJSON *json, OCStringRef *outError) {
     // Arrays are native JSON types, so even "typed" deserialization
     // expects a native JSON array, not a wrapped object
-    if (!json || !cJSON_IsArray(json)) return NULL;
+    if (outError) *outError = NULL;
+    if (!json || !cJSON_IsArray(json)) {
+        if (outError) *outError = STR("Expected JSON array");
+        return NULL;
+    }
 
     int arraySize = cJSON_GetArraySize(json);
-    if (arraySize < 0) return NULL;
+    if (arraySize < 0) {
+        if (outError) *outError = STR("Invalid array size");
+        return NULL;
+    }
 
     // Create mutable array to build up the result
     OCMutableArrayRef result = OCArrayCreateMutable(arraySize, &kOCTypeArrayCallBacks);
-    if (!result) return NULL;
+    if (!result) {
+        if (outError) *outError = STR("Failed to create mutable array");
+        return NULL;
+    }
 
     for (int i = 0; i < arraySize; i++) {
         cJSON *elem = cJSON_GetArrayItem(json, i);
 
         // Use the global typed factory function to deserialize each element
-        OCTypeRef obj = OCTypeCreateFromJSONTyped(elem);
+        OCStringRef elemError = NULL;
+        OCTypeRef obj = OCTypeCreateFromJSONTyped(elem, &elemError);
 
         if (obj) {
             OCArrayAppendValue(result, obj);
             OCRelease(obj); // OCArrayAppendValue retains
         } else {
-            fprintf(stderr, "OCArrayCreateFromJSONTyped: Cannot deserialize element at index %d\n", i);
-            // Skip undeserializable elements
+            // If we can't deserialize an element, set the error and return NULL
+            if (outError && !*outError) {
+                if (elemError) {
+                    *outError = elemError; // Transfer ownership
+                } else {
+                    *outError = STR("Failed to deserialize array element");
+                }
+            } else if (elemError) {
+                OCRelease(elemError); // Clean up if we can't use it
+            }
+            OCRelease(result);
+            return NULL;
         }
     }
 

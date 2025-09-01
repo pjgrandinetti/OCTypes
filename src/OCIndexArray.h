@@ -184,10 +184,11 @@ OCIndexArrayRef OCIndexArrayCreateFromDictionary(OCDictionaryRef dictionary);
  * @brief Creates an OCIndexArray from a cJSON array.
  *
  * @param json A cJSON array containing numeric values.
+ * @param outError Optional pointer to receive error information if deserialization fails.
  * @return A new OCIndexArrayRef, or NULL on failure.
  *         The caller is responsible for releasing the returned array.
  */
-OCIndexArrayRef OCIndexArrayCreateFromJSON(cJSON *json);
+OCIndexArrayRef OCIndexArrayCreateFromJSON(cJSON *json, OCStringRef *outError);
 /**
  * @brief Creates a JSON representation of an OCIndexArray.
  *

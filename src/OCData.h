@@ -253,10 +253,11 @@ cJSON *OCDataCopyAsJSON(OCDataRef data, bool typed);
  * This function expects a cJSON string node containing a Base64-encoded binary payload.
  *
  * @param json A cJSON string node.
+ * @param outError Optional pointer to receive error information if deserialization fails.
  * @return A new OCDataRef on success, or NULL on failure.
  *         Caller is responsible for releasing the returned OCDataRef.
  * @ingroup OCData
  */
-OCDataRef OCDataCreateFromJSON(cJSON *json);
+OCDataRef OCDataCreateFromJSON(cJSON *json, OCStringRef *outError);
 /** @} */  // end of OCData group
 #endif     /* OCData_h */

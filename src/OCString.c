@@ -261,7 +261,7 @@ static void *impl_OCStringDeepCopyMutable(const void *obj) {
     return OCStringCreateMutableCopy(src);  // Returns OCMutableStringRef
 }
 OCTypeID OCStringGetTypeID(void) {
-    if (kOCStringID == kOCNotATypeID) kOCStringID = OCRegisterType("OCString", (OCTypeRef (*)(cJSON *))OCStringCreateFromJSON);
+    if (kOCStringID == kOCNotATypeID) kOCStringID = OCRegisterType("OCString", (OCTypeRef (*)(cJSON *, OCStringRef *))OCStringCreateFromJSON);
     return kOCStringID;
 }
 static struct impl_OCString *OCStringAllocate() {
@@ -285,19 +285,28 @@ cJSON *OCStringCopyAsJSON(OCStringRef str, bool typed) {
     // Strings are native JSON types, no wrapping needed even for typed serialization
     return cJSON_CreateString(s ? s : "");
 }
-OCStringRef OCStringCreateFromJSON(cJSON *json) {
-    if (!json || !cJSON_IsString(json)) return NULL;
+OCStringRef OCStringCreateFromJSON(cJSON *json, OCStringRef *outError) {
+    if (!json) {
+        if (outError) *outError = STR("JSON input is NULL");
+        return NULL;
+    }
+    
+    if (!cJSON_IsString(json)) {
+        if (outError) *outError = STR("JSON input is not a string");
+        return NULL;
+    }
+    
     const char *s = json->valuestring;
-    return s ? OCStringCreateWithCString(s) : NULL;
-}
-
-OCStringRef OCStringCreateFromJSONTyped(cJSON *json) {
-    if (!json || !cJSON_IsString(json)) return NULL;
-
-    // For typed serialization, strings are stored as native JSON strings
-    // No unwrapping needed since strings are native JSON types
-    const char *s = json->valuestring;
-    return s ? OCStringCreateWithCString(s) : NULL;
+    if (!s) {
+        if (outError) *outError = STR("JSON string value is NULL");
+        return NULL;
+    }
+    
+    OCStringRef result = OCStringCreateWithCString(s);
+    if (!result && outError) {
+        *outError = STR("Failed to create OCString");
+    }
+    return result;
 }
 // -----------------------------------------------------------------------------
 // Core OCString Constructors

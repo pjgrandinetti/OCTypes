@@ -15,7 +15,7 @@
 static bool ocTypesShutdownCalled = false;
 static char **typeIDTable = NULL;
 static OCTypeID typeIDTableCount = 0;
-static OCTypeRef (*createFromJSONTypedTable[256])(cJSON *) = {NULL};
+static OCTypeRef (*createFromJSONTypedTable[256])(cJSON *, OCStringRef *) = {NULL};
 void cleanupTypeIDTable(void) {
     if (typeIDTable) {
         for (OCTypeID i = 0; i < typeIDTableCount; i++) {
@@ -115,7 +115,7 @@ bool OCTypeEqual(const void *theType1, const void *theType2) {
  * @return The OCTypeID assigned, or kOCNotATypeID on failure.
  * @ingroup OCType
  */
-OCTypeID OCRegisterType(const char *typeName, OCTypeRef (*factory)(cJSON *)) {
+OCTypeID OCRegisterType(const char *typeName, OCTypeRef (*factory)(cJSON *, OCStringRef *)) {
     // Return an invalid type ID if typeName is NULL.
     if (NULL == typeName) {
         return kOCNotATypeID;
@@ -225,14 +225,15 @@ cJSON *OCTypeCopyJSON(OCTypeRef obj, bool typed) {
     return b->copyJSON(obj, typed);
 }
 
-OCTypeRef OCTypeCreateFromJSONTyped(cJSON *json) {
+OCTypeRef OCTypeCreateFromJSONTyped(cJSON *json, OCStringRef *outError) {
+    if (outError) *outError = NULL;
     if (!json) return NULL;
 
     // Handle native JSON types directly (no type wrapper needed)
-    if (cJSON_IsString(json)) return (OCTypeRef)OCStringCreateFromJSON(json);
-    if (cJSON_IsBool(json)) return (OCTypeRef)OCBooleanCreateFromJSON(json);
-    if (cJSON_IsNumber(json)) return (OCTypeRef)OCNumberCreateFromJSON(json, kOCNumberFloat64Type);
-    if (cJSON_IsArray(json)) return (OCTypeRef)OCArrayCreateFromJSONTyped(json);
+    if (cJSON_IsString(json)) return (OCTypeRef)OCStringCreateFromJSON(json, outError);
+    if (cJSON_IsBool(json)) return (OCTypeRef)OCBooleanCreateFromJSON(json, outError);
+    if (cJSON_IsNumber(json)) return (OCTypeRef)OCNumberCreateFromJSON(json, kOCNumberFloat64Type, outError);
+    if (cJSON_IsArray(json)) return (OCTypeRef)OCArrayCreateFromJSONTyped(json, outError);
     if (cJSON_IsObject(json)) {
         // Check if this is a wrapped type with type information
         cJSON *type = cJSON_GetObjectItem(json, "type");
@@ -240,7 +241,7 @@ OCTypeRef OCTypeCreateFromJSONTyped(cJSON *json) {
             // This is a wrapped type, handle below
         } else {
             // This is a native JSON object (dictionary)
-            return (OCTypeRef)OCDictionaryCreateFromJSONTyped(json);
+            return (OCTypeRef)OCDictionaryCreateFromJSONTyped(json, outError);
         }
     }
 
@@ -254,14 +255,14 @@ OCTypeRef OCTypeCreateFromJSONTyped(cJSON *json) {
     // Look up the type in our registry and call the registered factory function
     for (OCTypeID i = 0; i < typeIDTableCount; i++) {
         if (typeIDTable[i] && strcmp(typeIDTable[i], typeName) == 0) {
-            OCTypeRef (*factory)(cJSON *) = createFromJSONTypedTable[i];
-            if (factory) return factory(json);
-            fprintf(stderr, "OCTypeCreateFromJSONTyped: No factory registered for type '%s'\n", typeName);
+            OCTypeRef (*factory)(cJSON *, OCStringRef *) = createFromJSONTypedTable[i];
+            if (factory) return factory(json, outError);
+            if (outError) *outError = OCStringCreateWithCString("OCTypeCreateFromJSONTyped: No factory registered for type");
             return NULL;
         }
     }
 
-    fprintf(stderr, "OCTypeCreateFromJSONTyped: Unknown type '%s'\n", typeName);
+    if (outError) *outError = OCStringCreateWithCString("OCTypeCreateFromJSONTyped: Unknown type");
     return NULL;
 }
 void *OCTypeDeepCopy(const void *obj) {

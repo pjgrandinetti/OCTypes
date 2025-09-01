@@ -14,7 +14,7 @@ struct impl_OCDictionary {
 };
 OCTypeID OCDictionaryGetTypeID(void) {
     if (kOCDictionaryID == kOCNotATypeID)
-        kOCDictionaryID = OCRegisterType("OCDictionary", (OCTypeRef (*)(cJSON *))OCDictionaryCreateFromJSONTyped);
+        kOCDictionaryID = OCRegisterType("OCDictionary", (OCTypeRef (*)(cJSON *, OCStringRef *))OCDictionaryCreateFromJSONTyped);
     return kOCDictionaryID;
 }
 static bool impl_OCDictionaryEqual(const void *theType1, const void *theType2) {
@@ -398,32 +398,47 @@ cJSON *OCDictionaryCopyAsJSON(OCDictionaryRef dict, bool typed) {
     return root;
 }
 
-OCDictionaryRef OCDictionaryCreateFromJSONTyped(cJSON *json) {
-    if (!json || !cJSON_IsObject(json)) return NULL;
+OCDictionaryRef OCDictionaryCreateFromJSONTyped(cJSON *json, OCStringRef *outError) {
+    if (!json) {
+        if (outError) *outError = STR("JSON input is NULL");
+        return NULL;
+    }
+    
+    if (!cJSON_IsObject(json)) {
+        if (outError) *outError = STR("JSON input is not an object");
+        return NULL;
+    }
 
     // For typed serialization, dictionaries are stored as native JSON objects
     // with typed serialization of their values
     OCMutableDictionaryRef result = OCDictionaryCreateMutable(0);
-    if (!result) return NULL;
+    if (!result) {
+        if (outError) *outError = STR("Failed to create mutable dictionary");
+        return NULL;
+    }
 
     cJSON *item = NULL;
     cJSON_ArrayForEach(item, json) {
         if (!item->string) {
-            fprintf(stderr, "OCDictionaryCreateFromJSONTyped: Invalid key in object\n");
-            continue;
+            if (outError) *outError = STR("Invalid key in object");
+            OCRelease(result);
+            return NULL;
         }
 
         OCStringRef key = OCStringCreateWithCString(item->string);
         if (!key) {
-            fprintf(stderr, "OCDictionaryCreateFromJSONTyped: Failed to create key string\n");
-            continue;
+            if (outError) *outError = STR("Failed to create key string");
+            OCRelease(result);
+            return NULL;
         }
 
-        OCTypeRef val = OCTypeCreateFromJSONTyped(item);
+        OCStringRef valueError = NULL;
+        OCTypeRef val = OCTypeCreateFromJSONTyped(item, &valueError);
         if (!val) {
-            fprintf(stderr, "OCDictionaryCreateFromJSONTyped: Failed to deserialize value for key '%s'\n", item->string);
+            if (outError) *outError = valueError ? valueError : STR("Failed to deserialize value");
             OCRelease(key);
-            continue;
+            OCRelease(result);
+            return NULL;
         }
 
         OCDictionarySetValue(result, key, val);

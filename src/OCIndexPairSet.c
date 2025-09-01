@@ -15,7 +15,7 @@ struct impl_OCIndexPairSet {
 };
 OCTypeID OCIndexPairSetGetTypeID(void) {
     if (kOCIndexPairSetID == kOCNotATypeID) {
-        kOCIndexPairSetID = OCRegisterType("OCIndexPairSet", (OCTypeRef (*)(cJSON *))OCIndexPairSetCreateFromJSON);
+        kOCIndexPairSetID = OCRegisterType("OCIndexPairSet", (OCTypeRef (*)(cJSON *, OCStringRef *))OCIndexPairSetCreateFromJSON);
     }
     return kOCIndexPairSetID;
 }
@@ -206,8 +206,11 @@ cJSON *OCIndexPairSetCopyAsJSON(OCIndexPairSetRef set, bool typed) {
     }
 }
 
-OCIndexPairSetRef OCIndexPairSetCreateFromJSON(cJSON *json) {
-    if (!json) return NULL;
+OCIndexPairSetRef OCIndexPairSetCreateFromJSON(cJSON *json, OCStringRef *outError) {
+    if (!json) {
+        if (outError) *outError = STR("JSON input is NULL");
+        return NULL;
+    }
     
     cJSON *arrayToProcess = NULL;
     
@@ -216,10 +219,16 @@ OCIndexPairSetRef OCIndexPairSetCreateFromJSON(cJSON *json) {
         cJSON *type = cJSON_GetObjectItem(json, "type");
         cJSON *value = cJSON_GetObjectItem(json, "value");
 
-        if (!cJSON_IsString(type) || !cJSON_IsArray(value)) return NULL;
+        if (!cJSON_IsString(type) || !cJSON_IsArray(value)) {
+            if (outError) *outError = STR("Invalid typed JSON format: missing or invalid type/value fields");
+            return NULL;
+        }
 
         const char *typeName = cJSON_GetStringValue(type);
-        if (!typeName || strcmp(typeName, "OCIndexPairSet") != 0) return NULL;
+        if (!typeName || strcmp(typeName, "OCIndexPairSet") != 0) {
+            if (outError) *outError = STR("Invalid type: expected OCIndexPairSet");
+            return NULL;
+        }
 
         arrayToProcess = value;
     }
@@ -228,25 +237,34 @@ OCIndexPairSetRef OCIndexPairSetCreateFromJSON(cJSON *json) {
         arrayToProcess = json;
     }
     else {
+        if (outError) *outError = STR("Invalid JSON: expected object or array");
         return NULL;
     }
     
     // Process the array
     int count = cJSON_GetArraySize(arrayToProcess);
-    if (count < 0) return NULL;
+    if (count < 0) {
+        if (outError) *outError = STR("Invalid array size");
+        return NULL;
+    }
 
     OCIndexPair *pairs = malloc(count * sizeof(OCIndexPair));
-    if (!pairs) return NULL;
+    if (!pairs) {
+        if (outError) *outError = STR("Failed to allocate memory for index pairs");
+        return NULL;
+    }
 
     for (int i = 0; i < count; i++) {
         cJSON *pair = cJSON_GetArrayItem(arrayToProcess, i);
         if (!cJSON_IsArray(pair) || cJSON_GetArraySize(pair) != 2) {
+            if (outError) *outError = STR("Invalid pair: expected array of length 2");
             free(pairs);
             return NULL;
         }
         cJSON *indexNode = cJSON_GetArrayItem(pair, 0);
         cJSON *valueNode = cJSON_GetArrayItem(pair, 1);
         if (!cJSON_IsNumber(indexNode) || !cJSON_IsNumber(valueNode)) {
+            if (outError) *outError = STR("Invalid pair elements: expected numbers");
             free(pairs);
             return NULL;
         }
@@ -256,6 +274,9 @@ OCIndexPairSetRef OCIndexPairSetCreateFromJSON(cJSON *json) {
 
     OCIndexPairSetRef result = OCIndexPairSetCreateWithIndexPairArray(pairs, count);
     free(pairs);
+    if (!result && outError) {
+        *outError = STR("Failed to create OCIndexPairSet");
+    }
     return result;
 }
 
