@@ -219,18 +219,34 @@ cJSON *OCIndexPairSetCopyAsJSON(OCIndexPairSetRef set, bool typed) {
         }
         return entry;
     } else {
-        // For untyped serialization, serialize as a plain JSON array following CSDM convention (no change)
-        cJSON *arr = cJSON_CreateArray();
-        if (!arr) return cJSON_CreateNull();
+        // For untyped serialization, check encoding preference
+        OCJSONEncoding encoding = set->encoding;
         
-        if (pairs && count > 0) {
-            // CSDM convention: flatten pairs into a single array [index1, value1, index2, value2, ...]
-            for (OCIndex i = 0; i < count; i++) {
-                cJSON_AddItemToArray(arr, cJSON_CreateNumber((double)pairs[i].index));
-                cJSON_AddItemToArray(arr, cJSON_CreateNumber((double)pairs[i].value));
+        if (encoding == OCJSONEncodingBase64) {
+            // Create base64 string for untyped format
+            OCStringRef b64 = OCDataCreateBase64EncodedString(set->indexPairs, OCBase64EncodingOptionsNone);
+            if (b64) {
+                const char *b64Str = OCStringGetCString(b64);
+                cJSON *result = cJSON_CreateString(b64Str ? b64Str : "");
+                OCRelease(b64);
+                return result;
+            } else {
+                return cJSON_CreateString("");
             }
+        } else {
+            // Default: serialize as a plain JSON array following CSDM convention
+            cJSON *arr = cJSON_CreateArray();
+            if (!arr) return cJSON_CreateNull();
+            
+            if (pairs && count > 0) {
+                // CSDM convention: flatten pairs into a single array [index1, value1, index2, value2, ...]
+                for (OCIndex i = 0; i < count; i++) {
+                    cJSON_AddItemToArray(arr, cJSON_CreateNumber((double)pairs[i].index));
+                    cJSON_AddItemToArray(arr, cJSON_CreateNumber((double)pairs[i].value));
+                }
+            }
+            return arr;
         }
-        return arr;
     }
 }
 
@@ -319,12 +335,52 @@ OCIndexPairSetRef OCIndexPairSetCreateFromJSON(cJSON *json, OCStringRef *outErro
         }
         arrayToProcess = value;
     }
-    // Handle untyped format (direct array)
+    // Handle untyped format (direct array or string)
     else if (cJSON_IsArray(json)) {
         arrayToProcess = json;
     }
+    else if (cJSON_IsString(json)) {
+        // Handle untyped base64 string
+        const char *b64Str = cJSON_GetStringValue(json);
+        if (!b64Str) {
+            if (outError) *outError = STR("Invalid base64 string");
+            return NULL;
+        }
+        
+        OCStringRef b64String = OCStringCreateWithCString(b64Str);
+        if (!b64String) {
+            if (outError) *outError = STR("Failed to create base64 string");
+            return NULL;
+        }
+        
+        OCDataRef data = OCDataCreateFromBase64EncodedString(b64String);
+        OCRelease(b64String);
+        
+        if (!data) {
+            if (outError) *outError = STR("Failed to decode base64 data");
+            return NULL;
+        }
+        
+        // Extract pairs from the data
+        const OCIndexPair *pairs = (const OCIndexPair *)OCDataGetBytesPtr(data);
+        OCIndex dataLength = OCDataGetLength(data);
+        OCIndex pairCount = dataLength / sizeof(OCIndexPair);
+        
+        OCIndexPairSetRef result = OCIndexPairSetCreateWithIndexPairArray((OCIndexPair *)pairs, pairCount);
+        OCRelease(data);
+        
+        if (result) {
+            // Set encoding preference to base64 since it came from base64
+            OCIndexPairSetSetEncoding((OCMutableIndexPairSetRef)result, OCJSONEncodingBase64);
+        }
+        
+        if (!result && outError) {
+            *outError = STR("Failed to create OCIndexPairSet from base64 data");
+        }
+        return result;
+    }
     else {
-        if (outError) *outError = STR("Invalid JSON: expected object or array");
+        if (outError) *outError = STR("Invalid JSON: expected object, array, or string");
         return NULL;
     }
     
