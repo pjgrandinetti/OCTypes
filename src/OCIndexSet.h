@@ -235,6 +235,32 @@ cJSON *OCIndexSetCopyAsJSON(OCIndexSetRef set, bool typed);
  * @ingroup OCIndexSet
  */
 void OCIndexSetShow(OCIndexSetRef theIndexSet);
+/**
+ * @brief Returns a copy of the JSON encoding preference for an OCIndexSet.
+ *
+ * The encoding determines how the set is serialized to JSON:
+ * - OCJSONEncodingBase64: Binary encoding for compact representation
+ * - OCJSONEncodingNone: Standard JSON array format
+ * - NULL: Use default encoding behavior
+ *
+ * @param set The OCIndexSetRef instance.
+ * @return A copy of the encoding string, or NULL if no encoding is set.
+ *         Caller is responsible for releasing the returned string.
+ * @ingroup OCIndexSet
+ */
+OCJSONEncoding OCIndexSetCopyEncoding(OCIndexSetRef set);
+/**
+ * @brief Sets the JSON encoding preference for a mutable OCIndexSet.
+ *
+ * The encoding controls JSON serialization behavior:
+ * - OCJSONEncodingBase64: Serialize as base64-encoded binary data
+ * - OCJSONEncodingNone: Serialize as standard JSON array
+ *
+ * @param set The OCMutableIndexSetRef instance.
+ * @param encoding The encoding value to set.
+ * @ingroup OCIndexSet
+ */
+void OCIndexSetSetEncoding(OCMutableIndexSetRef set, OCJSONEncoding encoding);
 /** @} */  // end of OCIndexSet group
 #ifdef __cplusplus
 }

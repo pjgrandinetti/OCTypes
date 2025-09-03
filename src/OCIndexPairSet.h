@@ -272,6 +272,33 @@ OCIndexPairSetRef OCIndexPairSetCreateFromJSON(cJSON *json, OCStringRef *outErro
  * @ingroup OCIndexPairSet
  */
 void OCIndexPairSetShow(OCIndexPairSetRef set);
+/**
+ * @brief Returns a copy of the JSON encoding preference for an OCIndexPairSet.
+ *
+ * The encoding determines how the pair set is serialized to JSON:
+ * - OCJSONEncodingBase64: Binary encoding for compact representation
+ * - OCJSONEncodingNone: Standard JSON array format (CSDM flat array)
+ * - NULL: Use default encoding behavior
+ *
+ * @param set The OCIndexPairSetRef instance.
+ * @return A copy of the encoding string, or NULL if no encoding is set.
+ *         Caller is responsible for releasing the returned string.
+ * @ingroup OCIndexPairSet
+ */
+OCJSONEncoding OCIndexPairSetCopyEncoding(OCIndexPairSetRef set);
+/**
+ * @brief Sets the JSON encoding preference for a mutable OCIndexPairSet.
+ *
+ * The encoding controls JSON serialization behavior:
+ * - OCJSONEncodingBase64: Serialize as base64-encoded binary data
+ * - OCJSONEncodingNone: Serialize as CSDM flat array [index1,value1,index2,value2,...]
+ * - NULL: Clear encoding preference (use default)
+ *
+ * @param set The OCMutableIndexPairSetRef instance.
+ * @param encoding The encoding string to set, or NULL to clear.
+ * @ingroup OCIndexPairSet
+ */
+void OCIndexPairSetSetEncoding(OCMutableIndexPairSetRef set, OCJSONEncoding encoding);
 /** @} */  // end of OCIndexPairSet group
 #ifdef __cplusplus
 }

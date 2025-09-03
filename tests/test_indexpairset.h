@@ -7,4 +7,5 @@ bool OCIndexPairSetValueLookup_test(void);
 bool OCIndexPairSetEquality_test(void);
 bool OCIndexPairSetShow_test(void);
 bool OCIndexPairSetDeepCopy_test(void);
+bool OCIndexPairSetJSONEncoding_test(void);
 #endif /* TEST_OCINDEXPAIRSET_H */

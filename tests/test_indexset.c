@@ -1,5 +1,6 @@
 
 #include <stdio.h>
+#include <string.h>
 #include "../src/OCIndexSet.h"
 #include "../src/OCNumber.h"
 #include "../src/OCType.h"
@@ -82,6 +83,76 @@ bool OCIndexSetDeepCopy_test(void) {
     success &= (OCIndexSetGetCount(original) == 2);
     OCRelease(original);
     OCRelease(copy);
+    fprintf(stderr, "%s end...%s\n", __func__, success ? "without problems" : "with errors ***");
+    return success;
+}
+
+bool OCIndexSetJSONEncoding_test(void) {
+    fprintf(stderr, "%s begin...\n", __func__);
+    
+    // Create test set
+    OCMutableIndexSetRef original = OCIndexSetCreateMutable();
+    if (!original) {
+        fprintf(stderr, "FAIL: Could not create mutable index set\n");
+        return false;
+    }
+    
+    OCIndexSetAddIndex(original, 5);
+    OCIndexSetAddIndex(original, 15);
+    OCIndexSetAddIndex(original, 25);
+    
+    bool success = true;
+    
+    // Test encoding functionality
+    success &= (OCIndexSetCopyEncoding(original) == OCJSONEncodingNone);
+    
+    // Test base64 encoding
+    OCIndexSetSetEncoding(original, OCJSONEncodingBase64);
+    success &= (OCIndexSetCopyEncoding(original) == OCJSONEncodingBase64);
+    
+    cJSON *jsonBase64 = OCIndexSetCopyAsJSON(original, true);
+    success &= (jsonBase64 != NULL);
+    
+    if (jsonBase64) {
+        cJSON *encoding = cJSON_GetObjectItem(jsonBase64, "encoding");
+        success &= (encoding && cJSON_IsString(encoding) && strcmp(cJSON_GetStringValue(encoding), "base64") == 0);
+        
+        // Roundtrip test
+        OCIndexSetRef deserializedBase64 = OCIndexSetCreateFromJSON(jsonBase64, NULL);
+        success &= (deserializedBase64 != NULL);
+        success &= OCTypeEqual(original, deserializedBase64);
+        success &= (OCIndexSetCopyEncoding(deserializedBase64) == OCJSONEncodingBase64);
+        
+        if (deserializedBase64) OCRelease(deserializedBase64);
+        cJSON_Delete(jsonBase64);
+    }
+    
+    // Test none encoding
+    OCIndexSetSetEncoding(original, OCJSONEncodingNone);
+    success &= (OCIndexSetCopyEncoding(original) == OCJSONEncodingNone);
+    
+    cJSON *jsonNone = OCIndexSetCopyAsJSON(original, true);
+    success &= (jsonNone != NULL);
+    
+    if (jsonNone) {
+        cJSON *encoding = cJSON_GetObjectItem(jsonNone, "encoding");
+        success &= (encoding && cJSON_IsString(encoding) && strcmp(cJSON_GetStringValue(encoding), "none") == 0);
+        
+        cJSON *value = cJSON_GetObjectItem(jsonNone, "value");
+        success &= (value && cJSON_IsArray(value));
+        success &= (cJSON_GetArraySize(value) == 3);
+        
+        // Roundtrip test
+        OCIndexSetRef deserializedNone = OCIndexSetCreateFromJSON(jsonNone, NULL);
+        success &= (deserializedNone != NULL);
+        success &= OCTypeEqual(original, deserializedNone);
+        success &= (OCIndexSetCopyEncoding(deserializedNone) == OCJSONEncodingNone);
+        
+        if (deserializedNone) OCRelease(deserializedNone);
+        cJSON_Delete(jsonNone);
+    }
+    
+    OCRelease(original);
     fprintf(stderr, "%s end...%s\n", __func__, success ? "without problems" : "with errors ***");
     return success;
 }

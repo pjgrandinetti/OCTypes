@@ -8,4 +8,6 @@ bool dataTest1(void);
 bool dataTest_deepcopy(void);
 // Base64 roundtrip test
 bool dataTest_base64_roundtrip(void);
+// JSON encoding tests
+bool dataTest_json_encoding(void);
 #endif /* TEST_DATA_H */

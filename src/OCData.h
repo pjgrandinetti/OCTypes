@@ -259,5 +259,34 @@ cJSON *OCDataCopyAsJSON(OCDataRef data, bool typed);
  * @ingroup OCData
  */
 OCDataRef OCDataCreateFromJSON(cJSON *json, OCStringRef *outError);
+/**
+ * @brief Returns a copy of the JSON encoding preference for an OCData.
+ *
+ * OCData must always be encoded when serialized to JSON since JSON has no native binary type.
+ * The encoding determines the specific method used:
+ * - OCJSONEncodingBase64: Base64-encoded string representation (standard)
+ * - NULL: Use default encoding behavior (typically base64)
+ *
+ * Note: OCJSONEncodingNone is not applicable to OCData since JSON cannot represent raw binary.
+ *
+ * @param data The OCDataRef instance.
+ * @return The encoding value.
+ * @ingroup OCData
+ */
+OCJSONEncoding OCDataCopyEncoding(OCDataRef data);
+/**
+ * @brief Sets the JSON encoding preference for a mutable OCData.
+ *
+ * OCData requires encoding for JSON serialization since JSON has no binary type.
+ * Supported encodings:
+ * - OCJSONEncodingBase64: Serialize as base64-encoded string (recommended)
+ *
+ * Note: OCJSONEncodingNone is not valid for OCData.
+ *
+ * @param data The OCMutableDataRef instance.
+ * @param encoding The encoding value to set.
+ * @ingroup OCData
+ */
+void OCDataSetEncoding(OCMutableDataRef data, OCJSONEncoding encoding);
 /** @} */  // end of OCData group
 #endif     /* OCData_h */

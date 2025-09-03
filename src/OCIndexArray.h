@@ -213,6 +213,31 @@ cJSON *OCIndexArrayCopyAsJSON(OCIndexArrayRef array, bool typed);
  * @ingroup OCIndexArray
  */
 void OCIndexArrayShow(OCIndexArrayRef theIndexArray);
+/**
+ * @brief Returns a copy of the JSON encoding preference for an OCIndexArray.
+ *
+ * The encoding determines how the array is serialized to JSON:
+ * - OCJSONEncodingBase64: Binary encoding for compact representation
+ * - OCJSONEncodingNone: Standard JSON array format
+ * - NULL: Use default encoding behavior
+ *
+ * @param array The OCIndexArrayRef instance.
+ * @return The encoding value.
+ * @ingroup OCIndexArray
+ */
+OCJSONEncoding OCIndexArrayCopyEncoding(OCIndexArrayRef array);
+/**
+ * @brief Sets the JSON encoding preference for a mutable OCIndexArray.
+ *
+ * The encoding controls JSON serialization behavior:
+ * - OCJSONEncodingBase64: Serialize as base64-encoded binary data
+ * - OCJSONEncodingNone: Serialize as standard JSON array
+ *
+ * @param array The OCMutableIndexArrayRef instance.
+ * @param encoding The encoding value to set.
+ * @ingroup OCIndexArray
+ */
+void OCIndexArraySetEncoding(OCMutableIndexArrayRef array, OCJSONEncoding encoding);
 /** @} */  // end of OCIndexArray group
 #ifdef __cplusplus
 }

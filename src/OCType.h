@@ -454,6 +454,19 @@ void *OCTypeAllocate(
  */
 void OCTypesShutdown(void);
 /** \endcond */
+/**
+ * @brief JSON encoding options for OCTypes serialization.
+ *
+ * These constants control how OCTypes are encoded in JSON format:
+ * - OCJSONEncodingNone: Use standard JSON representation (arrays, numbers)
+ * - OCJSONEncodingBase64: Use base64-encoded binary representation for compactness
+ *
+ * @ingroup OCType
+ */
+typedef enum {
+    OCJSONEncodingNone = 0,
+    OCJSONEncodingBase64 = 1
+} OCJSONEncoding;
 /** @} */  // end of OCType group
 #ifdef __cplusplus
 }

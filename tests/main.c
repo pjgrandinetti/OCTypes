@@ -47,6 +47,7 @@ int main(int argc, const char* argv[]) {
     if (!dataTest1()) failures++;                  // New: mutable-data API tests
     if (!dataTest_deepcopy()) failures++;          // New: OCData deep copy tests
     if (!dataTest_base64_roundtrip()) failures++;  // New: Base64 roundtrip tests
+    if (!dataTest_json_encoding()) failures++;     // New: JSON encoding tests
     if (!booleanTest0()) failures++;
     if (!numberTest0()) failures++;                  // ← New: Invoke OCNumber tests
     if (!dictionaryTest0()) failures++;              // ← Invoke OCDictionary tests
@@ -83,17 +84,20 @@ int main(int argc, const char* argv[]) {
     if (!OCIndexArrayRemoveValueAtIndex_test()) failures++;
     if (!OCIndexArrayRemoveValuesAtIndexes_test()) failures++;
     if (!OCIndexArrayDeepCopy_test()) failures++;
+    if (!OCIndexArrayJSONEncoding_test()) failures++;
     if (!OCIndexSetCreateAndAccess_test()) failures++;
     if (!OCIndexSetAddAndContains_test()) failures++;
     if (!OCIndexSetRangeAndBounds_test()) failures++;
     if (!OCIndexSetSerialization_test()) failures++;
     if (!OCIndexSetDeepCopy_test()) failures++;
+    if (!OCIndexSetJSONEncoding_test()) failures++;
     if (!OCIndexPairSetCreation_test()) failures++;
     if (!OCIndexPairSetAddAndContains_test()) failures++;
     if (!OCIndexPairSetValueLookup_test()) failures++;
     if (!OCIndexPairSetEquality_test()) failures++;
     if (!OCIndexPairSetShow_test()) failures++;
     if (!OCIndexPairSetDeepCopy_test()) failures++;
+    if (!OCIndexPairSetJSONEncoding_test()) failures++;
     if (!test_path_join_and_split()) failures++;
     if (!test_file_and_dir_checks()) failures++;
     if (!test_create_and_list_directory()) failures++;

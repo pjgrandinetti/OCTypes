@@ -20,6 +20,7 @@ struct impl_OCData {
     uint8_t *bytes;
     uint64_t length;
     uint64_t capacity;
+    OCJSONEncoding encoding;
 };
 OCTypeID OCDataGetTypeID(void) {
     if (kOCDataID == kOCNotATypeID) {
@@ -38,15 +39,22 @@ static bool impl_OCDataEqual(const void *a_, const void *b_) {
 static void *impl_OCDataDeepCopy(const void *obj) {
     OCDataRef source = (OCDataRef)obj;
     if (!source) return NULL;
-    return (void *)OCDataCreate(source->bytes, source->length);
+    OCDataRef copy = OCDataCreate(source->bytes, source->length);
+    if (copy) ((struct impl_OCData*)copy)->encoding = source->encoding;
+    return (void *)copy;
 }
 static void *impl_OCDataDeepCopyMutable(const void *obj) {
     OCDataRef source = (OCDataRef)obj;
     if (!source) return NULL;
-    return (void *)OCDataCreateMutableCopy(source->length, source);
+    OCMutableDataRef copy = OCDataCreateMutableCopy(source->length, source);
+    if (copy) ((struct impl_OCData*)copy)->encoding = source->encoding;
+    return (void *)copy;
 }
 OCDataRef OCDataCreateCopy(OCDataRef source) {
-    return source ? OCDataCreate(source->bytes, source->length) : NULL;
+    if (!source) return NULL;
+    OCDataRef copy = OCDataCreate(source->bytes, source->length);
+    if (copy) ((struct impl_OCData*)copy)->encoding = source->encoding;
+    return copy;
 }
 OCMutableDataRef OCDataCreateMutableCopy(uint64_t capacity, OCDataRef source) {
     if (!source) return NULL;
@@ -103,6 +111,7 @@ static struct impl_OCData *OCDataAllocate() {
 OCDataRef OCDataCreate(const uint8_t *bytes, uint64_t length) {
     struct impl_OCData *data = OCDataAllocate();
     if (!data) return NULL;
+    data->encoding = OCJSONEncodingBase64;  // Default encoding for OCData is base64
     if (length > 0) {
         data->bytes = malloc(length);
         if (!data->bytes) {
@@ -121,6 +130,7 @@ OCDataRef OCDataCreate(const uint8_t *bytes, uint64_t length) {
 OCDataRef OCDataCreateWithBytesNoCopy(const uint8_t *bytes, uint64_t length) {
     if (!bytes) return NULL;
     struct impl_OCData *data = OCDataAllocate();
+    data->encoding = OCJSONEncodingBase64;  // Default encoding for OCData is base64
     data->bytes = (uint8_t *)bytes;
     data->length = length;
     data->capacity = length;
@@ -129,6 +139,7 @@ OCDataRef OCDataCreateWithBytesNoCopy(const uint8_t *bytes, uint64_t length) {
 OCMutableDataRef OCDataCreateMutable(uint64_t capacity) {
     struct impl_OCData *data = OCDataAllocate();
     if (!data) return NULL;
+    data->encoding = OCJSONEncodingBase64;  // Default encoding for OCData is base64
     data->bytes = (capacity > 0) ? calloc(capacity, sizeof(uint8_t)) : NULL;
     if (capacity > 0 && !data->bytes) {
         fprintf(stderr, "OCDataCreateMutable: calloc failed\n");
@@ -476,6 +487,10 @@ OCDataRef OCDataCreateFromJSON(cJSON *json, OCStringRef *outError) {
         if (!result && outError) {
             *outError = STR("Failed to decode base64 data");
         }
+        // Set encoding based on JSON metadata
+        if (result) {
+            ((struct impl_OCData*)result)->encoding = OCJSONEncodingBase64;
+        }
         return result;
     }
     
@@ -496,10 +511,22 @@ OCDataRef OCDataCreateFromJSON(cJSON *json, OCStringRef *outError) {
         if (!result && outError) {
             *outError = STR("Failed to decode base64 data");
         }
+        // Set default encoding for untyped format
+        if (result) {
+            ((struct impl_OCData*)result)->encoding = OCJSONEncodingBase64;
+        }
         return result;
     }
     
     if (outError) *outError = STR("Invalid JSON: expected object or string");
     return NULL;
+}
+OCJSONEncoding OCDataCopyEncoding(OCDataRef data) {
+    if (!data) return OCJSONEncodingBase64; // OCData defaults to base64 since JSON has no binary type
+    return data->encoding;
+}
+void OCDataSetEncoding(OCMutableDataRef data, OCJSONEncoding encoding) {
+    if (!data) return;
+    data->encoding = encoding;
 }
 

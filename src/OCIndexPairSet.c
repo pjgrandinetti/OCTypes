@@ -12,6 +12,7 @@ static OCTypeID kOCIndexPairSetID = kOCNotATypeID;
 struct impl_OCIndexPairSet {
     OCBase base;
     OCDataRef indexPairs;
+    OCJSONEncoding encoding;
 };
 OCTypeID OCIndexPairSetGetTypeID(void) {
     if (kOCIndexPairSetID == kOCNotATypeID) {
@@ -175,33 +176,60 @@ cJSON *OCIndexPairSetCopyAsJSON(OCIndexPairSetRef set, bool typed) {
 
     OCIndex count = OCIndexPairSetGetCount(set);
     OCIndexPair *pairs = OCIndexPairSetGetBytesPtr(set);
-    if (!pairs) {
-        if (typed) {
-            cJSON *entry = cJSON_CreateObject();
-            cJSON_AddStringToObject(entry, "type", "OCIndexPairSet");
-            cJSON_AddItemToObject(entry, "value", cJSON_CreateArray());
-            return entry;
-        } else {
-            return cJSON_CreateArray();
-        }
-    }
-
-    cJSON *arr = cJSON_CreateArray();
-    for (OCIndex i = 0; i < count; i++) {
-        cJSON *pair = cJSON_CreateArray();
-        cJSON_AddItemToArray(pair, cJSON_CreateNumber((double)pairs[i].index));
-        cJSON_AddItemToArray(pair, cJSON_CreateNumber((double)pairs[i].value));
-        cJSON_AddItemToArray(arr, pair);
-    }
-
+    
     if (typed) {
-        // For typed serialization, OCIndexPairSet needs wrapping since it's not a native JSON type
+        // For typed serialization, check encoding preference
+        OCJSONEncoding encoding = set->encoding;
         cJSON *entry = cJSON_CreateObject();
+        if (!entry) return cJSON_CreateNull();
+        
         cJSON_AddStringToObject(entry, "type", "OCIndexPairSet");
-        cJSON_AddItemToObject(entry, "value", arr);
+        
+        if (encoding == OCJSONEncodingBase64) {
+            // Use base64 encoding for compact binary representation
+            cJSON_AddStringToObject(entry, "encoding", "base64");
+            OCStringRef b64 = OCDataCreateBase64EncodedString(set->indexPairs, OCBase64EncodingOptionsNone);
+            if (b64) {
+                const char *b64Str = OCStringGetCString(b64);
+                cJSON_AddStringToObject(entry, "value", b64Str ? b64Str : "");
+                OCRelease(b64);
+            } else {
+                cJSON_AddStringToObject(entry, "value", "");
+            }
+        } else {
+            // Default: use CSDM flat array format (encoding OCJSONEncodingNone)
+            if (encoding == OCJSONEncodingNone) {
+                cJSON_AddStringToObject(entry, "encoding", "none");
+            }
+            
+            cJSON *arr = cJSON_CreateArray();
+            if (!arr) {
+                cJSON_Delete(entry);
+                return cJSON_CreateNull();
+            }
+            
+            if (pairs && count > 0) {
+                // CSDM convention: flatten pairs into a single array [index1, value1, index2, value2, ...]
+                for (OCIndex i = 0; i < count; i++) {
+                    cJSON_AddItemToArray(arr, cJSON_CreateNumber((double)pairs[i].index));
+                    cJSON_AddItemToArray(arr, cJSON_CreateNumber((double)pairs[i].value));
+                }
+            }
+            cJSON_AddItemToObject(entry, "value", arr);
+        }
         return entry;
     } else {
-        // For untyped serialization, serialize as a plain JSON array of pairs
+        // For untyped serialization, serialize as a plain JSON array following CSDM convention (no change)
+        cJSON *arr = cJSON_CreateArray();
+        if (!arr) return cJSON_CreateNull();
+        
+        if (pairs && count > 0) {
+            // CSDM convention: flatten pairs into a single array [index1, value1, index2, value2, ...]
+            for (OCIndex i = 0; i < count; i++) {
+                cJSON_AddItemToArray(arr, cJSON_CreateNumber((double)pairs[i].index));
+                cJSON_AddItemToArray(arr, cJSON_CreateNumber((double)pairs[i].value));
+            }
+        }
         return arr;
     }
 }
@@ -213,14 +241,16 @@ OCIndexPairSetRef OCIndexPairSetCreateFromJSON(cJSON *json, OCStringRef *outErro
     }
     
     cJSON *arrayToProcess = NULL;
+    OCJSONEncoding encodingPreference = OCJSONEncodingNone;
     
     // Check if typed format (object with type/value structure)
     if (cJSON_IsObject(json)) {
         cJSON *type = cJSON_GetObjectItem(json, "type");
         cJSON *value = cJSON_GetObjectItem(json, "value");
+        cJSON *encoding = cJSON_GetObjectItem(json, "encoding");
 
-        if (!cJSON_IsString(type) || !cJSON_IsArray(value)) {
-            if (outError) *outError = STR("Invalid typed JSON format: missing or invalid type/value fields");
+        if (!cJSON_IsString(type)) {
+            if (outError) *outError = STR("Invalid typed JSON format: missing or invalid type field");
             return NULL;
         }
 
@@ -230,6 +260,63 @@ OCIndexPairSetRef OCIndexPairSetCreateFromJSON(cJSON *json, OCStringRef *outErro
             return NULL;
         }
 
+        // Check for base64 encoding
+        if (encoding && cJSON_IsString(encoding)) {
+            const char *encodingStr = cJSON_GetStringValue(encoding);
+            if (encodingStr && strcmp(encodingStr, "base64") == 0) {
+                // Handle base64 encoded data
+                if (!cJSON_IsString(value)) {
+                    if (outError) *outError = STR("Invalid base64 format: value must be a string");
+                    return NULL;
+                }
+                
+                const char *b64Str = cJSON_GetStringValue(value);
+                if (!b64Str) {
+                    if (outError) *outError = STR("Invalid base64 string");
+                    return NULL;
+                }
+                
+                OCStringRef b64String = OCStringCreateWithCString(b64Str);
+                if (!b64String) {
+                    if (outError) *outError = STR("Failed to create base64 string");
+                    return NULL;
+                }
+                
+                OCDataRef data = OCDataCreateFromBase64EncodedString(b64String);
+                OCRelease(b64String);
+                
+                if (!data) {
+                    if (outError) *outError = STR("Failed to decode base64 data");
+                    return NULL;
+                }
+                
+                // Extract pairs from the data
+                const OCIndexPair *pairs = (const OCIndexPair *)OCDataGetBytesPtr(data);
+                OCIndex dataLength = OCDataGetLength(data);
+                OCIndex pairCount = dataLength / sizeof(OCIndexPair);
+                
+                OCIndexPairSetRef result = OCIndexPairSetCreateWithIndexPairArray((OCIndexPair *)pairs, pairCount);
+                OCRelease(data);
+                
+                if (result) {
+                    // Set encoding preference
+                    OCIndexPairSetSetEncoding((OCMutableIndexPairSetRef)result, OCJSONEncodingBase64);
+                }
+                
+                if (!result && outError) {
+                    *outError = STR("Failed to create OCIndexPairSet from base64 data");
+                }
+                return result;
+            } else if (strcmp(encodingStr, "none") == 0) {
+                encodingPreference = OCJSONEncodingNone;
+            }
+        }
+
+        // Handle array format (default or explicit "none" encoding)
+        if (!cJSON_IsArray(value)) {
+            if (outError) *outError = STR("Invalid typed JSON format: value field must be an array for flat format");
+            return NULL;
+        }
         arrayToProcess = value;
     }
     // Handle untyped format (direct array)
@@ -241,39 +328,57 @@ OCIndexPairSetRef OCIndexPairSetCreateFromJSON(cJSON *json, OCStringRef *outErro
         return NULL;
     }
     
-    // Process the array
-    int count = cJSON_GetArraySize(arrayToProcess);
-    if (count < 0) {
+    // Process the array - CSDM convention: flat array [index1, value1, index2, value2, ...]
+    int arraySize = cJSON_GetArraySize(arrayToProcess);
+    if (arraySize < 0) {
         if (outError) *outError = STR("Invalid array size");
         return NULL;
     }
 
-    OCIndexPair *pairs = malloc(count * sizeof(OCIndexPair));
+    // Array size must be even for CSDM flat format
+    if (arraySize % 2 != 0) {
+        if (outError) *outError = STR("Array size must be even for CSDM flat format [index1, value1, index2, value2, ...]");
+        return NULL;
+    }
+
+    int pairCount = arraySize / 2;
+    if (pairCount == 0) {
+        // Empty set - valid
+        OCIndexPairSetRef result = OCIndexPairSetCreateWithIndexPairArray(NULL, 0);
+        if (result) {
+            OCIndexPairSetSetEncoding((OCMutableIndexPairSetRef)result, encodingPreference);
+        }
+        return result;
+    }
+
+    OCIndexPair *pairs = malloc(pairCount * sizeof(OCIndexPair));
     if (!pairs) {
         if (outError) *outError = STR("Failed to allocate memory for index pairs");
         return NULL;
     }
 
-    for (int i = 0; i < count; i++) {
-        cJSON *pair = cJSON_GetArrayItem(arrayToProcess, i);
-        if (!cJSON_IsArray(pair) || cJSON_GetArraySize(pair) != 2) {
-            if (outError) *outError = STR("Invalid pair: expected array of length 2");
-            free(pairs);
-            return NULL;
-        }
-        cJSON *indexNode = cJSON_GetArrayItem(pair, 0);
-        cJSON *valueNode = cJSON_GetArrayItem(pair, 1);
+    // Parse flat array: [index1, value1, index2, value2, ...]
+    for (int i = 0; i < pairCount; i++) {
+        cJSON *indexNode = cJSON_GetArrayItem(arrayToProcess, i * 2);
+        cJSON *valueNode = cJSON_GetArrayItem(arrayToProcess, i * 2 + 1);
+        
         if (!cJSON_IsNumber(indexNode) || !cJSON_IsNumber(valueNode)) {
-            if (outError) *outError = STR("Invalid pair elements: expected numbers");
+            if (outError) *outError = STR("Invalid array elements: expected numbers in flat format");
             free(pairs);
             return NULL;
         }
+        
         pairs[i].index = (OCIndex)indexNode->valuedouble;
         pairs[i].value = (OCIndex)valueNode->valuedouble;
     }
 
-    OCIndexPairSetRef result = OCIndexPairSetCreateWithIndexPairArray(pairs, count);
+    OCIndexPairSetRef result = OCIndexPairSetCreateWithIndexPairArray(pairs, pairCount);
     free(pairs);
+    
+    if (result) {
+        OCIndexPairSetSetEncoding((OCMutableIndexPairSetRef)result, encodingPreference);
+    }
+    
     if (!result && outError) {
         *outError = STR("Failed to create OCIndexPairSet");
     }
@@ -318,4 +423,12 @@ OCIndexSetRef OCIndexPairSetCreateIndexSetOfIndexes(OCIndexPairSetRef set) {
     }
     // 4) return as immutable OCIndexSetRef
     return (OCIndexSetRef)indexes;
+}
+OCJSONEncoding OCIndexPairSetCopyEncoding(OCIndexPairSetRef set) {
+    if (!set) return OCJSONEncodingNone;
+    return set->encoding;
+}
+void OCIndexPairSetSetEncoding(OCMutableIndexPairSetRef set, OCJSONEncoding encoding) {
+    if (!set) return;
+    set->encoding = encoding;
 }

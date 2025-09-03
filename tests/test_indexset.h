@@ -9,6 +9,7 @@ bool OCIndexSetAddAndContains_test(void);
 bool OCIndexSetRangeAndBounds_test(void);
 bool OCIndexSetSerialization_test(void);
 bool OCIndexSetDeepCopy_test(void);
+bool OCIndexSetJSONEncoding_test(void);
 #ifdef __cplusplus
 }
 #endif

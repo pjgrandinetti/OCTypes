@@ -205,3 +205,134 @@ bool dataTest_base64_roundtrip(void) {
     fprintf(stderr, "%s end...without problems\n", __func__);
     return true;
 }
+
+bool dataTest_json_encoding(void) {
+    fprintf(stderr, "%s begin...\n", __func__);
+    
+    // Create test data
+    uint8_t testBytes[] = {0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x00, 0x57, 0x6F, 0x72, 0x6C, 0x64, 0xFF, 0xFE};
+    size_t dataLength = sizeof(testBytes);
+    
+    OCMutableDataRef originalData = OCDataCreateMutable(dataLength);
+    if (!originalData) PRINTERROR;
+    
+    OCDataAppendBytes(originalData, testBytes, dataLength);
+    
+    // Test 1: Default encoding (should be OCJSONEncodingBase64 for OCData)
+    OCJSONEncoding defaultEncoding = OCDataCopyEncoding(originalData);
+    if (defaultEncoding != OCJSONEncodingBase64) {
+        fprintf(stderr, "FAIL: Default encoding should be OCJSONEncodingBase64\n");
+        OCRelease(originalData);
+        return false;
+    }
+    
+    // Test 2: Serialize with default encoding (base64)
+    cJSON *jsonDefault = OCDataCopyAsJSON(originalData, true);
+    if (!jsonDefault) {
+        fprintf(stderr, "FAIL: Could not serialize OCData with default encoding\n");
+        OCRelease(originalData);
+        return false;
+    }
+    
+    // Verify JSON structure
+    cJSON *type = cJSON_GetObjectItem(jsonDefault, "type");
+    cJSON *encoding = cJSON_GetObjectItem(jsonDefault, "encoding");
+    cJSON *value = cJSON_GetObjectItem(jsonDefault, "value");
+    
+    if (!type || !cJSON_IsString(type) || strcmp(cJSON_GetStringValue(type), "OCData") != 0) {
+        fprintf(stderr, "FAIL: Invalid type field\n");
+        cJSON_Delete(jsonDefault);
+        OCRelease(originalData);
+        return false;
+    }
+    
+    if (!encoding || !cJSON_IsString(encoding) || strcmp(cJSON_GetStringValue(encoding), "base64") != 0) {
+        fprintf(stderr, "FAIL: Invalid encoding field\n");
+        cJSON_Delete(jsonDefault);
+        OCRelease(originalData);
+        return false;
+    }
+    
+    if (!value || !cJSON_IsString(value)) {
+        fprintf(stderr, "FAIL: Invalid value field\n");
+        cJSON_Delete(jsonDefault);
+        OCRelease(originalData);
+        return false;
+    }
+    
+    // Test 3: Roundtrip with base64 encoding
+    OCStringRef error = NULL;
+    OCDataRef deserializedData = OCDataCreateFromJSON(jsonDefault, &error);
+    if (!deserializedData) {
+        fprintf(stderr, "FAIL: Could not deserialize OCData: %s\n", 
+                error ? OCStringGetCString(error) : "unknown error");
+        if (error) OCRelease(error);
+        cJSON_Delete(jsonDefault);
+        OCRelease(originalData);
+        return false;
+    }
+    
+    // Verify data equality
+    if (!OCTypeEqual(originalData, deserializedData)) {
+        fprintf(stderr, "FAIL: Roundtrip data does not match original\n");
+        OCRelease(deserializedData);
+        cJSON_Delete(jsonDefault);
+        OCRelease(originalData);
+        return false;
+    }
+    
+    // Verify encoding is preserved
+    OCJSONEncoding deserializedEncoding = OCDataCopyEncoding(deserializedData);
+    if (deserializedEncoding != OCJSONEncodingBase64) {
+        fprintf(stderr, "FAIL: Encoding not preserved in roundtrip\n");
+        OCRelease(deserializedData);
+        cJSON_Delete(jsonDefault);
+        OCRelease(originalData);
+        return false;
+    }
+    
+    // Test 4: Test encoding setter (though OCData can only use base64)
+    OCDataSetEncoding(originalData, OCJSONEncodingNone);
+    OCJSONEncoding newEncoding = OCDataCopyEncoding(originalData);
+    if (newEncoding != OCJSONEncodingNone) {
+        fprintf(stderr, "FAIL: Could not set encoding to OCJSONEncodingNone\n");
+        OCRelease(deserializedData);
+        cJSON_Delete(jsonDefault);
+        OCRelease(originalData);
+        return false;
+    }
+    
+    // Test 5: Serialize with OCJSONEncodingNone (should still use base64 for JSON compatibility)
+    cJSON *jsonNone = OCDataCopyAsJSON(originalData, true);
+    if (!jsonNone) {
+        fprintf(stderr, "FAIL: Could not serialize OCData with OCJSONEncodingNone\n");
+        OCRelease(deserializedData);
+        cJSON_Delete(jsonDefault);
+        OCRelease(originalData);
+        return false;
+    }
+    
+    // Even with OCJSONEncodingNone, OCData should still use base64 for JSON
+    cJSON *encodingNone = cJSON_GetObjectItem(jsonNone, "encoding");
+    if (encodingNone && cJSON_IsString(encodingNone)) {
+        // If encoding field exists, it should be "base64" or "none"
+        const char *encodingStr = cJSON_GetStringValue(encodingNone);
+        if (strcmp(encodingStr, "base64") != 0 && strcmp(encodingStr, "none") != 0) {
+            fprintf(stderr, "FAIL: Invalid encoding value: %s\n", encodingStr);
+            cJSON_Delete(jsonNone);
+            OCRelease(deserializedData);
+            cJSON_Delete(jsonDefault);
+            OCRelease(originalData);
+            return false;
+        }
+    }
+    
+    // Cleanup
+    cJSON_Delete(jsonNone);
+    cJSON_Delete(jsonDefault);
+    OCRelease(deserializedData);
+    OCRelease(originalData);
+    
+    fprintf(stderr, "%s end...without problems\n", __func__);
+    return true;
+}
