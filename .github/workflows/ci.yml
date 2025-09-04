@@ -36,7 +36,8 @@ jobs:
       - name: Install deps
         run: |
           sudo apt-get update
-          sudo apt-get install -y clang make flex bison zip unzip ccache
+          sudo apt-get install -y clang make flex bison zip unzip ccache \
+            libomp-dev libssl-dev
 
       - name: Cache ccache
         uses: actions/cache@v4
@@ -152,6 +153,7 @@ jobs:
             flex
             bison
             mingw-w64-x86_64-ccache
+            mingw-w64-x86_64-openmp
 
       - name: Cache ccache (MSYS2)
         uses: actions/cache@v4
@@ -207,7 +209,7 @@ jobs:
           set -euxo pipefail
           docker run --rm --platform=linux/arm64 \
             -v ${{ github.workspace }}:/src -w /src ubuntu:22.04 bash -lc "\
-              apt-get update && apt-get install -y clang make flex bison unzip && \
+              apt-get update && apt-get install -y clang make flex bison unzip libomp-dev && \
               make -j1 clean && make -j1 test CC=clang && \
               make install-shared CC=clang && \
               test -f install/lib/libOCTypes.a && test -f install/lib/libOCTypes.so"

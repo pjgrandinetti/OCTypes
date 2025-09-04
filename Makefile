@@ -75,8 +75,8 @@ ifneq ($(findstring MINGW,$(UNAME_S)),)
   CFLAGS += -Wno-unknown-pragmas
   # Windows optimization features
   CFLAGS += -DHAVE_SSE2 -msse2
-  # Check for OpenMP support
-  ifeq ($(shell $(CC) -fopenmp -E - < /dev/null > /dev/null 2>&1 && echo yes),yes)
+  # Check for OpenMP support (both compiler flag and headers)
+  ifeq ($(shell echo "#include <omp.h>" | $(CC) -fopenmp -E - > /dev/null 2>&1 && echo yes),yes)
     CFLAGS += -DHAVE_OPENMP -fopenmp
     PLATFORM_LIBS += -fopenmp
   endif
