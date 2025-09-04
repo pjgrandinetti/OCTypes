@@ -64,7 +64,7 @@ VERSION_MAJOR := $(shell echo $(VERSION) | cut -d. -f1)
 VERSION_MINOR := $(shell echo $(VERSION) | cut -d. -f2)
 VERSION_PATCH := $(shell echo $(VERSION) | cut -d. -f3)
 
-# Platform
+# Platform and Optimization Libraries
 UNAME_S := $(shell uname -s)
 ifneq ($(findstring MINGW,$(UNAME_S)),)
   SHLIB_EXT     = .dll
@@ -73,16 +73,66 @@ ifneq ($(findstring MINGW,$(UNAME_S)),)
   PLATFORM_LIBS = -ldbghelp
   # Suppress #pragma mark warnings on Windows/MinGW
   CFLAGS += -Wno-unknown-pragmas
+  # Windows optimization features
+  CFLAGS += -DHAVE_SSE2 -msse2
+  # Check for OpenMP support
+  ifeq ($(shell $(CC) -fopenmp -E - < /dev/null > /dev/null 2>&1 && echo yes),yes)
+    CFLAGS += -DHAVE_OPENMP -fopenmp
+    PLATFORM_LIBS += -fopenmp
+  endif
+  # Check for builtin prefetch support
+  ifeq ($(shell echo "int main(){__builtin_prefetch((void*)0,0,1);return 0;}" | $(CC) -x c - -o /dev/null 2>/dev/null && echo yes),yes)
+    CFLAGS += -DHAVE_BUILTIN_PREFETCH
+  endif
 else ifeq ($(UNAME_S),Darwin)
   SHLIB_EXT     = .dylib
   SHLIB_FLAGS   = -dynamiclib -fPIC
   SHLIB_LDFLAGS = -install_name @rpath/libOCTypes.dylib -current_version $(VERSION) -compatibility_version $(VERSION_MAJOR).$(VERSION_MINOR)
-  PLATFORM_LIBS =
+  PLATFORM_LIBS = -framework Accelerate
+  # macOS optimization features
+  CFLAGS += -DHAVE_ACCELERATE
+  # Check for SSE2 support (Intel Macs) or NEON support (Apple Silicon)
+  UNAME_M := $(shell uname -m)
+  ifeq ($(UNAME_M),x86_64)
+    CFLAGS += -DHAVE_SSE2 -msse2
+  else ifeq ($(UNAME_M),arm64)
+    CFLAGS += -DHAVE_NEON
+  endif
+  # Check for OpenMP support
+  ifeq ($(shell $(CC) -fopenmp -E - < /dev/null > /dev/null 2>&1 && echo yes),yes)
+    CFLAGS += -DHAVE_OPENMP -fopenmp
+    PLATFORM_LIBS += -fopenmp
+  endif
+  # Check for builtin prefetch support
+  ifeq ($(shell echo "int main(){__builtin_prefetch((void*)0,0,1);return 0;}" | $(CC) -x c - -o /dev/null 2>/dev/null && echo yes),yes)
+    CFLAGS += -DHAVE_BUILTIN_PREFETCH
+  endif
 else
   SHLIB_EXT     = .so
   SHLIB_FLAGS   = -shared -fPIC
   SHLIB_LDFLAGS =
-  PLATFORM_LIBS =
+  PLATFORM_LIBS = -lm
+  # Linux optimization features
+  UNAME_M := $(shell uname -m)
+  ifeq ($(UNAME_M),x86_64)
+    CFLAGS += -DHAVE_SSE2 -msse2
+  else ifneq ($(findstring arm,$(UNAME_M)),)
+    CFLAGS += -DHAVE_NEON
+  endif
+  # Check for OpenMP support
+  ifeq ($(shell $(CC) -fopenmp -E - < /dev/null > /dev/null 2>&1 && echo yes),yes)
+    CFLAGS += -DHAVE_OPENMP -fopenmp
+    PLATFORM_LIBS += -fopenmp
+  endif
+  # Check for builtin prefetch support
+  ifeq ($(shell echo "int main(){__builtin_prefetch((void*)0,0,1);return 0;}" | $(CC) -x c - -o /dev/null 2>/dev/null && echo yes),yes)
+    CFLAGS += -DHAVE_BUILTIN_PREFETCH
+  endif
+  # Check for Intel IPP (if available)
+  ifeq ($(shell pkg-config --exists ipp 2>/dev/null && echo yes),yes)
+    CFLAGS += -DHAVE_IPP $(shell pkg-config --cflags ipp)
+    PLATFORM_LIBS += $(shell pkg-config --libs ipp)
+  endif
 endif
 SHLIB := $(LIBDIR)/libOCTypes$(SHLIB_EXT)
 

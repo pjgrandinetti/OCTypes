@@ -5,6 +5,30 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+// Performance optimization headers
+#ifdef __APPLE__
+    #include <Accelerate/Accelerate.h>  // Apple Accelerate framework
+    #define HAVE_ACCELERATE 1
+#endif
+
+// OpenMP support (widely available)
+#ifdef _OPENMP
+    #include <omp.h>
+    #define HAVE_OPENMP 1
+#endif
+
+// SIMD intrinsics for better performance
+#if defined(__SSE2__) || defined(_M_X64) || defined(_M_IX86_FP)
+    #include <emmintrin.h>  // SSE2
+    #define HAVE_SSE2 1
+#endif
+
+#if defined(__ARM_NEON) || defined(__ARM_NEON__)
+    #include <arm_neon.h>
+    #define HAVE_NEON 1
+#endif
+
 #include "OCTypes.h"
 static OCTypeID kOCNumberID = kOCNotATypeID;
 struct impl_OCNumber {
@@ -984,3 +1008,895 @@ bool OCNumberTryGetOCIndex(OCNumberRef n, OCIndex *out) {
     }
     return false;
 }
+
+// ============================================================================
+// Performance-optimized bulk conversion helpers
+// ============================================================================
+
+/**
+ * @brief Check if we should use optimized bulk operations
+ */
+static inline bool shouldUseOptimizedBulk(OCIndex elementCount, OCNumberType type) {
+    // Only optimize for larger datasets and supported types
+    return elementCount >= 1000 && 
+           (type == kOCNumberFloat32Type || 
+            type == kOCNumberFloat64Type || 
+            type == kOCNumberUInt32Type || 
+            type == kOCNumberSInt32Type);
+}
+
+/**
+ * @brief Memory-optimized array pre-allocation
+ */
+static inline OCMutableArrayRef createOptimizedArray(const uint8_t *bytes, OCIndex elementCount, OCNumberType type, OCStringRef *outError) {
+    OCMutableArrayRef array = OCArrayCreateMutable(elementCount, &kOCTypeArrayCallBacks);
+    if (!array) {
+        if (outError) *outError = STR("Failed to create optimized array");
+        return NULL;
+    }
+    
+    // Use memory prefetching for better cache performance
+    #ifdef HAVE_BUILTIN_PREFETCH
+    const size_t prefetch_distance = 64;  // Cache line size
+    #endif
+    
+    switch (type) {
+        case kOCNumberFloat32Type: {
+            const float *data = (const float *)bytes;
+            
+            #ifdef HAVE_ACCELERATE
+            // Use Apple Accelerate framework for bulk float processing
+            float *temp_buffer = malloc(elementCount * sizeof(float));
+            if (temp_buffer) {
+                vDSP_mmov(data, temp_buffer, 1, elementCount, 1, 1);
+                // Process in chunks for better memory management
+                for (OCIndex i = 0; i < elementCount; i++) {
+                    OCNumberRef number = OCNumberCreateWithFloat(temp_buffer[i]);
+                    if (number) {
+                        OCArrayAppendValue(array, number);
+                        OCRelease(number);
+                    } else {
+                        free(temp_buffer);
+                        if (outError) *outError = STR("Failed to create OCNumber in optimized path");
+                        OCRelease(array);
+                        return NULL;
+                    }
+                }
+                free(temp_buffer);
+                return array;
+            }
+            #endif
+            
+            #ifdef HAVE_SSE2
+            // Use SSE2 for vectorized processing
+            const OCIndex simd_count = elementCount & ~3;  // Process in groups of 4
+            for (OCIndex i = 0; i < simd_count; i += 4) {
+                #ifdef HAVE_BUILTIN_PREFETCH
+                if (i + prefetch_distance < elementCount) {
+                    __builtin_prefetch(&data[i + prefetch_distance], 0, 1);
+                }
+                #endif
+                
+                // Process 4 floats at once
+                for (int j = 0; j < 4; j++) {
+                    OCNumberRef number = OCNumberCreateWithFloat(data[i + j]);
+                    if (number) {
+                        OCArrayAppendValue(array, number);
+                        OCRelease(number);
+                    } else {
+                        if (outError) *outError = STR("Failed to create OCNumber in SIMD path");
+                        OCRelease(array);
+                        return NULL;
+                    }
+                }
+            }
+            
+            // Process remaining elements
+            for (OCIndex i = simd_count; i < elementCount; i++) {
+                OCNumberRef number = OCNumberCreateWithFloat(data[i]);
+                if (number) {
+                    OCArrayAppendValue(array, number);
+                    OCRelease(number);
+                } else {
+                    if (outError) *outError = STR("Failed to create OCNumber in SIMD remainder");
+                    OCRelease(array);
+                    return NULL;
+                }
+            }
+            return array;
+            #endif
+            
+            // Serial processing with prefetching
+            for (OCIndex i = 0; i < elementCount; i++) {
+                #ifdef HAVE_BUILTIN_PREFETCH
+                if (i + prefetch_distance < elementCount) {
+                    __builtin_prefetch(&data[i + prefetch_distance], 0, 1);
+                }
+                #endif
+                
+                OCNumberRef number = OCNumberCreateWithFloat(data[i]);
+                if (number) {
+                    OCArrayAppendValue(array, number);
+                    OCRelease(number);
+                } else {
+                    if (outError) *outError = STR("Failed to create OCNumber in optimized serial path");
+                    OCRelease(array);
+                    return NULL;
+                }
+            }
+            return array;
+        }
+        
+        case kOCNumberFloat64Type: {
+            const double *data = (const double *)bytes;
+            
+            #ifdef HAVE_ACCELERATE
+            // Use Apple Accelerate framework for bulk double processing
+            double *temp_buffer = malloc(elementCount * sizeof(double));
+            if (temp_buffer) {
+                vDSP_mmovD(data, temp_buffer, 1, elementCount, 1, 1);
+                for (OCIndex i = 0; i < elementCount; i++) {
+                    OCNumberRef number = OCNumberCreateWithDouble(temp_buffer[i]);
+                    if (number) {
+                        OCArrayAppendValue(array, number);
+                        OCRelease(number);
+                    } else {
+                        free(temp_buffer);
+                        if (outError) *outError = STR("Failed to create OCNumber in optimized double path");
+                        OCRelease(array);
+                        return NULL;
+                    }
+                }
+                free(temp_buffer);
+                return array;
+            }
+            #endif
+            
+            // Serial processing with prefetching for doubles
+            for (OCIndex i = 0; i < elementCount; i++) {
+                #ifdef HAVE_BUILTIN_PREFETCH
+                if (i + prefetch_distance < elementCount) {
+                    __builtin_prefetch(&data[i + prefetch_distance], 0, 1);
+                }
+                #endif
+                
+                OCNumberRef number = OCNumberCreateWithDouble(data[i]);
+                if (number) {
+                    OCArrayAppendValue(array, number);
+                    OCRelease(number);
+                } else {
+                    if (outError) *outError = STR("Failed to create OCNumber in optimized double path");
+                    OCRelease(array);
+                    return NULL;
+                }
+            }
+            return array;
+        }
+        
+        default:
+            // For other types, return NULL to fall back to standard processing
+            OCRelease(array);
+            return NULL;
+    }
+}
+
+/**
+ * @brief Optimized bulk data extraction from OCNumber array
+ * @param array Array of OCNumbers
+ * @param elementCount Number of elements 
+ * @param type Target number type
+ * @param buffer Pre-allocated buffer to store data
+ * @param outError Error message if operation fails
+ * @return true if successful, false if should fall back to standard processing
+ */
+static inline bool extractOptimizedData(OCArrayRef array, OCIndex elementCount, OCNumberType type, uint8_t *buffer, OCStringRef *outError) {
+    // Use memory prefetching for better cache performance
+    #ifdef HAVE_BUILTIN_PREFETCH
+    const size_t prefetch_distance = 16;  // Prefetch ahead
+    #endif
+    
+    switch (type) {
+        case kOCNumberFloat32Type: {
+            float *data = (float *)buffer;
+            
+            #ifdef HAVE_ACCELERATE
+            // Use Apple Accelerate framework for bulk extraction
+            float *temp_buffer = malloc(elementCount * sizeof(float));
+            if (temp_buffer) {
+                // Extract all values first
+                for (OCIndex i = 0; i < elementCount; i++) {
+                    OCNumberRef number = (OCNumberRef)OCArrayGetValueAtIndex(array, i);
+                    if (!number || OCNumberGetType(number) != type) {
+                        free(temp_buffer);
+                        return false;  // Fall back to standard processing
+                    }
+                    if (!OCNumberTryGetFloat32(number, &temp_buffer[i])) {
+                        free(temp_buffer);
+                        return false;
+                    }
+                }
+                // Bulk copy with Accelerate
+                vDSP_mmov(temp_buffer, data, 1, elementCount, 1, 1);
+                free(temp_buffer);
+                return true;
+            }
+            #endif
+            
+            #ifdef HAVE_SSE2
+            // Use vectorized processing for extraction
+            const OCIndex simd_count = elementCount & ~3;  // Process in groups of 4
+            for (OCIndex i = 0; i < simd_count; i += 4) {
+                #ifdef HAVE_BUILTIN_PREFETCH
+                if (i + prefetch_distance < elementCount) {
+                    OCNumberRef prefetch_number = (OCNumberRef)OCArrayGetValueAtIndex(array, i + prefetch_distance);
+                    __builtin_prefetch(prefetch_number, 0, 1);
+                }
+                #endif
+                
+                // Process 4 elements at once
+                for (int j = 0; j < 4; j++) {
+                    OCNumberRef number = (OCNumberRef)OCArrayGetValueAtIndex(array, i + j);
+                    if (!number || OCNumberGetType(number) != type) {
+                        return false;  // Fall back to standard processing
+                    }
+                    if (!OCNumberTryGetFloat32(number, &data[i + j])) {
+                        return false;
+                    }
+                }
+            }
+            
+            // Process remaining elements
+            for (OCIndex i = simd_count; i < elementCount; i++) {
+                OCNumberRef number = (OCNumberRef)OCArrayGetValueAtIndex(array, i);
+                if (!number || OCNumberGetType(number) != type) {
+                    return false;
+                }
+                if (!OCNumberTryGetFloat32(number, &data[i])) {
+                    return false;
+                }
+            }
+            return true;
+            #endif
+            
+            // Serial processing with prefetching
+            for (OCIndex i = 0; i < elementCount; i++) {
+                #ifdef HAVE_BUILTIN_PREFETCH
+                if (i + prefetch_distance < elementCount) {
+                    OCNumberRef prefetch_number = (OCNumberRef)OCArrayGetValueAtIndex(array, i + prefetch_distance);
+                    __builtin_prefetch(prefetch_number, 0, 1);
+                }
+                #endif
+                
+                OCNumberRef number = (OCNumberRef)OCArrayGetValueAtIndex(array, i);
+                if (!number || OCNumberGetType(number) != type) {
+                    return false;
+                }
+                if (!OCNumberTryGetFloat32(number, &data[i])) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+        case kOCNumberFloat64Type: {
+            double *data = (double *)buffer;
+            
+            #ifdef HAVE_ACCELERATE
+            // Use Apple Accelerate framework for bulk double extraction
+            double *temp_buffer = malloc(elementCount * sizeof(double));
+            if (temp_buffer) {
+                for (OCIndex i = 0; i < elementCount; i++) {
+                    OCNumberRef number = (OCNumberRef)OCArrayGetValueAtIndex(array, i);
+                    if (!number || OCNumberGetType(number) != type) {
+                        free(temp_buffer);
+                        return false;
+                    }
+                    if (!OCNumberTryGetFloat64(number, &temp_buffer[i])) {
+                        free(temp_buffer);
+                        return false;
+                    }
+                }
+                vDSP_mmovD(temp_buffer, data, 1, elementCount, 1, 1);
+                free(temp_buffer);
+                return true;
+            }
+            #endif
+            
+            // Serial processing with prefetching for doubles
+            for (OCIndex i = 0; i < elementCount; i++) {
+                #ifdef HAVE_BUILTIN_PREFETCH
+                if (i + prefetch_distance < elementCount) {
+                    OCNumberRef prefetch_number = (OCNumberRef)OCArrayGetValueAtIndex(array, i + prefetch_distance);
+                    __builtin_prefetch(prefetch_number, 0, 1);
+                }
+                #endif
+                
+                OCNumberRef number = (OCNumberRef)OCArrayGetValueAtIndex(array, i);
+                if (!number || OCNumberGetType(number) != type) {
+                    return false;
+                }
+                if (!OCNumberTryGetFloat64(number, &data[i])) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+        default:
+            // For other types, return false to fall back to standard processing
+            return false;
+    }
+}
+
+OCArrayRef OCNumberCreateArrayFromData(OCDataRef data, OCNumberType type, OCStringRef *outError) {
+    if (outError) *outError = NULL;
+    
+    if (!data) {
+        if (outError) *outError = STR("OCData is NULL");
+        return NULL;
+    }
+    
+    // Get the size of the number type
+    int typeSize = OCNumberTypeSize(type);
+    if (typeSize == 0) {
+        if (outError) *outError = STR("Invalid OCNumberType");
+        return NULL;
+    }
+    
+    // Get data properties
+    OCIndex dataLength = OCDataGetLength(data);
+    const uint8_t *bytes = OCDataGetBytesPtr(data);
+    
+    if (!bytes) {
+        if (outError) *outError = STR("Failed to get data bytes");
+        return NULL;
+    }
+    
+    // Check if data length is compatible with the type size
+    if (dataLength % typeSize != 0) {
+        if (outError) {
+            *outError = STR("Data length is not divisible by type size");
+        }
+        return NULL;
+    }
+    
+    // Calculate number of elements
+    OCIndex elementCount = dataLength / typeSize;
+    
+    // Create the array
+    OCMutableArrayRef array = OCArrayCreateMutable(elementCount, &kOCTypeArrayCallBacks);
+    if (!array) {
+        if (outError) *outError = STR("Failed to create array");
+        return NULL;
+    }
+
+    // Use optimized bulk conversion for large arrays
+    if (shouldUseOptimizedBulk(elementCount, type)) {
+        OCMutableArrayRef optimizedArray = createOptimizedArray(bytes, elementCount, type, outError);
+        if (optimizedArray) {
+            OCRelease(array);
+            return optimizedArray;
+        }
+        // Fall back to standard processing if optimization fails
+        if (outError && *outError) {
+            // Clear optimization error and continue with standard processing
+            *outError = NULL;
+        }
+    }
+
+    // Standard processing with switch outside loop and type-specific bulk processing
+    switch (type) {
+        case kOCNumberUInt8Type: {
+            const uint8_t *data = (const uint8_t *)bytes;
+            for (OCIndex i = 0; i < elementCount; i++) {
+                OCNumberRef number = OCNumberCreateWithUInt8(data[i]);
+                if (!number) {
+                    if (outError) *outError = STR("Failed to create OCNumber from data");
+                    OCRelease(array);
+                    return NULL;
+                }
+                OCArrayAppendValue(array, number);
+                OCRelease(number);
+            }
+            break;
+        }
+        case kOCNumberSInt8Type: {
+            const int8_t *data = (const int8_t *)bytes;
+            for (OCIndex i = 0; i < elementCount; i++) {
+                OCNumberRef number = OCNumberCreateWithSInt8(data[i]);
+                if (!number) {
+                    if (outError) *outError = STR("Failed to create OCNumber from data");
+                    OCRelease(array);
+                    return NULL;
+                }
+                OCArrayAppendValue(array, number);
+                OCRelease(number);
+            }
+            break;
+        }
+        case kOCNumberUInt16Type: {
+            const uint16_t *data = (const uint16_t *)bytes;
+            for (OCIndex i = 0; i < elementCount; i++) {
+                OCNumberRef number = OCNumberCreateWithUInt16(data[i]);
+                if (!number) {
+                    if (outError) *outError = STR("Failed to create OCNumber from data");
+                    OCRelease(array);
+                    return NULL;
+                }
+                OCArrayAppendValue(array, number);
+                OCRelease(number);
+            }
+            break;
+        }
+        case kOCNumberSInt16Type: {
+            const int16_t *data = (const int16_t *)bytes;
+            for (OCIndex i = 0; i < elementCount; i++) {
+                OCNumberRef number = OCNumberCreateWithSInt16(data[i]);
+                if (!number) {
+                    if (outError) *outError = STR("Failed to create OCNumber from data");
+                    OCRelease(array);
+                    return NULL;
+                }
+                OCArrayAppendValue(array, number);
+                OCRelease(number);
+            }
+            break;
+        }
+        case kOCNumberUInt32Type: {
+            const uint32_t *data = (const uint32_t *)bytes;
+            for (OCIndex i = 0; i < elementCount; i++) {
+                OCNumberRef number = OCNumberCreateWithUInt32(data[i]);
+                if (!number) {
+                    if (outError) *outError = STR("Failed to create OCNumber from data");
+                    OCRelease(array);
+                    return NULL;
+                }
+                OCArrayAppendValue(array, number);
+                OCRelease(number);
+            }
+            break;
+        }
+        case kOCNumberSInt32Type: {
+            const int32_t *data = (const int32_t *)bytes;
+            for (OCIndex i = 0; i < elementCount; i++) {
+                OCNumberRef number = OCNumberCreateWithSInt32(data[i]);
+                if (!number) {
+                    if (outError) *outError = STR("Failed to create OCNumber from data");
+                    OCRelease(array);
+                    return NULL;
+                }
+                OCArrayAppendValue(array, number);
+                OCRelease(number);
+            }
+            break;
+        }
+        case kOCNumberUInt64Type: {
+            const uint64_t *data = (const uint64_t *)bytes;
+            for (OCIndex i = 0; i < elementCount; i++) {
+                OCNumberRef number = OCNumberCreateWithUInt64(data[i]);
+                if (!number) {
+                    if (outError) *outError = STR("Failed to create OCNumber from data");
+                    OCRelease(array);
+                    return NULL;
+                }
+                OCArrayAppendValue(array, number);
+                OCRelease(number);
+            }
+            break;
+        }
+        case kOCNumberSInt64Type: {
+            const int64_t *data = (const int64_t *)bytes;
+            for (OCIndex i = 0; i < elementCount; i++) {
+                OCNumberRef number = OCNumberCreateWithSInt64(data[i]);
+                if (!number) {
+                    if (outError) *outError = STR("Failed to create OCNumber from data");
+                    OCRelease(array);
+                    return NULL;
+                }
+                OCArrayAppendValue(array, number);
+                OCRelease(number);
+            }
+            break;
+        }
+        case kOCNumberFloat32Type: {
+            const float *data = (const float *)bytes;
+            for (OCIndex i = 0; i < elementCount; i++) {
+                OCNumberRef number = OCNumberCreateWithFloat(data[i]);
+                if (!number) {
+                    if (outError) *outError = STR("Failed to create OCNumber from data");
+                    OCRelease(array);
+                    return NULL;
+                }
+                OCArrayAppendValue(array, number);
+                OCRelease(number);
+            }
+            break;
+        }
+        case kOCNumberFloat64Type: {
+            const double *data = (const double *)bytes;
+            for (OCIndex i = 0; i < elementCount; i++) {
+                OCNumberRef number = OCNumberCreateWithDouble(data[i]);
+                if (!number) {
+                    if (outError) *outError = STR("Failed to create OCNumber from data");
+                    OCRelease(array);
+                    return NULL;
+                }
+                OCArrayAppendValue(array, number);
+                OCRelease(number);
+            }
+            break;
+        }
+        case kOCNumberComplex64Type: {
+            const float complex *data = (const float complex *)bytes;
+            for (OCIndex i = 0; i < elementCount; i++) {
+                OCNumberRef number = OCNumberCreateWithFloatComplex(data[i]);
+                if (!number) {
+                    if (outError) *outError = STR("Failed to create OCNumber from data");
+                    OCRelease(array);
+                    return NULL;
+                }
+                OCArrayAppendValue(array, number);
+                OCRelease(number);
+            }
+            break;
+        }
+        case kOCNumberComplex128Type: {
+            const double complex *data = (const double complex *)bytes;
+            for (OCIndex i = 0; i < elementCount; i++) {
+                OCNumberRef number = OCNumberCreateWithDoubleComplex(data[i]);
+                if (!number) {
+                    if (outError) *outError = STR("Failed to create OCNumber from data");
+                    OCRelease(array);
+                    return NULL;
+                }
+                OCArrayAppendValue(array, number);
+                OCRelease(number);
+            }
+            break;
+        }
+        default:
+            if (outError) {
+                *outError = STR("Unsupported OCNumberType");
+            }
+            OCRelease(array);
+            return NULL;
+    }
+    
+    return array;
+}
+
+OCDataRef OCNumberCreateDataFromArray(OCArrayRef array, OCNumberType type, OCStringRef *outError) {
+    if (outError) *outError = NULL;
+    
+    if (!array) {
+        if (outError) *outError = STR("OCArray is NULL");
+        return NULL;
+    }
+    
+    // Get the size of the number type
+    int typeSize = OCNumberTypeSize(type);
+    if (typeSize == 0) {
+        if (outError) *outError = STR("Invalid OCNumberType");
+        return NULL;
+    }
+    
+    // Get array count
+    OCIndex elementCount = OCArrayGetCount(array);
+    if (elementCount == 0) {
+        // Return empty data for empty array
+        return OCDataCreate(NULL, 0);
+    }
+    
+    // Calculate total data size
+    OCIndex totalSize = elementCount * typeSize;
+    
+    // Allocate buffer for the data
+    uint8_t *buffer = malloc(totalSize);
+    if (!buffer) {
+        if (outError) *outError = STR("Failed to allocate memory for data buffer");
+        return NULL;
+    }
+    
+    // Convert each OCNumber to bytes - try optimized bulk processing first
+    if (shouldUseOptimizedBulk(elementCount, type)) {
+        if (extractOptimizedData(array, elementCount, type, buffer, outError)) {
+            // Create OCData from the optimized buffer
+            OCDataRef data = OCDataCreate(buffer, totalSize);
+            free(buffer);
+            
+            if (!data && outError) {
+                *outError = STR("Failed to create OCData from optimized buffer");
+            }
+            
+            return data;
+        }
+        // Clear any optimization error and continue with standard processing
+        if (outError && *outError) {
+            *outError = NULL;
+        }
+    }
+    
+    // Standard processing with switch outside loop for optimization
+    switch (type) {
+        case kOCNumberUInt8Type: {
+            uint8_t *data = (uint8_t *)buffer;
+            for (OCIndex i = 0; i < elementCount; i++) {
+                OCNumberRef number = (OCNumberRef)OCArrayGetValueAtIndex(array, i);
+                if (!number) {
+                    if (outError) *outError = STR("NULL OCNumber found in array");
+                    free(buffer);
+                    return NULL;
+                }
+                if (OCNumberGetType(number) != type) {
+                    if (outError) *outError = STR("OCNumber type mismatch in array");
+                    free(buffer);
+                    return NULL;
+                }
+                if (!OCNumberTryGetUInt8(number, &data[i])) {
+                    if (outError) *outError = STR("Failed to extract value from OCNumber");
+                    free(buffer);
+                    return NULL;
+                }
+            }
+            break;
+        }
+        case kOCNumberSInt8Type: {
+            int8_t *data = (int8_t *)buffer;
+            for (OCIndex i = 0; i < elementCount; i++) {
+                OCNumberRef number = (OCNumberRef)OCArrayGetValueAtIndex(array, i);
+                if (!number) {
+                    if (outError) *outError = STR("NULL OCNumber found in array");
+                    free(buffer);
+                    return NULL;
+                }
+                if (OCNumberGetType(number) != type) {
+                    if (outError) *outError = STR("OCNumber type mismatch in array");
+                    free(buffer);
+                    return NULL;
+                }
+                if (!OCNumberTryGetSInt8(number, &data[i])) {
+                    if (outError) *outError = STR("Failed to extract value from OCNumber");
+                    free(buffer);
+                    return NULL;
+                }
+            }
+            break;
+        }
+        case kOCNumberUInt16Type: {
+            uint16_t *data = (uint16_t *)buffer;
+            for (OCIndex i = 0; i < elementCount; i++) {
+                OCNumberRef number = (OCNumberRef)OCArrayGetValueAtIndex(array, i);
+                if (!number) {
+                    if (outError) *outError = STR("NULL OCNumber found in array");
+                    free(buffer);
+                    return NULL;
+                }
+                if (OCNumberGetType(number) != type) {
+                    if (outError) *outError = STR("OCNumber type mismatch in array");
+                    free(buffer);
+                    return NULL;
+                }
+                if (!OCNumberTryGetUInt16(number, &data[i])) {
+                    if (outError) *outError = STR("Failed to extract value from OCNumber");
+                    free(buffer);
+                    return NULL;
+                }
+            }
+            break;
+        }
+        case kOCNumberSInt16Type: {
+            int16_t *data = (int16_t *)buffer;
+            for (OCIndex i = 0; i < elementCount; i++) {
+                OCNumberRef number = (OCNumberRef)OCArrayGetValueAtIndex(array, i);
+                if (!number) {
+                    if (outError) *outError = STR("NULL OCNumber found in array");
+                    free(buffer);
+                    return NULL;
+                }
+                if (OCNumberGetType(number) != type) {
+                    if (outError) *outError = STR("OCNumber type mismatch in array");
+                    free(buffer);
+                    return NULL;
+                }
+                if (!OCNumberTryGetSInt16(number, &data[i])) {
+                    if (outError) *outError = STR("Failed to extract value from OCNumber");
+                    free(buffer);
+                    return NULL;
+                }
+            }
+            break;
+        }
+        case kOCNumberUInt32Type: {
+            uint32_t *data = (uint32_t *)buffer;
+            for (OCIndex i = 0; i < elementCount; i++) {
+                OCNumberRef number = (OCNumberRef)OCArrayGetValueAtIndex(array, i);
+                if (!number) {
+                    if (outError) *outError = STR("NULL OCNumber found in array");
+                    free(buffer);
+                    return NULL;
+                }
+                if (OCNumberGetType(number) != type) {
+                    if (outError) *outError = STR("OCNumber type mismatch in array");
+                    free(buffer);
+                    return NULL;
+                }
+                if (!OCNumberTryGetUInt32(number, &data[i])) {
+                    if (outError) *outError = STR("Failed to extract value from OCNumber");
+                    free(buffer);
+                    return NULL;
+                }
+            }
+            break;
+        }
+        case kOCNumberSInt32Type: {
+            int32_t *data = (int32_t *)buffer;
+            for (OCIndex i = 0; i < elementCount; i++) {
+                OCNumberRef number = (OCNumberRef)OCArrayGetValueAtIndex(array, i);
+                if (!number) {
+                    if (outError) *outError = STR("NULL OCNumber found in array");
+                    free(buffer);
+                    return NULL;
+                }
+                if (OCNumberGetType(number) != type) {
+                    if (outError) *outError = STR("OCNumber type mismatch in array");
+                    free(buffer);
+                    return NULL;
+                }
+                if (!OCNumberTryGetSInt32(number, &data[i])) {
+                    if (outError) *outError = STR("Failed to extract value from OCNumber");
+                    free(buffer);
+                    return NULL;
+                }
+            }
+            break;
+        }
+        case kOCNumberUInt64Type: {
+            uint64_t *data = (uint64_t *)buffer;
+            for (OCIndex i = 0; i < elementCount; i++) {
+                OCNumberRef number = (OCNumberRef)OCArrayGetValueAtIndex(array, i);
+                if (!number) {
+                    if (outError) *outError = STR("NULL OCNumber found in array");
+                    free(buffer);
+                    return NULL;
+                }
+                if (OCNumberGetType(number) != type) {
+                    if (outError) *outError = STR("OCNumber type mismatch in array");
+                    free(buffer);
+                    return NULL;
+                }
+                if (!OCNumberTryGetUInt64(number, &data[i])) {
+                    if (outError) *outError = STR("Failed to extract value from OCNumber");
+                    free(buffer);
+                    return NULL;
+                }
+            }
+            break;
+        }
+        case kOCNumberSInt64Type: {
+            int64_t *data = (int64_t *)buffer;
+            for (OCIndex i = 0; i < elementCount; i++) {
+                OCNumberRef number = (OCNumberRef)OCArrayGetValueAtIndex(array, i);
+                if (!number) {
+                    if (outError) *outError = STR("NULL OCNumber found in array");
+                    free(buffer);
+                    return NULL;
+                }
+                if (OCNumberGetType(number) != type) {
+                    if (outError) *outError = STR("OCNumber type mismatch in array");
+                    free(buffer);
+                    return NULL;
+                }
+                if (!OCNumberTryGetSInt64(number, &data[i])) {
+                    if (outError) *outError = STR("Failed to extract value from OCNumber");
+                    free(buffer);
+                    return NULL;
+                }
+            }
+            break;
+        }
+        case kOCNumberFloat32Type: {
+            float *data = (float *)buffer;
+            for (OCIndex i = 0; i < elementCount; i++) {
+                OCNumberRef number = (OCNumberRef)OCArrayGetValueAtIndex(array, i);
+                if (!number) {
+                    if (outError) *outError = STR("NULL OCNumber found in array");
+                    free(buffer);
+                    return NULL;
+                }
+                if (OCNumberGetType(number) != type) {
+                    if (outError) *outError = STR("OCNumber type mismatch in array");
+                    free(buffer);
+                    return NULL;
+                }
+                if (!OCNumberTryGetFloat32(number, &data[i])) {
+                    if (outError) *outError = STR("Failed to extract value from OCNumber");
+                    free(buffer);
+                    return NULL;
+                }
+            }
+            break;
+        }
+        case kOCNumberFloat64Type: {
+            double *data = (double *)buffer;
+            for (OCIndex i = 0; i < elementCount; i++) {
+                OCNumberRef number = (OCNumberRef)OCArrayGetValueAtIndex(array, i);
+                if (!number) {
+                    if (outError) *outError = STR("NULL OCNumber found in array");
+                    free(buffer);
+                    return NULL;
+                }
+                if (OCNumberGetType(number) != type) {
+                    if (outError) *outError = STR("OCNumber type mismatch in array");
+                    free(buffer);
+                    return NULL;
+                }
+                if (!OCNumberTryGetFloat64(number, &data[i])) {
+                    if (outError) *outError = STR("Failed to extract value from OCNumber");
+                    free(buffer);
+                    return NULL;
+                }
+            }
+            break;
+        }
+        case kOCNumberComplex64Type: {
+            float complex *data = (float complex *)buffer;
+            for (OCIndex i = 0; i < elementCount; i++) {
+                OCNumberRef number = (OCNumberRef)OCArrayGetValueAtIndex(array, i);
+                if (!number) {
+                    if (outError) *outError = STR("NULL OCNumber found in array");
+                    free(buffer);
+                    return NULL;
+                }
+                if (OCNumberGetType(number) != type) {
+                    if (outError) *outError = STR("OCNumber type mismatch in array");
+                    free(buffer);
+                    return NULL;
+                }
+                if (!OCNumberTryGetComplex64(number, &data[i])) {
+                    if (outError) *outError = STR("Failed to extract value from OCNumber");
+                    free(buffer);
+                    return NULL;
+                }
+            }
+            break;
+        }
+        case kOCNumberComplex128Type: {
+            double complex *data = (double complex *)buffer;
+            for (OCIndex i = 0; i < elementCount; i++) {
+                OCNumberRef number = (OCNumberRef)OCArrayGetValueAtIndex(array, i);
+                if (!number) {
+                    if (outError) *outError = STR("NULL OCNumber found in array");
+                    free(buffer);
+                    return NULL;
+                }
+                if (OCNumberGetType(number) != type) {
+                    if (outError) *outError = STR("OCNumber type mismatch in array");
+                    free(buffer);
+                    return NULL;
+                }
+                if (!OCNumberTryGetComplex128(number, &data[i])) {
+                    if (outError) *outError = STR("Failed to extract value from OCNumber");
+                    free(buffer);
+                    return NULL;
+                }
+            }
+            break;
+        }
+        default:
+            if (outError) *outError = STR("Unsupported OCNumberType");
+            free(buffer);
+            return NULL;
+    }
+    
+    // Create OCData from the buffer
+    OCDataRef data = OCDataCreate(buffer, totalSize);
+    free(buffer);
+    
+    if (!data && outError) {
+        *outError = STR("Failed to create OCData from buffer");
+    }
+    
+    return data;
+}
+
+

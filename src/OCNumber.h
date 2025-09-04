@@ -254,6 +254,34 @@ bool OCNumberTryGetInt(OCNumberRef n, int *out);
 bool OCNumberTryGetLong(OCNumberRef n, long *out);
 /** @brief Try extract OCIndex native size. */
 bool OCNumberTryGetOCIndex(OCNumberRef n, OCIndex *out);
+
+/**
+ * @brief Create an OCArray of OCNumbers from binary data.
+ * 
+ * Interprets the binary data in the OCData as an array of values of the specified
+ * OCNumberType and creates an OCArray containing OCNumber objects for each value.
+ * 
+ * @param data The OCData containing binary data to convert
+ * @param type The OCNumberType specifying how to interpret the binary data
+ * @param outError Optional pointer to receive error message on failure
+ * @return New OCArrayRef containing OCNumbers, or NULL on error (caller must release)
+ */
+OCArrayRef OCNumberCreateArrayFromData(OCDataRef data, OCNumberType type, OCStringRef *outError);
+
+/**
+ * @brief Create binary data from an OCArray of OCNumbers.
+ * 
+ * Converts an OCArray containing OCNumber objects into binary data by extracting
+ * the values and packing them consecutively in memory according to the specified type.
+ * All OCNumbers in the array must be of the specified type.
+ * 
+ * @param array The OCArray containing OCNumber objects to convert
+ * @param type The OCNumberType that all numbers in the array must match
+ * @param outError Optional pointer to receive error message on failure
+ * @return New OCDataRef containing binary data, or NULL on error (caller must release)
+ */
+OCDataRef OCNumberCreateDataFromArray(OCArrayRef array, OCNumberType type, OCStringRef *outError);
+
 /** @} */  // end Try-get Accessors
 /** @} */  // end OCNumber
 #endif     /* OCNumber_h */

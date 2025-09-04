@@ -5,6 +5,8 @@
 #include "../src/OCNumber.h"
 #include "../src/OCString.h"
 #include "../src/OCType.h"
+#include "../src/OCData.h"
+#include "../src/OCArray.h"
 #include "test_utils.h"
 #define OCTypeEqual(a, b) OCTypeEqual((const void *)(a), (const void *)(b))
 bool numberTest0(void) {
@@ -314,6 +316,418 @@ bool numberTest0(void) {
             }
         }
     }
+    
+    // --- OCNumberCreateArrayFromData tests ---
+    {
+        fprintf(stderr, "BEGIN: OCNumberCreateArrayFromData tests\n");
+        
+        // Test 1: Create array from uint32 data
+        {
+            uint32_t testData[] = {100, 200, 300, 400};
+            OCDataRef data = OCDataCreate((const uint8_t*)testData, sizeof(testData));
+            if (!data) PRINTERROR;
+            
+            OCStringRef error = NULL;
+            OCArrayRef array = OCNumberCreateArrayFromData(data, kOCNumberUInt32Type, &error);
+            if (!array) {
+                fprintf(stderr, "ERROR: Failed to create array from uint32 data\n");
+                if (error) {
+                    fprintf(stderr, "Error: %s\n", OCStringGetCString(error));
+                }
+                OCRelease(data);
+                PRINTERROR;
+            }
+            
+            // Verify array count
+            OCIndex count = OCArrayGetCount(array);
+            if (count != 4) {
+                fprintf(stderr, "ERROR: Expected 4 elements, got %ld\n", (long)count);
+                OCRelease(array);
+                OCRelease(data);
+                PRINTERROR;
+            }
+            
+            // Verify array contents
+            for (OCIndex i = 0; i < count; i++) {
+                OCNumberRef num = (OCNumberRef)OCArrayGetValueAtIndex(array, i);
+                if (!num) {
+                    fprintf(stderr, "ERROR: NULL number at index %ld\n", (long)i);
+                    OCRelease(array);
+                    OCRelease(data);
+                    PRINTERROR;
+                }
+                
+                uint32_t value;
+                if (!OCNumberTryGetUInt32(num, &value)) {
+                    fprintf(stderr, "ERROR: Failed to get uint32 value at index %ld\n", (long)i);
+                    OCRelease(array);
+                    OCRelease(data);
+                    PRINTERROR;
+                }
+                
+                if (value != testData[i]) {
+                    fprintf(stderr, "ERROR: Expected %u, got %u at index %ld\n", 
+                            testData[i], value, (long)i);
+                    OCRelease(array);
+                    OCRelease(data);
+                    PRINTERROR;
+                }
+            }
+            
+            OCRelease(array);
+            OCRelease(data);
+            fprintf(stderr, "PASS : uint32 array creation test\n");
+        }
+        
+        // Test 2: Create array from float data
+        {
+            float testData[] = {1.5f, 2.5f, 3.5f};
+            OCDataRef data = OCDataCreate((const uint8_t*)testData, sizeof(testData));
+            if (!data) PRINTERROR;
+            
+            OCStringRef error = NULL;
+            OCArrayRef array = OCNumberCreateArrayFromData(data, kOCNumberFloat32Type, &error);
+            if (!array) {
+                fprintf(stderr, "ERROR: Failed to create array from float data\n");
+                OCRelease(data);
+                PRINTERROR;
+            }
+            
+            OCIndex count = OCArrayGetCount(array);
+            if (count != 3) {
+                fprintf(stderr, "ERROR: Expected 3 elements, got %ld\n", (long)count);
+                OCRelease(array);
+                OCRelease(data);
+                PRINTERROR;
+            }
+            
+            for (OCIndex i = 0; i < count; i++) {
+                OCNumberRef num = (OCNumberRef)OCArrayGetValueAtIndex(array, i);
+                float value;
+                if (!OCNumberTryGetFloat32(num, &value)) {
+                    fprintf(stderr, "ERROR: Failed to get float value at index %ld\n", (long)i);
+                    OCRelease(array);
+                    OCRelease(data);
+                    PRINTERROR;
+                }
+                
+                if (value != testData[i]) {
+                    fprintf(stderr, "ERROR: Expected %f, got %f at index %ld\n", 
+                            testData[i], value, (long)i);
+                    OCRelease(array);
+                    OCRelease(data);
+                    PRINTERROR;
+                }
+            }
+            
+            OCRelease(array);
+            OCRelease(data);
+            fprintf(stderr, "PASS : float32 array creation test\n");
+        }
+        
+        // Test 3: Error handling - NULL data
+        {
+            OCStringRef error = NULL;
+            OCArrayRef array = OCNumberCreateArrayFromData(NULL, kOCNumberUInt32Type, &error);
+            if (array) {
+                fprintf(stderr, "ERROR: Expected NULL for NULL data input\n");
+                OCRelease(array);
+                PRINTERROR;
+            }
+            if (!error) {
+                fprintf(stderr, "ERROR: Expected error message for NULL data\n");
+                PRINTERROR;
+            }
+            fprintf(stderr, "PASS : NULL data error handling test\n");
+        }
+        
+        // Test 4: Error handling - invalid type size
+        {
+            uint8_t testData[] = {1, 2, 3};  // 3 bytes
+            OCDataRef data = OCDataCreate(testData, sizeof(testData));
+            if (!data) PRINTERROR;
+            
+            OCStringRef error = NULL;
+            // Try to create uint32 array from 3 bytes (not divisible by 4)
+            OCArrayRef array = OCNumberCreateArrayFromData(data, kOCNumberUInt32Type, &error);
+            if (array) {
+                fprintf(stderr, "ERROR: Expected NULL for incompatible data size\n");
+                OCRelease(array);
+                OCRelease(data);
+                PRINTERROR;
+            }
+            if (!error) {
+                fprintf(stderr, "ERROR: Expected error message for incompatible size\n");
+                OCRelease(data);
+                PRINTERROR;
+            }
+            
+            OCRelease(data);
+            fprintf(stderr, "PASS : Incompatible data size error handling test\n");
+        }
+        
+        // Test 5: Complex numbers
+        {
+            double complex testData[] = {1.0 + 2.0*I, 3.0 + 4.0*I};
+            OCDataRef data = OCDataCreate((const uint8_t*)testData, sizeof(testData));
+            if (!data) PRINTERROR;
+            
+            OCStringRef error = NULL;
+            OCArrayRef array = OCNumberCreateArrayFromData(data, kOCNumberComplex128Type, &error);
+            if (!array) {
+                fprintf(stderr, "ERROR: Failed to create array from complex data\n");
+                OCRelease(data);
+                PRINTERROR;
+            }
+            
+            OCIndex count = OCArrayGetCount(array);
+            if (count != 2) {
+                fprintf(stderr, "ERROR: Expected 2 elements, got %ld\n", (long)count);
+                OCRelease(array);
+                OCRelease(data);
+                PRINTERROR;
+            }
+            
+            for (OCIndex i = 0; i < count; i++) {
+                OCNumberRef num = (OCNumberRef)OCArrayGetValueAtIndex(array, i);
+                double complex value;
+                if (!OCNumberTryGetComplex128(num, &value)) {
+                    fprintf(stderr, "ERROR: Failed to get complex value at index %ld\n", (long)i);
+                    OCRelease(array);
+                    OCRelease(data);
+                    PRINTERROR;
+                }
+                
+                if (creal(value) != creal(testData[i]) || cimag(value) != cimag(testData[i])) {
+                    fprintf(stderr, "ERROR: Complex mismatch at index %ld\n", (long)i);
+                    OCRelease(array);
+                    OCRelease(data);
+                    PRINTERROR;
+                }
+            }
+            
+            OCRelease(array);
+            OCRelease(data);
+            fprintf(stderr, "PASS : complex128 array creation test\n");
+        }
+        
+        fprintf(stderr, "END  : OCNumberCreateArrayFromData tests\n");
+    }
+    
+    // --- OCNumberCreateDataFromArray tests ---
+    {
+        fprintf(stderr, "BEGIN: OCNumberCreateDataFromArray tests\n");
+        
+        // Test 1: Round-trip test with uint32 data
+        {
+            uint32_t originalData[] = {100, 200, 300, 400};
+            OCDataRef originalOCData = OCDataCreate((const uint8_t*)originalData, sizeof(originalData));
+            if (!originalOCData) PRINTERROR;
+            
+            // Convert to array
+            OCStringRef error = NULL;
+            OCArrayRef array = OCNumberCreateArrayFromData(originalOCData, kOCNumberUInt32Type, &error);
+            if (!array) {
+                fprintf(stderr, "ERROR: Failed to create array from data\n");
+                OCRelease(originalOCData);
+                PRINTERROR;
+            }
+            
+            // Convert back to data
+            OCDataRef resultData = OCNumberCreateDataFromArray(array, kOCNumberUInt32Type, &error);
+            if (!resultData) {
+                fprintf(stderr, "ERROR: Failed to create data from array\n");
+                OCRelease(array);
+                OCRelease(originalOCData);
+                PRINTERROR;
+            }
+            
+            // Verify sizes match
+            OCIndex originalLength = OCDataGetLength(originalOCData);
+            OCIndex resultLength = OCDataGetLength(resultData);
+            if (originalLength != resultLength) {
+                fprintf(stderr, "ERROR: Data length mismatch: original %ld, result %ld\n", 
+                        (long)originalLength, (long)resultLength);
+                OCRelease(resultData);
+                OCRelease(array);
+                OCRelease(originalOCData);
+                PRINTERROR;
+            }
+            
+            // Verify data contents match
+            const uint8_t *originalBytes = OCDataGetBytesPtr(originalOCData);
+            const uint8_t *resultBytes = OCDataGetBytesPtr(resultData);
+            if (memcmp(originalBytes, resultBytes, originalLength) != 0) {
+                fprintf(stderr, "ERROR: Data contents do not match\n");
+                OCRelease(resultData);
+                OCRelease(array);
+                OCRelease(originalOCData);
+                PRINTERROR;
+            }
+            
+            OCRelease(resultData);
+            OCRelease(array);
+            OCRelease(originalOCData);
+            fprintf(stderr, "PASS : uint32 round-trip test\n");
+        }
+        
+        // Test 2: Direct array to data conversion
+        {
+            // Create array manually
+            OCMutableArrayRef array = OCArrayCreateMutable(3, &kOCTypeArrayCallBacks);
+            if (!array) PRINTERROR;
+            
+            OCNumberRef num1 = OCNumberCreateWithFloat(1.5f);
+            OCNumberRef num2 = OCNumberCreateWithFloat(2.5f);
+            OCNumberRef num3 = OCNumberCreateWithFloat(3.5f);
+            if (!num1 || !num2 || !num3) {
+                if (num1) OCRelease(num1);
+                if (num2) OCRelease(num2);
+                if (num3) OCRelease(num3);
+                OCRelease(array);
+                PRINTERROR;
+            }
+            
+            OCArrayAppendValue(array, num1);
+            OCArrayAppendValue(array, num2);
+            OCArrayAppendValue(array, num3);
+            
+            // Convert to data
+            OCStringRef error = NULL;
+            OCDataRef data = OCNumberCreateDataFromArray(array, kOCNumberFloat32Type, &error);
+            if (!data) {
+                fprintf(stderr, "ERROR: Failed to create data from float array\n");
+                OCRelease(num3);
+                OCRelease(num2);
+                OCRelease(num1);
+                OCRelease(array);
+                PRINTERROR;
+            }
+            
+            // Verify data size
+            OCIndex expectedSize = 3 * sizeof(float);
+            OCIndex actualSize = OCDataGetLength(data);
+            if (actualSize != expectedSize) {
+                fprintf(stderr, "ERROR: Expected data size %ld, got %ld\n", 
+                        (long)expectedSize, (long)actualSize);
+                OCRelease(data);
+                OCRelease(num3);
+                OCRelease(num2);
+                OCRelease(num1);
+                OCRelease(array);
+                PRINTERROR;
+            }
+            
+            // Verify data contents
+            const float *floatData = (const float*)OCDataGetBytesPtr(data);
+            float expectedValues[] = {1.5f, 2.5f, 3.5f};
+            for (int i = 0; i < 3; i++) {
+                if (floatData[i] != expectedValues[i]) {
+                    fprintf(stderr, "ERROR: Expected %f, got %f at index %d\n", 
+                            expectedValues[i], floatData[i], i);
+                    OCRelease(data);
+                    OCRelease(num3);
+                    OCRelease(num2);
+                    OCRelease(num1);
+                    OCRelease(array);
+                    PRINTERROR;
+                }
+            }
+            
+            OCRelease(data);
+            OCRelease(num3);
+            OCRelease(num2);
+            OCRelease(num1);
+            OCRelease(array);
+            fprintf(stderr, "PASS : float32 direct conversion test\n");
+        }
+        
+        // Test 3: Error handling - NULL array
+        {
+            OCStringRef error = NULL;
+            OCDataRef data = OCNumberCreateDataFromArray(NULL, kOCNumberUInt32Type, &error);
+            if (data) {
+                fprintf(stderr, "ERROR: Expected NULL for NULL array input\n");
+                OCRelease(data);
+                PRINTERROR;
+            }
+            if (!error) {
+                fprintf(stderr, "ERROR: Expected error message for NULL array\n");
+                PRINTERROR;
+            }
+            fprintf(stderr, "PASS : NULL array error handling test\n");
+        }
+        
+        // Test 4: Error handling - type mismatch in array
+        {
+            OCMutableArrayRef array = OCArrayCreateMutable(2, &kOCTypeArrayCallBacks);
+            if (!array) PRINTERROR;
+            
+            OCNumberRef num1 = OCNumberCreateWithUInt32(100);  // uint32
+            OCNumberRef num2 = OCNumberCreateWithFloat(2.5f);  // float32 - different type!
+            if (!num1 || !num2) {
+                if (num1) OCRelease(num1);
+                if (num2) OCRelease(num2);
+                OCRelease(array);
+                PRINTERROR;
+            }
+            
+            OCArrayAppendValue(array, num1);
+            OCArrayAppendValue(array, num2);
+            
+            OCStringRef error = NULL;
+            OCDataRef data = OCNumberCreateDataFromArray(array, kOCNumberUInt32Type, &error);
+            if (data) {
+                fprintf(stderr, "ERROR: Expected NULL for type mismatch\n");
+                OCRelease(data);
+                OCRelease(num2);
+                OCRelease(num1);
+                OCRelease(array);
+                PRINTERROR;
+            }
+            if (!error) {
+                fprintf(stderr, "ERROR: Expected error message for type mismatch\n");
+                OCRelease(num2);
+                OCRelease(num1);
+                OCRelease(array);
+                PRINTERROR;
+            }
+            
+            OCRelease(num2);
+            OCRelease(num1);
+            OCRelease(array);
+            fprintf(stderr, "PASS : Type mismatch error handling test\n");
+        }
+        
+        // Test 5: Empty array test
+        {
+            OCMutableArrayRef array = OCArrayCreateMutable(0, &kOCTypeArrayCallBacks);
+            if (!array) PRINTERROR;
+            
+            OCStringRef error = NULL;
+            OCDataRef data = OCNumberCreateDataFromArray(array, kOCNumberUInt32Type, &error);
+            if (!data) {
+                fprintf(stderr, "ERROR: Failed to create data from empty array\n");
+                OCRelease(array);
+                PRINTERROR;
+            }
+            
+            OCIndex dataLength = OCDataGetLength(data);
+            if (dataLength != 0) {
+                fprintf(stderr, "ERROR: Expected empty data, got length %ld\n", (long)dataLength);
+                OCRelease(data);
+                OCRelease(array);
+                PRINTERROR;
+            }
+            
+            OCRelease(data);
+            OCRelease(array);
+            fprintf(stderr, "PASS : Empty array test\n");
+        }
+        
+        fprintf(stderr, "END  : OCNumberCreateDataFromArray tests\n");
+    }
+    
     fprintf(stderr, "%s end...without problems\n", __func__);
     return true;
 }
