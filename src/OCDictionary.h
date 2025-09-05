@@ -198,11 +198,12 @@ OCStringRef OCDictionaryCopyFormattingDesc(OCTypeRef cf);
  *
  * @param dict An OCDictionaryRef to serialize.
  * @param typed If false, returns simple object; if true, returns typed object.
+ * @param outError Optional pointer to receive an error string on failure.
  * @return A new cJSON object on success, or cJSON null on failure.
  *         Caller is responsible for managing the returned cJSON object.
  * @ingroup OCDictionary
  */
-cJSON *OCDictionaryCopyAsJSON(OCDictionaryRef dict, bool typed);
+cJSON *OCDictionaryCopyAsJSON(OCDictionaryRef dict, bool typed, OCStringRef *outError);
 
 /**
  * @brief Creates an OCDictionary from a typed cJSON object.
@@ -214,5 +215,21 @@ cJSON *OCDictionaryCopyAsJSON(OCDictionaryRef dict, bool typed);
  *         The caller is responsible for releasing the returned dictionary.
  */
 OCDictionaryRef OCDictionaryCreateFromJSONTyped(cJSON *json, OCStringRef *outError);
+
+/**
+ * @brief Creates an OCDictionary from an untyped cJSON object.
+ *
+ * This function creates a dictionary from a JSON object using natural
+ * JSON type to OCType mappings: JSON strings become OCString,
+ * JSON numbers become OCNumber (double type), JSON booleans become
+ * OCBoolean, JSON arrays become OCArray (recursive), and JSON objects
+ * become OCDictionary (recursive).
+ *
+ * @param json A cJSON object containing key-value pairs.
+ * @param outError Optional pointer to receive an error string on failure.
+ * @return A new OCDictionaryRef, or NULL on failure.
+ *         The caller is responsible for releasing the returned dictionary.
+ */
+OCDictionaryRef OCDictionaryCreateFromJSON(cJSON *json, OCStringRef *outError);
 /** @} */
 #endif /* OCDICTIONARY_H */

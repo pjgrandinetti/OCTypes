@@ -2,7 +2,7 @@
 #include "../src/OCBoolean.h"
 // Original booleanTest0 implementation
 bool booleanTest0(void) {
-    fprintf(stderr, "%s begin...\n", __func__);
+    fprintf(stderr, "%s begin...", __func__);
     // singletons
     if (kOCBooleanTrue == NULL) PRINTERROR;
     if (kOCBooleanFalse == NULL) PRINTERROR;
@@ -31,6 +31,6 @@ bool booleanTest0(void) {
     // Verify they are still valid after retain/release attempts
     if (OCBooleanGetValue(kOCBooleanTrue) != true) PRINTERROR;
     if (OCBooleanGetValue(kOCBooleanFalse) != false) PRINTERROR;
-    fprintf(stderr, "%s end...without problems\n", __func__);
+    fprintf(stderr, " passed\n");
     return true;
 }

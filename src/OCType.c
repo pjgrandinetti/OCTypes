@@ -216,13 +216,15 @@ const void *OCRetain(const void *ptr) {
     theType->base.retainCount++;
     return ptr;
 }
-cJSON *OCTypeCopyJSON(OCTypeRef obj, bool typed) {
+cJSON *OCTypeCopyJSON(OCTypeRef obj, bool typed, OCStringRef *outError) {
+    if (outError) *outError = NULL;
     if (!obj) return cJSON_CreateNull();
     OCBase *b = (OCBase *)obj;
     if (!b->copyJSON) {
+        if (outError) *outError = STR("No JSON serialization available for this type");
         return cJSON_CreateNull();
     }
-    return b->copyJSON(obj, typed);
+    return b->copyJSON(obj, typed, outError);
 }
 
 OCTypeRef OCTypeCreateFromJSONTyped(cJSON *json, OCStringRef *outError) {
@@ -257,12 +259,12 @@ OCTypeRef OCTypeCreateFromJSONTyped(cJSON *json, OCStringRef *outError) {
         if (typeIDTable[i] && strcmp(typeIDTable[i], typeName) == 0) {
             OCTypeRef (*factory)(cJSON *, OCStringRef *) = createFromJSONTypedTable[i];
             if (factory) return factory(json, outError);
-            if (outError) *outError = OCStringCreateWithCString("OCTypeCreateFromJSONTyped: No factory registered for type");
+            if (outError) *outError = STR("OCTypeCreateFromJSONTyped: No factory registered for type");
             return NULL;
         }
     }
 
-    if (outError) *outError = OCStringCreateWithCString("OCTypeCreateFromJSONTyped: Unknown type");
+    if (outError) *outError = STR("OCTypeCreateFromJSONTyped: Unknown type");
     return NULL;
 }
 void *OCTypeDeepCopy(const void *obj) {
@@ -302,7 +304,7 @@ void *OCTypeAllocate(size_t size,
                      void (*finalize)(const void *),
                      bool (*equal)(const void *, const void *),
                      OCStringRef (*copyDesc)(OCTypeRef),
-                     cJSON *(*copyJSON)(const void *, bool),
+                     cJSON *(*copyJSON)(const void *, bool, OCStringRef *outError),
                      void *(*copyDeep)(const void *),
                      void *(*copyDeepMutable)(const void *)) {
     struct impl_OCType *object = calloc(1, size);

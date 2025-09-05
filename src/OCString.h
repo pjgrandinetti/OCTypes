@@ -95,9 +95,10 @@ OCMutableStringRef OCStringCreateMutableCopy(OCStringRef theString);
  *
  * @param str The OCStringRef to serialize.
  * @param typed Whether to use typed serialization (ignored for strings).
+ * @param outError Optional pointer to receive error information if serialization fails.
  * @return A cJSON string node or cJSON null on failure.
  */
-cJSON *OCStringCopyAsJSON(OCStringRef str, bool typed);
+cJSON *OCStringCopyAsJSON(OCStringRef str, bool typed, OCStringRef *outError);
 /**
  * @brief Create an OCStringRef from a cJSON string node.
  *
@@ -773,11 +774,11 @@ bool OCStringEqual(OCStringRef theString1, OCStringRef theString2);
  * - For %@, if the OCStringRef is NULL, a warning is printed and nothing is inserted.
  *
  * @code
- * OCStringRef s = OCStringCreateWithFormat(STR("%@ %d"), STR("Hello"), 123);
+ * OCStringRef s = OCStringCreateWithFormat(STR("%@ %d"), NULL, STR("Hello"), 123);
  * // s contains "Hello 123"
  * @endcode
  */
-OCStringRef OCStringCreateWithFormat(OCStringRef format, ...);
+OCStringRef OCStringCreateWithFormat(OCStringRef format, OCStringRef *outError, ...);
 /**
  * @brief Appends formatted text to a mutable OCString.
  * @param theString Mutable OCString.

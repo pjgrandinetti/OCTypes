@@ -26,6 +26,7 @@
 #include "OCString.h"  // For OCString functions
 #include "OCBoolean.h" // For OCBoolean functions
 #include "OCNumber.h"  // For OCNumber functions
+#include "OCNull.h"    // For OCNull functions
 #include "OCDictionary.h" // For OCDictionary functions
 #if defined(__APPLE__)
 #include <malloc/malloc.h>  // For malloc_zone_t
@@ -73,7 +74,7 @@ static bool impl_OCArrayEqual(const void *theType1, const void *theType2) {
     }
     return true;
 }
-static void _OCArrayReleaseValues(OCArrayRef theArray) {
+static void impl_OCArrayReleaseValues(OCArrayRef theArray) {
     if (theArray && theArray->callBacks && theArray->callBacks->release) {
         for (uint64_t index = 0; index < theArray->count; index++) {
             if (theArray->data[index]) {  // Add a NULL check for safety before dereferencing
@@ -125,6 +126,49 @@ const OCArrayCallBacks *OCArrayGetCallBacks(OCArrayRef array) {
     if (!array) return NULL;
     return array->callBacks;
 }
+bool OCArrayIsHomogeneous(OCArrayRef array) {
+    if (!array) return false;
+
+    uint64_t count = OCArrayGetCount(array);
+    if (count == 0) return false; // Empty arrays are not considered homogeneous
+
+    // Get the type ID of the first element
+    OCTypeRef firstElem = OCArrayGetValueAtIndex(array, 0);
+    if (!firstElem) return false;
+
+    OCTypeID firstTypeID = OCGetTypeID(firstElem);
+
+    // Check if all remaining elements have the same OCTypeID
+    for (uint64_t i = 1; i < count; i++) {
+        OCTypeRef elem = OCArrayGetValueAtIndex(array, i);
+        if (!elem || OCGetTypeID(elem) != firstTypeID) {
+            return false;
+        }
+    }
+
+    return true;
+}
+OCStringRef OCArrayCopyHomogeneousElementTypeName(OCArrayRef array) {
+    if (!array) return NULL;
+
+    uint64_t count = OCArrayGetCount(array);
+    if (count == 0) return NULL;
+
+    // Get the first element
+    OCTypeRef firstElem = OCArrayGetValueAtIndex(array, 0);
+    if (!firstElem) return NULL;
+
+    // Return the type name if homogeneous, otherwise NULL
+    if (OCArrayIsHomogeneous(array)) {
+        OCTypeID typeID = OCGetTypeID(firstElem);
+        const char *typeName = OCTypeNameFromTypeID(typeID);
+        if (typeName) {
+            return OCStringCreateWithCString(typeName);
+        }
+    }
+
+    return NULL;
+}
 OCStringRef OCArrayCopyFormattingDesc(OCTypeRef cf) {
     if (!cf) return OCStringCreateWithCString("<OCArray: NULL>");
     OCArrayRef array = (OCArrayRef)cf;
@@ -158,14 +202,14 @@ OCStringRef OCArrayCopyFormattingDesc(OCTypeRef cf) {
     OCStringAppendCString(result, "]>");
     return result;
 }
-static cJSON *impl_OCArrayCopyJSON(const void *obj, bool typed) {
-    return OCArrayCopyAsJSON((OCArrayRef)obj, typed);
+static cJSON *impl_OCArrayCopyJSON(const void *obj, bool typed, OCStringRef *outError) {
+    return OCArrayCopyAsJSON((OCArrayRef)obj, typed, outError);
 }
 
 static void impl_OCArrayFinalize(const void *theType) {
     if (NULL == theType) return;
     struct impl_OCArray *theArray = (struct impl_OCArray *)theType;
-    _OCArrayReleaseValues(theArray);
+    impl_OCArrayReleaseValues(theArray);
     // Only free non-NULL data
     if (theArray->data) {
 #if defined(__APPLE__)
@@ -262,35 +306,249 @@ OCMutableArrayRef OCArrayCreateMutableCopy(OCArrayRef theArray) {
     }
     return newMutableArray;
 }
-cJSON *OCArrayCopyAsJSON(OCArrayRef array, bool typed) {
-    if (!array) return cJSON_CreateNull();
+// Helper function to create OCNumber with specific type from double value
+static OCNumberRef impl_OCNumberCreateWithTypeFromDouble(double value, OCNumberType type) {
+    switch (type) {
+        case kOCNumberUInt8Type:
+            return OCNumberCreateWithUInt8((uint8_t)value);
+        case kOCNumberUInt16Type:
+            return OCNumberCreateWithUInt16((uint16_t)value);
+        case kOCNumberUInt32Type:
+            return OCNumberCreateWithUInt32((uint32_t)value);
+        case kOCNumberUInt64Type:
+            return OCNumberCreateWithUInt64((uint64_t)value);
+        case kOCNumberSInt8Type:
+            return OCNumberCreateWithSInt8((int8_t)value);
+        case kOCNumberSInt16Type:
+            return OCNumberCreateWithSInt16((int16_t)value);
+        case kOCNumberSInt32Type:
+            return OCNumberCreateWithSInt32((int32_t)value);
+        case kOCNumberSInt64Type:
+            return OCNumberCreateWithSInt64((int64_t)value);
+        case kOCNumberFloat32Type:
+            return OCNumberCreateWithFloat((float)value);
+        case kOCNumberFloat64Type:
+            return OCNumberCreateWithDouble(value);
+        default:
+            return NULL; // Invalid or complex types not supported
+    }
+}
 
-    cJSON *arr = cJSON_CreateArray();
-    uint64_t count = OCArrayGetCount(array);
-    for (uint64_t i = 0; i < count; i++) {
-        OCTypeRef elem = OCArrayGetValueAtIndex(array, i);
+// Helper function removed - inlined the simple boolean check
 
-        // Use typed or untyped serialization based on parameter
-        cJSON *jsonVal = OCTypeCopyJSON(elem, typed);
-
-        if (!jsonVal) {
-            const char *funcName = typed ? "OCArrayCopyAsJSON(typed)" : "OCArrayCopyAsJSON";
-            fprintf(stderr, "%s: Failed to serialize array element at index %llu. Using null.\n", funcName, (unsigned long long)i);
-            jsonVal = cJSON_CreateNull();
+// Helper function to get complex value as double complex
+static double complex _OCNumberGetComplexValueAsDouble(OCNumberRef number) {
+    OCNumberType type = OCNumberGetType(number);
+    if (type == kOCNumberComplex64Type) {
+        float complex val;
+        if (OCNumberTryGetComplex64(number, &val)) {
+            return (double complex)val;
         }
-        cJSON_AddItemToArray(arr, jsonVal);
+    } else if (type == kOCNumberComplex128Type) {
+        double complex val;
+        if (OCNumberTryGetComplex128(number, &val)) {
+            return val;
+        }
+    }
+    return 0.0 + 0.0*I;
+}
+
+// Helper function to get numeric value as double
+static double impl_OCNumberGetDoubleValueSafe(OCNumberRef number) {
+    double val;
+    if (OCNumberTryGetDouble(number, &val)) {
+        return val;
+    }
+    return 0.0;
+}
+
+cJSON *OCArrayCopyAsJSON(OCArrayRef array, bool typed, OCStringRef *outError) {
+    if (outError) *outError = NULL;
+    if (!array) {
+        if (outError) *outError = STR("Array is NULL");
+        return cJSON_CreateNull();
     }
 
-    // Arrays are native JSON types, no wrapping needed even for typed serialization
-    return arr;
+    uint64_t count = OCArrayGetCount(array);
+
+    // Empty arrays are always fine
+    if (count == 0) {
+        return cJSON_CreateArray();
+    }
+
+    // Check if array is homogeneous (all elements have same OCTypeID)
+    bool isHomogeneous = OCArrayIsHomogeneous(array);
+
+    if (typed) {
+        // TYPED MODE: Handle both homogeneous and heterogeneous arrays
+        if (isHomogeneous) {
+            // Check if it's a homogeneous OCNumber array for optimization
+            OCTypeRef firstElem = OCArrayGetValueAtIndex(array, 0);
+            if (firstElem && OCGetTypeID(firstElem) == OCNumberGetTypeID()) {
+                // Homogeneous OCNumber array - use optimized format
+                OCNumberType elementType = OCNumberGetType((OCNumberRef)firstElem);
+
+                // Create typed homogeneous array object
+                cJSON *obj = cJSON_CreateObject();
+                if (!obj) {
+                    if (outError) *outError = STR("Failed to create JSON object");
+                    return cJSON_CreateNull();
+                }
+
+                cJSON_AddStringToObject(obj, "type", "OCArray");
+
+                // Add element_type field using OCNumberGetTypeName
+                const char *typeStr = OCNumberGetTypeName(elementType);
+                if (!typeStr) {
+                    if (outError) *outError = STR("Invalid OCNumber type for homogeneous array");
+                    cJSON_Delete(obj);
+                    return cJSON_CreateNull();
+                }
+                cJSON_AddStringToObject(obj, "element_type", typeStr);
+
+                // Create value array with homogeneous optimization
+                cJSON *valueArray = cJSON_CreateArray();
+                if (!valueArray) {
+                    if (outError) *outError = STR("Failed to create value array");
+                    cJSON_Delete(obj);
+                    return cJSON_CreateNull();
+                }
+
+                if (elementType == kOCNumberComplex64Type || elementType == kOCNumberComplex128Type) {
+                    // Homogeneous complex: [r0,i0,r1,i1,...]
+                    for (uint64_t i = 0; i < count; i++) {
+                        OCNumberRef num = (OCNumberRef)OCArrayGetValueAtIndex(array, i);
+                        double complex val = _OCNumberGetComplexValueAsDouble(num);
+                        cJSON_AddItemToArray(valueArray, cJSON_CreateNumber(creal(val)));
+                        cJSON_AddItemToArray(valueArray, cJSON_CreateNumber(cimag(val)));
+                    }
+                } else {
+                    // Homogeneous real: [v0,v1,v2,...]
+                    for (uint64_t i = 0; i < count; i++) {
+                        OCNumberRef num = (OCNumberRef)OCArrayGetValueAtIndex(array, i);
+                        double val = impl_OCNumberGetDoubleValueSafe(num);
+                        cJSON_AddItemToArray(valueArray, cJSON_CreateNumber(val));
+                    }
+                }
+
+                cJSON_AddItemToObject(obj, "value", valueArray);
+                return obj;
+            }
+        }
+
+        // Heterogeneous array OR homogeneous non-OCNumber array: use individual element serialization
+        cJSON *arr = cJSON_CreateArray();
+        if (!arr) {
+            if (outError) *outError = STR("Failed to create JSON array");
+            return cJSON_CreateNull();
+        }
+
+        for (uint64_t i = 0; i < count; i++) {
+            OCTypeRef elem = OCArrayGetValueAtIndex(array, i);
+            OCStringRef elemError = NULL;
+            cJSON *jsonVal = OCTypeCopyJSON(elem, true, &elemError);
+
+            if (!jsonVal) {
+                if (outError && !*outError) {
+                    if (elemError) {
+                        *outError = elemError; // Transfer ownership
+                    } else {
+                        *outError = STR("Failed to serialize array element");
+                    }
+                }
+                cJSON_Delete(arr);
+                return cJSON_CreateNull();
+            }
+            cJSON_AddItemToArray(arr, jsonVal);
+        }
+        return arr;
+    } else {
+        // UNTYPED MODE: Handle both homogeneous and heterogeneous arrays
+        if (isHomogeneous) {
+            OCTypeRef firstElem = OCArrayGetValueAtIndex(array, 0);
+            if (!firstElem) {
+                if (outError) *outError = STR("Array has NULL first element");
+                return cJSON_CreateNull();
+            }
+
+            OCTypeID elemTypeID = OCGetTypeID(firstElem);
+
+            if (elemTypeID == OCNumberGetTypeID()) {
+                // Homogeneous OCNumber array - use optimized flattened format
+                OCNumberType elementType = OCNumberGetType((OCNumberRef)firstElem);
+
+                if (elementType == kOCNumberComplex64Type || elementType == kOCNumberComplex128Type) {
+                    // Homogeneous complex array: [r0,i0,r1,i1,...]
+                    cJSON *arr = cJSON_CreateArray();
+                    if (!arr) {
+                        if (outError) *outError = STR("Failed to create JSON array for complex numbers");
+                        return cJSON_CreateNull();
+                    }
+
+                    for (uint64_t i = 0; i < count; i++) {
+                        OCNumberRef num = (OCNumberRef)OCArrayGetValueAtIndex(array, i);
+                        double complex val = _OCNumberGetComplexValueAsDouble(num);
+                        cJSON_AddItemToArray(arr, cJSON_CreateNumber(creal(val)));
+                        cJSON_AddItemToArray(arr, cJSON_CreateNumber(cimag(val)));
+                    }
+                    return arr;
+                } else {
+                    // Homogeneous real array: [v0,v1,v2,...]
+                    cJSON *arr = cJSON_CreateArray();
+                    if (!arr) {
+                        if (outError) *outError = STR("Failed to create JSON array for real numbers");
+                        return cJSON_CreateNull();
+                    }
+
+                    for (uint64_t i = 0; i < count; i++) {
+                        OCNumberRef num = (OCNumberRef)OCArrayGetValueAtIndex(array, i);
+                        double val = impl_OCNumberGetDoubleValueSafe(num);
+                        cJSON_AddItemToArray(arr, cJSON_CreateNumber(val));
+                    }
+                    return arr;
+                }
+            }
+        }
+
+        // Heterogeneous array OR homogeneous non-OCNumber array - serialize each element naturally
+        cJSON *arr = cJSON_CreateArray();
+        if (!arr) {
+            if (outError) *outError = STR("Failed to create JSON array");
+            return cJSON_CreateNull();
+        }
+
+        for (uint64_t i = 0; i < count; i++) {
+            OCTypeRef elem = OCArrayGetValueAtIndex(array, i);
+            OCStringRef elemError = NULL;
+            cJSON *jsonVal = OCTypeCopyJSON(elem, false, &elemError); // Note: typed=false
+
+            if (!jsonVal) {
+                if (outError && !*outError) {
+                    if (elemError) {
+                        *outError = elemError; // Transfer ownership
+                    } else {
+                        *outError = STR("Failed to serialize array element in untyped mode");
+                    }
+                }
+                cJSON_Delete(arr);
+                return cJSON_CreateNull();
+            }
+            cJSON_AddItemToArray(arr, jsonVal);
+        }
+        return arr;
+    }
 }
 
 OCArrayRef OCArrayCreateFromJSONTyped(cJSON *json, OCStringRef *outError) {
-    // Arrays are native JSON types, so even "typed" deserialization
-    // expects a native JSON array, not a wrapped object
     if (outError) *outError = NULL;
-    if (!json || !cJSON_IsArray(json)) {
-        if (outError) *outError = STR("Expected JSON array");
+    if (!json) {
+        if (outError) *outError = STR("JSON is NULL");
+        return NULL;
+    }
+
+    // For typed deserialization, we expect a JSON array and deserialize each element individually
+    if (!cJSON_IsArray(json)) {
+        if (outError) *outError = STR("Expected JSON array for typed deserialization");
         return NULL;
     }
 
@@ -335,6 +593,215 @@ OCArrayRef OCArrayCreateFromJSONTyped(cJSON *json, OCStringRef *outError) {
 
     return result;
 }
+
+OCArrayRef OCArrayOfNumbersCreateFromJSON(cJSON *json, OCNumberType numericType, OCStringRef *outError) {
+    if (outError) *outError = NULL;
+    if (!json) {
+        if (outError) *outError = STR("JSON is NULL");
+        return NULL;
+    }
+
+    if (!cJSON_IsArray(json)) {
+        if (outError) *outError = STR("Expected JSON array for number array creation");
+        return NULL;
+    }
+
+    int arraySize = cJSON_GetArraySize(json);
+    if (arraySize <= 0) {
+        // Empty arrays are fine
+        return OCArrayCreateMutable(0, &kOCTypeArrayCallBacks);
+    }
+
+    uint64_t count = (uint64_t)arraySize;
+
+    // Handle complex numbers: expect flattened format [r0,i0,r1,i1,...]
+    if (numericType == kOCNumberComplex64Type || numericType == kOCNumberComplex128Type) {
+        if (arraySize % 2 != 0) {
+            if (outError) *outError = STR("Complex number array requires even number of elements");
+            return NULL;
+        }
+
+        // Verify all elements are numbers
+        for (int i = 0; i < arraySize; i++) {
+            cJSON *elem = cJSON_GetArrayItem(json, i);
+            if (!cJSON_IsNumber(elem)) {
+                if (outError) *outError = STR("All elements must be numbers for complex array");
+                return NULL;
+            }
+        }
+
+        uint64_t complexCount = arraySize / 2;
+        OCMutableArrayRef result = OCArrayCreateMutable(complexCount, &kOCTypeArrayCallBacks);
+        if (!result) {
+            if (outError) *outError = STR("Failed to create mutable array");
+            return NULL;
+        }
+
+        for (uint64_t i = 0; i < complexCount; i++) {
+            cJSON *realElem = cJSON_GetArrayItem(json, i * 2);
+            cJSON *imagElem = cJSON_GetArrayItem(json, i * 2 + 1);
+
+            double real = cJSON_GetNumberValue(realElem);
+            double imag = cJSON_GetNumberValue(imagElem);
+            double complex value = real + imag * I;
+
+            OCNumberRef num;
+            if (numericType == kOCNumberComplex64Type) {
+                num = OCNumberCreateWithFloatComplex((float complex)value);
+            } else {
+                num = OCNumberCreateWithDoubleComplex(value);
+            }
+
+            if (num) {
+                OCArrayAppendValue(result, num);
+                OCRelease(num);
+            } else {
+                if (outError) *outError = STR("Failed to create complex number");
+                OCRelease(result);
+                return NULL;
+            }
+        }
+
+        return result;
+    } else {
+        // Handle real numbers: expect regular format [v0,v1,v2,...]
+        // Verify all elements are numbers
+        for (int i = 0; i < arraySize; i++) {
+            cJSON *elem = cJSON_GetArrayItem(json, i);
+            if (!cJSON_IsNumber(elem)) {
+                if (outError) *outError = STR("All elements must be numbers for real number array");
+                return NULL;
+            }
+        }
+
+        OCMutableArrayRef result = OCArrayCreateMutable(count, &kOCTypeArrayCallBacks);
+        if (!result) {
+            if (outError) *outError = STR("Failed to create mutable array");
+            return NULL;
+        }
+
+        for (uint64_t i = 0; i < count; i++) {
+            cJSON *elem = cJSON_GetArrayItem(json, i);
+            double value = cJSON_GetNumberValue(elem);
+
+            OCNumberRef num = impl_OCNumberCreateWithTypeFromDouble(value, numericType);
+            if (num) {
+                OCArrayAppendValue(result, num);
+                OCRelease(num);
+            } else {
+                if (outError) *outError = STR("Failed to create number with specified type");
+                OCRelease(result);
+                return NULL;
+            }
+        }
+
+        return result;
+    }
+}
+
+OCArrayRef OCArrayCreateFromJSON(cJSON *json, OCStringRef *outError) {
+    if (outError) *outError = NULL;
+    if (!json) {
+        if (outError) *outError = STR("JSON is NULL");
+        return NULL;
+    }
+
+    if (!cJSON_IsArray(json)) {
+        if (outError) *outError = STR("Expected JSON array for untyped deserialization");
+        return NULL;
+    }
+
+    int arraySize = cJSON_GetArraySize(json);
+    if (arraySize <= 0) {
+        // Empty arrays are fine
+        return OCArrayCreateMutable(0, &kOCTypeArrayCallBacks);
+    }
+
+    uint64_t count = (uint64_t)arraySize;
+
+    // For untyped deserialization, we handle natural JSON type → OCType mappings:
+    // - JSON numbers → OCNumber (using default double type)
+    // - JSON strings → OCString
+    // - JSON booleans → OCBoolean
+    // - JSON arrays → OCArray (recursive)
+    // - JSON objects → OCDictionary
+
+    OCMutableArrayRef result = OCArrayCreateMutable(count, &kOCTypeArrayCallBacks);
+    if (!result) {
+        if (outError) *outError = STR("Failed to create mutable array");
+        return NULL;
+    }
+
+    // Process each element according to its JSON type
+    for (int i = 0; i < arraySize; i++) {
+        cJSON *elem = cJSON_GetArrayItem(json, i);
+        if (!elem) {
+            if (outError) *outError = STR("Invalid array element");
+            OCRelease(result);
+            return NULL;
+        }
+
+        OCTypeRef ocValue = NULL;
+        OCStringRef elemError = NULL;
+
+        if (cJSON_IsNumber(elem)) {
+            // JSON number → OCNumber with default double type
+            double value = cJSON_GetNumberValue(elem);
+            ocValue = (OCTypeRef)OCNumberCreateWithDouble(value);
+            if (!ocValue && outError) *outError = STR("Failed to create OCNumber");
+
+        } else if (cJSON_IsString(elem)) {
+            // JSON string → OCString
+            const char *str = cJSON_GetStringValue(elem);
+            ocValue = (OCTypeRef)OCStringCreateWithCString(str);
+            if (!ocValue && outError) *outError = STR("Failed to create OCString");
+
+        } else if (cJSON_IsBool(elem)) {
+            // JSON boolean → OCBoolean
+            bool value = cJSON_IsTrue(elem);
+            ocValue = (OCTypeRef)OCBooleanGetWithBool(value);
+            if (!ocValue && outError) *outError = STR("Failed to create OCBoolean");
+
+        } else if (cJSON_IsArray(elem)) {
+            // JSON array → OCArray (recursive)
+            ocValue = (OCTypeRef)OCArrayCreateFromJSON(elem, &elemError);
+            if (!ocValue && outError && !*outError) {
+                *outError = elemError ? elemError : STR("Failed to create OCArray from JSON array element");
+            }
+
+        } else if (cJSON_IsObject(elem)) {
+            // JSON object → OCDictionary
+            ocValue = (OCTypeRef)OCDictionaryCreateFromJSON(elem, &elemError);
+            if (!ocValue && outError && !*outError) {
+                *outError = elemError ? elemError : STR("Failed to create OCDictionary from JSON object element");
+            }
+
+        } else if (cJSON_IsNull(elem)) {
+            // JSON null → OCNull
+            ocValue = (OCTypeRef)kOCNull;
+            OCRetain(ocValue); // Need to retain since we'll release after append
+
+        } else {
+            // Unsupported JSON type
+            if (outError) *outError = STR("Unsupported JSON element type");
+        }
+
+        if (ocValue) {
+            OCArrayAppendValue(result, ocValue);
+            OCRelease(ocValue); // OCArrayAppendValue retains
+        } else {
+            // Clean up elemError if we couldn't transfer it to outError
+            if (elemError && (!outError || *outError != elemError)) {
+                OCRelease(elemError);
+            }
+            OCRelease(result);
+            return NULL;
+        }
+    }
+
+    return result;
+}
+
 
 const void *OCArrayGetValueAtIndex(OCArrayRef theArray, uint64_t index) {
     if (NULL == theArray) return NULL;

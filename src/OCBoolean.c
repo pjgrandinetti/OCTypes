@@ -42,8 +42,8 @@ static OCStringRef impl_OCBooleanCopyFormattingDesc(OCTypeRef cf) {
 }
 // JSON‐serializer for our two singletons:
 static cJSON *
-impl_OCBooleanCopyJSON(const void *cf, bool typed) {
-    return OCBooleanCopyAsJSON((OCBooleanRef)cf, typed);
+impl_OCBooleanCopyJSON(const void *cf, bool typed, OCStringRef *outError) {
+    return OCBooleanCopyAsJSON((OCBooleanRef)cf, typed, outError);
 }
 
 static void *
@@ -51,8 +51,8 @@ impl_OCBooleanDeepCopy(const void *cf) {
     // booleans are singletons, so “deep copy” is just the same object:
     return (void *)cf;
 }
-// Made _OCBooleanInitialize externally visible
-void _OCBooleanInitialize(void) {
+// Made impl_OCBooleanInitialize externally visible
+void impl_OCBooleanInitialize(void) {
     kOCBooleanTypeID = OCRegisterType("OCBoolean", (OCTypeRef (*)(cJSON *, OCStringRef *))OCBooleanCreateFromJSON);
     impl_kOCBooleanTrue.base.typeID = kOCBooleanTypeID;
     impl_kOCBooleanTrue.base.finalize = impl_OCBooleanFinalize;
@@ -85,7 +85,8 @@ OCBooleanRef OCBooleanGetWithBool(bool value) {
 OCStringRef OCBooleanCreateStringValue(OCBooleanRef boolean) {
     return OCStringCreateWithCString(OCBooleanGetValue(boolean) ? "true" : "false");
 }
-cJSON *OCBooleanCopyAsJSON(OCBooleanRef boolean, bool typed) {
+cJSON *OCBooleanCopyAsJSON(OCBooleanRef boolean, bool typed, OCStringRef *outError) {
+    if (outError) *outError = NULL;
     if (!boolean) return cJSON_CreateNull();
 
     // Booleans are native JSON types, no wrapping needed even for typed serialization
@@ -105,5 +106,5 @@ OCBooleanRef OCBooleanCreateFromJSON(cJSON *json, OCStringRef *outError) {
 
 // Automatically initialize boolean type at load time
 __attribute__((constructor)) static void OCBooleanModuleInitialize(void) {
-    _OCBooleanInitialize();
+    impl_OCBooleanInitialize();
 }

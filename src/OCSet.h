@@ -140,11 +140,12 @@ bool OCSetEqual(OCSetRef set1, OCSetRef set2);
  *
  * @param set An OCSetRef to serialize.
  * @param typed Whether to include type information in the serialization.
+ * @param outError Optional pointer to receive error information if serialization fails.
  * @return A new cJSON object/array on success, or cJSON null on failure.
  *         The caller is responsible for managing the returned cJSON object.
  * @ingroup OCSet
  */
-cJSON *OCSetCopyAsJSON(OCSetRef set, bool typed);
+cJSON *OCSetCopyAsJSON(OCSetRef set, bool typed, OCStringRef *outError);
 
 /**
  * @brief Creates an OCSet from typed JSON representation.

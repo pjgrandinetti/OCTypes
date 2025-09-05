@@ -75,11 +75,12 @@ OCStringRef OCBooleanCreateStringValue(OCBooleanRef boolean);
  *
  * @param boolean A valid OCBooleanRef (kOCBooleanTrue or kOCBooleanFalse).
  * @param typed Whether to include type information (ignored for booleans).
+ * @param outError Optional pointer to receive an error string on failure.
  * @return A new cJSON boolean node, or cJSON null if input is NULL.
  *         Caller is responsible for managing the returned cJSON object.
  * @ingroup OCBoolean
  */
-cJSON *OCBooleanCopyAsJSON(OCBooleanRef boolean, bool typed);
+cJSON *OCBooleanCopyAsJSON(OCBooleanRef boolean, bool typed, OCStringRef *outError);
 
 /**
  * @brief Creates an OCBooleanRef from a JSON boolean node.

@@ -67,6 +67,7 @@ OCPathJoin(OCStringRef a, OCStringRef b) {
         bool aEnds = (ca[la - 1] == _sep);
         size_t needed = la + 1 + strlen(cb) + 1;
         char *buf = malloc(needed);
+        if (!buf) return NULL;
         strcpy(buf, ca);
         if (!aEnds) {
             buf[la] = _sep;
@@ -125,6 +126,10 @@ OCStringRef OCPathByReplacingExtension(OCStringRef path,
     if (n[0] != '.') {
         size_t L = strlen(n);
         char *buf = malloc(L + 2);
+        if (!buf) {
+            free(n);
+            return NULL;
+        }
         buf[0] = '.';
         memcpy(buf + 1, n, L + 1);
         free(n);
@@ -141,6 +146,11 @@ OCStringRef OCPathByReplacingExtension(OCStringRef path,
     *dot = '\0';  // truncate at the old dot (or at end)
     size_t cap = strlen(cp) + strlen(n) + 1;
     char *out = malloc(cap);
+    if (!out) {
+        free(cp);
+        free(n);
+        return NULL;
+    }
     strcpy(out, cp);
     strcat(out, n);
     OCStringRef r = OCStringCreateWithCString(out);
@@ -176,7 +186,7 @@ bool OCCreateDirectory(const char *path,
         if (MKDIR(path, 0755) != 0 && errno != EEXIST) {
             if (err) {
                 *err = OCStringCreateWithFormat(
-                    STR("mkdir \"%s\" failed: %s"),
+                    STR("mkdir \"%s\" failed: %s"), NULL,
                     path, strerror(errno));
             }
             return false;
@@ -200,7 +210,7 @@ bool OCCreateDirectory(const char *path,
             if (MKDIR(buf, 0755) != 0 && errno != EEXIST) {
                 if (err) {
                     *err = OCStringCreateWithFormat(
-                        STR("mkdir \"%s\" failed: %s"),
+                        STR("mkdir \"%s\" failed: %s"), NULL,
                         buf, strerror(errno));
                 }
                 return false;
@@ -212,7 +222,7 @@ bool OCCreateDirectory(const char *path,
     if (MKDIR(buf, 0755) != 0 && errno != EEXIST) {
         if (err) {
             *err = OCStringCreateWithFormat(
-                STR("mkdir \"%s\" failed: %s"),
+                STR("mkdir \"%s\" failed: %s"), NULL,
                 buf, strerror(errno));
         }
         return false;
@@ -233,7 +243,7 @@ _OCListDirRec(const char *basePath,
     DIR *d = opendir(full);
     if (!d) {
         if (err) *err = OCStringCreateWithFormat(
-                     STR("opendir \"%s\": %s"), full, strerror(errno));
+                     STR("opendir \"%s\": %s"), NULL, full, strerror(errno));
         return false;
     }
     struct dirent *ent;
@@ -298,7 +308,7 @@ bool OCRemoveItem(const char *path,
         }
         if (err) {
             *err = OCStringCreateWithFormat(
-                STR("stat(\"%s\") failed: %s"),
+                STR("stat(\"%s\") failed: %s"), NULL,
                 path, strerror(errno));
         }
         return false;
@@ -312,7 +322,7 @@ bool OCRemoveItem(const char *path,
     if (rc != 0) {
         if (err) {
             *err = OCStringCreateWithFormat(
-                STR("remove \"%s\" failed: %s"),
+                STR("remove \"%s\" failed: %s"), NULL,
                 path, strerror(errno));
         }
         return false;
@@ -325,7 +335,7 @@ bool OCRenameItem(const char *oldPath,
     if (rename(oldPath, newPath) != 0) {
         if (err) {
             *err = OCStringCreateWithFormat(
-                STR("rename \"%s\" → \"%s\" failed: %s"),
+                STR("rename \"%s\" → \"%s\" failed: %s"), NULL,
                 oldPath, newPath, strerror(errno));
         }
         return false;
@@ -354,7 +364,7 @@ bool OCStringWriteToFile(OCStringRef str, const char *path, OCStringRef *err) {
     if (!fp) {
         if (err) {
             *err = OCStringCreateWithFormat(
-                STR("Unable to open \"%s\" for writing: %s"),
+                STR("Unable to open \"%s\" for writing: %s"), NULL,
                 path, strerror(errno));
         }
         return false;
@@ -369,7 +379,7 @@ bool OCStringWriteToFile(OCStringRef str, const char *path, OCStringRef *err) {
     if (fwrite(utf8, 1, len, fp) != len) {
         if (err) {
             *err = OCStringCreateWithFormat(
-                STR("Write error writing to \"%s\": %s"),
+                STR("Write error writing to \"%s\": %s"), NULL,
                 path, strerror(errno));
         }
         fclose(fp);
@@ -388,7 +398,7 @@ OCDataRef OCDataCreateWithContentsOfFile(const char *path,
     if (!fp) {
         if (errorString) {
             *errorString = OCStringCreateWithFormat(
-                STR("Unable to open file \"%s\": %s"),
+                STR("Unable to open file \"%s\": %s"), NULL,
                 path, strerror(errno));
         }
         return NULL;
@@ -397,7 +407,7 @@ OCDataRef OCDataCreateWithContentsOfFile(const char *path,
     if (fseek(fp, 0, SEEK_END) != 0) {
         if (errorString) {
             *errorString = OCStringCreateWithFormat(
-                STR("Failed to seek end of \"%s\": %s"),
+                STR("Failed to seek end of \"%s\": %s"), NULL,
                 path, strerror(errno));
         }
         fclose(fp);
@@ -407,7 +417,7 @@ OCDataRef OCDataCreateWithContentsOfFile(const char *path,
     if (fileLen < 0) {
         if (errorString) {
             *errorString = OCStringCreateWithFormat(
-                STR("Failed to tell position in \"%s\": %s"),
+                STR("Failed to tell position in \"%s\": %s"), NULL,
                 path, strerror(errno));
         }
         fclose(fp);
@@ -427,7 +437,7 @@ OCDataRef OCDataCreateWithContentsOfFile(const char *path,
     if (got != (size_t)fileLen) {
         if (errorString) {
             *errorString = OCStringCreateWithFormat(
-                STR("Error reading \"%s\": only read %zu of %ld bytes"),
+                STR("Error reading \"%s\": only read %zu of %ld bytes"), NULL,
                 path, got, fileLen);
         }
         free(buffer);
@@ -535,9 +545,10 @@ bool OCTypeWriteJSONToFile(OCTypeRef obj,
         return false;
     }
     // 1) build the cJSON tree using schema-conformant method
-    cJSON *root = OCTypeCopyJSON(obj, typed);
+    OCStringRef jsonError = NULL;
+    cJSON *root = OCTypeCopyJSON(obj, typed, &jsonError);
     if (!root) {
-        if (error) *error = STR("failed to build JSON");
+        if (error) *error = jsonError ? jsonError : STR("failed to build JSON");
         return false;
     }
     // 2) render as compact or formatted JSON
@@ -558,7 +569,7 @@ bool OCTypeWriteJSONToFile(OCTypeRef obj,
 static char *_readFile(const char *path, OCStringRef *err) {
     FILE *f = fopen(path, "rb");
     if (!f) {
-        if (err) *err = OCStringCreateWithFormat(STR("Unable to open \"%s\": %s"),
+        if (err) *err = OCStringCreateWithFormat(STR("Unable to open \"%s\": %s"), NULL,
                                                  path, strerror(errno));
         return NULL;
     }

@@ -90,8 +90,8 @@ OCStringRef OCDataCopyFormattingDesc(OCTypeRef cf) {
     return result;
 }
 static cJSON *
-impl_OCDataCopyJSON(const void *obj, bool typed) {
-    return OCDataCopyAsJSON((OCDataRef)obj, typed);
+impl_OCDataCopyJSON(const void *obj, bool typed, OCStringRef *outError) {
+    return OCDataCopyAsJSON((OCDataRef)obj, typed, outError);
 }
 
 static void impl_OCDataFinalize(const void *obj) {
@@ -372,7 +372,7 @@ uint8_t *base64_decode(const char *input, size_t input_length, size_t *output_le
     if (output_length) *output_length = j;
     return decoded;
 }
-static void _parseOCBase64Options(OCBase64EncodingOptions options,
+static void impl_parseOCBase64Options(OCBase64EncodingOptions options,
                                   Base64LineLength *lineLength,
                                   Base64LineEnding *lineEnding) {
     if (options & OCBase64Encoding64CharacterLineLength)
@@ -395,7 +395,7 @@ OCStringRef OCDataCreateBase64EncodedString(OCDataRef data,
     if (!data || OCDataGetLength(data) == 0) return NULL;
     Base64LineLength lineLen;
     Base64LineEnding lineEnd;
-    _parseOCBase64Options(options, &lineLen, &lineEnd);
+    impl_parseOCBase64Options(options, &lineLen, &lineEnd);
     const uint8_t *bytes = OCDataGetBytesPtr(data);
     size_t input_length = (size_t)OCDataGetLength(data);
     size_t output_length = 0;
@@ -419,13 +419,13 @@ OCDataRef OCDataCreateFromBase64EncodedString(OCStringRef base64String) {
     free(decoded);
     return data;
 }
-cJSON *OCDataCopyAsJSON(OCDataRef data, bool typed) {
+cJSON *OCDataCopyAsJSON(OCDataRef data, bool typed, OCStringRef *outError) {
+    if (outError) *outError = NULL;
     if (!data) return cJSON_CreateNull();
 
     OCStringRef b64 = OCDataCreateBase64EncodedString(data, OCBase64EncodingOptionsNone);
     if (!b64) {
-        const char *funcName = typed ? "OCDataCopyAsJSONTyped" : "OCDataCopyAsJSON";
-        fprintf(stderr, "%s: Failed to Base64 encode OCData.\n", funcName);
+        if (outError) *outError = STR("Failed to Base64 encode OCData");
         return cJSON_CreateNull();
     }
 
@@ -449,7 +449,7 @@ OCDataRef OCDataCreateFromJSON(cJSON *json, OCStringRef *outError) {
         if (outError) *outError = STR("JSON input is NULL");
         return NULL;
     }
-    
+
     // Check if typed format (object with type/value structure)
     if (cJSON_IsObject(json)) {
         cJSON *type = cJSON_GetObjectItem(json, "type");
@@ -493,7 +493,7 @@ OCDataRef OCDataCreateFromJSON(cJSON *json, OCStringRef *outError) {
         }
         return result;
     }
-    
+
     // Handle untyped format (direct string)
     if (cJSON_IsString(json)) {
         const char *encoded = json->valuestring;
@@ -517,7 +517,7 @@ OCDataRef OCDataCreateFromJSON(cJSON *json, OCStringRef *outError) {
         }
         return result;
     }
-    
+
     if (outError) *outError = STR("Invalid JSON: expected object or string");
     return NULL;
 }
@@ -529,4 +529,3 @@ void OCDataSetEncoding(OCMutableDataRef data, OCJSONEncoding encoding) {
     if (!data) return;
     data->encoding = encoding;
 }
-

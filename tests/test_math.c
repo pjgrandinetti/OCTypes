@@ -20,7 +20,7 @@
 // Assuming raise_to_integer_power is available from linking with OCMath.o or similar
 // Original mathTest0 implementation
 bool mathTest0(void) {
-    fprintf(stderr, "%s begin...\n", __func__);
+    fprintf(stderr, "%s begin...", __func__);
     double complex z = 2.0 + 3.0 * I;
     double complex r0 = raise_to_integer_power(z, 0);
     if (OCCompareDoubleValuesLoose(creal(r0), 1.0) != kOCCompareEqualTo) PRINTERROR;
@@ -29,12 +29,12 @@ bool mathTest0(void) {
     double complex e2 = z * z;
     if (OCCompareDoubleValuesLoose(creal(r2), creal(e2)) != kOCCompareEqualTo) PRINTERROR;
     if (OCCompareDoubleValuesLoose(cimag(r2), cimag(e2)) != kOCCompareEqualTo) PRINTERROR;
-    fprintf(stderr, "%s end...without problems\n", __func__);
+    fprintf(stderr, " passed\n");
     return true;
 }
 // Consolidated mathTest1 from test_math_extra.c
 bool mathTest1(void) {
-    fprintf(stderr, "%s begin...\n", __func__);
+    fprintf(stderr, "%s begin...", __func__);
     // Test cargument
     double complex z = 1.0 + 1.0 * I;
     double arg = cargument(z);
@@ -59,6 +59,6 @@ bool mathTest1(void) {
     if (OCCompareDoubleValuesLoose(creal(complex_sine(angle)), sin(M_PI_4)) != kOCCompareEqualTo) PRINTERROR;
     if (OCCompareDoubleValuesLoose(creal(complex_cosine(angle)), cos(M_PI_4)) != kOCCompareEqualTo) PRINTERROR;
     if (OCCompareDoubleValuesLoose(creal(complex_tangent(angle)), tan(M_PI_4)) != kOCCompareEqualTo) PRINTERROR;
-    fprintf(stderr, "%s end...without problems\n", __func__);
+    fprintf(stderr, " passed\n");
     return true;
 }

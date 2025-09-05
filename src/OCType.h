@@ -36,6 +36,7 @@ typedef struct impl_OCSet *OCMutableSetRef;
 typedef const struct impl_OCDictionary *OCDictionaryRef;
 typedef struct impl_OCDictionary *OCMutableDictionaryRef;
 typedef const struct impl_OCBoolean *OCBooleanRef;
+typedef const struct impl_OCNull *OCNullRef;
 typedef const struct impl_OCData *OCDataRef;
 typedef struct impl_OCData *OCMutableDataRef;
 typedef const struct impl_OCNumber *OCNumberRef;
@@ -275,10 +276,11 @@ OCStringRef OCTypeCopyFormattingDesc(const void *ptr);
  *
  * @param obj Pointer to the OCType instance. If NULL, returns a JSON null.
  * @param typed If true, use self-describing format when necessary; if false, use schema-bound format.
- * @return A cJSON object representing the instance, or cJSON null if obj is NULL.
+ * @param outError Optional pointer to receive an error string on failure.
+ * @return A cJSON object representing the instance, or cJSON null if obj is NULL or on error.
  * @ingroup OCType
  */
-cJSON *OCTypeCopyJSON(OCTypeRef obj, bool typed);
+cJSON *OCTypeCopyJSON(OCTypeRef obj, bool typed, OCStringRef *outError);
 
 /**
  * @brief Creates an OCType instance from a self-describing JSON object.
@@ -358,7 +360,7 @@ typedef struct impl_OCBase {
     void (*finalize)(const void *);
     bool (*equal)(const void *, const void *);
     OCStringRef (*copyFormattingDesc)(OCTypeRef);
-    cJSON *(*copyJSON)(const void *, bool typed);
+    cJSON *(*copyJSON)(const void *, bool typed, OCStringRef *outError);
     void *(*copyDeep)(const void *);
     void *(*copyDeepMutable)(const void *);
     // Flags packed together in a single byte
@@ -389,7 +391,7 @@ typedef struct impl_OCBase {
  * @param copyFormattingDesc Optional function to create a human-readable string description
  *                           of the object. Used for debugging and logging. May be NULL.
  * @param copyJSON Optional function to serialize the object to JSON format following the
- *                 library's schema conventions. May be NULL.
+ *                 library's schema conventions. Should accept typed flag and outError pointer. May be NULL.
  * @param copyDeep Optional function to create an immutable deep copy of the object.
  *                 Should allocate and return a semantically equivalent but independent object. May be NULL.
  * @param copyDeepMutable Optional function to create a mutable deep copy of the object.
@@ -414,7 +416,7 @@ void *OCTypeAllocate(
     void (*finalize)(const void *),
     bool (*equal)(const void *, const void *),
     OCStringRef (*copyFormattingDesc)(OCTypeRef),
-    cJSON *(*copyJSON)(const void *, bool typed),
+    cJSON *(*copyJSON)(const void *, bool typed, OCStringRef *outError),
     void *(*copyDeep)(const void *),
     void *(*copyDeepMutable)(const void *));
 /**

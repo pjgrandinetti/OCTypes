@@ -222,11 +222,12 @@ OCIndexSetRef OCIndexSetCreateFromJSON(cJSON *json, OCStringRef *outError);
  *
  * @param set An OCIndexSetRef to serialize. Must not be NULL.
  * @param typed Whether to include type information in the serialization.
+ * @param outError Optional pointer to receive error information if serialization fails.
  * @return A new cJSON object/array on success, or cJSON null on failure.
  *         The caller is responsible for managing the returned cJSON object.
  * @ingroup OCIndexSet
  */
-cJSON *OCIndexSetCopyAsJSON(OCIndexSetRef set, bool typed);
+cJSON *OCIndexSetCopyAsJSON(OCIndexSetRef set, bool typed, OCStringRef *outError);
 
 /**
  * @brief Logs the contents of the set to stderr for debugging.

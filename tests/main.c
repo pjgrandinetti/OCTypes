@@ -25,6 +25,7 @@
 #include "test_string.h"
 #include "test_type.h"
 #include "test_json_typed.h"
+#include "test_null.h"
 // Note: The OCStringCompareAdapter is now in test_array.c
 // Note: The extern declaration for raise_to_integer_power is now in test_math.h
 int main(int argc, const char* argv[]) {
@@ -49,7 +50,7 @@ int main(int argc, const char* argv[]) {
     if (!dataTest_base64_roundtrip()) failures++;  // New: Base64 roundtrip tests
     if (!dataTest_json_encoding()) failures++;     // New: JSON encoding tests
     if (!booleanTest0()) failures++;
-    if (!numberTest0()) failures++;                  // ← New: Invoke OCNumber tests
+    if (!test_number_comprehensive()) failures++;    // ← Comprehensive OCNumber tests (basic + JSON)
     if (!dictionaryTest0()) failures++;              // ← Invoke OCDictionary tests
     if (!dictionaryTest1()) failures++;              // ← Invoke OCDictionary edge case tests
     if (!dictionaryTest2()) failures++;              // ← Invoke OCDictionary array operations tests
@@ -106,6 +107,13 @@ int main(int argc, const char* argv[]) {
     if (!test_dictionary_write_simple()) failures++;
     if (!test_dictionary_write_empty()) failures++;
     if (!test_dictionary_write_error()) failures++;
+
+    // OCNull tests
+    if (!test_OCNull_singleton()) failures++;
+    if (!test_OCNull_json_serialization()) failures++;
+    if (!test_OCNull_in_arrays()) failures++;
+    if (!test_OCNull_in_dictionaries()) failures++;
+    if (!test_OCNull_roundtrip()) failures++;
 
     // JSONTyped roundtrip tests
     if (!runAllJSONTypedTests()) failures++;

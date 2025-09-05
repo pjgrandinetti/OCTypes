@@ -201,10 +201,11 @@ OCIndexArrayRef OCIndexArrayCreateFromJSON(cJSON *json, OCStringRef *outError);
  *
  * @param array A valid OCIndexArrayRef.
  * @param typed Whether to include type information in the serialization.
+ * @param outError Optional pointer to receive an error string on failure.
  * @return A new cJSON object/array on success, or cJSON null on failure.
  *         The caller is responsible for managing the returned cJSON object.
  */
-cJSON *OCIndexArrayCopyAsJSON(OCIndexArrayRef array, bool typed);
+cJSON *OCIndexArrayCopyAsJSON(OCIndexArrayRef array, bool typed, OCStringRef *outError);
 
 /**
  * @brief Logs the contents of the array to stderr, for debugging.

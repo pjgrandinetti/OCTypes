@@ -93,6 +93,41 @@ static bool impl_OCNumberEqual(const void *a_, const void *b_) {
     OCNumberRef b = (OCNumberRef)b_;
     if (a == b) return true;
     if (!a || !b || a->base.typeID != b->base.typeID) return false;
+
+    // Fast path: if types are identical, do exact comparison
+    if (a->type == b->type) {
+        switch (a->type) {
+            case kOCNumberUInt8Type:
+                return a->value.uint8Value == b->value.uint8Value;
+            case kOCNumberSInt8Type:
+                return a->value.int8Value == b->value.int8Value;
+            case kOCNumberUInt16Type:
+                return a->value.uint16Value == b->value.uint16Value;
+            case kOCNumberSInt16Type:
+                return a->value.int16Value == b->value.int16Value;
+            case kOCNumberUInt32Type:
+                return a->value.uint32Value == b->value.uint32Value;
+            case kOCNumberSInt32Type:
+                return a->value.int32Value == b->value.int32Value;
+            case kOCNumberUInt64Type:
+                return a->value.uint64Value == b->value.uint64Value;
+            case kOCNumberSInt64Type:
+                return a->value.int64Value == b->value.int64Value;
+            case kOCNumberFloat32Type:
+                return a->value.floatValue == b->value.floatValue;
+            case kOCNumberFloat64Type:
+                return a->value.doubleValue == b->value.doubleValue;
+            case kOCNumberComplex64Type:
+                return a->value.floatComplexValue == b->value.floatComplexValue;
+            case kOCNumberComplex128Type:
+                return a->value.doubleComplexValue == b->value.doubleComplexValue;
+            default:
+                return false;
+        }
+    }
+
+    // Slow path: different types, convert to double for comparison
+    // This allows cross-type equality (e.g., int32(5) == float64(5.0))
     double ar, ai = 0.0, br, bi = 0.0;
     bool ac = false, bc = false;
     switch (a->type) {
@@ -200,31 +235,31 @@ static OCStringRef impl_OCNumberCopyFormattingDesc(OCTypeRef theType) {
     OCNumberRef n = (OCNumberRef)theType;
     switch (n->type) {
         case kOCNumberUInt8Type:
-            return OCStringCreateWithFormat(STR("%u"), n->value.uint8Value);
+            return OCStringCreateWithFormat(STR("%u"), NULL, n->value.uint8Value);
         case kOCNumberSInt8Type:
-            return OCStringCreateWithFormat(STR("%d"), n->value.int8Value);
+            return OCStringCreateWithFormat(STR("%d"), NULL, n->value.int8Value);
         case kOCNumberUInt16Type:
-            return OCStringCreateWithFormat(STR("%u"), n->value.uint16Value);
+            return OCStringCreateWithFormat(STR("%u"), NULL, n->value.uint16Value);
         case kOCNumberSInt16Type:
-            return OCStringCreateWithFormat(STR("%d"), n->value.int16Value);
+            return OCStringCreateWithFormat(STR("%d"), NULL, n->value.int16Value);
         case kOCNumberUInt32Type:
-            return OCStringCreateWithFormat(STR("%u"), n->value.uint32Value);
+            return OCStringCreateWithFormat(STR("%u"), NULL, n->value.uint32Value);
         case kOCNumberSInt32Type:
-            return OCStringCreateWithFormat(STR("%d"), n->value.int32Value);
+            return OCStringCreateWithFormat(STR("%d"), NULL, n->value.int32Value);
         case kOCNumberUInt64Type:
-            return OCStringCreateWithFormat(STR("%" PRIu64), n->value.uint64Value);
+            return OCStringCreateWithFormat(STR("%" PRIu64), NULL, n->value.uint64Value);
         case kOCNumberSInt64Type:
-            return OCStringCreateWithFormat(STR("%" PRId64), n->value.int64Value);
+            return OCStringCreateWithFormat(STR("%" PRId64), NULL, n->value.int64Value);
         case kOCNumberFloat32Type:
-            return OCStringCreateWithFormat(STR("%f"), n->value.floatValue);
+            return OCStringCreateWithFormat(STR("%f"), NULL, n->value.floatValue);
         case kOCNumberFloat64Type:
-            return OCStringCreateWithFormat(STR("%lf"), n->value.doubleValue);
+            return OCStringCreateWithFormat(STR("%lf"), NULL, n->value.doubleValue);
         case kOCNumberComplex64Type:
-            return OCStringCreateWithFormat(STR("%f+I•%f"),
+            return OCStringCreateWithFormat(STR("%f+I•%f"), NULL,
                                             crealf(n->value.floatComplexValue),
                                             cimagf(n->value.floatComplexValue));
         case kOCNumberComplex128Type:
-            return OCStringCreateWithFormat(STR("%lf+I•%lf"),
+            return OCStringCreateWithFormat(STR("%lf+I•%lf"), NULL,
                                             creal(n->value.doubleComplexValue),
                                             cimag(n->value.doubleComplexValue));
     }
@@ -233,8 +268,8 @@ static OCStringRef impl_OCNumberCopyFormattingDesc(OCTypeRef theType) {
 /// @internal
 /// Serialize an OCNumber (including all integer widths, floats & complexes) into cJSON.
 static cJSON *
-impl_OCNumberCopyJSON(const void *obj, bool typed) {
-    return OCNumberCopyAsJSON((OCNumberRef)obj, typed);
+impl_OCNumberCopyJSON(const void *obj, bool typed, OCStringRef *outError) {
+    return OCNumberCopyAsJSON((OCNumberRef)obj, typed, outError);
 }
 
 static void *impl_OCNumberDeepCopy(const void *obj) {
@@ -429,38 +464,38 @@ OCStringRef OCNumberCreateStringValue(OCNumberRef n) {
     if (!n) return NULL;
     switch (n->type) {
         case kOCNumberUInt8Type:
-            return OCStringCreateWithFormat(STR("%hhu"), n->value.uint8Value);
+            return OCStringCreateWithFormat(STR("%hhu"), NULL, n->value.uint8Value);
         case kOCNumberSInt8Type:
-            return OCStringCreateWithFormat(STR("%hhi"), n->value.int8Value);
+            return OCStringCreateWithFormat(STR("%hhi"), NULL, n->value.int8Value);
         case kOCNumberUInt16Type:
-            return OCStringCreateWithFormat(STR("%hu"), n->value.uint16Value);
+            return OCStringCreateWithFormat(STR("%hu"), NULL, n->value.uint16Value);
         case kOCNumberSInt16Type:
-            return OCStringCreateWithFormat(STR("%hi"), n->value.int16Value);
+            return OCStringCreateWithFormat(STR("%hi"), NULL, n->value.int16Value);
         case kOCNumberUInt32Type:
-            return OCStringCreateWithFormat(STR("%u"), n->value.uint32Value);
+            return OCStringCreateWithFormat(STR("%u"), NULL, n->value.uint32Value);
         case kOCNumberSInt32Type:
-            return OCStringCreateWithFormat(STR("%d"), n->value.int32Value);
+            return OCStringCreateWithFormat(STR("%d"), NULL, n->value.int32Value);
         case kOCNumberUInt64Type:
-            return OCStringCreateWithFormat(STR("%" PRIu64), (uint64_t)n->value.uint64Value);
+            return OCStringCreateWithFormat(STR("%" PRIu64), NULL, (uint64_t)n->value.uint64Value);
         case kOCNumberSInt64Type:
-            return OCStringCreateWithFormat(STR("%" PRId64), (int64_t)n->value.int64Value);
+            return OCStringCreateWithFormat(STR("%" PRId64), NULL, (int64_t)n->value.int64Value);
         case kOCNumberFloat32Type:
-            return OCStringCreateWithFormat(STR("%.9g"), n->value.floatValue);  // Float precision
+            return OCStringCreateWithFormat(STR("%.9g"), NULL, n->value.floatValue);  // Float precision
         case kOCNumberFloat64Type:
-            return OCStringCreateWithFormat(STR("%.17g"), n->value.doubleValue);  // Double precision
+            return OCStringCreateWithFormat(STR("%.17g"), NULL, n->value.doubleValue);  // Double precision
         case kOCNumberComplex64Type: {
             float r = crealf(n->value.floatComplexValue);
             float i = cimagf(n->value.floatComplexValue);
             if (r == 0.0f && i == 0.0f)
                 return OCStringCreateWithCString("0");
-            return OCStringCreateWithFormat(STR("%.9g+I*%.9g"), r, i);
+            return OCStringCreateWithFormat(STR("%.9g+I*%.9g"), NULL, r, i);
         }
         case kOCNumberComplex128Type: {
             double r = creal(n->value.doubleComplexValue);
             double i = cimag(n->value.doubleComplexValue);
             if (r == 0.0 && i == 0.0)
                 return OCStringCreateWithCString("0");
-            return OCStringCreateWithFormat(STR("%.17g+I*%.17g"), r, i);
+            return OCStringCreateWithFormat(STR("%.17g+I*%.17g"), NULL, r, i);
         }
     }
     return NULL;
@@ -568,90 +603,154 @@ bool OCNumberGetValue(OCNumberRef number, OCNumberType type, void *valuePtr) {
     }
     return true;
 }
-cJSON *OCNumberCopyAsJSON(OCNumberRef number, bool typed) {
-    if (!number) return cJSON_CreateNull();
+
+/**
+ * @brief Serialize an OCNumber to JSON using unified complex number format.
+ *
+ * JSON Serialization Format:
+ *
+ * TYPED MODE:
+ * - All types: {"type": "OCNumber", "numeric_type": "<type>", "value": <value>}
+ * - Complex:     value = [real, imag]  (array of 2 numbers)
+ * - Non-complex: value = <number>      (JSON number)
+ * - 64-bit ints: value = "<string>"    (string for precision)
+ *
+ * UNTYPED MODE:
+ * - Complex:     [real, imag]          (array of 2 numbers)
+ * - Non-complex: <number>              (JSON number)
+ * - 64-bit ints: <number>              (JSON number, may lose precision)
+ *
+ * Examples:
+ * - Complex64 typed:   {"type": "OCNumber", "numeric_type": "complex64", "value": [1.0, 2.0]}
+ * - Complex64 untyped: [1.0, 2.0]
+ * - Float64 typed:     {"type": "OCNumber", "numeric_type": "float64", "value": 3.14}
+ * - Float64 untyped:   3.14
+ *
+ * @param number The OCNumber to serialize
+ * @param typed If true, include type information; if false, serialize value only
+ * @return cJSON object representing the serialized number, or NULL on error
+ */
+cJSON *OCNumberCopyAsJSON(OCNumberRef number, bool typed, OCStringRef *outError) {
+    if (outError) *outError = NULL;
+
+    if (!number) {
+        if (outError) *outError = STR("OCNumber is NULL");
+        return cJSON_CreateNull();
+    }
 
     cJSON *result = NULL;
-    bool needsStringValue = false;
     char buffer[32];
-    OCStringRef complexStr = NULL;
 
-    // Determine if we need string representation and prepare the value
+    // Create the JSON value based on number type and mode
     switch (number->type) {
+        case kOCNumberComplex64Type: {
+            // Complex numbers: always use [real, imag] array format
+            result = cJSON_CreateArray();
+            if (!result) {
+                if (outError) *outError = STR("Failed to create JSON array for complex64");
+                break;
+            }
+
+            float real = crealf(number->value.floatComplexValue);
+            float imag = cimagf(number->value.floatComplexValue);
+
+            cJSON *realJson = cJSON_CreateNumber(real);
+            cJSON *imagJson = cJSON_CreateNumber(imag);
+
+            if (!realJson || !imagJson) {
+                if (outError) *outError = STR("Failed to create JSON numbers for complex64 components");
+                cJSON_Delete(result);
+                cJSON_Delete(realJson);
+                cJSON_Delete(imagJson);
+                result = NULL;
+                break;
+            }
+
+            cJSON_AddItemToArray(result, realJson);
+            cJSON_AddItemToArray(result, imagJson);
+            break;
+        }
+        case kOCNumberComplex128Type: {
+            // Complex numbers: always use [real, imag] array format
+            result = cJSON_CreateArray();
+            if (!result) {
+                if (outError) *outError = STR("Failed to create JSON array for complex128");
+                break;
+            }
+
+            double real = creal(number->value.doubleComplexValue);
+            double imag = cimag(number->value.doubleComplexValue);
+
+            cJSON *realJson = cJSON_CreateNumber(real);
+            cJSON *imagJson = cJSON_CreateNumber(imag);
+
+            if (!realJson || !imagJson) {
+                if (outError) *outError = STR("Failed to create JSON numbers for complex128 components");
+                cJSON_Delete(result);
+                cJSON_Delete(realJson);
+                cJSON_Delete(imagJson);
+                result = NULL;
+                break;
+            }
+
+            cJSON_AddItemToArray(result, realJson);
+            cJSON_AddItemToArray(result, imagJson);
+            break;
+        }
         case kOCNumberUInt64Type:
-            snprintf(buffer, sizeof(buffer), "%" PRIu64, number->value.uint64Value);
-            needsStringValue = typed;  // Only use string for typed serialization
+            if (typed) {
+                // Use string for precision in typed mode
+                snprintf(buffer, sizeof(buffer), "%" PRIu64, number->value.uint64Value);
+                result = cJSON_CreateString(buffer);
+            } else {
+                // Use number in untyped mode (may lose precision)
+                result = cJSON_CreateNumber((double)number->value.uint64Value);
+            }
             break;
         case kOCNumberSInt64Type:
-            snprintf(buffer, sizeof(buffer), "%" PRId64, number->value.int64Value);
-            needsStringValue = typed;  // Only use string for typed serialization
+            if (typed) {
+                // Use string for precision in typed mode
+                snprintf(buffer, sizeof(buffer), "%" PRId64, number->value.int64Value);
+                result = cJSON_CreateString(buffer);
+            } else {
+                // Use number in untyped mode (may lose precision)
+                result = cJSON_CreateNumber((double)number->value.int64Value);
+            }
             break;
-        case kOCNumberComplex64Type:
-        case kOCNumberComplex128Type:
-            complexStr = OCNumberCreateStringValue(number);
-            needsStringValue = true;  // Always use string for complex numbers
+        case kOCNumberUInt8Type:
+            result = cJSON_CreateNumber(number->value.uint8Value);
+            break;
+        case kOCNumberSInt8Type:
+            result = cJSON_CreateNumber(number->value.int8Value);
+            break;
+        case kOCNumberUInt16Type:
+            result = cJSON_CreateNumber(number->value.uint16Value);
+            break;
+        case kOCNumberSInt16Type:
+            result = cJSON_CreateNumber(number->value.int16Value);
+            break;
+        case kOCNumberUInt32Type:
+            result = cJSON_CreateNumber(number->value.uint32Value);
+            break;
+        case kOCNumberSInt32Type:
+            result = cJSON_CreateNumber(number->value.int32Value);
+            break;
+        case kOCNumberFloat32Type:
+            result = cJSON_CreateNumber(number->value.floatValue);
+            break;
+        case kOCNumberFloat64Type:
+            result = cJSON_CreateNumber(number->value.doubleValue);
             break;
         default:
-            needsStringValue = false;
+            result = cJSON_CreateNull();
             break;
-    }
-
-    // Create the JSON value based on type
-    if (needsStringValue) {
-        const char *strValue;
-        if (complexStr) {
-            strValue = OCStringGetCString(complexStr);
-            result = cJSON_CreateString(strValue ? strValue : "");
-        } else {
-            result = cJSON_CreateString(buffer);
-        }
-    } else {
-        // Use numeric JSON representation
-        switch (number->type) {
-            case kOCNumberUInt8Type:
-                result = cJSON_CreateNumber(number->value.uint8Value);
-                break;
-            case kOCNumberSInt8Type:
-                result = cJSON_CreateNumber(number->value.int8Value);
-                break;
-            case kOCNumberUInt16Type:
-                result = cJSON_CreateNumber(number->value.uint16Value);
-                break;
-            case kOCNumberSInt16Type:
-                result = cJSON_CreateNumber(number->value.int16Value);
-                break;
-            case kOCNumberUInt32Type:
-                result = cJSON_CreateNumber(number->value.uint32Value);
-                break;
-            case kOCNumberSInt32Type:
-                result = cJSON_CreateNumber(number->value.int32Value);
-                break;
-            case kOCNumberUInt64Type:
-                result = cJSON_CreateNumber((double)number->value.uint64Value);
-                break;
-            case kOCNumberSInt64Type:
-                result = cJSON_CreateNumber((double)number->value.int64Value);
-                break;
-            case kOCNumberFloat32Type:
-                result = cJSON_CreateNumber(number->value.floatValue);
-                break;
-            case kOCNumberFloat64Type:
-                result = cJSON_CreateNumber(number->value.doubleValue);
-                break;
-            default:
-                result = cJSON_CreateNull();
-                break;
-        }
-    }
-
-    // Clean up complex string if allocated
-    if (complexStr) {
-        OCRelease(complexStr);
     }
 
     // Handle error case
     if (!result) {
-        fprintf(stderr, "OCNumberCreateJSON: Failed to convert OCNumber to JSON.\n");
+        if (outError && !*outError) {
+            *outError = STR("Failed to convert OCNumber to JSON");
+        }
         return cJSON_CreateNull();
     }
 
@@ -659,14 +758,15 @@ cJSON *OCNumberCopyAsJSON(OCNumberRef number, bool typed) {
     if (typed) {
         cJSON *entry = cJSON_CreateObject();
         if (!entry) {
+            if (outError) *outError = STR("Failed to create JSON object for typed serialization");
             cJSON_Delete(result);
             return cJSON_CreateNull();
         }
 
         cJSON_AddStringToObject(entry, "type", "OCNumber");
 
-        const char *subTypeName = OCNumberGetTypeName(number->type);
-        cJSON_AddStringToObject(entry, "subtype", subTypeName ? subTypeName : "unknown");
+        const char *numericTypeName = OCNumberGetTypeName(number->type);
+        cJSON_AddStringToObject(entry, "numeric_type", numericTypeName ? numericTypeName : "unknown");
 
         cJSON_AddItemToObject(entry, "value", result);
         return entry;
@@ -674,61 +774,242 @@ cJSON *OCNumberCopyAsJSON(OCNumberRef number, bool typed) {
 
     return result;
 }
+/**
+ * @brief Create OCNumber from untyped JSON value.
+ *
+ * Handles the unified complex number format:
+ * - JSON number → Non-complex OCNumber (type must be specified)
+ * - JSON array of 2 numbers → Complex OCNumber (type must specify complex64/128)
+ * - JSON string → Any type via string parsing (for backward compatibility)
+ *
+ * @param json JSON value (number, array of 2, or string)
+ * @param type Expected OCNumber type
+ * @param outError Error message if operation fails
+ * @return OCNumber instance or NULL on error
+ */
 OCNumberRef OCNumberCreateFromJSON(cJSON *json, OCNumberType type, OCStringRef *outError) {
     if (!json) {
         if (outError) *outError = STR("JSON input is NULL");
         return NULL;
     }
-    
-    if (!cJSON_IsString(json)) {
-        if (outError) *outError = STR("JSON input is not a string");
+
+    // Handle complex numbers: expect array of [real, imag]
+    if (type == kOCNumberComplex64Type || type == kOCNumberComplex128Type) {
+        if (cJSON_IsArray(json)) {
+            // New array format: [real, imag]
+            if (cJSON_GetArraySize(json) != 2) {
+                if (outError) *outError = STR("Complex number array must have exactly 2 elements [real, imag]");
+                return NULL;
+            }
+
+            cJSON *realJson = cJSON_GetArrayItem(json, 0);
+            cJSON *imagJson = cJSON_GetArrayItem(json, 1);
+
+            if (!cJSON_IsNumber(realJson) || !cJSON_IsNumber(imagJson)) {
+                if (outError) *outError = STR("Complex number array elements must be numbers");
+                return NULL;
+            }
+
+            double real = cJSON_GetNumberValue(realJson);
+            double imag = cJSON_GetNumberValue(imagJson);
+
+            union __Number value;
+            if (type == kOCNumberComplex64Type) {
+                value.floatComplexValue = (float)real + (float)imag * I;
+            } else {
+                value.doubleComplexValue = real + imag * I;
+            }
+
+            OCNumberRef result = OCNumberCreate(type, &value);
+            if (!result && outError) {
+                *outError = STR("Failed to create complex OCNumber from array");
+            }
+            return result;
+        } else if (cJSON_IsString(json)) {
+            // Backward compatibility: string format
+            const char *valueStr = cJSON_GetStringValue(json);
+            if (!valueStr) {
+                if (outError) *outError = STR("Failed to get string value from JSON");
+                return NULL;
+            }
+
+            OCNumberRef result = OCNumberCreateWithStringValue(type, valueStr);
+            if (!result && outError) {
+                *outError = STR("Failed to create complex OCNumber from string");
+            }
+            return result;
+        } else {
+            if (outError) *outError = STR("Complex number JSON must be array [real, imag] or string");
+            return NULL;
+        }
+    }
+
+    // Handle non-complex numbers: expect JSON number or string
+    if (cJSON_IsNumber(json)) {
+        double numValue = cJSON_GetNumberValue(json);
+
+        union __Number value;
+        switch (type) {
+            case kOCNumberUInt8Type:
+                value.uint8Value = (uint8_t)numValue;
+                break;
+            case kOCNumberSInt8Type:
+                value.int8Value = (int8_t)numValue;
+                break;
+            case kOCNumberUInt16Type:
+                value.uint16Value = (uint16_t)numValue;
+                break;
+            case kOCNumberSInt16Type:
+                value.int16Value = (int16_t)numValue;
+                break;
+            case kOCNumberUInt32Type:
+                value.uint32Value = (uint32_t)numValue;
+                break;
+            case kOCNumberSInt32Type:
+                value.int32Value = (int32_t)numValue;
+                break;
+            case kOCNumberUInt64Type:
+                value.uint64Value = (uint64_t)numValue;
+                break;
+            case kOCNumberSInt64Type:
+                value.int64Value = (int64_t)numValue;
+                break;
+            case kOCNumberFloat32Type:
+                value.floatValue = (float)numValue;
+                break;
+            case kOCNumberFloat64Type:
+                value.doubleValue = numValue;
+                break;
+            default:
+                if (outError) *outError = STR("Unsupported number type for JSON number");
+                return NULL;
+        }
+
+        OCNumberRef result = OCNumberCreate(type, &value);
+        if (!result && outError) {
+            *outError = STR("Failed to create OCNumber from JSON number");
+        }
+        return result;
+    } else if (cJSON_IsString(json)) {
+        // Backward compatibility and 64-bit precision: string format
+        const char *valueStr = cJSON_GetStringValue(json);
+        if (!valueStr) {
+            if (outError) *outError = STR("Failed to get string value from JSON");
+            return NULL;
+        }
+
+        OCNumberRef result = OCNumberCreateWithStringValue(type, valueStr);
+        if (!result && outError) {
+            *outError = STR("Failed to create OCNumber from string value");
+        }
+        return result;
+    } else {
+        if (outError) *outError = STR("JSON input must be number, array (for complex), NULL, or string");
         return NULL;
     }
-    
-    const char *valueStr = cJSON_GetStringValue(json);
-    if (!valueStr) {
-        if (outError) *outError = STR("Failed to get string value from JSON");
-        return NULL;
-    }
-    
-    OCNumberRef result = OCNumberCreateWithStringValue(type, valueStr);
-    if (!result && outError) {
-        *outError = STR("Failed to create OCNumber from string value");
-    }
-    return result;
 }
 
+/**
+ * @brief Create OCNumber from typed JSON object.
+ *
+ * Expected format: {"type": "OCNumber", "numeric_type": "<type>", "value": <value>}
+ * Where <value> depends on the numeric_type:
+ * - Complex types: [real, imag] (array of 2 numbers)
+ * - 64-bit integers: "<string>" (string for precision)
+ * - Other types: <number> (JSON number)
+ *
+ * Also supports legacy "subtype" field for backward compatibility.
+ *
+ * @param json JSON object with type information
+ * @param outError Error message if operation fails
+ * @return OCNumber instance or NULL on error
+ */
 OCNumberRef OCNumberCreateFromJSONTyped(cJSON *json, OCStringRef *outError) {
     if (!json) {
         if (outError) *outError = STR("JSON input is NULL");
         return NULL;
     }
-    
+
     if (!cJSON_IsObject(json)) {
         if (outError) *outError = STR("JSON input is not an object");
         return NULL;
     }
 
     cJSON *type = cJSON_GetObjectItem(json, "type");
-    cJSON *subtype = cJSON_GetObjectItem(json, "subtype");
+    cJSON *numericType = cJSON_GetObjectItem(json, "numeric_type");
     cJSON *value = cJSON_GetObjectItem(json, "value");
 
-    if (!cJSON_IsString(type) || !cJSON_IsString(subtype) || !value) {
-        if (outError) *outError = STR("Invalid typed JSON format: missing or invalid type/subtype/value fields");
+    // Support legacy "subtype" field for backward compatibility
+    if (!numericType) {
+        numericType = cJSON_GetObjectItem(json, "subtype");
+    }
+
+    if (!cJSON_IsString(type) || !cJSON_IsString(numericType) || !value) {
+        if (outError) *outError = STR("Invalid typed JSON format: missing or invalid type/numeric_type/value fields");
         return NULL;
     }
 
     const char *typeName = cJSON_GetStringValue(type);
-    const char *subtypeName = cJSON_GetStringValue(subtype);
-    if (!typeName || !subtypeName || strcmp(typeName, "OCNumber") != 0) {
+    const char *numericTypeName = cJSON_GetStringValue(numericType);
+    if (!typeName || !numericTypeName || strcmp(typeName, "OCNumber") != 0) {
         if (outError) *outError = STR("Invalid type: expected OCNumber");
         return NULL;
     }
 
-    OCNumberType numberType = OCNumberTypeFromName(subtypeName);
+    OCNumberType numberType = OCNumberTypeFromName(numericTypeName);
     if (numberType == kOCNumberTypeInvalid) {
-        if (outError) *outError = STR("Invalid number subtype");
+        if (outError) *outError = STR("Invalid number numeric_type");
         return NULL;
+    }
+
+    // Handle complex numbers (stored as arrays [real, imag])
+    if (numberType == kOCNumberComplex64Type || numberType == kOCNumberComplex128Type) {
+        if (cJSON_IsArray(value)) {
+            // New array format: [real, imag]
+            if (cJSON_GetArraySize(value) != 2) {
+                if (outError) *outError = STR("Complex number value array must have exactly 2 elements [real, imag]");
+                return NULL;
+            }
+
+            cJSON *realJson = cJSON_GetArrayItem(value, 0);
+            cJSON *imagJson = cJSON_GetArrayItem(value, 1);
+
+            if (!cJSON_IsNumber(realJson) || !cJSON_IsNumber(imagJson)) {
+                if (outError) *outError = STR("Complex number array elements must be numbers");
+                return NULL;
+            }
+
+            double real = cJSON_GetNumberValue(realJson);
+            double imag = cJSON_GetNumberValue(imagJson);
+
+            union __Number val;
+            if (numberType == kOCNumberComplex64Type) {
+                val.floatComplexValue = (float)real + (float)imag * I;
+            } else {
+                val.doubleComplexValue = real + imag * I;
+            }
+
+            OCNumberRef result = OCNumberCreate(numberType, &val);
+            if (!result && outError) {
+                *outError = STR("Failed to create complex OCNumber");
+            }
+            return result;
+        } else if (cJSON_IsString(value)) {
+            // Backward compatibility: string format
+            const char *valueStr = cJSON_GetStringValue(value);
+            if (!valueStr) {
+                if (outError) *outError = STR("Invalid value string: NULL");
+                return NULL;
+            }
+            OCNumberRef result = OCNumberCreateWithStringValue(numberType, valueStr);
+            if (!result && outError) {
+                *outError = STR("Failed to create complex number from string");
+            }
+            return result;
+        } else {
+            if (outError) *outError = STR("Invalid complex number value: expected array [real, imag] or string");
+            return NULL;
+        }
     }
 
     // Handle 64-bit integers (stored as strings for precision)
@@ -761,24 +1042,6 @@ OCNumberRef OCNumberCreateFromJSONTyped(cJSON *json, OCStringRef *outError) {
         OCNumberRef result = OCNumberCreate(numberType, &val);
         if (!result && outError) {
             *outError = STR("Failed to create OCNumber");
-        }
-        return result;
-    }
-
-    // Handle complex numbers (stored as strings)
-    if (numberType == kOCNumberComplex64Type || numberType == kOCNumberComplex128Type) {
-        if (!cJSON_IsString(value)) {
-            if (outError) *outError = STR("Invalid complex number value: expected string");
-            return NULL;
-        }
-        const char *valueStr = cJSON_GetStringValue(value);
-        if (!valueStr) {
-            if (outError) *outError = STR("Invalid value string: NULL");
-            return NULL;
-        }
-        OCNumberRef result = OCNumberCreateWithStringValue(numberType, valueStr);
-        if (!result && outError) {
-            *outError = STR("Failed to create complex number from string");
         }
         return result;
     }
@@ -1018,10 +1281,10 @@ bool OCNumberTryGetOCIndex(OCNumberRef n, OCIndex *out) {
  */
 static inline bool shouldUseOptimizedBulk(OCIndex elementCount, OCNumberType type) {
     // Only optimize for larger datasets and supported types
-    return elementCount >= 1000 && 
-           (type == kOCNumberFloat32Type || 
-            type == kOCNumberFloat64Type || 
-            type == kOCNumberUInt32Type || 
+    return elementCount >= 1000 &&
+           (type == kOCNumberFloat32Type ||
+            type == kOCNumberFloat64Type ||
+            type == kOCNumberUInt32Type ||
             type == kOCNumberSInt32Type);
 }
 
@@ -1034,16 +1297,16 @@ static inline OCMutableArrayRef createOptimizedArray(const uint8_t *bytes, OCInd
         if (outError) *outError = STR("Failed to create optimized array");
         return NULL;
     }
-    
+
     // Use memory prefetching for better cache performance
     #ifdef HAVE_BUILTIN_PREFETCH
     const size_t prefetch_distance = 64;  // Cache line size
     #endif
-    
+
     switch (type) {
         case kOCNumberFloat32Type: {
             const float *data = (const float *)bytes;
-            
+
             #ifdef HAVE_ACCELERATE
             // Use Apple Accelerate framework for bulk float processing
             float *temp_buffer = malloc(elementCount * sizeof(float));
@@ -1066,7 +1329,7 @@ static inline OCMutableArrayRef createOptimizedArray(const uint8_t *bytes, OCInd
                 return array;
             }
             #endif
-            
+
             #ifdef HAVE_SSE2
             // Use SSE2 for vectorized processing
             const OCIndex simd_count = elementCount & ~3;  // Process in groups of 4
@@ -1076,7 +1339,7 @@ static inline OCMutableArrayRef createOptimizedArray(const uint8_t *bytes, OCInd
                     __builtin_prefetch(&data[i + prefetch_distance], 0, 1);
                 }
                 #endif
-                
+
                 // Process 4 floats at once
                 for (int j = 0; j < 4; j++) {
                     OCNumberRef number = OCNumberCreateWithFloat(data[i + j]);
@@ -1090,7 +1353,7 @@ static inline OCMutableArrayRef createOptimizedArray(const uint8_t *bytes, OCInd
                     }
                 }
             }
-            
+
             // Process remaining elements
             for (OCIndex i = simd_count; i < elementCount; i++) {
                 OCNumberRef number = OCNumberCreateWithFloat(data[i]);
@@ -1105,7 +1368,7 @@ static inline OCMutableArrayRef createOptimizedArray(const uint8_t *bytes, OCInd
             }
             return array;
             #endif
-            
+
             // Serial processing with prefetching
             for (OCIndex i = 0; i < elementCount; i++) {
                 #ifdef HAVE_BUILTIN_PREFETCH
@@ -1113,7 +1376,7 @@ static inline OCMutableArrayRef createOptimizedArray(const uint8_t *bytes, OCInd
                     __builtin_prefetch(&data[i + prefetch_distance], 0, 1);
                 }
                 #endif
-                
+
                 OCNumberRef number = OCNumberCreateWithFloat(data[i]);
                 if (number) {
                     OCArrayAppendValue(array, number);
@@ -1126,10 +1389,10 @@ static inline OCMutableArrayRef createOptimizedArray(const uint8_t *bytes, OCInd
             }
             return array;
         }
-        
+
         case kOCNumberFloat64Type: {
             const double *data = (const double *)bytes;
-            
+
             #ifdef HAVE_ACCELERATE
             // Use Apple Accelerate framework for bulk double processing
             double *temp_buffer = malloc(elementCount * sizeof(double));
@@ -1151,7 +1414,7 @@ static inline OCMutableArrayRef createOptimizedArray(const uint8_t *bytes, OCInd
                 return array;
             }
             #endif
-            
+
             // Serial processing with prefetching for doubles
             for (OCIndex i = 0; i < elementCount; i++) {
                 #ifdef HAVE_BUILTIN_PREFETCH
@@ -1159,7 +1422,7 @@ static inline OCMutableArrayRef createOptimizedArray(const uint8_t *bytes, OCInd
                     __builtin_prefetch(&data[i + prefetch_distance], 0, 1);
                 }
                 #endif
-                
+
                 OCNumberRef number = OCNumberCreateWithDouble(data[i]);
                 if (number) {
                     OCArrayAppendValue(array, number);
@@ -1172,7 +1435,7 @@ static inline OCMutableArrayRef createOptimizedArray(const uint8_t *bytes, OCInd
             }
             return array;
         }
-        
+
         default:
             // For other types, return NULL to fall back to standard processing
             OCRelease(array);
@@ -1183,7 +1446,7 @@ static inline OCMutableArrayRef createOptimizedArray(const uint8_t *bytes, OCInd
 /**
  * @brief Optimized bulk data extraction from OCNumber array
  * @param array Array of OCNumbers
- * @param elementCount Number of elements 
+ * @param elementCount Number of elements
  * @param type Target number type
  * @param buffer Pre-allocated buffer to store data
  * @param outError Error message if operation fails
@@ -1194,11 +1457,11 @@ static inline bool extractOptimizedData(OCArrayRef array, OCIndex elementCount, 
     #ifdef HAVE_BUILTIN_PREFETCH
     const size_t prefetch_distance = 16;  // Prefetch ahead
     #endif
-    
+
     switch (type) {
         case kOCNumberFloat32Type: {
             float *data = (float *)buffer;
-            
+
             #ifdef HAVE_ACCELERATE
             // Use Apple Accelerate framework for bulk extraction
             float *temp_buffer = malloc(elementCount * sizeof(float));
@@ -1221,7 +1484,7 @@ static inline bool extractOptimizedData(OCArrayRef array, OCIndex elementCount, 
                 return true;
             }
             #endif
-            
+
             #ifdef HAVE_SSE2
             // Use vectorized processing for extraction
             const OCIndex simd_count = elementCount & ~3;  // Process in groups of 4
@@ -1232,7 +1495,7 @@ static inline bool extractOptimizedData(OCArrayRef array, OCIndex elementCount, 
                     __builtin_prefetch(prefetch_number, 0, 1);
                 }
                 #endif
-                
+
                 // Process 4 elements at once
                 for (int j = 0; j < 4; j++) {
                     OCNumberRef number = (OCNumberRef)OCArrayGetValueAtIndex(array, i + j);
@@ -1244,7 +1507,7 @@ static inline bool extractOptimizedData(OCArrayRef array, OCIndex elementCount, 
                     }
                 }
             }
-            
+
             // Process remaining elements
             for (OCIndex i = simd_count; i < elementCount; i++) {
                 OCNumberRef number = (OCNumberRef)OCArrayGetValueAtIndex(array, i);
@@ -1257,7 +1520,7 @@ static inline bool extractOptimizedData(OCArrayRef array, OCIndex elementCount, 
             }
             return true;
             #endif
-            
+
             // Serial processing with prefetching
             for (OCIndex i = 0; i < elementCount; i++) {
                 #ifdef HAVE_BUILTIN_PREFETCH
@@ -1266,7 +1529,7 @@ static inline bool extractOptimizedData(OCArrayRef array, OCIndex elementCount, 
                     __builtin_prefetch(prefetch_number, 0, 1);
                 }
                 #endif
-                
+
                 OCNumberRef number = (OCNumberRef)OCArrayGetValueAtIndex(array, i);
                 if (!number || OCNumberGetType(number) != type) {
                     return false;
@@ -1277,10 +1540,10 @@ static inline bool extractOptimizedData(OCArrayRef array, OCIndex elementCount, 
             }
             return true;
         }
-        
+
         case kOCNumberFloat64Type: {
             double *data = (double *)buffer;
-            
+
             #ifdef HAVE_ACCELERATE
             // Use Apple Accelerate framework for bulk double extraction
             double *temp_buffer = malloc(elementCount * sizeof(double));
@@ -1301,7 +1564,7 @@ static inline bool extractOptimizedData(OCArrayRef array, OCIndex elementCount, 
                 return true;
             }
             #endif
-            
+
             // Serial processing with prefetching for doubles
             for (OCIndex i = 0; i < elementCount; i++) {
                 #ifdef HAVE_BUILTIN_PREFETCH
@@ -1310,7 +1573,7 @@ static inline bool extractOptimizedData(OCArrayRef array, OCIndex elementCount, 
                     __builtin_prefetch(prefetch_number, 0, 1);
                 }
                 #endif
-                
+
                 OCNumberRef number = (OCNumberRef)OCArrayGetValueAtIndex(array, i);
                 if (!number || OCNumberGetType(number) != type) {
                     return false;
@@ -1321,7 +1584,7 @@ static inline bool extractOptimizedData(OCArrayRef array, OCIndex elementCount, 
             }
             return true;
         }
-        
+
         default:
             // For other types, return false to fall back to standard processing
             return false;
@@ -1330,28 +1593,28 @@ static inline bool extractOptimizedData(OCArrayRef array, OCIndex elementCount, 
 
 OCArrayRef OCNumberCreateArrayFromData(OCDataRef data, OCNumberType type, OCStringRef *outError) {
     if (outError) *outError = NULL;
-    
+
     if (!data) {
         if (outError) *outError = STR("OCData is NULL");
         return NULL;
     }
-    
+
     // Get the size of the number type
     int typeSize = OCNumberTypeSize(type);
     if (typeSize == 0) {
         if (outError) *outError = STR("Invalid OCNumberType");
         return NULL;
     }
-    
+
     // Get data properties
     OCIndex dataLength = OCDataGetLength(data);
     const uint8_t *bytes = OCDataGetBytesPtr(data);
-    
+
     if (!bytes) {
         if (outError) *outError = STR("Failed to get data bytes");
         return NULL;
     }
-    
+
     // Check if data length is compatible with the type size
     if (dataLength % typeSize != 0) {
         if (outError) {
@@ -1359,10 +1622,10 @@ OCArrayRef OCNumberCreateArrayFromData(OCDataRef data, OCNumberType type, OCStri
         }
         return NULL;
     }
-    
+
     // Calculate number of elements
     OCIndex elementCount = dataLength / typeSize;
-    
+
     // Create the array
     OCMutableArrayRef array = OCArrayCreateMutable(elementCount, &kOCTypeArrayCallBacks);
     if (!array) {
@@ -1561,53 +1824,61 @@ OCArrayRef OCNumberCreateArrayFromData(OCDataRef data, OCNumberType type, OCStri
             OCRelease(array);
             return NULL;
     }
-    
+
     return array;
 }
 
 OCDataRef OCNumberCreateDataFromArray(OCArrayRef array, OCNumberType type, OCStringRef *outError) {
-    if (outError) *outError = NULL;
-    
+    if (outError) {
+        *outError = NULL;
+    }
+
     if (!array) {
-        if (outError) *outError = STR("OCArray is NULL");
+        if (outError) {
+            *outError = STR("OCArray is NULL");
+        }
         return NULL;
     }
-    
+
     // Get the size of the number type
     int typeSize = OCNumberTypeSize(type);
     if (typeSize == 0) {
-        if (outError) *outError = STR("Invalid OCNumberType");
+        if (outError) {
+            *outError = STR("Invalid OCNumberType");
+        }
         return NULL;
     }
-    
+
     // Get array count
     OCIndex elementCount = OCArrayGetCount(array);
     if (elementCount == 0) {
         // Return empty data for empty array
         return OCDataCreate(NULL, 0);
     }
-    
+
     // Calculate total data size
     OCIndex totalSize = elementCount * typeSize;
-    
+
     // Allocate buffer for the data
     uint8_t *buffer = malloc(totalSize);
     if (!buffer) {
-        if (outError) *outError = STR("Failed to allocate memory for data buffer");
+        if (outError) {
+            *outError = STR("Failed to allocate memory for data buffer");
+        }
         return NULL;
     }
-    
+
     // Convert each OCNumber to bytes - try optimized bulk processing first
     if (shouldUseOptimizedBulk(elementCount, type)) {
         if (extractOptimizedData(array, elementCount, type, buffer, outError)) {
             // Create OCData from the optimized buffer
             OCDataRef data = OCDataCreate(buffer, totalSize);
             free(buffer);
-            
+
             if (!data && outError) {
                 *outError = STR("Failed to create OCData from optimized buffer");
             }
-            
+
             return data;
         }
         // Clear any optimization error and continue with standard processing
@@ -1615,7 +1886,7 @@ OCDataRef OCNumberCreateDataFromArray(OCArrayRef array, OCNumberType type, OCStr
             *outError = NULL;
         }
     }
-    
+
     // Standard processing with switch outside loop for optimization
     switch (type) {
         case kOCNumberUInt8Type: {
@@ -1887,16 +2158,14 @@ OCDataRef OCNumberCreateDataFromArray(OCArrayRef array, OCNumberType type, OCStr
             free(buffer);
             return NULL;
     }
-    
+
     // Create OCData from the buffer
     OCDataRef data = OCDataCreate(buffer, totalSize);
     free(buffer);
-    
+
     if (!data && outError) {
         *outError = STR("Failed to create OCData from buffer");
     }
-    
+
     return data;
 }
-
-

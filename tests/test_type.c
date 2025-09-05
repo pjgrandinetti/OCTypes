@@ -3,15 +3,15 @@
 #include "../src/OCType.h"  // For OCRegisterType, kOCNotATypeID
 // Original typeTest0 implementation
 bool typeTest0(void) {
-    fprintf(stderr, "%s begin...\n", __func__);
+    fprintf(stderr, "%s begin...", __func__);
     OCTypeID tid = OCRegisterType("MyType", NULL);
     if (tid == kOCNotATypeID) PRINTERROR;
-    fprintf(stderr, "%s end...without problems\n", __func__);
+    fprintf(stderr, " passed\n");
     return true;
 }
 // New: Test OCTypeCopyFormattingDesc and OCCopyDescription on multiple types
 bool typeTest1(void) {
-    fprintf(stderr, "%s begin...\n", __func__);
+    fprintf(stderr, "%s begin...", __func__);
     // Use a known type: OCString
     OCStringRef s = OCStringCreateWithCString("testdesc");
     ASSERT_NOT_NULL(s, "OCStringCreateWithCString should not return NULL");
@@ -30,12 +30,12 @@ bool typeTest1(void) {
     OCRelease(desc1);
     OCRelease(desc2);
     OCRelease(s);
-    fprintf(stderr, "%s end...without problems\n", __func__);
+    fprintf(stderr, " passed\n");
     return true;
 }
 // after typeTest1, add:
 bool typeTest2(void) {
-    fprintf(stderr, "%s begin...\n", __func__);
+    fprintf(stderr, "%s begin...", __func__);
     bool success = true;
     OCStringRef orig = OCStringCreateWithCString("deepcopy!");
     if (!orig) return false;
@@ -54,6 +54,6 @@ bool typeTest2(void) {
     }
     OCRelease(mcopy);
     OCRelease(orig);
-    fprintf(stderr, "%s end...%s\n", __func__, success ? "without problems" : "with failures");
+    fprintf(stderr, " passed\n");
     return success;
 }

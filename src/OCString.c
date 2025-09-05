@@ -246,8 +246,8 @@ static OCStringRef impl_OCStringCopyFormattingDesc(OCTypeRef cf) {
     return OCStringCreateCopy((OCStringRef)cf);
 }
 static cJSON *
-impl_OCStringCopyJSON(const void *obj, bool typed) {
-    return OCStringCopyAsJSON((OCStringRef)obj, typed);
+impl_OCStringCopyJSON(const void *obj, bool typed, OCStringRef *outError) {
+    return OCStringCopyAsJSON((OCStringRef)obj, typed, outError);
 }
 
 static void *impl_OCStringDeepCopy(const void *obj) {
@@ -278,30 +278,46 @@ static struct impl_OCString *OCStringAllocate() {
     obj->capacity = 0;
     return obj;
 }
-cJSON *OCStringCopyAsJSON(OCStringRef str, bool typed) {
-    if (!str) return cJSON_CreateNull();
+cJSON *OCStringCopyAsJSON(OCStringRef str, bool typed, OCStringRef *outError) {
+    if (outError) *outError = NULL;
+
+    if (!str) {
+        if (outError) *outError = STR("OCString is NULL");
+        return cJSON_CreateNull();
+    }
+
     const char *s = OCStringGetCString(str);
+    if (!s) {
+        if (outError) *outError = STR("Failed to get C string from OCString");
+        return cJSON_CreateNull();
+    }
 
     // Strings are native JSON types, no wrapping needed even for typed serialization
-    return cJSON_CreateString(s ? s : "");
+    cJSON *result = cJSON_CreateString(s);
+    if (!result) {
+        if (outError) *outError = STR("Failed to create JSON string");
+        return cJSON_CreateNull();
+    }
+
+    return result;
 }
 OCStringRef OCStringCreateFromJSON(cJSON *json, OCStringRef *outError) {
     if (!json) {
         if (outError) *outError = STR("JSON input is NULL");
         return NULL;
     }
-    
+
     if (!cJSON_IsString(json)) {
         if (outError) *outError = STR("JSON input is not a string");
         return NULL;
     }
-    
+
     const char *s = json->valuestring;
     if (!s) {
         if (outError) *outError = STR("JSON string value is NULL");
         return NULL;
     }
-    
+
     OCStringRef result = OCStringCreateWithCString(s);
     if (!result && outError) {
         *outError = STR("Failed to create OCString");
@@ -1029,7 +1045,8 @@ static void OCStringAppendFormatWithArgumentsSafe(
     OCMutableStringRef result,
     OCStringRef format,
     va_list args,
-    int max_args) {
+    int max_args,
+    OCStringRef *outError) {
     if (!result || !format || !format->string) return;
     int arg_index = 0;
     const char *f = format->string;
@@ -1055,7 +1072,9 @@ static void OCStringAppendFormatWithArgumentsSafe(
         if (f[0] == '%' && f[1] == '@') {
             if (arg_index >= max_args) {
                 OCStringAppendCString(result, "[MISSING]");
-                fprintf(stderr, "[OCString] ERROR: Not enough arguments for %%@ (index %d)\n", arg_index);
+                if (outError && !*outError) {
+                    *outError = STR("Not enough arguments for %@");
+                }
                 arg_index++;
                 f += 2;
                 continue;
@@ -1063,18 +1082,25 @@ static void OCStringAppendFormatWithArgumentsSafe(
                 OCStringRef s = va_arg(arglist, OCStringRef);
                 // Defensive: check plausibility before dereferencing
                 if (!s) {
-                    // DO NOT append "[NULL]"—skip, just print error
-                    fprintf(stderr, "[OCString] ERROR: NULL OCStringRef for %%@ at index %d (expected, test may allow)\n", arg_index);
+                    // DO NOT append "[NULL]"—skip, just set error
+                    if (outError && !*outError) {
+                        *outError = STR("NULL OCStringRef passed to %@");
+                    }
                 } else if ((uintptr_t)s < 4096) {  // catch NULL/tiny invalid pointers
-                    fprintf(stderr, "[OCString] ERROR: Bad pointer for %%@ at index %d: %p\n", arg_index, (void *)s);
+                    if (outError && !*outError) {
+                        *outError = STR("Invalid pointer passed to %@");
+                    }
                 } else if (s->base.typeID != OCStringGetTypeID()) {
-                    fprintf(stderr, "[OCString] ERROR: Not an OCStringRef at %%@ index %d (typeID=%u, expected=%u)\n",
-                            arg_index, s->base.typeID, OCStringGetTypeID());
+                    if (outError && !*outError) {
+                        *outError = STR("Invalid type passed to %@ (not an OCString)");
+                    }
                 } else if (s->string) {
                     OCStringAppendCString(result, s->string);
                 } else {
-                    // Don't append, just print error
-                    fprintf(stderr, "[OCString] ERROR: OCStringRef->string is NULL at %%@ index %d\n", arg_index);
+                    // Don't append, just set error
+                    if (outError && !*outError) {
+                        *outError = STR("OCStringRef has NULL string content");
+                    }
                 }
                 arg_index++;
                 f += 2;
@@ -1094,7 +1120,9 @@ static void OCStringAppendFormatWithArgumentsSafe(
             char buf[128] = {0};
             if (arg_index >= max_args) {
                 OCStringAppendCString(result, "[MISSING]");
-                fprintf(stderr, "[OCString] ERROR: Not enough arguments for printf format at index %d (spec %%%c)\n", arg_index, spec);
+                if (outError && !*outError) {
+                    *outError = STR("Not enough arguments for printf format specifier");
+                }
                 arg_index++;
                 f = after;
                 continue;
@@ -1187,13 +1215,13 @@ static int count_format_args(const char *f) {
     }
     return count;
 }
-OCStringRef OCStringCreateWithFormat(OCStringRef format, ...) {
+OCStringRef OCStringCreateWithFormat(OCStringRef format, OCStringRef *outError, ...) {
     if (!format || !format->string) return NULL;
     OCMutableStringRef result = OCStringCreateMutable(0);
     int max_args = count_format_args(format->string);
     va_list args;
-    va_start(args, format);
-    OCStringAppendFormatWithArgumentsSafe(result, format, args, max_args);
+    va_start(args, outError);
+    OCStringAppendFormatWithArgumentsSafe(result, format, args, max_args, outError);
     va_end(args);
     return (OCStringRef)result;
 }
@@ -1202,7 +1230,7 @@ void OCStringAppendFormat(OCMutableStringRef theString, OCStringRef format, ...)
     int max_args = count_format_args(format->string);
     va_list args;
     va_start(args, format);
-    OCStringAppendFormatWithArgumentsSafe(theString, format, args, max_args);
+    OCStringAppendFormatWithArgumentsSafe(theString, format, args, max_args, NULL);
     va_end(args);
 }
 /**

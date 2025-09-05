@@ -9,6 +9,7 @@
 #define OCArray_h
 
 #include "OCType.h"
+#include "OCNumber.h"
 #include "cJSON.h"
 
 #ifdef __cplusplus
@@ -237,22 +238,56 @@ int64_t OCArrayBSearchValues(OCArrayRef array, OCRange range, const void *value,
  */
 OCArrayRef OCArrayCreateWithArray(OCArrayRef array);
 /**
- * @brief Serializes an OCArray to JSON format.
+ * @brief Checks if an array contains homogeneous OCNumber elements.
  *
- * Creates a JSON array representation of the OCArray. If the typed parameter
- * is true, each element is serialized using typed JSON serialization when
- * available. If false, each element uses untyped serialization.
+ * Determines if all elements in the array are OCNumbers of the same type.
+ * This is useful for optimizing JSON serialization and other operations
+ * that can benefit from type uniformity.
+ *
+ * @param array The array to check.
+ * @return 1 if array is homogeneous (all same OCNumber type), 0 otherwise.
+ *         Returns 0 for empty arrays, NULL arrays, or arrays with mixed types.
+ * @ingroup OCArray
+ */
+bool OCArrayIsHomogeneous(OCArrayRef array);
+/**
+ * @brief Copy the element type name for a homogeneous array.
+ *
+ * Returns the type name of elements in a homogeneous array.
+ * Should only be called after verifying homogeneity with OCArrayIsHomogeneous().
+ *
+ * @param array The homogeneous array to query.
+ * @return OCString describing the element type, or NULL if not homogeneous.
+ *         Caller is responsible for releasing the returned string.
+ * @ingroup OCArray
+ */
+OCStringRef OCArrayCopyHomogeneousElementTypeName(OCArrayRef array);
+/**
+ * @brief Serializes an OCArray to JSON format with homogeneous optimization.
+ *
+ * TYPED MODE (typed=true):
+ * - Always uses individual element serialization to preserve type information
+ * - Format: [{"type": "OCNumber", "numeric_type": "...", "value": ...}, ...]
+ * - Each element maintains its complete type metadata
+ *
+ * UNTYPED MODE (typed=false):
+ * - Uses homogeneous array optimization when all elements are the same OCNumber type
+ * - Homogeneous complex arrays: [r0,i0,r1,i1,r2,i2,...] (flattened real/imaginary pairs)
+ * - Homogeneous real arrays: [v0,v1,v2,...] (direct values)
+ * - Mixed type arrays: Error - not supported in untyped mode
+ * - Size efficiency: 57% reduction for homogeneous complex arrays
  *
  * Arrays are native JSON types, so they are not wrapped in type information
  * even when typed=true.
  *
  * @param array A valid OCArrayRef.
- * @param typed If true, use typed serialization for elements; if false, use untyped.
+ * @param typed If true, use typed serialization; if false, use homogeneous optimization.
+ * @param outError Optional pointer to receive an error string on failure.
  * @return A new cJSON array on success, or cJSON null on failure.
  *         The caller is responsible for managing the returned cJSON object.
  * @ingroup OCArray
  */
-cJSON *OCArrayCopyAsJSON(OCArrayRef array, bool typed);
+cJSON *OCArrayCopyAsJSON(OCArrayRef array, bool typed, OCStringRef *outError);
 
 /**
  * @brief Create an OCArrayRef from a JSON array with typed element deserialization.
@@ -267,6 +302,44 @@ cJSON *OCArrayCopyAsJSON(OCArrayRef array, bool typed);
  * @ingroup OCArray
  */
 OCArrayRef OCArrayCreateFromJSONTyped(cJSON *json, OCStringRef *outError);
+
+/**
+ * @brief Create an OCArrayRef from untyped JSON with auto-detection.
+ *
+ * Parses homogeneous array formats by auto-detecting the element type:
+ * - Complex arrays: [r0,i0,r1,i1,...] → Array of complex128 numbers
+ * - Real arrays: [v0,v1,v2,...] → Array of double numbers
+ * - String arrays: ["str1","str2",...] → Array of OCStrings
+ * - Boolean arrays: [true,false,...] → Array of OCBooleans
+ * - Mixed arrays: Error - not supported in untyped deserialization
+ *
+ * This function automatically detects the homogeneous type from the JSON content.
+ * Only supports homogeneous arrays (all elements must be the same JSON type).
+ *
+ * @param json A cJSON array in homogeneous format.
+ * @param outError Optional pointer to receive an error string on failure.
+ * @return A newly allocated OCArrayRef, or NULL on failure.
+ * @ingroup OCArray
+ */
+OCArrayRef OCArrayCreateFromJSON(cJSON *json, OCStringRef *outError);
+/**
+ * @brief Creates an OCArray of OCNumbers from JSON with explicit type specification.
+ *
+ * This function creates an OCArray containing only OCNumber objects from a JSON array,
+ * with each number created using the specified OCNumberType. This is designed for use
+ * with optimized OCArray serialization where all numbers have the same type.
+ *
+ * For complex number types, the JSON array should contain flattened real/imaginary pairs:
+ * [real0, imag0, real1, imag1, ...]. For real number types, the JSON array contains
+ * the values directly: [value0, value1, value2, ...].
+ *
+ * @param json A cJSON array containing numeric values.
+ * @param numberType The OCNumberType to use for all created OCNumber objects.
+ * @param outError Optional pointer to receive an error string on failure.
+ * @return A newly allocated OCArrayRef containing OCNumber objects, or NULL on failure.
+ * @ingroup OCArray
+ */
+OCArrayRef OCArrayOfNumbersCreateFromJSON(cJSON *json, OCNumberType numberType, OCStringRef *outError);
 /**
  * @brief Returns the callback structure associated with the array.
  *

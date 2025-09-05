@@ -154,40 +154,72 @@ bool OCNumberGetValue(OCNumberRef number, OCNumberType type, void *valuePtr);
  */
 int OCNumberTypeSize(OCNumberType type);
 /**
- * @brief Serialize an OCNumber to JSON.
+ * @brief Serialize an OCNumber to JSON using unified complex number format.
  *
- * For untyped serialization (typed=false), real numbers are serialized as JSON
- * numbers, and complex numbers as JSON strings. Type information is lost.
+ * JSON Serialization Formats:
  *
- * For typed serialization (typed=true), creates a self-describing JSON object
- * with "type": "OCNumber", "subtype" field indicating the specific OCNumberType,
- * and "value" field containing the numeric data.
+ * UNTYPED MODE (typed=false):
+ * - Complex numbers:     [real, imag]     (array of 2 numbers)
+ * - Non-complex numbers: <number>         (JSON number)
+ * - Note: 64-bit integers may lose precision when converted to JSON numbers
  *
- * @param number An OCNumberRef.
+ * TYPED MODE (typed=true):
+ * - All types: {"type": "OCNumber", "numeric_type": "<type>", "value": <value>}
+ * - Complex types:     value = [real, imag]  (array of 2 numbers)
+ * - 64-bit integers:   value = "<string>"    (string for precision)
+ * - Other types:       value = <number>      (JSON number)
+ *
+ * Examples:
+ * - Complex64 untyped:  [1.0, 2.0]
+ * - Complex64 typed:    {"type": "OCNumber", "numeric_type": "complex64", "value": [1.0, 2.0]}
+ * - Float64 untyped:    3.14159
+ * - Float64 typed:      {"type": "OCNumber", "numeric_type": "float64", "value": 3.14159}
+ * - UInt64 typed:       {"type": "OCNumber", "numeric_type": "uint64", "value": "18446744073709551615"}
+ *
+ * This unified format ensures:
+ * - Complex numbers use consistent [real, imag] format across all contexts
+ * - Untyped mode is unambiguous (array = complex, number = real)
+ * - Size efficiency for bulk complex data serialization
+ * - Precision preservation for 64-bit integers in typed mode
+ * - Compatibility with scientific computing array formats
+ *
+ * @param number An OCNumberRef to serialize.
  * @param typed Whether to include type information in the serialization.
+ * @param outError Optional pointer to receive error information if serialization fails.
  * @return cJSON object on success (caller responsible), or cJSON null on failure.
  * @ingroup OCNumber
  */
-cJSON *OCNumberCopyAsJSON(OCNumberRef number, bool typed);
+cJSON *OCNumberCopyAsJSON(OCNumberRef number, bool typed, OCStringRef *outError);
 /**
- * @brief Deserialize from cJSON using specified type.
- * @param json A cJSON string node.
+ * @brief Deserialize from untyped JSON using unified format.
+ *
+ * Supports the unified complex number format:
+ * - JSON number → Non-complex OCNumber (type must be specified)
+ * - JSON array of 2 numbers → Complex OCNumber (type must be complex64/128)
+ * - JSON string → Any type via string parsing (backward compatibility)
+ *
+ * @param json A cJSON value (number, array of 2, or string).
  * @param type Expected OCNumberType.
  * @param outError Optional pointer to receive an error string on failure.
- * @return New OCNumberRef or NULL.
+ * @return New OCNumberRef or NULL on failure.
  * @ingroup OCNumber
  */
 OCNumberRef OCNumberCreateFromJSON(cJSON *json, OCNumberType type, OCStringRef *outError);
 
 /**
- * @brief Create an OCNumberRef from a self-describing JSON object.
+ * @brief Create an OCNumberRef from a typed JSON object using unified format.
  *
- * Parses a JSON object that contains type information and a numeric value.
- * The JSON object should have a "type" field set to "OCNumber", a "subtype"
- * field indicating the specific OCNumberType, and a "value" field containing
- * the actual numeric data.
+ * Parses a JSON object with type information using the unified format:
+ * {"type": "OCNumber", "numeric_type": "<type>", "value": <value>}
  *
- * @param json A cJSON object with type, subtype, and value fields.
+ * Where <value> format depends on numeric_type:
+ * - Complex types (complex64/128): [real, imag] (array of 2 numbers)
+ * - 64-bit integers (uint64/sint64): "<string>" (string for precision)
+ * - Other numeric types: <number> (JSON number)
+ *
+ * Also supports legacy "subtype" field for backward compatibility.
+ *
+ * @param json A cJSON object with type, numeric_type, and value fields.
  * @param outError Optional pointer to receive an error string on failure.
  * @return A newly allocated OCNumberRef, or NULL on failure.
  * @ingroup OCNumber
@@ -257,10 +289,10 @@ bool OCNumberTryGetOCIndex(OCNumberRef n, OCIndex *out);
 
 /**
  * @brief Create an OCArray of OCNumbers from binary data.
- * 
+ *
  * Interprets the binary data in the OCData as an array of values of the specified
  * OCNumberType and creates an OCArray containing OCNumber objects for each value.
- * 
+ *
  * @param data The OCData containing binary data to convert
  * @param type The OCNumberType specifying how to interpret the binary data
  * @param outError Optional pointer to receive error message on failure
@@ -270,11 +302,11 @@ OCArrayRef OCNumberCreateArrayFromData(OCDataRef data, OCNumberType type, OCStri
 
 /**
  * @brief Create binary data from an OCArray of OCNumbers.
- * 
+ *
  * Converts an OCArray containing OCNumber objects into binary data by extracting
  * the values and packing them consecutively in memory according to the specified type.
  * All OCNumbers in the array must be of the specified type.
- * 
+ *
  * @param array The OCArray containing OCNumber objects to convert
  * @param type The OCNumberType that all numbers in the array must match
  * @param outError Optional pointer to receive error message on failure

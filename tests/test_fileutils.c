@@ -103,7 +103,7 @@ static char *cross_platform_mkdtemp(char *template) {
 #define TEMP_DIR "/tmp"
 #endif
 bool test_path_join_and_split(void) {
-    fprintf(stderr, "%s begin...\n", __func__);
+    fprintf(stderr, "%s begin...", __func__);
 #ifdef _WIN32
     OCStringRef a = OCStringCreateWithCString("C:\\foo");
     OCStringRef b = OCStringCreateWithCString("bar");
@@ -174,11 +174,11 @@ bool test_path_join_and_split(void) {
 #endif
     OCRelease(newp);
     OCRelease(p);
-    fprintf(stderr, "%s end.\n", __func__);
+    fprintf(stderr, " passed\n");
     return true;
 }
 bool test_file_and_dir_checks(void) {
-    fprintf(stderr, "%s begin...\n", __func__);
+    fprintf(stderr, "%s begin...", __func__);
     // create temp file
     char tmpl[PATH_MAX];
     snprintf(tmpl, PATH_MAX, "%s/ocfu_testfileXXXXXX", TEMP_DIR);
@@ -202,11 +202,11 @@ bool test_file_and_dir_checks(void) {
     // cleanup
     if (!OCRemoveItem(dpath, NULL)) PRINTERROR;
     if (OCFileExists(dpath)) PRINTERROR;
-    fprintf(stderr, "%s end.\n", __func__);
+    fprintf(stderr, " passed\n");
     return true;
 }
 bool test_create_and_list_directory(void) {
-    fprintf(stderr, "%s begin...\n", __func__);
+    fprintf(stderr, "%s begin...", __func__);
     // base temp directory
     char base[PATH_MAX];
     snprintf(base, PATH_MAX, "%s/ocfu_testdirXXXXXX", TEMP_DIR);
@@ -256,11 +256,11 @@ bool test_create_and_list_directory(void) {
     OCRemoveItem(strstr(nested, "/sub1"), NULL);  // remove sub1
     OCRemoveItem(f1, NULL);
     OCRemoveItem(b, NULL);
-    fprintf(stderr, "%s end.\n", __func__);
+    fprintf(stderr, " passed\n");
     return true;
 }
 bool test_rename_and_remove(void) {
-    fprintf(stderr, "%s begin...\n", __func__);
+    fprintf(stderr, "%s begin...", __func__);
     char tmpl[PATH_MAX];
     snprintf(tmpl, PATH_MAX, "%s/ocfu_renameXXXXXX", TEMP_DIR);
     int fd = mkstemp(tmpl);
@@ -272,11 +272,11 @@ bool test_rename_and_remove(void) {
     if (!OCFileExists(newpath)) PRINTERROR;
     if (!OCRemoveItem(newpath, NULL)) PRINTERROR;
     if (OCFileExists(newpath)) PRINTERROR;
-    fprintf(stderr, "%s end.\n", __func__);
+    fprintf(stderr, " passed\n");
     return true;
 }
 bool test_string_file_io(void) {
-    fprintf(stderr, "%s begin...\n", __func__);
+    fprintf(stderr, "%s begin...", __func__);
     char path[PATH_MAX];
     snprintf(path, PATH_MAX, "%s/ocfu_strioXXXXXX.txt", TEMP_DIR);
     int fd = mkstemps(path, 4);
@@ -301,7 +301,7 @@ bool test_string_file_io(void) {
     if (strcmp(OCStringGetCString(readback), msg) != 0) PRINTERROR;
     OCRelease(readback);
     OCRemoveItem(path, NULL);
-    fprintf(stderr, "%s end.\n", __func__);
+    fprintf(stderr, " passed\n");
     return true;
 }
 /**

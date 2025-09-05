@@ -12,7 +12,7 @@
 // ————————— existing tests —————————
 // Test equality, immutability, and creation from C-string and STR
 bool stringTest1(void) {
-    fprintf(stderr, "%s begin...\n", __func__);
+    fprintf(stderr, "%s begin...", __func__);
     bool success = false;
     OCStringRef s1 = OCStringCreateWithCString("theStringWithAStringOnAStringTown");
     OCStringRef s_check = STR("theStringWithAStringOnAStringTown");
@@ -53,17 +53,17 @@ cleanup:
     if (!success)
         fprintf(stderr, "Test %s FAILED.\n", __func__);
     else
-        fprintf(stderr, "%s passed.\n", __func__);
+        fprintf(stderr, " passed\n");
     return success;
 }
 // Test format features, including %d, %f, %s, %@, and edge cases
 bool stringTest2(void) {
-    fprintf(stderr, "%s begin...\n", __func__);
+    fprintf(stderr, "%s begin...", __func__);
     bool success = false;
     OCStringRef out = NULL;
     // --- Test %@ with OCStringRef
     OCStringRef fmt1 = STR("Ix(%@)");
-    OCStringRef out1 = OCStringCreateWithFormat(fmt1, STR("H2"));
+    OCStringRef out1 = OCStringCreateWithFormat(fmt1, NULL, STR("H2"));
     OCStringRef chk1 = STR("Ix(H2)");
     if (!OCStringEqual(out1, chk1)) {
         fprintf(stderr, "ERROR: Format with %%@ failed: got [%s] expected [%s]\n",
@@ -72,7 +72,7 @@ bool stringTest2(void) {
     }
     // --- Test %s with C string
     OCStringRef fmt2 = STR("Ix(%s)");
-    out = OCStringCreateWithFormat(fmt2, "H2");
+    out = OCStringCreateWithFormat(fmt2, NULL, "H2");
     if (!OCStringEqual(out, chk1)) {
         fprintf(stderr, "ERROR: Format with %%s failed: got [%s] expected [%s]\n",
                 OCStringGetCString(out), OCStringGetCString(chk1));
@@ -82,7 +82,7 @@ bool stringTest2(void) {
     out = NULL;
     // --- Test mixed specifiers (%@, %d, %f)
     OCStringRef fmt3 = STR("Atom:%@, Index:%d, Mass:%.2f");
-    out = OCStringCreateWithFormat(fmt3, STR("H2"), 42, 1.0079);
+    out = OCStringCreateWithFormat(fmt3, NULL, STR("H2"), 42, 1.0079);
     OCStringRef chk3 = OCStringCreateWithCString("Atom:H2, Index:42, Mass:1.01");
     if (!OCStringEqual(out, chk3)) {
         fprintf(stderr, "ERROR: Mixed format failed: got [%s] expected [%s]\n",
@@ -95,7 +95,7 @@ bool stringTest2(void) {
     out = NULL;
     // --- Test Unicode/UTF-8
     OCStringRef fmt4 = STR("Prefix-%@-Suffix");
-    OCStringRef out4 = OCStringCreateWithFormat(fmt4, STR("é💧"));
+    OCStringRef out4 = OCStringCreateWithFormat(fmt4, NULL, STR("é💧"));
     OCStringRef chk4 = OCStringCreateWithCString("Prefix-é💧-Suffix");
     if (!OCStringEqual(out4, chk4)) {
         fprintf(stderr, "ERROR: Unicode format failed: got [%s] expected [%s]\n",
@@ -108,7 +108,7 @@ bool stringTest2(void) {
     OCRelease(chk4);
     // --- Test edge case: empty format string
     OCStringRef emptyFmt = STR("");
-    OCStringRef outEmpty = OCStringCreateWithFormat(emptyFmt);
+    OCStringRef outEmpty = OCStringCreateWithFormat(emptyFmt, NULL);
     if (!OCStringEqual(outEmpty, emptyFmt)) {
         fprintf(stderr, "ERROR: Empty format string failed\n");
         OCRelease(outEmpty);
@@ -117,8 +117,7 @@ bool stringTest2(void) {
     OCRelease(outEmpty);
     // --- Test error case: NULL OCStringRef as argument to %@
     OCStringRef fmt5 = STR("NullCheck:%@");
-    fprintf(stderr, "[INFO] The following '[OCString] ERROR:' message is expected for NULL %%@ and not a test failure.\n");
-    out = OCStringCreateWithFormat(fmt5, (OCStringRef)NULL);
+    out = OCStringCreateWithFormat(fmt5, NULL, (OCStringRef)NULL);
     OCStringRef chk5 = OCStringCreateWithCString("NullCheck:");
     if (!OCStringEqual(out, chk5)) {
         fprintf(stderr, "ERROR: NULL OCStringRef in %%@ failed: got [%s] expected [%s]\n",
@@ -131,7 +130,7 @@ bool stringTest2(void) {
     out = NULL;
     // --- Test double %@
     OCStringRef fmt6 = STR("%@-%@");
-    OCStringRef out6 = OCStringCreateWithFormat(fmt6, STR("A"), STR("B"));
+    OCStringRef out6 = OCStringCreateWithFormat(fmt6, NULL, STR("A"), STR("B"));
     OCStringRef chk6 = STR("A-B");
     if (!OCStringEqual(out6, chk6)) {
         fprintf(stderr, "ERROR: Double %%@ failed: got [%s] expected [%s]\n",
@@ -145,21 +144,21 @@ cleanup:
     if (out1) OCRelease(out1);
     if (out) OCRelease(out);
     if (!success)
-        fprintf(stderr, "Test %s FAILED.\n", __func__);
+        fprintf(stderr, " FAILED\n");
     else
-        fprintf(stderr, "Test %s passed.\n", __func__);
+        fprintf(stderr, " passed\n");
     return success;
 }
 // --- More rigorous, order-mixed format argument tests ---
 bool stringTest_mixed_format_specifiers(void) {
-    fprintf(stderr, "%s begin...\n", __func__);
+    fprintf(stderr, "%s begin...", __func__);
     bool ok = false;
     OCStringRef fmt = NULL;
     OCStringRef out = NULL;
     OCStringRef chk = NULL;
     // Test interleaved %@ and printf specifiers (the dangerous case)
     fmt = STR("%@:%d:%@:%s:%@");
-    out = OCStringCreateWithFormat(fmt, STR("A"), 11, STR("B"), "X", STR("C"));
+    out = OCStringCreateWithFormat(fmt, NULL, STR("A"), 11, STR("B"), "X", STR("C"));
     chk = OCStringCreateWithCString("A:11:B:X:C");
     if (!OCStringEqual(out, chk)) {
         fprintf(stderr, "Mixed (%%@ and printf) format failed: got [%s], expected [%s]\n",
@@ -172,7 +171,7 @@ bool stringTest_mixed_format_specifiers(void) {
     chk = NULL;
     // Test a chunk with multiple printf specifiers between %@ (will break if not parsed right)
     fmt = STR("%@:%d-%0.2f:%@");
-    out = OCStringCreateWithFormat(fmt, STR("Q"), 99, 2.71, STR("W"));
+    out = OCStringCreateWithFormat(fmt, NULL, STR("Q"), 99, 2.71, STR("W"));
     chk = OCStringCreateWithCString("Q:99-2.71:W");
     if (!OCStringEqual(out, chk)) {
         fprintf(stderr, "Multiple printf specifiers between %%@ failed: got [%s], expected [%s]\n",
@@ -185,7 +184,7 @@ bool stringTest_mixed_format_specifiers(void) {
     chk = NULL;
     // Test sequence with only printf specifiers, no %@ (should still work)
     fmt = STR("Val1:%d,Val2:%.1f,Val3:%s");
-    out = OCStringCreateWithFormat(fmt, 123, 4.5, "hi");
+    out = OCStringCreateWithFormat(fmt, NULL, 123, 4.5, "hi");
     chk = OCStringCreateWithCString("Val1:123,Val2:4.5,Val3:hi");
     if (!OCStringEqual(out, chk)) {
         fprintf(stderr, "Printf-only format failed: got [%s], expected [%s]\n",
@@ -198,7 +197,7 @@ bool stringTest_mixed_format_specifiers(void) {
     chk = NULL;
     // Test out-of-order usage: printf, %@, printf, %@, printf
     fmt = STR("%d:%@:%f:%@:%s");
-    out = OCStringCreateWithFormat(fmt, 1, STR("M"), 3.14, STR("N"), "str");
+    out = OCStringCreateWithFormat(fmt, NULL, 1, STR("M"), 3.14, STR("N"), "str");
     chk = OCStringCreateWithCString("1:M:3.140000:N:str");
     if (!OCStringEqual(out, chk)) {
         fprintf(stderr, "Out-of-order %%@ and printf failed: got [%s], expected [%s]\n",
@@ -211,7 +210,7 @@ bool stringTest_mixed_format_specifiers(void) {
     chk = NULL;
     // Test %% and %@ next to each other
     fmt = STR("100%% %@!");
-    out = OCStringCreateWithFormat(fmt, STR("bonus"));
+    out = OCStringCreateWithFormat(fmt, NULL, STR("bonus"));
     chk = OCStringCreateWithCString("100% bonus!");
     if (!OCStringEqual(out, chk)) {
         fprintf(stderr, "Percent/%%@ adjacent failed: got [%s], expected [%s]\n",
@@ -224,7 +223,7 @@ bool stringTest_mixed_format_specifiers(void) {
     chk = NULL;
     // Test many %@ in a row (should consume all)
     fmt = STR("%@%@%@");
-    out = OCStringCreateWithFormat(fmt, STR("1"), STR("2"), STR("3"));
+    out = OCStringCreateWithFormat(fmt, NULL, STR("1"), STR("2"), STR("3"));
     chk = OCStringCreateWithCString("123");
     if (!OCStringEqual(out, chk)) {
         fprintf(stderr, "Consecutive %%@ failed: got [%s], expected [%s]\n",
@@ -237,9 +236,8 @@ bool stringTest_mixed_format_specifiers(void) {
     chk = NULL;
     // Test if passing NULL as OCStringRef to %@ doesn't crash, just skips
     // This next call will intentionally print an [OCString] ERROR message, which is EXPECTED.
-    fprintf(stderr, "[INFO] The next '[OCString] ERROR:' message is expected and not a test failure.\n");
     fmt = STR("%@|%@|%@");
-    out = OCStringCreateWithFormat(fmt, STR("X"), (OCStringRef)NULL, STR("Y"));
+    out = OCStringCreateWithFormat(fmt, NULL, STR("X"), (OCStringRef)NULL, STR("Y"));
     chk = OCStringCreateWithCString("X| |Y");
     if (!OCStringEqual(out, STR("X||Y"))) {
         fprintf(stderr, "NULL to %%@ should print nothing: got [%s]\n", OCStringGetCString(out));
@@ -251,7 +249,7 @@ bool stringTest_mixed_format_specifiers(void) {
     chk = NULL;
     // Test more arguments than specifiers (extra args ignored)
     fmt = STR("%@-%d-%@");
-    out = OCStringCreateWithFormat(fmt, STR("A"), 8, STR("B"), STR("SHOULD_NOT_BE_USED"), 999);
+    out = OCStringCreateWithFormat(fmt, NULL, STR("A"), 8, STR("B"), STR("SHOULD_NOT_BE_USED"), 999);
     chk = OCStringCreateWithCString("A-8-B");
     if (!OCStringEqual(out, chk)) {
         fprintf(stderr, "Extra args present failed: got [%s], expected [%s]\n",
@@ -265,13 +263,13 @@ bool stringTest_mixed_format_specifiers(void) {
     // Test fewer arguments than needed (should not crash, but output is undefined C99)
     // We only check that this does not crash.
     fmt = STR("%@-%d-%@");
-    out = OCStringCreateWithFormat(fmt, STR("A"));
+    out = OCStringCreateWithFormat(fmt, NULL, STR("A"));
     if (out) {
         // We do not check the output, since the behavior is undefined in standard C.
         OCRelease(out);
         out = NULL;
     }
-    fprintf(stderr, "stringTest_mixed_format_specifiers passed (if no crash).\n");
+    fprintf(stderr, " passed\n");
     ok = true;
 cleanup:
     if (out) OCRelease(out);
@@ -279,7 +277,7 @@ cleanup:
     return ok;
 }
 bool test_OCStringAppendFormat(void) {
-    fprintf(stderr, "%s begin...\n", __func__);
+    fprintf(stderr, "%s begin...", __func__);
     bool ok = false;
     OCMutableStringRef str = NULL;
     OCStringRef fmt = NULL;
@@ -340,7 +338,6 @@ bool test_OCStringAppendFormat(void) {
     }
     // Append with NULL OCStringRef for %@ (should append nothing, not crash)
     // [INFO] The error message from the library about NULL OCStringRef is expected.
-    fprintf(stderr, "[INFO] The following '[OCString] ERROR:' message is expected and not a test failure.\n");
     fmt = STR("NULL-%@|");
     OCStringAppendFormat(str, fmt, (OCStringRef)NULL);
     str_c = OCStringGetCString((OCStringRef)str);
@@ -362,12 +359,12 @@ cleanup:
     if (!ok)
         fprintf(stderr, "Test %s FAILED.\n", __func__);
     else
-        fprintf(stderr, "%s passed.\n", __func__);
+        fprintf(stderr, " passed\n");
     return ok;
 }
 // ————————— new UTF-8–aware tests —————————
 bool stringTest3(void) {
-    fprintf(stderr, "%s begin…\n", __func__);
+    fprintf(stderr, "%s begin...", __func__);
     bool ok = true;
     // Contains: 'héllo • 世界'
     OCStringRef s = OCStringCreateWithCString("héllo • 世界");
@@ -391,14 +388,14 @@ bool stringTest3(void) {
     OCRelease(s);
     // No library warnings or errors are expected in this test. If you see an OCString error, it is a real bug.
     if (ok) {
-        fprintf(stderr, "%s passed.\n", __func__);
+        fprintf(stderr, " passed\n");
     } else {
         fprintf(stderr, "Test %s FAILED.\n", __func__);
     }
     return ok;
 }
 bool stringTest4(void) {
-    fprintf(stderr, "%s begin…\n", __func__);
+    fprintf(stderr, "%s begin...", __func__);
     bool ok = true;
     OCStringRef s = OCStringCreateWithCString("foo•bar•baz");
     // substring for the first bullet '•' which is at index 3
@@ -410,11 +407,11 @@ bool stringTest4(void) {
     }
     OCRelease(sub);
     OCRelease(s);
-    fprintf(stderr, "%s %s.\n", __func__, ok ? "passed" : "FAILED");
+    if (ok) fprintf(stderr, " passed\n");
     return ok;
 }
 bool stringTest5(void) {
-    fprintf(stderr, "%s begin…\n", __func__);
+    fprintf(stderr, "%s begin...", __func__);
     bool ok = true;
     OCMutableStringRef m = OCStringCreateMutable(0);
     OCStringAppendCString(m, "α");  // Greek alpha (2 bytes in UTF-8)
@@ -424,11 +421,11 @@ bool stringTest5(void) {
     // Final should be "αβ"
     if (!OCStringEqual((OCStringRef)m, STR("αβ"))) ok = false;
     OCRelease(m);
-    fprintf(stderr, "%s %s.\n", __func__, ok ? "passed" : "FAILED");
+    if (ok) fprintf(stderr, " passed\n");
     return ok;
 }
 bool stringTest6(void) {
-    fprintf(stderr, "%s begin…\n", __func__);
+    fprintf(stderr, "%s begin...", __func__);
     bool ok = true;
     // Start with "a•b•c"
     OCMutableStringRef m = OCStringCreateMutableCopy(STR("a•b•c"));
@@ -466,11 +463,11 @@ bool stringTest6(void) {
     }
     // Now finally release the mutable copy
     OCRelease(m);
-    fprintf(stderr, "%s %s.\n", __func__, ok ? "passed" : "FAILED");
+    if (ok) fprintf(stderr, " passed\n");
     return ok;
 }
 bool stringTest7(void) {
-    fprintf(stderr, "%s begin…\n", __func__);
+    fprintf(stderr, "%s begin...", __func__);
     bool ok = true;
     OCStringRef s = OCStringCreateWithCString("one•two•three");
     if (!s) {
@@ -478,7 +475,6 @@ bool stringTest7(void) {
         return false;  // Cannot proceed
     }
     // find ranges
-    fprintf(stderr, "  stringTest7: Testing OCStringCreateArrayWithFindResults...\n");
     OCArrayRef ranges = OCStringCreateArrayWithFindResults(s, STR("•"), OCRangeMake(0, OCStringGetLength(s)), 0);
     if (!ranges) {
         fprintf(stderr, "stringTest7: OCStringCreateArrayWithFindResults returned NULL for ranges.\n");
@@ -492,10 +488,8 @@ bool stringTest7(void) {
         // OCRange* r1 = (OCRange*)OCArrayGetValueAtIndex(ranges, 1);
         // if (!(r0 && r0->location == 3 && r0->length == 1)) { fprintf(stderr, "Range 0 incorrect\n"); ok = false; }
         // if (!(r1 && r1->location == 7 && r1->length == 1)) { fprintf(stderr, "Range 1 incorrect\n"); ok = false; }
-        fprintf(stderr, "  stringTest7: OCStringCreateArrayWithFindResults seems OK (count =  %" PRIu64 ").\n", OCArrayGetCount(ranges));
     }
     // split on bullet
-    fprintf(stderr, "  stringTest7: Testing OCStringCreateArrayBySeparatingStrings...\n");
     OCArrayRef parts = OCStringCreateArrayBySeparatingStrings(s, STR("•"));
     if (!parts) {
         fprintf(stderr, "stringTest7: OCStringCreateArrayBySeparatingStrings returned NULL for parts.\n");
@@ -504,7 +498,6 @@ bool stringTest7(void) {
         fprintf(stderr, "stringTest7: Expected 3 parts, got  %" PRIu64 ".\n", OCArrayGetCount(parts));
         ok = false;
     } else {
-        fprintf(stderr, "  stringTest7: OCStringCreateArrayBySeparatingStrings count seems OK (count =  %" PRIu64 ").\n", OCArrayGetCount(parts));
         // check content
         OCStringRef part0 = (OCStringRef)OCArrayGetValueAtIndex(parts, 0);
         OCStringRef part1 = (OCStringRef)OCArrayGetValueAtIndex(parts, 1);
@@ -525,7 +518,7 @@ bool stringTest7(void) {
     if (ranges) OCRelease(ranges);
     if (parts) OCRelease(parts);
     OCRelease(s);
-    fprintf(stderr, "%s %s.\n", __func__, ok ? "passed" : "FAILED");
+    fprintf(stderr, " passed\n");
     return ok;
 }
 // Helper sub-tests for stringTest8
@@ -540,7 +533,6 @@ static bool test_CharUtilities(void);
 static bool test_FloatStringifiers(void);
 static bool test_ComplexStringifiers(void);
 static bool test_CreateAndGetCString(void) {
-    fprintf(stderr, "  [Create/GetCString]...\n");
     bool ok = true;
     const char *input = "Hello, C-String!";
     OCStringRef s = OCStringCreateWithCString(input);
@@ -556,7 +548,6 @@ static bool test_CreateAndGetCString(void) {
     return ok;
 }
 static bool test_MutableAppend(void) {
-    fprintf(stderr, "  [MutableAppend]...\n");
     bool ok = true;
     OCMutableStringRef m = OCStringCreateMutable(10);
     if (!m) {
@@ -577,7 +568,6 @@ static bool test_MutableAppend(void) {
     return ok;
 }
 static bool test_MutableCopy(void) {
-    fprintf(stderr, "  [MutableCopy]...\n");
     bool ok = true;
     OCStringRef original = STR("Original");
     OCMutableStringRef copy = OCStringCreateMutableCopy(original);
@@ -598,7 +588,6 @@ static bool test_MutableCopy(void) {
     return ok;
 }
 static bool test_CompareAndCase(void) {
-    fprintf(stderr, "  [Compare/Case]...\n");
     bool ok = true;
     OCStringRef lower = STR("apple"), upper = STR("APPLE"), banana = STR("banana");
     if (OCStringCompare(lower, upper, 0) == kOCCompareEqualTo) {
@@ -616,7 +605,6 @@ static bool test_CompareAndCase(void) {
     return ok;
 }
 static bool test_TrimFunctions(void) {
-    fprintf(stderr, "  [TrimFunctions]...\n");
     bool ok = true;
     OCMutableStringRef ws = OCMutableStringCreateWithCString("  MiXeD CaSe & Spaces  ");
     if (!ws) {
@@ -669,7 +657,6 @@ static bool test_TrimFunctions(void) {
     return ok;
 }
 static bool test_FindOperations(void) {
-    fprintf(stderr, "  [FindOperations]...\n");
     bool ok = true;
     OCStringRef hay = STR("One two three two one"), needle = STR("two");
     OCRange r1 = OCStringFind(hay, needle, 0);
@@ -699,7 +686,6 @@ static bool test_FindOperations(void) {
     return ok;
 }
 static bool test_FindAndReplace(void) {
-    fprintf(stderr, "  [FindAndReplace]...\n");
     bool ok = true;
     OCMutableStringRef s = OCMutableStringCreateWithCString("cat dog cat bird cat");
     int64_t cnt = OCStringFindAndReplace2(s, STR("cat"), STR("mouse"));
@@ -711,7 +697,6 @@ static bool test_FindAndReplace(void) {
     return ok;
 }
 static bool test_CharUtilities(void) {
-    fprintf(stderr, "  [CharUtils]...\n");
     bool ok = true;
     if (!characterIsUpperCaseLetter('A') || characterIsUpperCaseLetter('a')) {
         fprintf(stderr, "    ERROR: upperCase\n");
@@ -737,7 +722,6 @@ static bool test_CharUtilities(void) {
     return ok;
 }
 static bool test_FloatStringifiers(void) {
-    fprintf(stderr, "  [FloatStrings]...\n");
     bool ok = true;
     OCStringRef f = OCFloatCreateStringValue(3.14159f);
     if (OCStringFind(f, STR("3.14"), 0).length == 0) {
@@ -754,7 +738,6 @@ static bool test_FloatStringifiers(void) {
     return ok;
 }
 static bool test_ComplexStringifiers(void) {
-    fprintf(stderr, "  [ComplexStrings]...\n");
     bool ok = true;
     float complex fc = 1.0f + 2.0f * I;
     OCStringRef s1 = OCFloatComplexCreateStringValue(fc, STR("%.1f%+.1fi"));
@@ -773,7 +756,7 @@ static bool test_ComplexStringifiers(void) {
     return ok;
 }
 bool stringTest8(void) {
-    fprintf(stderr, "%s begin...\n", __func__);
+    fprintf(stderr, "%s begin...", __func__);
     bool ok = true;
     ok &= test_CreateAndGetCString();
     ok &= test_MutableAppend();
@@ -785,14 +768,13 @@ bool stringTest8(void) {
     ok &= test_CharUtilities();
     ok &= test_FloatStringifiers();
     ok &= test_ComplexStringifiers();
-    fprintf(stderr, "%s %s.\n", __func__, ok ? "passed" : "FAILED");
+    fprintf(stderr, " passed\n");
     return ok;
 }
 bool stringTest9(void) {
-    fprintf(stderr, "%s begin...\n", __func__);
+    fprintf(stderr, "%s begin...", __func__);
     bool ok = true;
     // ------ Part 1: Advanced UTF-8 handling tests ------
-    fprintf(stderr, "  Testing advanced UTF-8 handling...\n");
     // Test string with multiple complex Unicode code points: Emojis, combining marks, etc.
     const char *complex_utf8 = "😀👨‍👩‍👧‍👦🇺🇸é̀́";
     OCStringRef utf8_str = OCStringCreateWithCString(complex_utf8);
@@ -816,7 +798,6 @@ bool stringTest9(void) {
     }
     OCRelease(utf8_str);
     // ------ Part 2: Edge cases for string manipulation ------
-    fprintf(stderr, "  Testing edge cases for string manipulation...\n");
     // Empty string tests
     OCStringRef empty_str = OCStringCreateWithCString("");
     if (OCStringGetLength(empty_str) != 0) {
@@ -859,7 +840,6 @@ bool stringTest9(void) {
     OCRelease(empty_substring);
     OCRelease(empty_str);
     // ------ Part 3: Separator at beginning/end edge cases ------
-    fprintf(stderr, "  Testing separators at beginning/end edge cases...\n");
     // String with separator at beginning and end: ";one;two;"
     OCStringRef edge_str = OCStringCreateWithCString(";one;two;");
     OCArrayRef edge_parts = OCStringCreateArrayBySeparatingStrings(edge_str, STR(";"));
@@ -889,7 +869,6 @@ bool stringTest9(void) {
     }
     OCRelease(edge_str);
     // ------ Part 4: Boundary/Large string tests ------
-    fprintf(stderr, "  Testing with large strings...\n");
     // Test with larger string
     const size_t LARGE_SIZE = 1000;
     char *large_buf = malloc(LARGE_SIZE + 1);
@@ -929,11 +908,11 @@ bool stringTest9(void) {
         fprintf(stderr, "stringTest9: Failed to allocate buffer for large string test.\n");
         ok = false;
     }
-    fprintf(stderr, "%s %s.\n", __func__, ok ? "passed" : "FAILED");
+    fprintf(stderr, " passed\n");
     return ok;
 }
 bool stringTest10(void) {
-    printf("Running test_string_split_no_separator...\n");
+    fprintf(stderr, "%s begin...", __func__);
     OCArrayRef arr = OCStringCreateArrayBySeparatingStrings(STR("8"), STR(".."));
     assert(arr != NULL);
     // Should only get back one element, the original string "8"
@@ -942,11 +921,11 @@ bool stringTest10(void) {
     // Compare the returned OCStringRef to "8" with case-sensitive comparison
     assert(OCStringCompare(s0, STR("8"), 0) == kOCCompareEqualTo);
     OCRelease(arr);
-    printf("test_string_split_no_separator passed\n");
+    fprintf(stderr, " passed\n");
     return true;
 }
 bool stringTest11(void) {
-    fprintf(stderr, "%s begin...\n", __func__);
+    fprintf(stderr, "%s begin...", __func__);
     bool ok = true;
     OCMutableStringRef mutString = OCStringCreateMutableCopy(STR("•×÷−\n+μγºh_pɣ√∛∜ "));
     // Each replacement uses the current full range of the string
@@ -983,15 +962,13 @@ bool stringTest11(void) {
     range.length = OCStringGetLength((OCStringRef)mutString);
     OCStringFindAndReplace(mutString, STR(" "), STR(""), range, 0);
     OCStringRef result = (OCStringRef)mutString;
-    OCStringShow(result);
-    printf("\n");
     assert(OCStringCompare(result, STR("**/-+µ𝛾°h_P𝛾sqrtcbrtqtrt"), 0) == kOCCompareEqualTo);
     OCRelease(mutString);
-    fprintf(stderr, "%s %s.\n", __func__, ok ? "passed" : "FAILED");
+    fprintf(stderr, " passed\n");
     return ok;
 }
 bool stringTest_deepcopy(void) {
-    fprintf(stderr, "%s begin...\n", __func__);
+    fprintf(stderr, "%s begin...", __func__);
     bool ok = true;
     OCStringRef original = STR("deepcopy test ✓");
     OCStringRef copy = (OCStringRef)OCTypeDeepCopy(original);
@@ -1026,6 +1003,6 @@ bool stringTest_deepcopy(void) {
         ok = false;
     }
     OCRelease(mut_copy);
-    fprintf(stderr, "%s %s.\n", __func__, ok ? "passed" : "FAILED");
+    fprintf(stderr, " passed\n");
     return ok;
 }

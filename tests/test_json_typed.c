@@ -14,12 +14,12 @@
 #include <string.h>
 
 // Helper macro for test output
-#define JSON_TEST_LOG(test_name, message) \
-    fprintf(stderr, "[%s] %s\n", test_name, message)
+#define JSON_TEST_LOG(test_name, ...) \
+    fprintf(stderr, "%s ", test_name); fprintf(stderr, __VA_ARGS__); fprintf(stderr, "\n")
 
 bool jsonTypedTest_OCData(void) {
     const char *test_name = "jsonTypedTest_OCData";
-    JSON_TEST_LOG(test_name, "begin...");
+    fprintf(stderr, "%s begin...", test_name);
 
     // Create test data
     uint8_t testBytes[] = {0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x00, 0x57, 0x6F, 0x72, 0x6C, 0x64};
@@ -32,9 +32,13 @@ bool jsonTypedTest_OCData(void) {
     }
 
     // Serialize to JSONTyped
-    cJSON *json = OCDataCopyAsJSON(originalData, true);
+    OCStringRef dataError = NULL;
+    cJSON *json = OCDataCopyAsJSON(originalData, true, &dataError);
     if (!json) {
         JSON_TEST_LOG(test_name, "FAIL: Could not serialize to JSONTyped");
+        if (dataError) {
+            JSON_TEST_LOG(test_name, "Error: %s", OCStringGetCString(dataError));
+        }
         OCRelease(originalData);
         return false;
     }
@@ -74,7 +78,9 @@ bool jsonTypedTest_OCData(void) {
     OCRelease(deserializedData);
 
     if (equal) {
-        JSON_TEST_LOG(test_name, "PASS: Roundtrip successful");
+        fprintf(stderr, " passed\n");
+    } else {
+        JSON_TEST_LOG(test_name, "FAILED");
     }
 
     return equal;
@@ -82,7 +88,7 @@ bool jsonTypedTest_OCData(void) {
 
 bool jsonTypedTest_OCArray(void) {
     const char *test_name = "jsonTypedTest_OCArray";
-    JSON_TEST_LOG(test_name, "begin...");
+    fprintf(stderr, "%s begin...", test_name);
 
     // Create test array with mixed types
     OCMutableArrayRef originalArray = OCArrayCreateMutable(0, &kOCTypeArrayCallBacks);
@@ -119,9 +125,13 @@ bool jsonTypedTest_OCArray(void) {
     OCRelease(nestedArray);
 
     // Serialize to JSONTyped
-    cJSON *json = OCArrayCopyAsJSON(originalArray, true);
+    OCStringRef arrayError = NULL;
+    cJSON *json = OCArrayCopyAsJSON(originalArray, true, &arrayError);
     if (!json) {
         JSON_TEST_LOG(test_name, "FAIL: Could not serialize to JSONTyped");
+        if (arrayError) {
+            JSON_TEST_LOG(test_name, "Error: %s", OCStringGetCString(arrayError));
+        }
         OCRelease(originalArray);
         return false;
     }
@@ -155,7 +165,9 @@ bool jsonTypedTest_OCArray(void) {
     OCRelease(deserializedArray);
 
     if (equal) {
-        JSON_TEST_LOG(test_name, "PASS: Roundtrip successful");
+        fprintf(stderr, " passed\n");
+    } else {
+        JSON_TEST_LOG(test_name, "FAILED");
     }
 
     return equal;
@@ -163,7 +175,7 @@ bool jsonTypedTest_OCArray(void) {
 
 bool jsonTypedTest_OCNumber(void) {
     const char *test_name = "jsonTypedTest_OCNumber";
-    JSON_TEST_LOG(test_name, "begin...");
+    fprintf(stderr, "%s begin...", test_name);
 
     bool allPassed = true;
 
@@ -190,9 +202,13 @@ bool jsonTypedTest_OCNumber(void) {
         }
 
         // Serialize to JSONTyped
-        cJSON *json = OCNumberCopyAsJSON(testCases[i].number, true);
+        OCStringRef jsonTypedError = NULL;
+        cJSON *json = OCNumberCopyAsJSON(testCases[i].number, true, &jsonTypedError);
         if (!json) {
             fprintf(stderr, "[%s] FAIL: Could not serialize %s to JSONTyped\n", test_name, testCases[i].typeName);
+            if (jsonTypedError) {
+                fprintf(stderr, "[%s] Error: %s\n", test_name, OCStringGetCString(jsonTypedError));
+            }
             OCRelease(testCases[i].number);
             allPassed = false;
             continue;
@@ -214,7 +230,6 @@ bool jsonTypedTest_OCNumber(void) {
             fprintf(stderr, "[%s] FAIL: %s roundtrip does not match original\n", test_name, testCases[i].typeName);
             allPassed = false;
         } else {
-            fprintf(stderr, "[%s] PASS: %s roundtrip successful\n", test_name, testCases[i].typeName);
         }
 
         // Cleanup
@@ -223,12 +238,18 @@ bool jsonTypedTest_OCNumber(void) {
         OCRelease(deserializedNumber);
     }
 
+    if (allPassed) {
+        fprintf(stderr, " passed\n");
+    } else {
+        JSON_TEST_LOG(test_name, "FAILED");
+    }
+
     return allPassed;
 }
 
 bool jsonTypedTest_OCString(void) {
     const char *test_name = "jsonTypedTest_OCString";
-    JSON_TEST_LOG(test_name, "begin...");
+    fprintf(stderr, "%s begin...", test_name);
 
     // OCString uses native JSON representation, so we test the global functions
     const char *testStrings[] = {
@@ -252,9 +273,13 @@ bool jsonTypedTest_OCString(void) {
         }
 
         // Use global JSONTyped functions since OCString uses native JSON
-        cJSON *json = OCTypeCopyJSON((OCTypeRef)originalString, true);
+        OCStringRef stringError = NULL;
+        cJSON *json = OCTypeCopyJSON((OCTypeRef)originalString, true, &stringError);
         if (!json) {
             fprintf(stderr, "[%s] FAIL: Could not serialize string %zu to JSONTyped\n", test_name, i);
+            if (stringError) {
+                fprintf(stderr, "[%s] Error: %s\n", test_name, OCStringGetCString(stringError));
+            }
             OCRelease(originalString);
             allPassed = false;
             continue;
@@ -284,7 +309,9 @@ bool jsonTypedTest_OCString(void) {
     }
 
     if (allPassed) {
-        JSON_TEST_LOG(test_name, "PASS: All string roundtrips successful");
+        fprintf(stderr, " passed\n");
+    } else {
+        JSON_TEST_LOG(test_name, "FAILED");
     }
 
     return allPassed;
@@ -292,7 +319,7 @@ bool jsonTypedTest_OCString(void) {
 
 bool jsonTypedTest_OCBoolean(void) {
     const char *test_name = "jsonTypedTest_OCBoolean";
-    JSON_TEST_LOG(test_name, "begin...");
+    fprintf(stderr, "%s begin...", test_name);
 
     bool allPassed = true;
 
@@ -302,9 +329,13 @@ bool jsonTypedTest_OCBoolean(void) {
 
     for (int i = 0; i < 2; i++) {
         // Use global JSONTyped functions
-        cJSON *json = OCTypeCopyJSON((OCTypeRef)testBooleans[i], true);
+        OCStringRef boolError = NULL;
+        cJSON *json = OCTypeCopyJSON((OCTypeRef)testBooleans[i], true, &boolError);
         if (!json) {
             fprintf(stderr, "[%s] FAIL: Could not serialize %s to JSONTyped\n", test_name, boolNames[i]);
+            if (boolError) {
+                fprintf(stderr, "[%s] Error: %s\n", test_name, OCStringGetCString(boolError));
+            }
             allPassed = false;
             continue;
         }
@@ -324,7 +355,6 @@ bool jsonTypedTest_OCBoolean(void) {
             fprintf(stderr, "[%s] FAIL: %s roundtrip does not match original\n", test_name, boolNames[i]);
             allPassed = false;
         } else {
-            fprintf(stderr, "[%s] PASS: %s roundtrip successful\n", test_name, boolNames[i]);
         }
 
         // Cleanup
@@ -332,12 +362,18 @@ bool jsonTypedTest_OCBoolean(void) {
         // Don't release singleton booleans
     }
 
+    if (allPassed) {
+        fprintf(stderr, " passed\n");
+    } else {
+        JSON_TEST_LOG(test_name, "FAILED");
+    }
+
     return allPassed;
 }
 
 bool jsonTypedTest_OCDictionary(void) {
     const char *test_name = "jsonTypedTest_OCDictionary";
-    JSON_TEST_LOG(test_name, "begin...");
+    fprintf(stderr, "%s begin...", test_name);
 
     // Create test dictionary with mixed types
     OCMutableDictionaryRef originalDict = OCDictionaryCreateMutable(0);
@@ -374,9 +410,13 @@ bool jsonTypedTest_OCDictionary(void) {
     OCDictionarySetValue(originalDict, key4, nestedDict);
 
     // Serialize to JSONTyped
-    cJSON *json = OCDictionaryCopyAsJSON(originalDict, true);
+    OCStringRef dictError = NULL;
+    cJSON *json = OCDictionaryCopyAsJSON(originalDict, true, &dictError);
     if (!json) {
         JSON_TEST_LOG(test_name, "FAIL: Could not serialize to JSONTyped");
+        if (dictError) {
+            JSON_TEST_LOG(test_name, "Error: %s", OCStringGetCString(dictError));
+        }
         // Cleanup keys
         OCRelease(key1); OCRelease(key2); OCRelease(key3); OCRelease(key4); OCRelease(nestedKey);
         OCRelease(nestedDict);
@@ -418,7 +458,9 @@ bool jsonTypedTest_OCDictionary(void) {
     OCRelease(deserializedDict);
 
     if (equal) {
-        JSON_TEST_LOG(test_name, "PASS: Roundtrip successful");
+        fprintf(stderr, " passed\n");
+    } else {
+        JSON_TEST_LOG(test_name, "FAILED");
     }
 
     return equal;
@@ -426,7 +468,7 @@ bool jsonTypedTest_OCDictionary(void) {
 
 bool jsonTypedTest_OCSet(void) {
     const char *test_name = "jsonTypedTest_OCSet";
-    JSON_TEST_LOG(test_name, "begin...");
+    fprintf(stderr, "%s begin...", test_name);
 
     // Create test set
     OCMutableSetRef originalSet = OCSetCreateMutable(0);
@@ -453,9 +495,13 @@ bool jsonTypedTest_OCSet(void) {
     OCRelease(testStr);
 
     // Serialize to JSONTyped
-    cJSON *json = OCSetCopyAsJSON(originalSet, true);
+    OCStringRef error = NULL;
+    cJSON *json = OCSetCopyAsJSON(originalSet, true, &error);
     if (!json) {
         JSON_TEST_LOG(test_name, "FAIL: Could not serialize to JSONTyped");
+        if (error) {
+            JSON_TEST_LOG(test_name, "Error: %s", OCStringGetCString(error));
+        }
         OCRelease(originalSet);
         return false;
     }
@@ -489,7 +535,9 @@ bool jsonTypedTest_OCSet(void) {
     OCRelease(deserializedSet);
 
     if (equal) {
-        JSON_TEST_LOG(test_name, "PASS: Roundtrip successful");
+        fprintf(stderr, " passed\n");
+    } else {
+        JSON_TEST_LOG(test_name, "FAILED");
     }
 
     return equal;
@@ -497,7 +545,7 @@ bool jsonTypedTest_OCSet(void) {
 
 bool jsonTypedTest_OCIndexSet(void) {
     const char *test_name = "jsonTypedTest_OCIndexSet";
-    JSON_TEST_LOG(test_name, "begin...");
+    fprintf(stderr, "%s begin...", test_name);
 
     // Create test index set
     OCMutableIndexSetRef originalSet = OCIndexSetCreateMutable();
@@ -514,9 +562,13 @@ bool jsonTypedTest_OCIndexSet(void) {
     OCIndexSetAddIndex(originalSet, 20);
 
     // Serialize to JSONTyped
-    cJSON *json = OCIndexSetCopyAsJSON(originalSet, true);
+    OCStringRef error = NULL;
+    cJSON *json = OCIndexSetCopyAsJSON(originalSet, true, &error);
     if (!json) {
         JSON_TEST_LOG(test_name, "FAIL: Could not serialize to JSONTyped");
+        if (error) {
+            JSON_TEST_LOG(test_name, "Error: %s", OCStringGetCString(error));
+        }
         OCRelease(originalSet);
         return false;
     }
@@ -550,7 +602,9 @@ bool jsonTypedTest_OCIndexSet(void) {
     OCRelease(deserializedSet);
 
     if (equal) {
-        JSON_TEST_LOG(test_name, "PASS: Roundtrip successful");
+        fprintf(stderr, " passed\n");
+    } else {
+        JSON_TEST_LOG(test_name, "FAILED");
     }
 
     return equal;
@@ -558,7 +612,7 @@ bool jsonTypedTest_OCIndexSet(void) {
 
 bool jsonTypedTest_OCIndexArray(void) {
     const char *test_name = "jsonTypedTest_OCIndexArray";
-    JSON_TEST_LOG(test_name, "begin...");
+    fprintf(stderr, "%s begin...", test_name);
 
     // Create test index array
     OCMutableIndexArrayRef originalArray = OCIndexArrayCreateMutable(0);
@@ -574,9 +628,13 @@ bool jsonTypedTest_OCIndexArray(void) {
     OCIndexArrayAppendValue(originalArray, 50);
 
     // Serialize to JSONTyped
-    cJSON *json = OCIndexArrayCopyAsJSON(originalArray, true);
+    OCStringRef error = NULL;
+    cJSON *json = OCIndexArrayCopyAsJSON(originalArray, true, &error);
     if (!json) {
         JSON_TEST_LOG(test_name, "FAIL: Could not serialize to JSONTyped");
+        if (error) {
+            JSON_TEST_LOG(test_name, "Error: %s", OCStringGetCString(error));
+        }
         OCRelease(originalArray);
         return false;
     }
@@ -610,7 +668,9 @@ bool jsonTypedTest_OCIndexArray(void) {
     OCRelease(deserializedArray);
 
     if (equal) {
-        JSON_TEST_LOG(test_name, "PASS: Roundtrip successful");
+        fprintf(stderr, " passed\n");
+    } else {
+        JSON_TEST_LOG(test_name, "FAILED");
     }
 
     return equal;
@@ -618,7 +678,7 @@ bool jsonTypedTest_OCIndexArray(void) {
 
 bool jsonTypedTest_OCIndexPairSet(void) {
     const char *test_name = "jsonTypedTest_OCIndexPairSet";
-    JSON_TEST_LOG(test_name, "begin...");
+    fprintf(stderr, "%s begin...", test_name);
 
     // Create test index pair set
     OCMutableIndexPairSetRef originalSet = OCIndexPairSetCreateMutable();
@@ -633,9 +693,13 @@ bool jsonTypedTest_OCIndexPairSet(void) {
     OCIndexPairSetAddIndexPair(originalSet, 3, 30);
 
     // Serialize to JSONTyped
-    cJSON *json = OCIndexPairSetCopyAsJSON(originalSet, true);
+    OCStringRef error = NULL;
+    cJSON *json = OCIndexPairSetCopyAsJSON(originalSet, true, &error);
     if (!json) {
         JSON_TEST_LOG(test_name, "FAIL: Could not serialize to JSONTyped");
+        if (error) {
+            JSON_TEST_LOG(test_name, "Error: %s", OCStringGetCString(error));
+        }
         OCRelease(originalSet);
         return false;
     }
@@ -669,25 +733,17 @@ bool jsonTypedTest_OCIndexPairSet(void) {
     OCRelease(deserializedSet);
 
     if (equal) {
-        JSON_TEST_LOG(test_name, "PASS: Roundtrip successful");
+        fprintf(stderr, " passed\n");
+    } else {
+        JSON_TEST_LOG(test_name, "FAILED");
     }
 
     return equal;
 }
 
-bool jsonTypedTest_OCAutoreleasePool(void) {
-    const char *test_name = "jsonTypedTest_OCAutoreleasePool";
-    JSON_TEST_LOG(test_name, "begin...");
-
-    // Skip for now - OCAutoreleasePool JSONTyped functions not implemented
-    JSON_TEST_LOG(test_name, "SKIP: OCAutoreleasePool JSONTyped functions not yet implemented");
-
-    return true;
-}
-
 bool jsonTypedTest_GlobalFunctions(void) {
     const char *test_name = "jsonTypedTest_GlobalFunctions";
-    JSON_TEST_LOG(test_name, "begin...");
+    fprintf(stderr, "%s begin...", test_name);
 
     bool allPassed = true;
 
@@ -710,9 +766,13 @@ bool jsonTypedTest_GlobalFunctions(void) {
         }
 
         // Use global JSONTyped function
-        cJSON *json = OCTypeCopyJSON(testObjects[i], true);
+        OCStringRef typeError = NULL;
+        cJSON *json = OCTypeCopyJSON(testObjects[i], true, &typeError);
         if (!json) {
             fprintf(stderr, "[%s] FAIL: OCTypeCopyJSON failed for %s\n", test_name, typeNames[i]);
+            if (typeError) {
+                fprintf(stderr, "[%s] Error: %s\n", test_name, OCStringGetCString(typeError));
+            }
             OCRelease(testObjects[i]);
             allPassed = false;
             continue;
@@ -734,7 +794,6 @@ bool jsonTypedTest_GlobalFunctions(void) {
             fprintf(stderr, "[%s] FAIL: Global %s roundtrip does not match original\n", test_name, typeNames[i]);
             allPassed = false;
         } else {
-            fprintf(stderr, "[%s] PASS: Global %s roundtrip successful\n", test_name, typeNames[i]);
         }
 
         // Cleanup
@@ -743,12 +802,16 @@ bool jsonTypedTest_GlobalFunctions(void) {
         OCRelease(deserializedObject);
     }
 
+    if (allPassed) {
+        fprintf(stderr, " passed\n");
+    } else {
+        JSON_TEST_LOG(test_name, "FAILED");
+    }
+
     return allPassed;
 }
 
 bool runAllJSONTypedTests(void) {
-    fprintf(stderr, "\n=== Starting JSONTyped Roundtrip Tests ===\n");
-
     bool allPassed = true;
 
     // Run all individual tests
@@ -762,11 +825,7 @@ bool runAllJSONTypedTests(void) {
     allPassed &= jsonTypedTest_OCIndexSet();
     allPassed &= jsonTypedTest_OCIndexArray();
     allPassed &= jsonTypedTest_OCIndexPairSet();
-    allPassed &= jsonTypedTest_OCAutoreleasePool();
     allPassed &= jsonTypedTest_GlobalFunctions();
-
-    fprintf(stderr, "\n=== JSONTyped Roundtrip Tests %s ===\n",
-            allPassed ? "PASSED" : "FAILED");
 
     return allPassed;
 }

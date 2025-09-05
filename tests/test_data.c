@@ -10,7 +10,7 @@
 #include "../src/OCString.h"  // For OCStringGetCString
 #include "test_utils.h"
 bool dataTest0(void) {
-    fprintf(stderr, "%s begin...\n", __func__);
+    fprintf(stderr, "%s begin...", __func__);
     // Test 1: OCDataCreate and OCDataGetLength
     uint8_t bytes1[] = {0x01, 0x02, 0x03, 0x04, 0x05};
     OCDataRef data1 = OCDataCreate(bytes1, sizeof(bytes1));
@@ -80,12 +80,12 @@ bool dataTest0(void) {
     OCRelease(data3);
     // Clean up
     OCRelease(data1);
-    fprintf(stderr, "%s end...without problems\n", __func__);
+    fprintf(stderr, " passed\n");
     return true;
 }
 // Consolidated dataTest1 from test_data_mutable.c
 bool dataTest1(void) {
-    fprintf(stderr, "%s begin...\n", __func__);
+    fprintf(stderr, "%s begin...", __func__);
     OCMutableDataRef mdata = OCDataCreateMutable(5);
     ASSERT_NOT_NULL(mdata, "Test 1.1: OCDataCreateMutable should not return NULL");
     ASSERT_EQUAL(OCDataGetLength(mdata), 0, "Test 1.2: New mutable data length should be 0");
@@ -104,11 +104,11 @@ bool dataTest1(void) {
     mutPtr[0] = 55;
     ASSERT_EQUAL(OCDataGetBytesPtr((OCDataRef)mdata)[0], 55, "Test 1.8: OCDataGetMutableBytes should allow writing data");
     OCRelease(mdata);
-    fprintf(stderr, "%s end...without problems\n", __func__);
+    fprintf(stderr, " passed\n");
     return true;
 }
 bool dataTest_deepcopy(void) {
-    fprintf(stderr, "%s begin...\n", __func__);
+    fprintf(stderr, "%s begin...", __func__);
     uint8_t bytes[] = {0xDE, 0xAD, 0xBE, 0xEF};
     OCDataRef orig = OCDataCreate(bytes, sizeof(bytes));
     if (!orig) PRINTERROR;
@@ -130,11 +130,11 @@ bool dataTest_deepcopy(void) {
     ASSERT_TRUE(OCDataGetBytesPtr(orig)[0] != 0xAB, "Original should remain unchanged");
     OCRelease(orig);
     OCRelease(mcopy);
-    fprintf(stderr, "%s end...without problems\n", __func__);
+    fprintf(stderr, " passed\n");
     return true;
 }
 bool dataTest_base64_roundtrip(void) {
-    fprintf(stderr, "%s begin...\n", __func__);
+    fprintf(stderr, "%s begin...", __func__);
     // Test 1: Simple case - 16 bytes (2 doubles)
     uint8_t test_data1[] = {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xF0, 0x3F,  // 1.0 as double
@@ -147,12 +147,9 @@ bool dataTest_base64_roundtrip(void) {
     // Encode to base64
     OCStringRef b64_1 = OCDataCreateBase64EncodedString(original1, OCBase64EncodingOptionsNone);
     ASSERT_NOT_NULL(b64_1, "Base64 encoding should not return NULL");
-    printf("Original length: %zu\n", len1);
-    printf("Base64 string: %s\n", OCStringGetCString(b64_1));
     // Decode back from base64
     OCDataRef decoded1 = OCDataCreateFromBase64EncodedString(b64_1);
     ASSERT_NOT_NULL(decoded1, "Base64 decoding should not return NULL");
-    printf("Decoded length: %llu\n", OCDataGetLength(decoded1));
     // Check if lengths match
     ASSERT_EQUAL(OCDataGetLength(original1), OCDataGetLength(decoded1),
                  "Original and decoded lengths should match");
@@ -202,22 +199,22 @@ bool dataTest_base64_roundtrip(void) {
         OCRelease(b64);
         OCRelease(decoded);
     }
-    fprintf(stderr, "%s end...without problems\n", __func__);
+    fprintf(stderr, " passed\n");
     return true;
 }
 
 bool dataTest_json_encoding(void) {
-    fprintf(stderr, "%s begin...\n", __func__);
-    
+    fprintf(stderr, "%s begin...", __func__);
+
     // Create test data
     uint8_t testBytes[] = {0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x00, 0x57, 0x6F, 0x72, 0x6C, 0x64, 0xFF, 0xFE};
     size_t dataLength = sizeof(testBytes);
-    
+
     OCMutableDataRef originalData = OCDataCreateMutable(dataLength);
     if (!originalData) PRINTERROR;
-    
+
     OCDataAppendBytes(originalData, testBytes, dataLength);
-    
+
     // Test 1: Default encoding (should be OCJSONEncodingBase64 for OCData)
     OCJSONEncoding defaultEncoding = OCDataCopyEncoding(originalData);
     if (defaultEncoding != OCJSONEncodingBase64) {
@@ -225,53 +222,58 @@ bool dataTest_json_encoding(void) {
         OCRelease(originalData);
         return false;
     }
-    
+
     // Test 2: Serialize with default encoding (base64)
-    cJSON *jsonDefault = OCDataCopyAsJSON(originalData, true);
+    OCStringRef serializeError = NULL;
+    cJSON *jsonDefault = OCDataCopyAsJSON(originalData, true, &serializeError);
     if (!jsonDefault) {
-        fprintf(stderr, "FAIL: Could not serialize OCData with default encoding\n");
+        fprintf(stderr, "FAIL: Could not serialize OCData with default encoding");
+        if (serializeError) {
+            fprintf(stderr, ": %s", OCStringGetCString(serializeError));
+        }
+        fprintf(stderr, "\n");
         OCRelease(originalData);
         return false;
     }
-    
+
     // Verify JSON structure
     cJSON *type = cJSON_GetObjectItem(jsonDefault, "type");
     cJSON *encoding = cJSON_GetObjectItem(jsonDefault, "encoding");
     cJSON *value = cJSON_GetObjectItem(jsonDefault, "value");
-    
+
     if (!type || !cJSON_IsString(type) || strcmp(cJSON_GetStringValue(type), "OCData") != 0) {
         fprintf(stderr, "FAIL: Invalid type field\n");
         cJSON_Delete(jsonDefault);
         OCRelease(originalData);
         return false;
     }
-    
+
     if (!encoding || !cJSON_IsString(encoding) || strcmp(cJSON_GetStringValue(encoding), "base64") != 0) {
         fprintf(stderr, "FAIL: Invalid encoding field\n");
         cJSON_Delete(jsonDefault);
         OCRelease(originalData);
         return false;
     }
-    
+
     if (!value || !cJSON_IsString(value)) {
         fprintf(stderr, "FAIL: Invalid value field\n");
         cJSON_Delete(jsonDefault);
         OCRelease(originalData);
         return false;
     }
-    
+
     // Test 3: Roundtrip with base64 encoding
     OCStringRef error = NULL;
     OCDataRef deserializedData = OCDataCreateFromJSON(jsonDefault, &error);
     if (!deserializedData) {
-        fprintf(stderr, "FAIL: Could not deserialize OCData: %s\n", 
+        fprintf(stderr, "FAIL: Could not deserialize OCData: %s\n",
                 error ? OCStringGetCString(error) : "unknown error");
         if (error) OCRelease(error);
         cJSON_Delete(jsonDefault);
         OCRelease(originalData);
         return false;
     }
-    
+
     // Verify data equality
     if (!OCTypeEqual(originalData, deserializedData)) {
         fprintf(stderr, "FAIL: Roundtrip data does not match original\n");
@@ -280,7 +282,7 @@ bool dataTest_json_encoding(void) {
         OCRelease(originalData);
         return false;
     }
-    
+
     // Verify encoding is preserved
     OCJSONEncoding deserializedEncoding = OCDataCopyEncoding(deserializedData);
     if (deserializedEncoding != OCJSONEncodingBase64) {
@@ -290,7 +292,7 @@ bool dataTest_json_encoding(void) {
         OCRelease(originalData);
         return false;
     }
-    
+
     // Test 4: Test encoding setter (though OCData can only use base64)
     OCDataSetEncoding(originalData, OCJSONEncodingNone);
     OCJSONEncoding newEncoding = OCDataCopyEncoding(originalData);
@@ -301,17 +303,22 @@ bool dataTest_json_encoding(void) {
         OCRelease(originalData);
         return false;
     }
-    
+
     // Test 5: Serialize with OCJSONEncodingNone (should still use base64 for JSON compatibility)
-    cJSON *jsonNone = OCDataCopyAsJSON(originalData, true);
+    OCStringRef noneError = NULL;
+    cJSON *jsonNone = OCDataCopyAsJSON(originalData, true, &noneError);
     if (!jsonNone) {
-        fprintf(stderr, "FAIL: Could not serialize OCData with OCJSONEncodingNone\n");
+        fprintf(stderr, "FAIL: Could not serialize OCData with OCJSONEncodingNone");
+        if (noneError) {
+            fprintf(stderr, ": %s", OCStringGetCString(noneError));
+        }
+        fprintf(stderr, "\n");
         OCRelease(deserializedData);
         cJSON_Delete(jsonDefault);
         OCRelease(originalData);
         return false;
     }
-    
+
     // Even with OCJSONEncodingNone, OCData should still use base64 for JSON
     cJSON *encodingNone = cJSON_GetObjectItem(jsonNone, "encoding");
     if (encodingNone && cJSON_IsString(encodingNone)) {
@@ -326,13 +333,13 @@ bool dataTest_json_encoding(void) {
             return false;
         }
     }
-    
+
     // Cleanup
     cJSON_Delete(jsonNone);
     cJSON_Delete(jsonDefault);
     OCRelease(deserializedData);
     OCRelease(originalData);
-    
-    fprintf(stderr, "%s end...without problems\n", __func__);
+
+    fprintf(stderr, " passed\n");
     return true;
 }

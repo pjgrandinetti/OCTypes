@@ -241,12 +241,13 @@ OCDataRef OCDataCreateFromBase64EncodedString(OCStringRef base64String);
  *
  * @param data An OCDataRef to serialize. Must not be NULL.
  * @param typed If false, returns Base64 string; if true, returns typed object.
+ * @param outError Optional pointer to receive an error string on failure.
  * @return A new cJSON string or object containing Base64-encoded data,
  *         or cJSON null if serialization fails.
  *         Caller is responsible for managing the returned cJSON object.
  * @ingroup OCData
  */
-cJSON *OCDataCopyAsJSON(OCDataRef data, bool typed);
+cJSON *OCDataCopyAsJSON(OCDataRef data, bool typed, OCStringRef *outError);
 /**
  * @brief Creates an OCDataRef from a Base64-encoded JSON string.
  *

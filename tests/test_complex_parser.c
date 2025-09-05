@@ -24,7 +24,7 @@
         success = false;                                                                       \
     } while (0)
 bool complex_parser_Test0(void) {
-    fprintf(stderr, "%s begin...\n", __func__);
+    fprintf(stderr, "%s begin...", __func__);
     bool success = true;  // Initialize success to true
     double complex z;
     // ——— Simple real and imaginary constants ———
@@ -279,6 +279,6 @@ bool complex_parser_Test0(void) {
     if (!success)
         fprintf(stderr, "%s FAILED.\n", __func__);
     else
-        fprintf(stderr, "%s passed.\n", __func__);
+        fprintf(stderr, " passed\n");
     return success;
 }

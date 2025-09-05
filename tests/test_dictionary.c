@@ -13,6 +13,7 @@
 #include "../src/OCType.h"  // for OCTypeEqual
 #include "test_utils.h"
 bool dictionaryTest0(void) {
+    printf("dictionaryTest0 begin...");
     // Test 1: empty mutable dict
     OCMutableDictionaryRef dict1_mut = OCDictionaryCreateMutable(0);
     ASSERT_NOT_NULL(dict1_mut, "Test 1.1: dict1_mut should not be NULL");
@@ -62,11 +63,11 @@ bool dictionaryTest0(void) {
     OCRelease(val1);
     OCRelease(val2);
     OCRelease(dict2);
-    printf("dictionaryTest0 completed.\n");
+    printf(" passed\n");
     return true;
 }
 bool dictionaryTest1(void) {
-    printf("dictionaryTest1 starting: Testing edge cases and special values...\n");
+    printf("dictionaryTest1 begin...");
     bool success = true;
     // Test 1: Using NULL values and keys
     OCMutableDictionaryRef dict1 = OCDictionaryCreateMutable(0);
@@ -129,11 +130,11 @@ bool dictionaryTest1(void) {
     OCRelease(key3);
     OCRelease(key1);
     OCRelease(val1);
-    printf("dictionaryTest1 %s.\n", success ? "passed" : "FAILED");
+    printf(" passed\n");
     return success;
 }
 bool dictionaryTest2(void) {
-    printf("dictionaryTest2 starting: Testing array/dictionary operations and performance...\n");
+    printf("dictionaryTest2 begin...");
     bool success = true;
     // Test 1: Create arrays of keys and values
     OCMutableDictionaryRef dict = OCDictionaryCreateMutable(10);
@@ -216,11 +217,11 @@ bool dictionaryTest2(void) {
         OCRelease(values[i]);
     }
     OCRelease(dict);
-    printf("dictionaryTest2 %s.\n", success ? "passed" : "FAILED");
+    printf(" passed\n");
     return success;
 }
 bool dictionaryTest3(void) {
-    printf("dictionaryTest3 starting: Testing with mixed value types and nested structures...\n");
+    printf("dictionaryTest3 begin...");
     bool success = true;
     // Test 1: Dictionary with different types of values
     OCMutableDictionaryRef dict = OCDictionaryCreateMutable(5);
@@ -318,11 +319,11 @@ bool dictionaryTest3(void) {
     OCRelease(unicode_val2);
     OCRelease(unicode_val3);
     OCRelease(unicode_dict);
-    printf("dictionaryTest3 %s.\n", success ? "passed" : "FAILED");
+    printf(" passed\n");
     return success;
 }
 bool dictionaryTest4(void) {
-    printf("dictionaryTest4 starting: Testing extreme cases and capacity handling...\n");
+    printf("dictionaryTest4 begin...");
     bool success = true;
     // Test 1: Zero and very small initial capacity
     OCMutableDictionaryRef zero_cap_dict = OCDictionaryCreateMutable(0);
@@ -431,11 +432,11 @@ bool dictionaryTest4(void) {
     OCRelease(val_newlines);
     OCRelease(val_emoji);
     OCRelease(nonexistent_key);
-    printf("dictionaryTest4 %s.\n", success ? "passed" : "FAILED");
+    printf(" passed\n");
     return success;
 }
 bool dictionaryTest5(void) {
-    printf("dictionaryTest5 starting: Testing iteration and deep nesting...\n");
+    printf("dictionaryTest5 begin...");
     bool success = true;
     // Test 1: Create a deeply nested dictionary structure
     OCMutableDictionaryRef root_dict = OCDictionaryCreateMutable(5);
@@ -485,7 +486,7 @@ bool dictionaryTest5(void) {
         OCRelease(num);
     }
     for (int i = 0; i < 5; i++) {
-        OCStringRef str_val = OCStringCreateWithFormat(STR("Value_%d"), i);
+        OCStringRef str_val = OCStringCreateWithFormat(STR("Value_%d"), NULL, i);
         OCArrayAppendValue(array2, str_val);
         OCRelease(str_val);
     }
@@ -509,41 +510,27 @@ bool dictionaryTest5(void) {
     OCNumberGetValue(item5, kOCNumberSInt32Type, &val5);
     ASSERT_EQUAL(val5, 500, "Test 2.3: Item 5 value should be 500");
     // Test 3: Dictionary copy performance
-    clock_t start, end;
-    double cpu_time_used;
     // Create a moderately sized dictionary (avoid memory issues)
     const int perf_dict_size = 50;
     OCMutableDictionaryRef large_dict = OCDictionaryCreateMutable(perf_dict_size);
     for (int i = 0; i < perf_dict_size; i++) {
-        OCStringRef large_key = OCStringCreateWithFormat(STR("large_key_%d"), i);
+        OCStringRef large_key = OCStringCreateWithFormat(STR("large_key_%d"), NULL, i);
         OCNumberRef large_val = OCNumberCreateWithSInt32(i);
         OCDictionaryAddValue(large_dict, large_key, large_val);
         OCRelease(large_key);
         OCRelease(large_val);
     }
     // Time the immutable copy operation
-    start = clock();
     OCDictionaryRef large_copy = OCDictionaryCreateCopy((OCDictionaryRef)large_dict);
-    end = clock();
-    cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
-    printf("  Time to copy %d-item dictionary: %f seconds\n", perf_dict_size, cpu_time_used);
     // Time the mutable copy operation
-    start = clock();
     OCMutableDictionaryRef large_mutable_copy = OCDictionaryCreateMutableCopy((OCDictionaryRef)large_dict);
-    end = clock();
-    cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
-    printf("  Time to create mutable copy of %d-item dictionary: %f seconds\n", perf_dict_size, cpu_time_used);
     // Verify all keys are present in the copied dictionary
     OCArrayRef keys = OCDictionaryCreateArrayWithAllKeys(large_copy);
     ASSERT_EQUAL(OCArrayGetCount(keys), perf_dict_size,
                  "Test 3.1: Copied dict should contain correct number of keys");
     // Test 4: Dictionary iteration using array creation
-    start = clock();
     OCArrayRef allKeysArray = OCDictionaryCreateArrayWithAllKeys(large_dict);
     OCArrayRef allValuesArray = OCDictionaryCreateArrayWithAllValues(large_dict);
-    end = clock();
-    cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
-    printf("  Time to get all keys and values from %d-item dictionary: %f seconds\n", perf_dict_size, cpu_time_used);
     ASSERT_EQUAL(OCArrayGetCount(allKeysArray), perf_dict_size, "Test 4.1: Should retrieve correct number of keys");
     ASSERT_EQUAL(OCArrayGetCount(allValuesArray), perf_dict_size, "Test 4.2: Should retrieve correct number of values");
     OCRelease(allKeysArray);
@@ -571,11 +558,11 @@ bool dictionaryTest5(void) {
     OCRelease(large_dict);
     OCRelease(large_copy);
     OCRelease(large_mutable_copy);
-    printf("dictionaryTest5 %s.\n", success ? "passed" : "FAILED");
+    printf(" passed\n");
     return success;
 }
 bool OCDictionaryTestDeepCopy(void) {
-    fprintf(stderr, "%s begin...\n", __func__);
+    fprintf(stderr, "%s begin...", __func__);
     bool success = false;
     OCStringRef key1 = OCStringCreateWithCString("alpha");
     OCStringRef key2 = OCStringCreateWithCString("beta");
@@ -633,7 +620,7 @@ bool OCDictionaryTestDeepCopy(void) {
         fprintf(stderr, "Error: Modification of deep copy affected original.\n");
         goto cleanup;
     }
-    fprintf(stderr, "%s passed.\n", __func__);
+    fprintf(stderr, " passed\n");
     success = true;
 cleanup:
     if (key1) OCRelease(key1);

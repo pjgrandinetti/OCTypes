@@ -128,8 +128,8 @@ static void impl_OCDictionaryFinalize(const void *theType) {
     }
 }
 static cJSON *
-impl_OCDictionaryCopyJSON(const void *obj, bool typed) {
-    return OCDictionaryCopyAsJSON((OCDictionaryRef)obj, typed);
+impl_OCDictionaryCopyJSON(const void *obj, bool typed, OCStringRef *outError) {
+    return OCDictionaryCopyAsJSON((OCDictionaryRef)obj, typed, outError);
 }
 static struct impl_OCDictionary *OCDictionaryAllocate() {
     struct impl_OCDictionary *dict = OCTypeAlloc(
@@ -370,7 +370,8 @@ OCArrayRef OCDictionaryCreateArrayWithAllValues(OCDictionaryRef theDictionary) {
     free(keys);
     return array;
 }
-cJSON *OCDictionaryCopyAsJSON(OCDictionaryRef dict, bool typed) {
+cJSON *OCDictionaryCopyAsJSON(OCDictionaryRef dict, bool typed, OCStringRef *outError) {
+    if (outError) *outError = NULL;
     if (!dict) return cJSON_CreateNull();
 
     cJSON *root = cJSON_CreateObject();
@@ -383,12 +384,22 @@ cJSON *OCDictionaryCopyAsJSON(OCDictionaryRef dict, bool typed) {
         OCTypeRef v = (OCTypeRef)OCDictionaryGetValue(dict, key);
 
         // Use typed or untyped serialization based on parameter
-        cJSON *child = OCTypeCopyJSON(v, typed);
+        OCStringRef valueError = NULL;
+        cJSON *child = OCTypeCopyJSON(v, typed, &valueError);
 
         if (!child) {
-            const char *funcName = typed ? "OCDictionaryCopyAsJSON(typed)" : "OCDictionaryCopyAsJSON";
-            fprintf(stderr, "%s: Failed to serialize value for key '%s'. Using null.\n", funcName, k);
-            child = cJSON_CreateNull();
+            if (outError && !*outError) {
+                if (valueError) {
+                    *outError = valueError; // Transfer ownership
+                } else {
+                    *outError = STR("Failed to serialize dictionary value");
+                }
+            } else if (valueError) {
+                // outError already set or not provided, clean up valueError
+            }
+            OCRelease(keys);
+            cJSON_Delete(root);
+            return cJSON_CreateNull();
         }
         cJSON_AddItemToObject(root, k, child);
     }
@@ -403,7 +414,7 @@ OCDictionaryRef OCDictionaryCreateFromJSONTyped(cJSON *json, OCStringRef *outErr
         if (outError) *outError = STR("JSON input is NULL");
         return NULL;
     }
-    
+
     if (!cJSON_IsObject(json)) {
         if (outError) *outError = STR("JSON input is not an object");
         return NULL;
@@ -444,6 +455,109 @@ OCDictionaryRef OCDictionaryCreateFromJSONTyped(cJSON *json, OCStringRef *outErr
         OCDictionarySetValue(result, key, val);
         OCRelease(key);
         OCRelease(val);
+    }
+
+    return result;
+}
+
+OCDictionaryRef OCDictionaryCreateFromJSON(cJSON *json, OCStringRef *outError) {
+    if (outError) *outError = NULL;
+    if (!json) {
+        if (outError) *outError = STR("JSON is NULL");
+        return NULL;
+    }
+
+    if (!cJSON_IsObject(json)) {
+        if (outError) *outError = STR("Expected JSON object for untyped deserialization");
+        return NULL;
+    }
+
+    // For untyped deserialization, we handle natural JSON type → OCType mappings:
+    // - JSON numbers → OCNumber (using default double type)
+    // - JSON strings → OCString
+    // - JSON booleans → OCBoolean
+    // - JSON arrays → OCArray (recursive)
+    // - JSON objects → OCDictionary (recursive)
+
+    OCMutableDictionaryRef result = OCDictionaryCreateMutable(0);
+    if (!result) {
+        if (outError) *outError = STR("Failed to create mutable dictionary");
+        return NULL;
+    }
+
+    cJSON *item = NULL;
+    cJSON_ArrayForEach(item, json) {
+        if (!item->string) {
+            if (outError) *outError = STR("Invalid key in object");
+            OCRelease(result);
+            return NULL;
+        }
+
+        OCStringRef key = OCStringCreateWithCString(item->string);
+        if (!key) {
+            if (outError) *outError = STR("Failed to create key string");
+            OCRelease(result);
+            return NULL;
+        }
+
+        OCTypeRef ocValue = NULL;
+        OCStringRef elemError = NULL;
+
+        if (cJSON_IsNumber(item)) {
+            // JSON number → OCNumber with default double type
+            double value = cJSON_GetNumberValue(item);
+            ocValue = (OCTypeRef)OCNumberCreateWithDouble(value);
+            if (!ocValue && outError) *outError = STR("Failed to create OCNumber");
+
+        } else if (cJSON_IsString(item)) {
+            // JSON string → OCString
+            const char *str = cJSON_GetStringValue(item);
+            ocValue = (OCTypeRef)OCStringCreateWithCString(str);
+            if (!ocValue && outError) *outError = STR("Failed to create OCString");
+
+        } else if (cJSON_IsBool(item)) {
+            // JSON boolean → OCBoolean
+            bool value = cJSON_IsTrue(item);
+            ocValue = (OCTypeRef)OCBooleanGetWithBool(value);
+            if (!ocValue && outError) *outError = STR("Failed to create OCBoolean");
+
+        } else if (cJSON_IsArray(item)) {
+            // JSON array → OCArray (recursive)
+            ocValue = (OCTypeRef)OCArrayCreateFromJSON(item, &elemError);
+            if (!ocValue && outError && !*outError) {
+                *outError = elemError ? elemError : STR("Failed to create OCArray from JSON array value");
+            }
+
+        } else if (cJSON_IsObject(item)) {
+            // JSON object → OCDictionary (recursive)
+            ocValue = (OCTypeRef)OCDictionaryCreateFromJSON(item, &elemError);
+            if (!ocValue && outError && !*outError) {
+                *outError = elemError ? elemError : STR("Failed to create OCDictionary from JSON object value");
+            }
+
+        } else if (cJSON_IsNull(item)) {
+            // JSON null → OCNull
+            ocValue = (OCTypeRef)kOCNull;
+            OCRetain(ocValue); // Need to retain since we'll release after setvalue
+
+        } else {
+            // Unsupported JSON type
+            if (outError) *outError = STR("Unsupported JSON element type");
+        }
+
+        if (ocValue) {
+            OCDictionarySetValue(result, key, ocValue);
+            OCRelease(key);
+            OCRelease(ocValue); // OCDictionarySetValue retains
+        } else {
+            // Clean up elemError if we couldn't transfer it to outError
+            if (elemError && (!outError || *outError != elemError)) {
+                OCRelease(elemError);
+            }
+            OCRelease(key);
+            OCRelease(result);
+            return NULL;
+        }
     }
 
     return result;

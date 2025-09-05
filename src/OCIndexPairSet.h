@@ -3,7 +3,7 @@
  * @brief Declares OCIndexPairSet and OCMutableIndexPairSet interfaces.
  *
  * OCIndexPairSet provides immutable and mutable collections of (index, value) pairs,
- * with support for creation from arrays, lookup, and serialization to plist or OCData.
+ * with support for creation from arrays, lookups, and serialization to plist or OCData.
  */
 #ifndef OCINDEXPAIRSET_H
 #define OCINDEXPAIRSET_H
@@ -251,7 +251,7 @@ OCIndexPairSetRef OCIndexPairSetCreateWithData(OCDataRef data);
  *         Caller is responsible for managing the returned cJSON object.
  * @ingroup OCIndexPairSet
  */
-cJSON *OCIndexPairSetCopyAsJSON(OCIndexPairSetRef set, bool typed);
+cJSON *OCIndexPairSetCopyAsJSON(OCIndexPairSetRef set, bool typed, OCStringRef *outError);
 
 /**
  * @brief Creates an OCIndexPairSet from a JSON array of index-value pairs.

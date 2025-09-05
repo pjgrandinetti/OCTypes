@@ -10,7 +10,7 @@ OCComparisonResult OCStringCompareAdapter(const void *a, const void *b, void *ct
 }
 // Original arrayTest0 implementation
 bool arrayTest0(void) {
-    fprintf(stderr, "%s begin...\n", __func__);
+    fprintf(stderr, "%s begin...", __func__);
     OCMutableArrayRef arr = NULL;
     OCStringRef temp[5] = {NULL, NULL, NULL, NULL, NULL};
     OCStringRef chk = NULL;
@@ -61,7 +61,7 @@ bool arrayTest0(void) {
         OCRelease(chk);
         chk = NULL;  // Prevent double release in cleanup
     }
-    fprintf(stderr, "%s end...without problems\n", __func__);
+    fprintf(stderr, " passed\n");
     success = true;
 cleanup:
     if (chk) OCRelease(chk);
@@ -83,7 +83,7 @@ cleanup:
         }                 \
     } while (0)
 bool arrayTest1_creation(void) {
-    fprintf(stderr, "%s begin...\n", __func__);
+    fprintf(stderr, "%s begin...", __func__);
     bool success = false;
     OCStringRef s1 = NULL;
     OCStringRef s2 = NULL;
@@ -207,7 +207,7 @@ bool arrayTest1_creation(void) {
     OCRelease(deepNum);
     SAFE_RELEASE(deep_original);
     SAFE_RELEASE(deep_copy);
-    fprintf(stderr, "%s end...without problems\n", __func__);
+    fprintf(stderr, " passed\n");
     success = true;
 cleanup:
     SAFE_RELEASE(s1);
@@ -231,7 +231,7 @@ cleanup:
     return success;
 }
 bool arrayTest2_access(void) {
-    fprintf(stderr, "%s begin...\n", __func__);
+    fprintf(stderr, "%s begin...", __func__);
     bool success = false;
     OCStringRef s1 = NULL;
     OCStringRef s2 = NULL;
@@ -363,7 +363,7 @@ bool arrayTest2_access(void) {
         fprintf(stderr, "Assertion failed: ContainsValue on empty array failed in %s\n", __func__);
         goto cleanup;
     }
-    fprintf(stderr, "%s end...without problems\n", __func__);
+    fprintf(stderr, " passed\n");
     success = true;
 cleanup:
     if (s1) OCRelease(s1);
@@ -382,7 +382,7 @@ cleanup:
     return success;
 }
 bool arrayTest3_modification(void) {
-    fprintf(stderr, "%s begin...\n", __func__);
+    fprintf(stderr, "%s begin...", __func__);
     bool success = false;
     OCStringRef s1 = NULL;
     OCStringRef s2 = NULL;
@@ -450,7 +450,7 @@ bool arrayTest3_modification(void) {
         fprintf(stderr, "Assertion failed: Post-clear append failed in %s\n", __func__);
         goto cleanup;
     }
-    fprintf(stderr, "%s end...without problems\n", __func__);
+    fprintf(stderr, " passed\n");
     success = true;
 cleanup:
     if (s1) OCRelease(s1);
@@ -468,7 +468,7 @@ cleanup:
     return success;
 }
 bool arrayTest4_search_sort(void) {
-    fprintf(stderr, "%s begin...\n", __func__);
+    fprintf(stderr, "%s begin...", __func__);
     bool success = false;
     OCStringRef s_e = NULL;
     OCStringRef s_b = NULL;
@@ -597,7 +597,7 @@ bool arrayTest4_search_sort(void) {
     }
     OCRelease(empty_marr);
     empty_marr = NULL;
-    fprintf(stderr, "%s end...without problems\n", __func__);
+    fprintf(stderr, " passed\n");
     success = true;
 cleanup:
     if (s_a) OCRelease(s_a);

@@ -3,7 +3,7 @@
 #include "../src/OCString.h"  // For OCStringCreateWithCString, OCAutorelease, OCRelease
 // Original autoreleasePoolTest0 implementation
 bool autoreleasePoolTest0(void) {
-    fprintf(stderr, "%s begin...\n", __func__);
+    fprintf(stderr, "%s begin...", __func__);
     bool ok;
     OCAutoreleasePoolRef p1 = OCAutoreleasePoolCreate();
     if (!p1) PRINTERROR;
@@ -20,12 +20,12 @@ bool autoreleasePoolTest0(void) {
     OCAutorelease(s2);
     ok = OCAutoreleasePoolRelease(p2);
     if (!ok) PRINTERROR;
-    fprintf(stderr, "%s end...without problems\n", __func__);
+    fprintf(stderr, " passed\n");
     return true;
 }
 // New: Test autorelease pool drain functionality
 bool autoreleasePoolTest1(void) {
-    fprintf(stderr, "%s begin...\n", __func__);
+    fprintf(stderr, "%s begin...", __func__);
     OCAutoreleasePoolRef pool = OCAutoreleasePoolCreate();
     if (!pool) PRINTERROR;
     // Create an object and autorelease it
@@ -43,6 +43,6 @@ bool autoreleasePoolTest1(void) {
     OCAutoreleasePoolDrain(pool);
     // Now pool still valid, release it
     if (!OCAutoreleasePoolRelease(pool)) PRINTERROR;
-    fprintf(stderr, "%s end...without problems\n", __func__);
+    fprintf(stderr, " passed\n");
     return true;
 }
