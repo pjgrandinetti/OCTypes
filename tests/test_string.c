@@ -63,7 +63,7 @@ bool stringTest2(void) {
     OCStringRef out = NULL;
     // --- Test %@ with OCStringRef
     OCStringRef fmt1 = STR("Ix(%@)");
-    OCStringRef out1 = OCStringCreateWithFormat(fmt1, NULL, STR("H2"));
+    OCStringRef out1 = OCStringCreateWithFormat(fmt1, STR("H2"));
     OCStringRef chk1 = STR("Ix(H2)");
     if (!OCStringEqual(out1, chk1)) {
         fprintf(stderr, "ERROR: Format with %%@ failed: got [%s] expected [%s]\n",
@@ -72,7 +72,7 @@ bool stringTest2(void) {
     }
     // --- Test %s with C string
     OCStringRef fmt2 = STR("Ix(%s)");
-    out = OCStringCreateWithFormat(fmt2, NULL, "H2");
+    out = OCStringCreateWithFormat(fmt2, "H2");
     if (!OCStringEqual(out, chk1)) {
         fprintf(stderr, "ERROR: Format with %%s failed: got [%s] expected [%s]\n",
                 OCStringGetCString(out), OCStringGetCString(chk1));
@@ -82,7 +82,7 @@ bool stringTest2(void) {
     out = NULL;
     // --- Test mixed specifiers (%@, %d, %f)
     OCStringRef fmt3 = STR("Atom:%@, Index:%d, Mass:%.2f");
-    out = OCStringCreateWithFormat(fmt3, NULL, STR("H2"), 42, 1.0079);
+    out = OCStringCreateWithFormat(fmt3, STR("H2"), 42, 1.0079);
     OCStringRef chk3 = OCStringCreateWithCString("Atom:H2, Index:42, Mass:1.01");
     if (!OCStringEqual(out, chk3)) {
         fprintf(stderr, "ERROR: Mixed format failed: got [%s] expected [%s]\n",
@@ -95,7 +95,7 @@ bool stringTest2(void) {
     out = NULL;
     // --- Test Unicode/UTF-8
     OCStringRef fmt4 = STR("Prefix-%@-Suffix");
-    OCStringRef out4 = OCStringCreateWithFormat(fmt4, NULL, STR("é💧"));
+    OCStringRef out4 = OCStringCreateWithFormat(fmt4, STR("é💧"));
     OCStringRef chk4 = OCStringCreateWithCString("Prefix-é💧-Suffix");
     if (!OCStringEqual(out4, chk4)) {
         fprintf(stderr, "ERROR: Unicode format failed: got [%s] expected [%s]\n",
@@ -108,7 +108,7 @@ bool stringTest2(void) {
     OCRelease(chk4);
     // --- Test edge case: empty format string
     OCStringRef emptyFmt = STR("");
-    OCStringRef outEmpty = OCStringCreateWithFormat(emptyFmt, NULL);
+    OCStringRef outEmpty = OCStringCreateWithFormat(emptyFmt);
     if (!OCStringEqual(outEmpty, emptyFmt)) {
         fprintf(stderr, "ERROR: Empty format string failed\n");
         OCRelease(outEmpty);
@@ -117,7 +117,7 @@ bool stringTest2(void) {
     OCRelease(outEmpty);
     // --- Test error case: NULL OCStringRef as argument to %@
     OCStringRef fmt5 = STR("NullCheck:%@");
-    out = OCStringCreateWithFormat(fmt5, NULL, (OCStringRef)NULL);
+    out = OCStringCreateWithFormat(fmt5, (OCStringRef)NULL);
     OCStringRef chk5 = OCStringCreateWithCString("NullCheck:");
     if (!OCStringEqual(out, chk5)) {
         fprintf(stderr, "ERROR: NULL OCStringRef in %%@ failed: got [%s] expected [%s]\n",
@@ -130,7 +130,7 @@ bool stringTest2(void) {
     out = NULL;
     // --- Test double %@
     OCStringRef fmt6 = STR("%@-%@");
-    OCStringRef out6 = OCStringCreateWithFormat(fmt6, NULL, STR("A"), STR("B"));
+    OCStringRef out6 = OCStringCreateWithFormat(fmt6, STR("A"), STR("B"));
     OCStringRef chk6 = STR("A-B");
     if (!OCStringEqual(out6, chk6)) {
         fprintf(stderr, "ERROR: Double %%@ failed: got [%s] expected [%s]\n",
@@ -158,7 +158,7 @@ bool stringTest_mixed_format_specifiers(void) {
     OCStringRef chk = NULL;
     // Test interleaved %@ and printf specifiers (the dangerous case)
     fmt = STR("%@:%d:%@:%s:%@");
-    out = OCStringCreateWithFormat(fmt, NULL, STR("A"), 11, STR("B"), "X", STR("C"));
+    out = OCStringCreateWithFormat(fmt, STR("A"), 11, STR("B"), "X", STR("C"));
     chk = OCStringCreateWithCString("A:11:B:X:C");
     if (!OCStringEqual(out, chk)) {
         fprintf(stderr, "Mixed (%%@ and printf) format failed: got [%s], expected [%s]\n",
@@ -171,7 +171,7 @@ bool stringTest_mixed_format_specifiers(void) {
     chk = NULL;
     // Test a chunk with multiple printf specifiers between %@ (will break if not parsed right)
     fmt = STR("%@:%d-%0.2f:%@");
-    out = OCStringCreateWithFormat(fmt, NULL, STR("Q"), 99, 2.71, STR("W"));
+    out = OCStringCreateWithFormat(fmt, STR("Q"), 99, 2.71, STR("W"));
     chk = OCStringCreateWithCString("Q:99-2.71:W");
     if (!OCStringEqual(out, chk)) {
         fprintf(stderr, "Multiple printf specifiers between %%@ failed: got [%s], expected [%s]\n",
@@ -184,7 +184,7 @@ bool stringTest_mixed_format_specifiers(void) {
     chk = NULL;
     // Test sequence with only printf specifiers, no %@ (should still work)
     fmt = STR("Val1:%d,Val2:%.1f,Val3:%s");
-    out = OCStringCreateWithFormat(fmt, NULL, 123, 4.5, "hi");
+    out = OCStringCreateWithFormat(fmt, 123, 4.5, "hi");
     chk = OCStringCreateWithCString("Val1:123,Val2:4.5,Val3:hi");
     if (!OCStringEqual(out, chk)) {
         fprintf(stderr, "Printf-only format failed: got [%s], expected [%s]\n",
@@ -197,7 +197,7 @@ bool stringTest_mixed_format_specifiers(void) {
     chk = NULL;
     // Test out-of-order usage: printf, %@, printf, %@, printf
     fmt = STR("%d:%@:%f:%@:%s");
-    out = OCStringCreateWithFormat(fmt, NULL, 1, STR("M"), 3.14, STR("N"), "str");
+    out = OCStringCreateWithFormat(fmt, 1, STR("M"), 3.14, STR("N"), "str");
     chk = OCStringCreateWithCString("1:M:3.140000:N:str");
     if (!OCStringEqual(out, chk)) {
         fprintf(stderr, "Out-of-order %%@ and printf failed: got [%s], expected [%s]\n",
@@ -210,7 +210,7 @@ bool stringTest_mixed_format_specifiers(void) {
     chk = NULL;
     // Test %% and %@ next to each other
     fmt = STR("100%% %@!");
-    out = OCStringCreateWithFormat(fmt, NULL, STR("bonus"));
+    out = OCStringCreateWithFormat(fmt, STR("bonus"));
     chk = OCStringCreateWithCString("100% bonus!");
     if (!OCStringEqual(out, chk)) {
         fprintf(stderr, "Percent/%%@ adjacent failed: got [%s], expected [%s]\n",
@@ -223,7 +223,7 @@ bool stringTest_mixed_format_specifiers(void) {
     chk = NULL;
     // Test many %@ in a row (should consume all)
     fmt = STR("%@%@%@");
-    out = OCStringCreateWithFormat(fmt, NULL, STR("1"), STR("2"), STR("3"));
+    out = OCStringCreateWithFormat(fmt, STR("1"), STR("2"), STR("3"));
     chk = OCStringCreateWithCString("123");
     if (!OCStringEqual(out, chk)) {
         fprintf(stderr, "Consecutive %%@ failed: got [%s], expected [%s]\n",
@@ -237,7 +237,7 @@ bool stringTest_mixed_format_specifiers(void) {
     // Test if passing NULL as OCStringRef to %@ doesn't crash, just skips
     // This next call will intentionally print an [OCString] ERROR message, which is EXPECTED.
     fmt = STR("%@|%@|%@");
-    out = OCStringCreateWithFormat(fmt, NULL, STR("X"), (OCStringRef)NULL, STR("Y"));
+    out = OCStringCreateWithFormat(fmt, STR("X"), (OCStringRef)NULL, STR("Y"));
     chk = OCStringCreateWithCString("X| |Y");
     if (!OCStringEqual(out, STR("X||Y"))) {
         fprintf(stderr, "NULL to %%@ should print nothing: got [%s]\n", OCStringGetCString(out));
@@ -249,7 +249,7 @@ bool stringTest_mixed_format_specifiers(void) {
     chk = NULL;
     // Test more arguments than specifiers (extra args ignored)
     fmt = STR("%@-%d-%@");
-    out = OCStringCreateWithFormat(fmt, NULL, STR("A"), 8, STR("B"), STR("SHOULD_NOT_BE_USED"), 999);
+    out = OCStringCreateWithFormat(fmt, STR("A"), 8, STR("B"), STR("SHOULD_NOT_BE_USED"), 999);
     chk = OCStringCreateWithCString("A-8-B");
     if (!OCStringEqual(out, chk)) {
         fprintf(stderr, "Extra args present failed: got [%s], expected [%s]\n",
@@ -263,7 +263,7 @@ bool stringTest_mixed_format_specifiers(void) {
     // Test fewer arguments than needed (should not crash, but output is undefined C99)
     // We only check that this does not crash.
     fmt = STR("%@-%d-%@");
-    out = OCStringCreateWithFormat(fmt, NULL, STR("A"));
+    out = OCStringCreateWithFormat(fmt, STR("A"));
     if (out) {
         // We do not check the output, since the behavior is undefined in standard C.
         OCRelease(out);

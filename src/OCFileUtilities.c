@@ -186,7 +186,7 @@ bool OCCreateDirectory(const char *path,
         if (MKDIR(path, 0755) != 0 && errno != EEXIST) {
             if (err) {
                 *err = OCStringCreateWithFormat(
-                    STR("mkdir \"%s\" failed: %s"), NULL,
+                    STR("mkdir \"%s\" failed: %s"),
                     path, strerror(errno));
             }
             return false;
@@ -210,7 +210,7 @@ bool OCCreateDirectory(const char *path,
             if (MKDIR(buf, 0755) != 0 && errno != EEXIST) {
                 if (err) {
                     *err = OCStringCreateWithFormat(
-                        STR("mkdir \"%s\" failed: %s"), NULL,
+                        STR("mkdir \"%s\" failed: %s"),
                         buf, strerror(errno));
                 }
                 return false;
@@ -222,7 +222,7 @@ bool OCCreateDirectory(const char *path,
     if (MKDIR(buf, 0755) != 0 && errno != EEXIST) {
         if (err) {
             *err = OCStringCreateWithFormat(
-                STR("mkdir \"%s\" failed: %s"), NULL,
+                STR("mkdir \"%s\" failed: %s"),
                 buf, strerror(errno));
         }
         return false;
@@ -243,7 +243,7 @@ _OCListDirRec(const char *basePath,
     DIR *d = opendir(full);
     if (!d) {
         if (err) *err = OCStringCreateWithFormat(
-                     STR("opendir \"%s\": %s"), NULL, full, strerror(errno));
+                     STR("opendir \"%s\": %s"), full, strerror(errno));
         return false;
     }
     struct dirent *ent;
@@ -308,7 +308,7 @@ bool OCRemoveItem(const char *path,
         }
         if (err) {
             *err = OCStringCreateWithFormat(
-                STR("stat(\"%s\") failed: %s"), NULL,
+                STR("stat(\"%s\") failed: %s"),
                 path, strerror(errno));
         }
         return false;
@@ -322,7 +322,7 @@ bool OCRemoveItem(const char *path,
     if (rc != 0) {
         if (err) {
             *err = OCStringCreateWithFormat(
-                STR("remove \"%s\" failed: %s"), NULL,
+                STR("remove \"%s\" failed: %s"),
                 path, strerror(errno));
         }
         return false;
@@ -335,7 +335,7 @@ bool OCRenameItem(const char *oldPath,
     if (rename(oldPath, newPath) != 0) {
         if (err) {
             *err = OCStringCreateWithFormat(
-                STR("rename \"%s\" → \"%s\" failed: %s"), NULL,
+                STR("rename \"%s\" → \"%s\" failed: %s"),
                 oldPath, newPath, strerror(errno));
         }
         return false;
@@ -364,7 +364,7 @@ bool OCStringWriteToFile(OCStringRef str, const char *path, OCStringRef *err) {
     if (!fp) {
         if (err) {
             *err = OCStringCreateWithFormat(
-                STR("Unable to open \"%s\" for writing: %s"), NULL,
+                STR("Unable to open \"%s\" for writing: %s"),
                 path, strerror(errno));
         }
         return false;
@@ -379,7 +379,7 @@ bool OCStringWriteToFile(OCStringRef str, const char *path, OCStringRef *err) {
     if (fwrite(utf8, 1, len, fp) != len) {
         if (err) {
             *err = OCStringCreateWithFormat(
-                STR("Write error writing to \"%s\": %s"), NULL,
+                STR("Write error writing to \"%s\": %s"),
                 path, strerror(errno));
         }
         fclose(fp);
@@ -398,7 +398,7 @@ OCDataRef OCDataCreateWithContentsOfFile(const char *path,
     if (!fp) {
         if (errorString) {
             *errorString = OCStringCreateWithFormat(
-                STR("Unable to open file \"%s\": %s"), NULL,
+                STR("Unable to open file \"%s\": %s"),
                 path, strerror(errno));
         }
         return NULL;
@@ -407,7 +407,7 @@ OCDataRef OCDataCreateWithContentsOfFile(const char *path,
     if (fseek(fp, 0, SEEK_END) != 0) {
         if (errorString) {
             *errorString = OCStringCreateWithFormat(
-                STR("Failed to seek end of \"%s\": %s"), NULL,
+                STR("Failed to seek end of \"%s\": %s"),
                 path, strerror(errno));
         }
         fclose(fp);
@@ -417,7 +417,7 @@ OCDataRef OCDataCreateWithContentsOfFile(const char *path,
     if (fileLen < 0) {
         if (errorString) {
             *errorString = OCStringCreateWithFormat(
-                STR("Failed to tell position in \"%s\": %s"), NULL,
+                STR("Failed to tell position in \"%s\": %s"),
                 path, strerror(errno));
         }
         fclose(fp);
@@ -437,7 +437,7 @@ OCDataRef OCDataCreateWithContentsOfFile(const char *path,
     if (got != (size_t)fileLen) {
         if (errorString) {
             *errorString = OCStringCreateWithFormat(
-                STR("Error reading \"%s\": only read %zu of %ld bytes"), NULL,
+                STR("Error reading \"%s\": only read %zu of %ld bytes"),
                 path, got, fileLen);
         }
         free(buffer);
@@ -569,7 +569,7 @@ bool OCTypeWriteJSONToFile(OCTypeRef obj,
 static char *_readFile(const char *path, OCStringRef *err) {
     FILE *f = fopen(path, "rb");
     if (!f) {
-        if (err) *err = OCStringCreateWithFormat(STR("Unable to open \"%s\": %s"), NULL,
+        if (err) *err = OCStringCreateWithFormat(STR("Unable to open \"%s\": %s"),
                                                  path, strerror(errno));
         return NULL;
     }

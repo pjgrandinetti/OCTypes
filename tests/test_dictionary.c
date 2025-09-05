@@ -486,7 +486,7 @@ bool dictionaryTest5(void) {
         OCRelease(num);
     }
     for (int i = 0; i < 5; i++) {
-        OCStringRef str_val = OCStringCreateWithFormat(STR("Value_%d"), NULL, i);
+        OCStringRef str_val = OCStringCreateWithFormat(STR("Value_%d"), i);
         OCArrayAppendValue(array2, str_val);
         OCRelease(str_val);
     }
@@ -514,7 +514,7 @@ bool dictionaryTest5(void) {
     const int perf_dict_size = 50;
     OCMutableDictionaryRef large_dict = OCDictionaryCreateMutable(perf_dict_size);
     for (int i = 0; i < perf_dict_size; i++) {
-        OCStringRef large_key = OCStringCreateWithFormat(STR("large_key_%d"), NULL, i);
+        OCStringRef large_key = OCStringCreateWithFormat(STR("large_key_%d"), i);
         OCNumberRef large_val = OCNumberCreateWithSInt32(i);
         OCDictionaryAddValue(large_dict, large_key, large_val);
         OCRelease(large_key);

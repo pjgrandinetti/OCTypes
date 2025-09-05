@@ -1215,13 +1215,13 @@ static int count_format_args(const char *f) {
     }
     return count;
 }
-OCStringRef OCStringCreateWithFormat(OCStringRef format, OCStringRef *outError, ...) {
+OCStringRef OCStringCreateWithFormat(OCStringRef format, ...) {
     if (!format || !format->string) return NULL;
     OCMutableStringRef result = OCStringCreateMutable(0);
     int max_args = count_format_args(format->string);
     va_list args;
-    va_start(args, outError);
-    OCStringAppendFormatWithArgumentsSafe(result, format, args, max_args, outError);
+    va_start(args, format);
+    OCStringAppendFormatWithArgumentsSafe(result, format, args, max_args, NULL);
     va_end(args);
     return (OCStringRef)result;
 }

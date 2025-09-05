@@ -235,31 +235,31 @@ static OCStringRef impl_OCNumberCopyFormattingDesc(OCTypeRef theType) {
     OCNumberRef n = (OCNumberRef)theType;
     switch (n->type) {
         case kOCNumberUInt8Type:
-            return OCStringCreateWithFormat(STR("%u"), NULL, n->value.uint8Value);
+            return OCStringCreateWithFormat(STR("%u"), n->value.uint8Value);
         case kOCNumberSInt8Type:
-            return OCStringCreateWithFormat(STR("%d"), NULL, n->value.int8Value);
+            return OCStringCreateWithFormat(STR("%d"), n->value.int8Value);
         case kOCNumberUInt16Type:
-            return OCStringCreateWithFormat(STR("%u"), NULL, n->value.uint16Value);
+            return OCStringCreateWithFormat(STR("%u"), n->value.uint16Value);
         case kOCNumberSInt16Type:
-            return OCStringCreateWithFormat(STR("%d"), NULL, n->value.int16Value);
+            return OCStringCreateWithFormat(STR("%d"), n->value.int16Value);
         case kOCNumberUInt32Type:
-            return OCStringCreateWithFormat(STR("%u"), NULL, n->value.uint32Value);
+            return OCStringCreateWithFormat(STR("%u"), n->value.uint32Value);
         case kOCNumberSInt32Type:
-            return OCStringCreateWithFormat(STR("%d"), NULL, n->value.int32Value);
+            return OCStringCreateWithFormat(STR("%d"), n->value.int32Value);
         case kOCNumberUInt64Type:
-            return OCStringCreateWithFormat(STR("%" PRIu64), NULL, n->value.uint64Value);
+            return OCStringCreateWithFormat(STR("%" PRIu64), n->value.uint64Value);
         case kOCNumberSInt64Type:
-            return OCStringCreateWithFormat(STR("%" PRId64), NULL, n->value.int64Value);
+            return OCStringCreateWithFormat(STR("%" PRId64), n->value.int64Value);
         case kOCNumberFloat32Type:
-            return OCStringCreateWithFormat(STR("%f"), NULL, n->value.floatValue);
+            return OCStringCreateWithFormat(STR("%f"), n->value.floatValue);
         case kOCNumberFloat64Type:
-            return OCStringCreateWithFormat(STR("%lf"), NULL, n->value.doubleValue);
+            return OCStringCreateWithFormat(STR("%lf"), n->value.doubleValue);
         case kOCNumberComplex64Type:
-            return OCStringCreateWithFormat(STR("%f+I•%f"), NULL,
+            return OCStringCreateWithFormat(STR("%f+I•%f"),
                                             crealf(n->value.floatComplexValue),
                                             cimagf(n->value.floatComplexValue));
         case kOCNumberComplex128Type:
-            return OCStringCreateWithFormat(STR("%lf+I•%lf"), NULL,
+            return OCStringCreateWithFormat(STR("%lf+I•%lf"),
                                             creal(n->value.doubleComplexValue),
                                             cimag(n->value.doubleComplexValue));
     }
@@ -464,38 +464,38 @@ OCStringRef OCNumberCreateStringValue(OCNumberRef n) {
     if (!n) return NULL;
     switch (n->type) {
         case kOCNumberUInt8Type:
-            return OCStringCreateWithFormat(STR("%hhu"), NULL, n->value.uint8Value);
+            return OCStringCreateWithFormat(STR("%hhu"), n->value.uint8Value);
         case kOCNumberSInt8Type:
-            return OCStringCreateWithFormat(STR("%hhi"), NULL, n->value.int8Value);
+            return OCStringCreateWithFormat(STR("%hhi"), n->value.int8Value);
         case kOCNumberUInt16Type:
-            return OCStringCreateWithFormat(STR("%hu"), NULL, n->value.uint16Value);
+            return OCStringCreateWithFormat(STR("%hu"), n->value.uint16Value);
         case kOCNumberSInt16Type:
-            return OCStringCreateWithFormat(STR("%hi"), NULL, n->value.int16Value);
+            return OCStringCreateWithFormat(STR("%hi"), n->value.int16Value);
         case kOCNumberUInt32Type:
-            return OCStringCreateWithFormat(STR("%u"), NULL, n->value.uint32Value);
+            return OCStringCreateWithFormat(STR("%u"), n->value.uint32Value);
         case kOCNumberSInt32Type:
-            return OCStringCreateWithFormat(STR("%d"), NULL, n->value.int32Value);
+            return OCStringCreateWithFormat(STR("%d"), n->value.int32Value);
         case kOCNumberUInt64Type:
-            return OCStringCreateWithFormat(STR("%" PRIu64), NULL, (uint64_t)n->value.uint64Value);
+            return OCStringCreateWithFormat(STR("%" PRIu64), (uint64_t)n->value.uint64Value);
         case kOCNumberSInt64Type:
-            return OCStringCreateWithFormat(STR("%" PRId64), NULL, (int64_t)n->value.int64Value);
+            return OCStringCreateWithFormat(STR("%" PRId64), (int64_t)n->value.int64Value);
         case kOCNumberFloat32Type:
-            return OCStringCreateWithFormat(STR("%.9g"), NULL, n->value.floatValue);  // Float precision
+            return OCStringCreateWithFormat(STR("%.9g"), n->value.floatValue);  // Float precision
         case kOCNumberFloat64Type:
-            return OCStringCreateWithFormat(STR("%.17g"), NULL, n->value.doubleValue);  // Double precision
+            return OCStringCreateWithFormat(STR("%.17g"), n->value.doubleValue);  // Double precision
         case kOCNumberComplex64Type: {
             float r = crealf(n->value.floatComplexValue);
             float i = cimagf(n->value.floatComplexValue);
             if (r == 0.0f && i == 0.0f)
                 return OCStringCreateWithCString("0");
-            return OCStringCreateWithFormat(STR("%.9g+I*%.9g"), NULL, r, i);
+            return OCStringCreateWithFormat(STR("%.9g+I*%.9g"), r, i);
         }
         case kOCNumberComplex128Type: {
             double r = creal(n->value.doubleComplexValue);
             double i = cimag(n->value.doubleComplexValue);
             if (r == 0.0 && i == 0.0)
                 return OCStringCreateWithCString("0");
-            return OCStringCreateWithFormat(STR("%.17g+I*%.17g"), NULL, r, i);
+            return OCStringCreateWithFormat(STR("%.17g+I*%.17g"), r, i);
         }
     }
     return NULL;

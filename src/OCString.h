@@ -778,7 +778,7 @@ bool OCStringEqual(OCStringRef theString1, OCStringRef theString2);
  * // s contains "Hello 123"
  * @endcode
  */
-OCStringRef OCStringCreateWithFormat(OCStringRef format, OCStringRef *outError, ...);
+OCStringRef OCStringCreateWithFormat(OCStringRef format, ...);
 /**
  * @brief Appends formatted text to a mutable OCString.
  * @param theString Mutable OCString.
