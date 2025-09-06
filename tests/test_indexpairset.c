@@ -208,3 +208,96 @@ bool OCIndexPairSetJSONEncoding_test(void) {
         fprintf(stderr, " passed\n");
     return success;
 }
+
+bool OCIndexPairSetDictionary_test(void) {
+    fprintf(stderr, "%s begin...", __func__);
+    bool success = true;
+
+    // Create a test set with some data
+    OCIndexPair pairs[3] = {{5, 50}, {10, 100}, {15, 150}};
+    OCIndexPairSetRef original = OCIndexPairSetCreateWithIndexPairArray(pairs, 3);
+    success &= (original != NULL);
+    success &= (OCIndexPairSetGetCount(original) == 3);
+
+    if (original) {
+        // Test CopyAsDictionary with default encoding
+        OCDictionaryRef dict = OCIndexPairSetCopyAsDictionary(original);
+        success &= (dict != NULL);
+
+        if (dict) {
+            // Verify the dictionary contains the expected data
+            OCDataRef indexPairs = OCDictionaryGetValue(dict, STR("indexPairs"));
+            success &= (indexPairs != NULL);
+
+            if (indexPairs) {
+                // Verify the data content
+                success &= (OCDataGetLength(indexPairs) == 3 * sizeof(OCIndexPair));
+                const OCIndexPair *storedPairs = (const OCIndexPair *)OCDataGetBytesPtr(indexPairs);
+                success &= (storedPairs[0].index == 5 && storedPairs[0].value == 50);
+                success &= (storedPairs[1].index == 10 && storedPairs[1].value == 100);
+                success &= (storedPairs[2].index == 15 && storedPairs[2].value == 150);
+            }
+
+            // Test CreateWithDictionary roundtrip
+            OCIndexPairSetRef restored = OCIndexPairSetCreateWithDictionary(dict);
+            success &= (restored != NULL);
+            success &= (OCIndexPairSetGetCount(restored) == 3);
+            success &= (OCIndexPairSetValueForIndex(restored, 5) == 50);
+            success &= (OCIndexPairSetValueForIndex(restored, 10) == 100);
+            success &= (OCIndexPairSetValueForIndex(restored, 15) == 150);
+            success &= (OCIndexPairSetValueForIndex(restored, 99) == kOCNotFound);
+
+            if (restored) OCRelease(restored);
+            OCRelease(dict);
+        }
+
+        // Test with base64 encoding
+        OCIndexPairSetSetEncoding((OCMutableIndexPairSetRef)original, OCJSONEncodingBase64);
+        OCDictionaryRef dictBase64 = OCIndexPairSetCopyAsDictionary(original);
+        success &= (dictBase64 != NULL);
+
+        if (dictBase64) {
+            // Verify encoding is stored
+            OCStringRef encoding = OCDictionaryGetValue(dictBase64, STR("encoding"));
+            success &= (encoding != NULL);
+            if (encoding) {
+                const char *encodingStr = OCStringGetCString(encoding);
+                success &= (encodingStr && strcmp(encodingStr, "base64") == 0);
+            }
+
+            // Test CreateWithDictionary with base64
+            OCIndexPairSetRef restoredBase64 = OCIndexPairSetCreateWithDictionary(dictBase64);
+            success &= (restoredBase64 != NULL);
+            success &= (OCIndexPairSetGetCount(restoredBase64) == 3);
+            success &= (OCIndexPairSetCopyEncoding(restoredBase64) == OCJSONEncodingBase64);
+            success &= (OCIndexPairSetValueForIndex(restoredBase64, 5) == 50);
+            success &= (OCIndexPairSetValueForIndex(restoredBase64, 10) == 100);
+            success &= (OCIndexPairSetValueForIndex(restoredBase64, 15) == 150);
+
+            if (restoredBase64) OCRelease(restoredBase64);
+            OCRelease(dictBase64);
+        }
+
+        OCRelease(original);
+    }
+
+    // Test with NULL inputs
+    OCDictionaryRef nullDict = OCIndexPairSetCopyAsDictionary(NULL);
+    success &= (nullDict == NULL);
+
+    OCIndexPairSetRef nullSet = OCIndexPairSetCreateWithDictionary(NULL);
+    success &= (nullSet == NULL);
+
+    // Test with empty dictionary
+    OCMutableDictionaryRef emptyDict = OCDictionaryCreateMutable(0);
+    if (emptyDict) {
+        OCIndexPairSetRef emptyRestore = OCIndexPairSetCreateWithDictionary(emptyDict);
+        success &= (emptyRestore != NULL);
+        success &= (OCIndexPairSetGetCount(emptyRestore) == 0);
+        if (emptyRestore) OCRelease(emptyRestore);
+        OCRelease(emptyDict);
+    }
+
+    fprintf(stderr, " passed\n");
+    return success;
+}

@@ -494,6 +494,61 @@ OCIndexSetRef OCIndexPairSetCreateIndexSetOfIndexes(OCIndexPairSetRef set) {
     // 4) return as immutable OCIndexSetRef
     return (OCIndexSetRef)indexes;
 }
+OCDataRef OCIndexPairSetCreateData(OCIndexPairSetRef set) {
+    return set && set->indexPairs ? OCDataCreateCopy(set->indexPairs) : NULL;
+}
+OCIndexPairSetRef OCIndexPairSetCreateWithData(OCDataRef data) {
+    if (!data) return NULL;
+    OCMutableIndexPairSetRef s = OCIndexPairSetAllocate();
+    if (!s) return NULL;
+    s->indexPairs = OCDataCreateCopy(data);
+    if (!s->indexPairs) {
+        OCRelease(s);
+        return NULL;
+    }
+    return s;
+}
+OCDictionaryRef OCIndexPairSetCopyAsDictionary(OCIndexPairSetRef set) {
+    if (!set) return NULL;
+    OCMutableDictionaryRef dict = OCDictionaryCreateMutable(0);
+    if (!dict) return NULL;
+
+    if (set->indexPairs) {
+        OCDictionarySetValue(dict, STR("indexPairs"), set->indexPairs);
+    }
+
+    // Store encoding preference if it's not the default
+    if (set->encoding != OCJSONEncodingNone) {
+        if (set->encoding == OCJSONEncodingBase64) {
+            OCStringRef encodingStr = OCStringCreateWithCString("base64");
+            if (encodingStr) {
+                OCDictionarySetValue(dict, STR("encoding"), encodingStr);
+                OCRelease(encodingStr);
+            }
+        }
+    }
+
+    return dict;
+}
+OCIndexPairSetRef OCIndexPairSetCreateWithDictionary(OCDictionaryRef dictionary) {
+    if (!dictionary) return NULL;
+
+    OCDataRef data = OCDictionaryGetValue(dictionary, STR("indexPairs"));
+    OCIndexPairSetRef result = data ? OCIndexPairSetCreateWithData(data) : OCIndexPairSetCreate();
+
+    if (result) {
+        // Restore encoding preference if present
+        OCStringRef encodingStr = OCDictionaryGetValue(dictionary, STR("encoding"));
+        if (encodingStr) {
+            const char *encoding = OCStringGetCString(encodingStr);
+            if (encoding && strcmp(encoding, "base64") == 0) {
+                OCIndexPairSetSetEncoding((OCMutableIndexPairSetRef)result, OCJSONEncodingBase64);
+            }
+        }
+    }
+
+    return result;
+}
 OCJSONEncoding OCIndexPairSetCopyEncoding(OCIndexPairSetRef set) {
     if (!set) return OCJSONEncodingNone;
     return set->encoding;

@@ -253,7 +253,7 @@ OCIndexSetRef OCIndexSetCreateFromDictionary(OCDictionaryRef dict) {
     return data ? OCIndexSetCreateWithData(data) : OCIndexSetCreate();
 }
 OCDataRef OCIndexSetCreateData(OCIndexSetRef set) {
-    return set ? OCRetain(set->indexes) : NULL;
+    return set ? OCDataCreateCopy(set->indexes) : NULL;
 }
 OCIndexSetRef OCIndexSetCreateWithData(OCDataRef data) {
     if (!data) return NULL;

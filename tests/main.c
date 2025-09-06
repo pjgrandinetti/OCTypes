@@ -99,6 +99,7 @@ int main(int argc, const char* argv[]) {
     if (!OCIndexPairSetShow_test()) failures++;
     if (!OCIndexPairSetDeepCopy_test()) failures++;
     if (!OCIndexPairSetJSONEncoding_test()) failures++;
+    if (!OCIndexPairSetDictionary_test()) failures++;
     if (!test_path_join_and_split()) failures++;
     if (!test_file_and_dir_checks()) failures++;
     if (!test_create_and_list_directory()) failures++;

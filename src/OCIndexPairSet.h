@@ -235,6 +235,22 @@ OCDataRef OCIndexPairSetCreateData(OCIndexPairSetRef set);
  */
 OCIndexPairSetRef OCIndexPairSetCreateWithData(OCDataRef data);
 /**
+ * @brief Serializes the index pair set to an OCDictionary for plist compatibility.
+ *
+ * @param set The OCIndexPairSetRef instance.
+ * @return A new OCDictionaryRef representing the index pair set, or NULL on error.
+ * @ingroup OCIndexPairSet
+ */
+OCDictionaryRef OCIndexPairSetCopyAsDictionary(OCIndexPairSetRef set);
+/**
+ * @brief Reconstructs an OCIndexPairSet from a plist-compatible OCDictionary.
+ *
+ * @param dictionary An OCDictionaryRef previously returned by OCIndexPairSetCopyAsDictionary().
+ * @return A new OCIndexPairSetRef populated from dictionary, or NULL on error.
+ * @ingroup OCIndexPairSet
+ */
+OCIndexPairSetRef OCIndexPairSetCreateWithDictionary(OCDictionaryRef dictionary);
+/**
  * @brief Creates a JSON representation of an OCIndexPairSet.
  *
  * For untyped serialization (typed=false), creates a JSON array where each pair
