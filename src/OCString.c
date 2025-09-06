@@ -9,8 +9,8 @@
 #include <stdint.h>  // uint32_t
 #include <stdio.h>
 #ifdef _WIN32
-#include <signal.h>  // For Windows signal handling
 #include <setjmp.h>  // For setjmp/longjmp
+#include <signal.h>  // For Windows signal handling
 #endif
 #include <stdlib.h>        // malloc, free, realloc
 #include <string.h>        // strlen, strcmp, memcpy, memmove
@@ -21,18 +21,18 @@
 #include "OCDictionary.h"  // For OCMutableDictionaryRef, OCDictionaryCreateMutable, etc.
 static OCMutableDictionaryRef impl_constantStringTable = NULL;
 // Forward declaration for OCStringFindWithOptions
-bool OCStringFindWithOptions(OCStringRef string, OCStringRef stringToFind, OCRange rangeToSearch, OCOptionFlags compareOptions, OCRange *result);
+bool OCStringFindWithOptions(OCStringRef string, OCStringRef stringToFind, OCRange rangeToSearch, OCOptionFlags compareOptions, OCRange* result);
 // Forward declaration for getConstantStringTable
 static OCMutableDictionaryRef getConstantStringTable(void);
 // Callbacks for OCArray containing OCRange structs
-static void impl_OCRangeReleaseCallBack(const void *value) {
+static void impl_OCRangeReleaseCallBack(const void* value) {
     if (value) {
-        free((void *)value);
+        free((void*)value);
     }
 }
 // NOP retain callback for OCRange objects, as they are simple malloc'd structs
 // and OCArrayAppendValue might attempt to call a retain callback.
-static const void *impl_OCRangeNopRetainCallBack(const void *value) {
+static const void* impl_OCRangeNopRetainCallBack(const void* value) {
     return value;  // OCRanges are not further reference counted themselves by this callback
 }
 static const OCArrayCallBacks kOCRangeArrayCallBacks = {
@@ -43,8 +43,8 @@ static const OCArrayCallBacks kOCRangeArrayCallBacks = {
     NULL                            // equal
 };
 // ——— UTF-8 iterator: decode next code-point and advance pointer ———
-static uint32_t utf8_next(const char **p) {
-    const unsigned char *s = (const unsigned char *)*p;
+static uint32_t utf8_next(const char** p) {
+    const unsigned char* s = (const unsigned char*)*p;
     uint32_t ch;
     if (s[0] < 0x80) {
         // 1-byte ASCII
@@ -81,8 +81,8 @@ static uint32_t utf8_next(const char **p) {
     return ch;
 }
 // ——— Map a code-point index to its byte offset in the UTF-8 string ———
-static ptrdiff_t oc_utf8_offset_for_index(const char *s, size_t idx) {
-    const char *p = s;
+static ptrdiff_t oc_utf8_offset_for_index(const char* s, size_t idx) {
+    const char* p = s;
     size_t count = 0;
     while (*p) {
         if (count == idx) {
@@ -95,8 +95,8 @@ static ptrdiff_t oc_utf8_offset_for_index(const char *s, size_t idx) {
     return (idx == count) ? (p - s) : -1;
 }
 // ——— Count the number of Unicode code-points in a UTF-8 string ———
-static size_t oc_utf8_strlen(const char *s) {
-    const char *p = s;
+static size_t oc_utf8_strlen(const char* s) {
+    const char* p = s;
     size_t len = 0;
     uint32_t cp = 0;
     bool in_emoji_sequence = false;
@@ -146,13 +146,13 @@ static size_t oc_utf8_strlen(const char *s) {
 // ——— Helper: replace all occurrences of a C‐string ———
 // Returns a newly malloc’d buffer, and sets *count to the number of replacements.
 // The returned buffer always has enough space for the final string + '\0'.
-static char *str_replace(const char *orig,
-                         const char *rep,
-                         const char *with,
-                         int64_t *count) {
-    const char *ins = orig;
-    char *result;
-    char *tmp;
+static char* str_replace(const char* orig,
+                         const char* rep,
+                         const char* with,
+                         int64_t* count) {
+    const char* ins = orig;
+    char* result;
+    char* tmp;
     size_t len_rep = strlen(rep);
     size_t len_with = strlen(with);
     size_t orig_len = strlen(orig);
@@ -185,7 +185,7 @@ static char *str_replace(const char *orig,
     tmp = result;
     ins = orig;
     while (n--) {
-        const char *pos = strstr(ins, rep);
+        const char* pos = strstr(ins, rep);
         size_t front = pos - ins;
         // copy up to the match
         memcpy(tmp, ins, front);
@@ -205,11 +205,11 @@ static OCTypeID kOCStringID = kOCNotATypeID;
 struct impl_OCString {
     OCBase base;
     // OCString Type attributes  - order of declaration is essential
-    char *string;
+    char* string;
     uint64_t length;
     uint64_t capacity;
 };
-static bool impl_OCStringEqual(const void *theType1, const void *theType2) {
+static bool impl_OCStringEqual(const void* theType1, const void* theType2) {
     OCStringRef theString1 = (OCStringRef)theType1;
     OCStringRef theString2 = (OCStringRef)theType2;
     // 1. If they are the same instance, they are equal.
@@ -231,41 +231,40 @@ static bool impl_OCStringEqual(const void *theType1, const void *theType2) {
     if (strcmp(theString1->string, theString2->string) != 0) return false;
     return true;
 }
-static void impl_OCStringFinalize(const void *theType) {
+static void impl_OCStringFinalize(const void* theType) {
     if (NULL == theType) return;
     OCStringRef theString = (OCStringRef)theType;
     free(theString->string);
 }
 static OCStringRef impl_OCStringCopyFormattingDesc(OCTypeRef cf) {
     if (!cf) return NULL;
-    const OCBase *base = (const OCBase *)cf;
+    const OCBase* base = (const OCBase*)cf;
     if (base->typeID != OCStringGetTypeID()) {
         fprintf(stderr, "[OCStringCopyFormattingDesc] Warning: expected OCString typeID, got %u\n", base->typeID);
         return NULL;
     }
     return OCStringCreateCopy((OCStringRef)cf);
 }
-static cJSON *
-impl_OCStringCopyJSON(const void *obj, bool typed, OCStringRef *outError) {
+static cJSON*
+impl_OCStringCopyJSON(const void* obj, bool typed, OCStringRef* outError) {
     return OCStringCopyAsJSON((OCStringRef)obj, typed, outError);
 }
-
-static void *impl_OCStringDeepCopy(const void *obj) {
+static void* impl_OCStringDeepCopy(const void* obj) {
     OCStringRef src = (OCStringRef)obj;
     if (!src) return NULL;
-    return (void *)OCStringCreateCopy(src);  // Safe cast, as OCStringCreateCopy allocates
+    return (void*)OCStringCreateCopy(src);  // Safe cast, as OCStringCreateCopy allocates
 }
-static void *impl_OCStringDeepCopyMutable(const void *obj) {
+static void* impl_OCStringDeepCopyMutable(const void* obj) {
     OCStringRef src = (OCStringRef)obj;
     if (!src) return NULL;
     return OCStringCreateMutableCopy(src);  // Returns OCMutableStringRef
 }
 OCTypeID OCStringGetTypeID(void) {
-    if (kOCStringID == kOCNotATypeID) kOCStringID = OCRegisterType("OCString", (OCTypeRef (*)(cJSON *, OCStringRef *))OCStringCreateFromJSON);
+    if (kOCStringID == kOCNotATypeID) kOCStringID = OCRegisterType("OCString", (OCTypeRef (*)(cJSON*, OCStringRef*))OCStringCreateFromJSON);
     return kOCStringID;
 }
-static struct impl_OCString *OCStringAllocate() {
-    struct impl_OCString *obj = OCTypeAlloc(struct impl_OCString,
+static struct impl_OCString* OCStringAllocate() {
+    struct impl_OCString* obj = OCTypeAlloc(struct impl_OCString,
                                             OCStringGetTypeID(),
                                             impl_OCStringFinalize,
                                             impl_OCStringEqual,
@@ -278,46 +277,40 @@ static struct impl_OCString *OCStringAllocate() {
     obj->capacity = 0;
     return obj;
 }
-cJSON *OCStringCopyAsJSON(OCStringRef str, bool typed, OCStringRef *outError) {
+cJSON* OCStringCopyAsJSON(OCStringRef str, bool typed, OCStringRef* outError) {
+    (void)typed;  // Strings are native JSON types, no typed wrapping needed
     if (outError) *outError = NULL;
-
     if (!str) {
         if (outError) *outError = STR("OCString is NULL");
         return cJSON_CreateNull();
     }
-
-    const char *s = OCStringGetCString(str);
+    const char* s = OCStringGetCString(str);
     if (!s) {
         if (outError) *outError = STR("Failed to get C string from OCString");
         return cJSON_CreateNull();
     }
-
     // Strings are native JSON types, no wrapping needed even for typed serialization
-    cJSON *result = cJSON_CreateString(s);
+    cJSON* result = cJSON_CreateString(s);
     if (!result) {
         if (outError) *outError = STR("Failed to create JSON string");
         return cJSON_CreateNull();
     }
-
     return result;
 }
-OCStringRef OCStringCreateFromJSON(cJSON *json, OCStringRef *outError) {
+OCStringRef OCStringCreateFromJSON(cJSON* json, OCStringRef* outError) {
     if (!json) {
         if (outError) *outError = STR("JSON input is NULL");
         return NULL;
     }
-
     if (!cJSON_IsString(json)) {
         if (outError) *outError = STR("JSON input is not a string");
         return NULL;
     }
-
-    const char *s = json->valuestring;
+    const char* s = json->valuestring;
     if (!s) {
         if (outError) *outError = STR("JSON string value is NULL");
         return NULL;
     }
-
     OCStringRef result = OCStringCreateWithCString(s);
     if (!result && outError) {
         *outError = STR("Failed to create OCString");
@@ -347,7 +340,7 @@ static OCMutableDictionaryRef getConstantStringTable(void) {
     }
     return impl_constantStringTable;
 }
-OCStringRef impl_OCStringMakeConstantString(const char *cStr) {
+OCStringRef impl_OCStringMakeConstantString(const char* cStr) {
     // Create a temporary OCString to look up in the table
     OCStringRef tmp = OCStringCreateWithCString(cStr);
     OCMutableDictionaryRef table = getConstantStringTable();
@@ -369,9 +362,9 @@ OCStringCreateWithExternalRepresentation(OCDataRef data) {
     if (!data || OCDataGetLength(data) == 0)
         return STR("");
     size_t len = OCDataGetLength(data);
-    const uint8_t *bytes = OCDataGetBytesPtr(data);
+    const uint8_t* bytes = OCDataGetBytesPtr(data);
     // make a nul-terminated buffer
-    char *buf = (char *)malloc(len + 1);
+    char* buf = (char*)malloc(len + 1);
     if (!buf) return STR("");
     memcpy(buf, bytes, len);
     buf[len] = '\0';
@@ -384,7 +377,7 @@ OCStringRef OCStringCreateCopy(OCStringRef theString) {
     return theString ? OCStringCreateWithCString(theString->string) : NULL;
 }
 OCMutableStringRef OCStringCreateMutable(uint64_t capacity) {
-    struct impl_OCString *s = OCStringAllocate();
+    struct impl_OCString* s = OCStringAllocate();
     if (!s) return NULL;
     s->capacity = capacity;
     s->length = 0;
@@ -399,7 +392,7 @@ OCMutableStringRef OCStringCreateMutable(uint64_t capacity) {
 }
 // ——— Create a mutable OCString from a C‐string ———
 OCMutableStringRef
-OCMutableStringCreateWithCString(const char *cString) {
+OCMutableStringCreateWithCString(const char* cString) {
     if (!cString) return NULL;
     // Allocate a new OCString instance (fills in the base type info)
     OCMutableStringRef s = OCStringAllocate();
@@ -420,13 +413,13 @@ OCMutableStringCreateWithCString(const char *cString) {
     return s;
 }
 // ——— Immutable wrapper onto the mutable creator ———
-OCStringRef OCStringCreateWithCString(const char *cString) {
+OCStringRef OCStringCreateWithCString(const char* cString) {
     OCStringRef theString = (OCStringRef)OCMutableStringCreateWithCString(cString);
     return theString;
 }
 OCMutableStringRef OCStringCreateMutableCopy(OCStringRef theString) {
     if (!theString) return NULL;
-    struct impl_OCString *s = OCStringAllocate();
+    struct impl_OCString* s = OCStringAllocate();
     if (!s) return NULL;
     // Preserve both byte‐capacity and code‐point length
     size_t byteLen = strlen(theString->string);
@@ -455,7 +448,7 @@ OCStringRef OCStringCreateWithSubstring(OCStringRef str, OCRange range) {
         }
     }
     size_t byteCount = off2 - off1;
-    char *buf = malloc(byteCount + 1);
+    char* buf = malloc(byteCount + 1);
     if (NULL == buf) {
         fprintf(stderr, "OCStringCreateWithSubstring: Memory allocation failed for substring buffer.\n");
         return NULL;
@@ -470,7 +463,7 @@ OCStringRef OCStringCreateWithSubstring(OCStringRef str, OCRange range) {
 #include <stdlib.h>  // realloc, free
 #include <string.h>  // strlen, strdup
 // ——— Inspectors ———
-const char *OCStringGetCString(OCStringRef s) {
+const char* OCStringGetCString(OCStringRef s) {
     return s ? s->string : NULL;
 }
 uint64_t OCStringGetLength(OCStringRef s) {
@@ -493,12 +486,12 @@ uint32_t OCStringGetCharacterAtIndex(OCStringRef s, uint64_t idx) {
     if (!s) return 0;
     ptrdiff_t off = oc_utf8_offset_for_index(s->string, idx);
     if (off < 0) return 0;
-    const char *p = s->string + off;
+    const char* p = s->string + off;
     uint32_t cp = utf8_next(&p);
     return cp;
 }
 // ——— Mutators ———
-void OCStringAppendCString(OCMutableStringRef s, const char *cString) {
+void OCStringAppendCString(OCMutableStringRef s, const char* cString) {
     if (!s || !cString || !s->string) return;  // Ensure s and s->string are valid
     size_t append_cString_byte_len = strlen(cString);
     if (append_cString_byte_len == 0) return;  // Nothing to append
@@ -518,7 +511,7 @@ void OCStringAppendCString(OCMutableStringRef s, const char *cString) {
             new_capacity *= 2;
         }
         // The while loop ensures new_capacity >= required_total_content_byte_len
-        char *new_s_string_buffer = realloc(s->string, new_capacity + 1);  // +1 for NUL
+        char* new_s_string_buffer = realloc(s->string, new_capacity + 1);  // +1 for NUL
         if (NULL == new_s_string_buffer) {
             fprintf(stderr, "OCStringAppendCString: Memory allocation failed for new string buffer.\n");
             return;
@@ -570,7 +563,7 @@ void OCStringReplace(OCMutableStringRef s, OCRange range, OCStringRef rep) {
     size_t newDataBytes = off1 + repBytes + tailBytes;
     size_t newAlloc = newDataBytes + 1;  // +1 for the terminator
     // 4) Allocate fresh buffer and do three bounded memcpy’s
-    char *newbuf = malloc(newAlloc);
+    char* newbuf = malloc(newAlloc);
     if (NULL == newbuf) {
         fprintf(stderr, "OCStringReplace: Memory allocation failed for new string buffer.\n");
         return;
@@ -600,7 +593,7 @@ void OCStringLowercase(OCMutableStringRef s) {
     // ASCII-only lowercase
     for (uint64_t i = 0; i < s->length; i++) {
         ptrdiff_t off = oc_utf8_offset_for_index(s->string, i);
-        unsigned char *c = (unsigned char *)(s->string + off);
+        unsigned char* c = (unsigned char*)(s->string + off);
         if (*c >= 'A' && *c <= 'Z') *c += 'a' - 'A';
     }
 }
@@ -608,7 +601,7 @@ void OCStringUppercase(OCMutableStringRef s) {
     if (!s) return;
     for (uint64_t i = 0; i < s->length; i++) {
         ptrdiff_t off = oc_utf8_offset_for_index(s->string, i);
-        unsigned char *c = (unsigned char *)(s->string + off);
+        unsigned char* c = (unsigned char*)(s->string + off);
         if (*c >= 'a' && *c <= 'z') *c -= 'a' - 'A';
     }
 }
@@ -643,7 +636,7 @@ void OCStringTrimWhitespace(OCMutableStringRef s) {
             // Invalid offset or past end of actual C-string, stop.
             break;
         }
-        const char *p_char_for_cp = s->string + byte_offset;
+        const char* p_char_for_cp = s->string + byte_offset;
         uint32_t cp = utf8_next(&p_char_for_cp);  // p_char_for_cp is advanced
         if (cp != ' ') break;                     // Found non-space
         start_cp_idx++;                           // Move to next code-point index
@@ -738,7 +731,7 @@ double complex OCStringGetDoubleComplexValue(OCStringRef string) {
 OCStringRef OCFloatCreateStringValue(float value) {
     // Determine needed buffer size
     int n = snprintf(NULL, 0, "%g", value);
-    char *buf = malloc(n + 1);
+    char* buf = malloc(n + 1);
     if (NULL == buf) {
         fprintf(stderr, "OCFloatCreateStringValue: Memory allocation failed for string buffer.\n");
         return NULL;
@@ -751,7 +744,7 @@ OCStringRef OCFloatCreateStringValue(float value) {
 // ——— Create an OCString representing a double value ———
 OCStringRef OCDoubleCreateStringValue(double value) {
     int n = snprintf(NULL, 0, "%g", value);
-    char *buf = malloc(n + 1);
+    char* buf = malloc(n + 1);
     if (NULL == buf) {
         fprintf(stderr, "OCDoubleCreateStringValue: Memory allocation failed for string buffer.\n");
         return NULL;
@@ -764,10 +757,10 @@ OCStringRef OCDoubleCreateStringValue(double value) {
 // ——— Create an OCString representing a float complex value using a format OCString ———
 // Format string must include two specifiers, e.g. "%g%+gi"
 OCStringRef OCFloatComplexCreateStringValue(float complex v, OCStringRef format) {
-    const char *fmt = format ? format->string : "%g%+gi";
+    const char* fmt = format ? format->string : "%g%+gi";
     double real = crealf(v), imag = cimagf(v);
     int n = snprintf(NULL, 0, fmt, real, imag);
-    char *buf = malloc(n + 1);
+    char* buf = malloc(n + 1);
     if (NULL == buf) {
         fprintf(stderr, "OCFloatComplexCreateStringValue: Memory allocation failed for string buffer.\n");
         return NULL;
@@ -779,10 +772,10 @@ OCStringRef OCFloatComplexCreateStringValue(float complex v, OCStringRef format)
 }
 // ——— Create an OCString representing a double complex value using a format OCString ———
 OCStringRef OCDoubleComplexCreateStringValue(double complex v, OCStringRef format) {
-    const char *fmt = format ? format->string : "%g%+gi";
+    const char* fmt = format ? format->string : "%g%+gi";
     double real = creal(v), imag = cimag(v);
     int n = snprintf(NULL, 0, fmt, real, imag);
-    char *buf = malloc(n + 1);
+    char* buf = malloc(n + 1);
     if (NULL == buf) {
         fprintf(stderr, "OCDoubleComplexCreateStringValue: Memory allocation failed for string buffer.\n");
         return NULL;
@@ -816,7 +809,7 @@ int64_t OCStringFindAndReplace2(OCMutableStringRef s,
                                 OCStringRef replaceStr) {
     if (!s || !findStr || !replaceStr) return 0;
     int64_t count = 0;
-    char *newBuf = str_replace(s->string,
+    char* newBuf = str_replace(s->string,
                                findStr->string,
                                replaceStr->string,
                                &count);
@@ -924,7 +917,7 @@ bool OCStringFindWithOptions(OCStringRef string,
                              OCStringRef stringToFind,
                              OCRange rangeToSearch,
                              OCOptionFlags compareOptions,
-                             OCRange *result) {
+                             OCRange* result) {
     if (!string || !stringToFind || !result) return false;
     uint64_t strLen = OCStringGetLength(string);
     uint64_t needleLen = OCStringGetLength(stringToFind);
@@ -966,8 +959,8 @@ OCStringCompare(OCStringRef theString1,
     if (theString1 == theString2) return kOCCompareEqualTo;
     if (theString1 == NULL) return kOCCompareLessThan;
     if (theString2 == NULL) return kOCCompareGreaterThan;
-    const char *s1 = theString1->string;
-    const char *s2 = theString2->string;
+    const char* s1 = theString1->string;
+    const char* s2 = theString2->string;
     int diff;
     if (compareOptions & kOCCompareCaseInsensitive) {
         // ASCII-only case-insensitive
@@ -981,8 +974,8 @@ OCStringCompare(OCStringRef theString1,
     return kOCCompareEqualTo;
 }
 // Returns a pointer just after the full specifier, writes up to maxlen bytes (including NUL) to out.
-static const char *parse_printf_spec(const char *p, char *out, size_t maxlen, char *lenmod, size_t lenmod_max) {
-    const char *start = p;
+static const char* parse_printf_spec(const char* p, char* out, size_t maxlen, char* lenmod, size_t lenmod_max) {
+    const char* start = p;
     *lenmod = 0;
     if (*p != '%') return NULL;
     p++;  // skip '%'
@@ -1023,7 +1016,6 @@ static const char *parse_printf_spec(const char *p, char *out, size_t maxlen, ch
 // Windows-specific: Signal handling for va_arg safety
 static jmp_buf va_arg_jmpbuf;
 static volatile int va_arg_segfault = 0;
-
 static void va_arg_signal_handler(int sig) {
     if (sig == SIGSEGV) {
         va_arg_segfault = 1;
@@ -1031,7 +1023,6 @@ static void va_arg_signal_handler(int sig) {
     }
 }
 #endif
-
 /**
  * @brief Appends formatted text to a mutable OCString.
  * @param result Mutable OCString.
@@ -1046,18 +1037,16 @@ static void OCStringAppendFormatWithArgumentsSafe(
     OCStringRef format,
     va_list args,
     int max_args,
-    OCStringRef *outError) {
+    OCStringRef* outError) {
     if (!result || !format || !format->string) return;
     int arg_index = 0;
-    const char *f = format->string;
+    const char* f = format->string;
     va_list arglist;
     va_copy(arglist, args);
-
-    #ifdef _WIN32
+#ifdef _WIN32
     // Set up signal handler for Windows va_arg protection
     void (*old_handler)(int) = signal(SIGSEGV, va_arg_signal_handler);
     va_arg_segfault = 0;
-
     if (setjmp(va_arg_jmpbuf) != 0) {
         // We caught a segfault from va_arg - insufficient arguments
         fprintf(stderr, "[OCString] WARNING: Caught segfault due to insufficient arguments\n");
@@ -1066,8 +1055,7 @@ static void OCStringAppendFormatWithArgumentsSafe(
         va_end(arglist);
         return;
     }
-    #endif
-
+#endif
     while (*f) {
         if (f[0] == '%' && f[1] == '@') {
             if (arg_index >= max_args) {
@@ -1110,7 +1098,7 @@ static void OCStringAppendFormatWithArgumentsSafe(
             f += 2;
         } else if (f[0] == '%') {
             char subfmt[32], lenmod[4];
-            const char *after = parse_printf_spec(f, subfmt, sizeof(subfmt), lenmod, sizeof(lenmod));
+            const char* after = parse_printf_spec(f, subfmt, sizeof(subfmt), lenmod, sizeof(lenmod));
             if (!after) {
                 OCStringAppendCString(result, "%");
                 f++;
@@ -1153,13 +1141,13 @@ static void OCStringAppendFormatWithArgumentsSafe(
             } else if (spec == 'f' || spec == 'e' || spec == 'E' || spec == 'g' || spec == 'G' || spec == 'a' || spec == 'A') {
                 snprintf(buf, sizeof(buf), subfmt, va_arg(arglist, double));
             } else if (spec == 's') {
-                const char *v = va_arg(arglist, const char *);
+                const char* v = va_arg(arglist, const char*);
                 snprintf(buf, sizeof(buf), subfmt, v ? v : "(null)");
             } else if (spec == 'c') {
                 int v = va_arg(arglist, int);
                 snprintf(buf, sizeof(buf), subfmt, v);
             } else if (spec == 'p') {
-                const void *v = va_arg(arglist, void *);
+                const void* v = va_arg(arglist, void*);
                 snprintf(buf, sizeof(buf), subfmt, v);
             } else {
                 snprintf(buf, sizeof(buf), "%s", subfmt);
@@ -1173,16 +1161,14 @@ static void OCStringAppendFormatWithArgumentsSafe(
             f++;
         }
     }
-
-    #ifdef _WIN32
+#ifdef _WIN32
     // Restore original signal handler
     signal(SIGSEGV, old_handler);
-    #endif
-
+#endif
     va_end(arglist);
 }
 // Helper to count how many format arguments are expected (including %@)
-static int count_format_args(const char *f) {
+static int count_format_args(const char* f) {
     int count = 0;
     while (*f) {
         if (f[0] == '%' && f[1] == '%') {
@@ -1250,7 +1236,7 @@ OCArrayRef OCStringCreateArrayWithFindResults(OCStringRef string,
     if (!result) return NULL;
     OCRange search = rangeToSearch, found;
     while (OCStringFindWithOptions(string, stringToFind, search, compareOptions, &found)) {
-        OCRange *r = malloc(sizeof(OCRange));
+        OCRange* r = malloc(sizeof(OCRange));
         if (NULL == r) {
             fprintf(stderr, "OCStringCreateArrayWithFindResults: Memory allocation failed for range.\n");
             OCRelease(result);
@@ -1297,7 +1283,7 @@ OCStringCreateArrayBySeparatingStrings(OCStringRef string,
     // Walk through each found separator, slicing out the preceding chunk
     uint64_t prevEnd = 0;
     for (uint64_t i = 0; i < sepCount; ++i) {
-        const OCRange *r = (const OCRange *)OCArrayGetValueAtIndex(findResults, i);
+        const OCRange* r = (const OCRange*)OCArrayGetValueAtIndex(findResults, i);
         // substring from prevEnd of length (r->location - prevEnd)
         OCRange slice = OCRangeMake(prevEnd, r->location - prevEnd);
         OCStringRef piece = OCStringCreateWithSubstring(string, slice);

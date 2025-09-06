@@ -10,7 +10,7 @@ YFLAGS    = -d
 
 # Flags
 INCLUDES  := -I . -I src
-WARNINGS  := -Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers
+WARNINGS  := -Wall -Wextra -Wno-missing-field-initializers
 OPT       := -O3
 CSTD      := -std=c99
 CFLAGS    := -fPIC $(CSTD) $(INCLUDES) $(WARNINGS) $(OPT) -g

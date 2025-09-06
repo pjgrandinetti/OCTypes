@@ -23,11 +23,11 @@ struct impl_OCIndexArray {
 };
 OCTypeID OCIndexArrayGetTypeID(void) {
     if (kOCIndexArrayID == kOCNotATypeID) {
-        kOCIndexArrayID = OCRegisterType("OCIndexArray", (OCTypeRef (*)(cJSON *, OCStringRef *))OCIndexArrayCreateFromJSON);
+        kOCIndexArrayID = OCRegisterType("OCIndexArray", (OCTypeRef (*)(cJSON*, OCStringRef*))OCIndexArrayCreateFromJSON);
     }
     return kOCIndexArrayID;
 }
-static bool impl_OCIndexArrayEqual(const void *a_, const void *b_) {
+static bool impl_OCIndexArrayEqual(const void* a_, const void* b_) {
     OCIndexArrayRef a = (OCIndexArrayRef)a_;
     OCIndexArrayRef b = (OCIndexArrayRef)b_;
     if (OCDataGetLength(a->indexes) != OCDataGetLength(b->indexes)) return false;
@@ -38,24 +38,25 @@ static bool impl_OCIndexArrayEqual(const void *a_, const void *b_) {
     }
     return true;
 }
-static void *impl_OCIndexArrayDeepCopy(const void *obj) {
+static void* impl_OCIndexArrayDeepCopy(const void* obj) {
     OCIndexArrayRef src = (OCIndexArrayRef)obj;
-    return src ? (void *)OCIndexArrayCreateCopy(src) : NULL;
+    return src ? (void*)OCIndexArrayCreateCopy(src) : NULL;
 }
-static void *impl_OCIndexArrayDeepCopyMutable(const void *obj) {
+static void* impl_OCIndexArrayDeepCopyMutable(const void* obj) {
     OCIndexArrayRef src = (OCIndexArrayRef)obj;
-    return src ? (void *)OCIndexArrayCreateMutableCopy(src) : NULL;
+    return src ? (void*)OCIndexArrayCreateMutableCopy(src) : NULL;
 }
-static void impl_OCIndexArrayFinalize(const void *obj) {
+static void impl_OCIndexArrayFinalize(const void* obj) {
     OCMutableIndexArrayRef array = (OCMutableIndexArrayRef)obj;
     if (array->indexes) OCRelease(array->indexes);
     array->indexes = NULL;
 }
 static OCStringRef impl_OCIndexArrayCopyFormattingDesc(OCTypeRef cf) {
+    (void)cf;  // Parameter unused - all index arrays have same description format
     return OCStringCreateWithCString("<OCIndexArray>");
 }
-static cJSON *
-impl_OCIndexArrayCopyJSON(const void *obj, bool typed, OCStringRef *outError) {
+static cJSON*
+impl_OCIndexArrayCopyJSON(const void* obj, bool typed, OCStringRef* outError) {
     return OCIndexArrayCopyAsJSON((OCIndexArrayRef)obj, typed, outError);
 }
 static OCMutableIndexArrayRef OCIndexArrayAllocate(void) {
@@ -69,11 +70,11 @@ static OCMutableIndexArrayRef OCIndexArrayAllocate(void) {
         impl_OCIndexArrayDeepCopy,
         impl_OCIndexArrayDeepCopyMutable);
 }
-OCIndexArrayRef OCIndexArrayCreate(OCIndex *values, OCIndex count) {
+OCIndexArrayRef OCIndexArrayCreate(OCIndex* values, OCIndex count) {
     if (count > 0 && values == NULL) return NULL;
     OCMutableIndexArrayRef array = OCIndexArrayAllocate();
     if (!array) return NULL;
-    array->indexes = (OCMutableDataRef)OCDataCreate((const uint8_t *)values, count * sizeof(OCIndex));
+    array->indexes = (OCMutableDataRef)OCDataCreate((const uint8_t*)values, count * sizeof(OCIndex));
     if (!array->indexes) {
         OCRelease(array);
         return NULL;
@@ -127,21 +128,21 @@ OCMutableIndexArrayRef OCIndexArrayCreateMutableCopy(OCIndexArrayRef src) {
 OCIndex OCIndexArrayGetCount(OCIndexArrayRef array) {
     return array && array->indexes ? OCDataGetLength(array->indexes) / sizeof(OCIndex) : 0;
 }
-OCIndex *OCIndexArrayGetMutableBytes(OCIndexArrayRef array) {
-    return array && array->indexes ? (OCIndex *)OCDataGetMutableBytes(array->indexes) : NULL;
+OCIndex* OCIndexArrayGetMutableBytes(OCIndexArrayRef array) {
+    return array && array->indexes ? (OCIndex*)OCDataGetMutableBytes(array->indexes) : NULL;
 }
 OCIndex OCIndexArrayGetValueAtIndex(OCIndexArrayRef array, OCIndex index) {
     if (!array || !array->indexes) return kOCNotFound;
     OCIndex count = OCIndexArrayGetCount(array);
     if (index >= count) return kOCNotFound;
-    OCIndex *ptr = (OCIndex *)OCDataGetBytesPtr(array->indexes);
+    OCIndex* ptr = (OCIndex*)OCDataGetBytesPtr(array->indexes);
     return ptr ? ptr[index] : kOCNotFound;
 }
 bool OCIndexArraySetValueAtIndex(OCMutableIndexArrayRef array, OCIndex index, OCIndex value) {
     if (!array || !array->indexes) return false;
     OCIndex count = OCIndexArrayGetCount(array);
     if (index >= count) return false;
-    OCIndex *ptr = (OCIndex *)OCDataGetMutableBytes(array->indexes);
+    OCIndex* ptr = (OCIndex*)OCDataGetMutableBytes(array->indexes);
     if (!ptr) return false;
     ptr[index] = value;
     return true;
@@ -150,7 +151,7 @@ bool OCIndexArrayRemoveValueAtIndex(OCMutableIndexArrayRef array, OCIndex index)
     if (!array || !array->indexes) return false;
     OCIndex count = OCIndexArrayGetCount(array);
     if (index >= count) return false;
-    OCIndex *old = (OCIndex *)OCDataGetBytesPtr(array->indexes);
+    OCIndex* old = (OCIndex*)OCDataGetBytesPtr(array->indexes);
     if (!old) return false;
     // Allocate a new buffer of capacity (count-1)*sizeof(OCIndex)
     OCMutableDataRef data = OCDataCreateMutable((count - 1) * sizeof(OCIndex));
@@ -160,7 +161,7 @@ bool OCIndexArrayRemoveValueAtIndex(OCMutableIndexArrayRef array, OCIndex index)
         OCRelease(data);
         return false;
     }
-    OCIndex *copy = (OCIndex *)OCDataGetMutableBytes(data);
+    OCIndex* copy = (OCIndex*)OCDataGetMutableBytes(data);
     if (!copy) {
         OCRelease(data);
         return false;
@@ -180,7 +181,7 @@ void OCIndexArrayRemoveValuesAtIndexes(OCMutableIndexArrayRef array, OCIndexSetR
     OCIndex count = OCIndexSetGetCount(indexesToRemove);
     if (count == 0) return;
     // Copy indices to an array and sort descending
-    OCIndex *indices = (OCIndex *)malloc(count * sizeof(OCIndex));
+    OCIndex* indices = (OCIndex*)malloc(count * sizeof(OCIndex));
     if (!indices) return;
     OCIndex idx = OCIndexSetLastIndex(indexesToRemove);
     for (OCIndex i = 0; i < count && idx != kOCNotFound; ++i) {
@@ -194,7 +195,7 @@ void OCIndexArrayRemoveValuesAtIndexes(OCMutableIndexArrayRef array, OCIndexSetR
 }
 bool OCIndexArrayContainsIndex(OCIndexArrayRef array, OCIndex value) {
     OCIndex count = OCIndexArrayGetCount(array);
-    OCIndex *ptr = (OCIndex *)OCDataGetBytesPtr(array->indexes);
+    OCIndex* ptr = (OCIndex*)OCDataGetBytesPtr(array->indexes);
     for (OCIndex i = 0; i < count; i++) {
         if (ptr[i] == value) return true;
     }
@@ -205,7 +206,7 @@ bool OCIndexArrayAppendValue(OCMutableIndexArrayRef array, OCIndex value) {
     if (!OCDataIncreaseLength(array->indexes, sizeof(OCIndex))) {
         return false;
     }
-    OCIndex *ptr = (OCIndex *)OCDataGetMutableBytes(array->indexes);
+    OCIndex* ptr = (OCIndex*)OCDataGetMutableBytes(array->indexes);
     if (!ptr) return false;
     ptr[OCIndexArrayGetCount(array) - 1] = value;
     return true;
@@ -227,42 +228,42 @@ bool OCIndexArrayAppendValues(OCMutableIndexArrayRef dst, OCIndexArrayRef src) {
 OCStringRef OCIndexArrayCreateBase64String(OCIndexArrayRef array, OCNumberType type) {
     if (!array) return NULL;
     OCIndex count = OCIndexArrayGetCount(array);
-    OCIndex *src = (OCIndex *)OCDataGetBytesPtr(array->indexes);
+    OCIndex* src = (OCIndex*)OCDataGetBytesPtr(array->indexes);
     size_t size = 0;
-    void *converted = NULL;
+    void* converted = NULL;
     switch (type) {
         case kOCNumberUInt8Type:
         case kOCNumberSInt8Type:
             size = sizeof(uint8_t);
             converted = malloc(count * size);
             if (!converted) return NULL;
-            for (OCIndex i = 0; i < count; i++) ((uint8_t *)converted)[i] = (uint8_t)src[i];
+            for (OCIndex i = 0; i < count; i++) ((uint8_t*)converted)[i] = (uint8_t)src[i];
             break;
         case kOCNumberUInt16Type:
         case kOCNumberSInt16Type:
             size = sizeof(uint16_t);
             converted = malloc(count * size);
             if (!converted) return NULL;
-            for (OCIndex i = 0; i < count; i++) ((uint16_t *)converted)[i] = (uint16_t)src[i];
+            for (OCIndex i = 0; i < count; i++) ((uint16_t*)converted)[i] = (uint16_t)src[i];
             break;
         case kOCNumberUInt32Type:
         case kOCNumberSInt32Type:
             size = sizeof(uint32_t);
             converted = malloc(count * size);
             if (!converted) return NULL;
-            for (OCIndex i = 0; i < count; i++) ((uint32_t *)converted)[i] = (uint32_t)src[i];
+            for (OCIndex i = 0; i < count; i++) ((uint32_t*)converted)[i] = (uint32_t)src[i];
             break;
         case kOCNumberUInt64Type:
         case kOCNumberSInt64Type:
             size = sizeof(uint64_t);
             converted = malloc(count * size);
             if (!converted) return NULL;
-            for (OCIndex i = 0; i < count; i++) ((uint64_t *)converted)[i] = (uint64_t)src[i];
+            for (OCIndex i = 0; i < count; i++) ((uint64_t*)converted)[i] = (uint64_t)src[i];
             break;
         default:
             return OCDataCreateBase64EncodedString(array->indexes, OCBase64EncodingOptionsNone);
     }
-    OCDataRef data = OCDataCreate((const uint8_t *)converted, count * size);
+    OCDataRef data = OCDataCreate((const uint8_t*)converted, count * size);
     free(converted);
     OCStringRef result = OCDataCreateBase64EncodedString(data, OCBase64EncodingOptionsNone);
     OCRelease(data);
@@ -287,22 +288,20 @@ OCDictionaryRef OCIndexArrayCreateDictionary(OCIndexArrayRef array) {
 OCIndexArrayRef OCIndexArrayCreateFromDictionary(OCDictionaryRef dict) {
     return dict ? OCIndexArrayCreateWithData(OCDictionaryGetValue(dict, STR("indexes"))) : NULL;
 }
-cJSON *OCIndexArrayCopyAsJSON(OCIndexArrayRef array, bool typed, OCStringRef *outError) {
+cJSON* OCIndexArrayCopyAsJSON(OCIndexArrayRef array, bool typed, OCStringRef* outError) {
     if (outError) *outError = NULL;
     if (!array) return cJSON_CreateNull();
-
     if (typed) {
         // For typed serialization, check encoding preference
         OCJSONEncoding encoding = array->encoding;
-        cJSON *entry = cJSON_CreateObject();
+        cJSON* entry = cJSON_CreateObject();
         cJSON_AddStringToObject(entry, "type", "OCIndexArray");
-
         if (encoding == OCJSONEncodingBase64) {
             // Use base64 encoding for compact binary representation
             cJSON_AddStringToObject(entry, "encoding", "base64");
             OCStringRef b64 = OCDataCreateBase64EncodedString(array->indexes, OCBase64EncodingOptionsNone);
             if (b64) {
-                const char *b64Str = OCStringGetCString(b64);
+                const char* b64Str = OCStringGetCString(b64);
                 cJSON_AddStringToObject(entry, "value", b64Str ? b64Str : "");
                 OCRelease(b64);
             } else {
@@ -316,7 +315,7 @@ cJSON *OCIndexArrayCopyAsJSON(OCIndexArrayRef array, bool typed, OCStringRef *ou
                 cJSON_AddStringToObject(entry, "encoding", "none");
             }
             OCIndex count = OCIndexArrayGetCount(array);
-            cJSON *arr = cJSON_CreateArray();
+            cJSON* arr = cJSON_CreateArray();
             for (OCIndex i = 0; i < count; i++) {
                 OCIndex v = OCIndexArrayGetValueAtIndex(array, i);
                 cJSON_AddItemToArray(arr, cJSON_CreateNumber((double)v));
@@ -327,7 +326,7 @@ cJSON *OCIndexArrayCopyAsJSON(OCIndexArrayRef array, bool typed, OCStringRef *ou
     } else {
         // For untyped serialization, serialize as a plain JSON array (no change)
         OCIndex count = OCIndexArrayGetCount(array);
-        cJSON *arr = cJSON_CreateArray();
+        cJSON* arr = cJSON_CreateArray();
         for (OCIndex i = 0; i < count; i++) {
             OCIndex v = OCIndexArrayGetValueAtIndex(array, i);
             cJSON_AddItemToArray(arr, cJSON_CreateNumber((double)v));
@@ -335,56 +334,45 @@ cJSON *OCIndexArrayCopyAsJSON(OCIndexArrayRef array, bool typed, OCStringRef *ou
         return arr;
     }
 }
-
-OCIndexArrayRef OCIndexArrayCreateFromJSON(cJSON *json, OCStringRef *outError) {
+OCIndexArrayRef OCIndexArrayCreateFromJSON(cJSON* json, OCStringRef* outError) {
     if (!json) {
         if (outError) *outError = STR("JSON input is NULL");
         return NULL;
     }
-
-    cJSON *arrayToProcess = NULL;
-
+    cJSON* arrayToProcess = NULL;
     // Check if typed format (object with type/value structure)
     if (cJSON_IsObject(json)) {
-        cJSON *type = cJSON_GetObjectItem(json, "type");
-        cJSON *encoding = cJSON_GetObjectItem(json, "encoding");
-        cJSON *value = cJSON_GetObjectItem(json, "value");
-
+        cJSON* type = cJSON_GetObjectItem(json, "type");
+        cJSON* encoding = cJSON_GetObjectItem(json, "encoding");
+        cJSON* value = cJSON_GetObjectItem(json, "value");
         if (!cJSON_IsString(type)) {
             if (outError) *outError = STR("Invalid typed JSON format: missing or invalid type field");
             return NULL;
         }
-
-        const char *typeName = cJSON_GetStringValue(type);
+        const char* typeName = cJSON_GetStringValue(type);
         if (!typeName || strcmp(typeName, "OCIndexArray") != 0) {
             if (outError) *outError = STR("Invalid type: expected OCIndexArray");
             return NULL;
         }
-
         // Handle base64 encoding
         if (encoding && cJSON_IsString(encoding) &&
             strcmp(cJSON_GetStringValue(encoding), "base64") == 0) {
-
             if (!cJSON_IsString(value)) {
                 if (outError) *outError = STR("Invalid base64 format: value must be string");
                 return NULL;
             }
-
-            const char *b64Str = cJSON_GetStringValue(value);
+            const char* b64Str = cJSON_GetStringValue(value);
             if (!b64Str) {
                 if (outError) *outError = STR("Invalid base64 string");
                 return NULL;
             }
-
             OCStringRef b64 = OCStringCreateWithCString(b64Str);
             OCDataRef decodedData = OCDataCreateFromBase64EncodedString(b64);
             OCRelease(b64);
-
             if (!decodedData) {
                 if (outError) *outError = STR("Failed to decode base64 data");
                 return NULL;
             }
-
             // Verify data length is multiple of OCIndex size
             uint64_t dataLen = OCDataGetLength(decodedData);
             if (dataLen % sizeof(OCIndex) != 0) {
@@ -392,16 +380,13 @@ OCIndexArrayRef OCIndexArrayCreateFromJSON(cJSON *json, OCStringRef *outError) {
                 OCRelease(decodedData);
                 return NULL;
             }
-
             OCIndexArrayRef result = OCIndexArrayCreateWithData(decodedData);
             OCRelease(decodedData);
-
             if (result) {
                 // Set encoding on the result
                 OCMutableIndexArrayRef mutable = (OCMutableIndexArrayRef)result;
                 mutable->encoding = OCJSONEncodingBase64;
             }
-
             if (!result && outError) {
                 *outError = STR("Failed to create OCIndexArray from base64 data");
             }
@@ -419,27 +404,23 @@ OCIndexArrayRef OCIndexArrayCreateFromJSON(cJSON *json, OCStringRef *outError) {
     // Handle untyped format (direct array)
     else if (cJSON_IsArray(json)) {
         arrayToProcess = json;
-    }
-    else {
+    } else {
         if (outError) *outError = STR("Invalid JSON: expected object or array");
         return NULL;
     }
-
     // Process the JSON array format
     int count = cJSON_GetArraySize(arrayToProcess);
     if (count < 0) {
         if (outError) *outError = STR("Invalid array size");
         return NULL;
     }
-
-    OCIndex *values = malloc(sizeof(OCIndex) * count);
+    OCIndex* values = malloc(sizeof(OCIndex) * count);
     if (!values) {
         if (outError) *outError = STR("Failed to allocate memory for values");
         return NULL;
     }
-
     for (int i = 0; i < count; i++) {
-        cJSON *item = cJSON_GetArrayItem(arrayToProcess, i);
+        cJSON* item = cJSON_GetArrayItem(arrayToProcess, i);
         if (!cJSON_IsNumber(item)) {
             if (outError) *outError = STR("Invalid array element: expected number");
             free(values);
@@ -447,26 +428,22 @@ OCIndexArrayRef OCIndexArrayCreateFromJSON(cJSON *json, OCStringRef *outError) {
         }
         values[i] = (OCIndex)item->valuedouble;
     }
-
     OCIndexArrayRef result = OCIndexArrayCreate(values, count);
     free(values);
-
     // If we parsed from typed format with explicit "none" encoding, set it
     if (cJSON_IsObject(json)) {
-        cJSON *encoding = cJSON_GetObjectItem(json, "encoding");
+        cJSON* encoding = cJSON_GetObjectItem(json, "encoding");
         if (encoding && cJSON_IsString(encoding) &&
             strcmp(cJSON_GetStringValue(encoding), "none") == 0 && result) {
             OCMutableIndexArrayRef mutable = (OCMutableIndexArrayRef)result;
             mutable->encoding = OCJSONEncodingNone;
         }
     }
-
     if (!result && outError) {
         *outError = STR("Failed to create OCIndexArray");
     }
     return result;
 }
-
 void OCIndexArrayShow(OCIndexArrayRef array) {
     fprintf(stderr, "(");
     OCIndex count = OCIndexArrayGetCount(array);
