@@ -6,3 +6,4 @@ AllowShortBlocksOnASingleLine: Always
 AllowShortFunctionsOnASingleLine: Inline
 BreakBeforeBraces: Attach
 MaxEmptyLinesToKeep: 0
+SortIncludes: false
