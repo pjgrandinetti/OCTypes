@@ -1,5 +1,16 @@
 //
-//  OCBoolean.c
+//  #include <stdio.h>
+#include "OCType.h"  // for OCRegisterType, OCTypeID, kOCNotATypeID
+#include "OCTypes.h"
+
+// Forward declarations for static functions used in initializers
+static bool impl_OCBooleanEqual(const void* v1, const void* v2);
+static void impl_OCBooleanFinalize(const void* unused);
+static OCStringRef impl_OCBooleanCopyFormattingDesc(OCTypeRef cf);
+static cJSON* impl_OCBooleanCopyJSON(const void* cf, bool typed, OCStringRef* outError);
+static void* impl_OCBooleanDeepCopy(const void* cf);
+
+// Static storage of the boolean type's OCTypeIDolean.c
 //  OCTypes
 //
 //  Created by Philip Grandinetti on 5/15/17.
@@ -16,10 +27,40 @@ struct impl_OCBoolean {
 };
 static struct impl_OCBoolean impl_kOCBooleanTrue = {
     .base = {
-        kOCNotATypeID, 0, 0, NULL, NULL}};
+        .typeID = kOCNotATypeID,
+        .retainCount = 1,
+        .finalize = impl_OCBooleanFinalize,
+        .equal = impl_OCBooleanEqual,
+        .copyFormattingDesc = impl_OCBooleanCopyFormattingDesc,
+        .copyJSON = impl_OCBooleanCopyJSON,
+        .copyDeep = impl_OCBooleanDeepCopy,
+        .copyDeepMutable = impl_OCBooleanDeepCopy,
+        .flags = {
+            .static_instance = 1,
+            .finalized = 0,
+            .tracked = 0,
+            .reserved = 0
+        }
+    }
+};
 static struct impl_OCBoolean impl_kOCBooleanFalse = {
     .base = {
-        kOCNotATypeID, 0, 0, NULL, NULL}};
+        .typeID = kOCNotATypeID,
+        .retainCount = 1,
+        .finalize = impl_OCBooleanFinalize,
+        .equal = impl_OCBooleanEqual,
+        .copyFormattingDesc = impl_OCBooleanCopyFormattingDesc,
+        .copyJSON = impl_OCBooleanCopyJSON,
+        .copyDeep = impl_OCBooleanDeepCopy,
+        .copyDeepMutable = impl_OCBooleanDeepCopy,
+        .flags = {
+            .static_instance = 1,
+            .finalized = 0,
+            .tracked = 0,
+            .reserved = 0
+        }
+    }
+};
 const OCBooleanRef kOCBooleanTrue = &impl_kOCBooleanTrue;
 const OCBooleanRef kOCBooleanFalse = &impl_kOCBooleanFalse;
 // Equality callback: same pointer
@@ -54,23 +95,7 @@ impl_OCBooleanDeepCopy(const void* cf) {
 void impl_OCBooleanInitialize(void) {
     kOCBooleanTypeID = OCRegisterType("OCBoolean", (OCTypeRef (*)(cJSON*, OCStringRef*))OCBooleanCreateFromJSON);
     impl_kOCBooleanTrue.base.typeID = kOCBooleanTypeID;
-    impl_kOCBooleanTrue.base.finalize = impl_OCBooleanFinalize;
-    impl_kOCBooleanTrue.base.equal = impl_OCBooleanEqual;
-    impl_kOCBooleanTrue.base.copyFormattingDesc = impl_OCBooleanCopyFormattingDesc;
-    impl_kOCBooleanTrue.base.copyJSON = impl_OCBooleanCopyJSON;
-    impl_kOCBooleanTrue.base.copyDeep = impl_OCBooleanDeepCopy;
-    impl_kOCBooleanTrue.base.copyDeepMutable = impl_OCBooleanDeepCopy;
-    impl_kOCBooleanTrue.base.flags.finalized = false;
-    OCTypeSetStaticInstance(kOCBooleanTrue, true);
     impl_kOCBooleanFalse.base.typeID = kOCBooleanTypeID;
-    impl_kOCBooleanFalse.base.finalize = impl_OCBooleanFinalize;
-    impl_kOCBooleanFalse.base.equal = impl_OCBooleanEqual;
-    impl_kOCBooleanFalse.base.copyFormattingDesc = impl_OCBooleanCopyFormattingDesc;
-    impl_kOCBooleanFalse.base.copyJSON = impl_OCBooleanCopyJSON;
-    impl_kOCBooleanFalse.base.copyDeep = impl_OCBooleanDeepCopy;
-    impl_kOCBooleanFalse.base.copyDeepMutable = impl_OCBooleanDeepCopy;
-    impl_kOCBooleanFalse.base.flags.finalized = false;
-    OCTypeSetStaticInstance(kOCBooleanFalse, true);
 }
 OCTypeID OCBooleanGetTypeID(void) {
     return kOCBooleanTypeID;

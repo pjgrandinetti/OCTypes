@@ -6,6 +6,13 @@
 #include "OCType.h"  // for OCRegisterType, OCTypeID, kOCNotATypeID
 #include "OCTypes.h"
 
+// Forward declarations for static functions used in initializers
+static bool impl_OCNullEqual(const void *v1, const void *v2);
+static void impl_OCNullFinalize(const void *unused);
+static OCStringRef impl_OCNullCopyFormattingDesc(OCTypeRef cf);
+static cJSON *impl_OCNullCopyJSON(const void *cf, bool typed, OCStringRef *outError);
+static void *impl_OCNullDeepCopy(const void *cf);
+
 // Static storage of the null type's OCTypeID
 static OCTypeID kOCNullTypeID = kOCNotATypeID;
 
@@ -16,7 +23,22 @@ struct impl_OCNull {
 
 static struct impl_OCNull impl_kOCNull = {
     .base = {
-        kOCNotATypeID, 0, 0, NULL, NULL}};
+        .typeID = kOCNotATypeID,
+        .retainCount = 1,
+        .finalize = impl_OCNullFinalize,
+        .equal = impl_OCNullEqual,
+        .copyFormattingDesc = impl_OCNullCopyFormattingDesc,
+        .copyJSON = impl_OCNullCopyJSON,
+        .copyDeep = impl_OCNullDeepCopy,
+        .copyDeepMutable = impl_OCNullDeepCopy,
+        .flags = {
+            .static_instance = 1,
+            .finalized = 0,
+            .tracked = 0,
+            .reserved = 0
+        }
+    }
+};
 
 const OCNullRef kOCNull = &impl_kOCNull;
 
@@ -56,14 +78,6 @@ impl_OCNullDeepCopy(const void *cf) {
 void impl_OCNullInitialize(void) {
     kOCNullTypeID = OCRegisterType("OCNull", (OCTypeRef (*)(cJSON *, OCStringRef *))OCNullCreateFromJSON);
     impl_kOCNull.base.typeID = kOCNullTypeID;
-    impl_kOCNull.base.finalize = impl_OCNullFinalize;
-    impl_kOCNull.base.equal = impl_OCNullEqual;
-    impl_kOCNull.base.copyFormattingDesc = impl_OCNullCopyFormattingDesc;
-    impl_kOCNull.base.copyJSON = impl_OCNullCopyJSON;
-    impl_kOCNull.base.copyDeep = impl_OCNullDeepCopy;
-    impl_kOCNull.base.copyDeepMutable = impl_OCNullDeepCopy;
-    impl_kOCNull.base.flags.finalized = false;
-    OCTypeSetStaticInstance(kOCNull, true);
 }
 
 OCTypeID OCNullGetTypeID(void) {
