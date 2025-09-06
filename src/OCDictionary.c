@@ -199,28 +199,28 @@ OCMutableDictionaryRef OCDictionaryCreateMutableCopy(OCDictionaryRef theDictiona
     return (OCMutableDictionaryRef)OCDictionaryCreate((const void **)theDictionary->keys, (const void **)theDictionary->values, theDictionary->count);
 }
 const void *OCDictionaryGetValue(OCDictionaryRef theDictionary, OCStringRef key) {
-    for (long index = 0; index < theDictionary->count; index++) {
+    for (uint64_t index = 0; index < theDictionary->count; index++) {
         if (OCStringCompare(theDictionary->keys[index], key, 0) == kOCCompareEqualTo)
             return theDictionary->values[index];
     }
     return NULL;
 }
 bool OCDictionaryContainsKey(OCDictionaryRef theDictionary, OCStringRef key) {
-    for (long index = 0; index < theDictionary->count; index++) {
+    for (uint64_t index = 0; index < theDictionary->count; index++) {
         if (OCStringCompare(theDictionary->keys[index], key, 0) == kOCCompareEqualTo)
             return true;
     }
     return false;
 }
 int64_t OCDictionaryIndexOfKey(OCDictionaryRef theDictionary, OCStringRef key) {
-    for (int64_t index = 0; index < theDictionary->count; index++) {
+    for (uint64_t index = 0; index < theDictionary->count; index++) {
         if (OCStringCompare(theDictionary->keys[index], key, 0) == kOCCompareEqualTo)
-            return index;
+            return (int64_t)index;
     }
     return -1;
 }
 bool OCDictionaryContainsValue(OCDictionaryRef theDictionary, const void *value) {
-    for (long index = 0; index < theDictionary->count; index++) {
+    for (uint64_t index = 0; index < theDictionary->count; index++) {
         if (theDictionary->values[index] == value)
             return true;
     }

@@ -1300,7 +1300,7 @@ static inline OCMutableArrayRef createOptimizedArray(const uint8_t *bytes, OCInd
 
     // Use memory prefetching for better cache performance
     #ifdef HAVE_BUILTIN_PREFETCH
-    const size_t prefetch_distance = 64;  // Cache line size
+    const OCIndex prefetch_distance = 64;  // Cache line size
     #endif
 
     switch (type) {
@@ -1455,7 +1455,7 @@ static inline OCMutableArrayRef createOptimizedArray(const uint8_t *bytes, OCInd
 static inline bool extractOptimizedData(OCArrayRef array, OCIndex elementCount, OCNumberType type, uint8_t *buffer, OCStringRef *outError) {
     // Use memory prefetching for better cache performance
     #ifdef HAVE_BUILTIN_PREFETCH
-    const size_t prefetch_distance = 16;  // Prefetch ahead
+    const OCIndex prefetch_distance = 16;  // Prefetch ahead
     #endif
 
     switch (type) {

@@ -594,6 +594,109 @@ OCArrayRef OCArrayCreateFromJSONTyped(cJSON *json, OCStringRef *outError) {
     return result;
 }
 
+
+OCArrayRef OCArrayCreateFromJSON(cJSON *json, OCStringRef *outError) {
+    if (outError) *outError = NULL;
+    if (!json) {
+        if (outError) *outError = STR("JSON is NULL");
+        return NULL;
+    }
+
+    if (!cJSON_IsArray(json)) {
+        if (outError) *outError = STR("Expected JSON array for untyped deserialization");
+        return NULL;
+    }
+
+    int arraySize = cJSON_GetArraySize(json);
+    if (arraySize <= 0) {
+        // Empty arrays are fine
+        return OCArrayCreateMutable(0, &kOCTypeArrayCallBacks);
+    }
+
+    uint64_t count = (uint64_t)arraySize;
+
+    // For untyped deserialization, we handle natural JSON type → OCType mappings:
+    // - JSON numbers → OCNumber (using default double type)
+    // - JSON strings → OCString
+    // - JSON booleans → OCBoolean
+    // - JSON arrays → OCArray (recursive)
+    // - JSON objects → OCDictionary
+
+    OCMutableArrayRef result = OCArrayCreateMutable(count, &kOCTypeArrayCallBacks);
+    if (!result) {
+        if (outError) *outError = STR("Failed to create mutable array");
+        return NULL;
+    }
+
+    // Process each element according to its JSON type
+    for (int i = 0; i < arraySize; i++) {
+        cJSON *elem = cJSON_GetArrayItem(json, i);
+        if (!elem) {
+            if (outError) *outError = STR("Invalid array element");
+            OCRelease(result);
+            return NULL;
+        }
+
+        OCTypeRef ocValue = NULL;
+        OCStringRef elemError = NULL;
+
+        if (cJSON_IsNumber(elem)) {
+            // JSON number → OCNumber with default double type
+            double value = cJSON_GetNumberValue(elem);
+            ocValue = (OCTypeRef)OCNumberCreateWithDouble(value);
+            if (!ocValue && outError) *outError = STR("Failed to create OCNumber");
+
+        } else if (cJSON_IsString(elem)) {
+            // JSON string → OCString
+            const char *str = cJSON_GetStringValue(elem);
+            ocValue = (OCTypeRef)OCStringCreateWithCString(str);
+            if (!ocValue && outError) *outError = STR("Failed to create OCString");
+
+        } else if (cJSON_IsBool(elem)) {
+            // JSON boolean → OCBoolean
+            bool value = cJSON_IsTrue(elem);
+            ocValue = (OCTypeRef)OCBooleanGetWithBool(value);
+            if (!ocValue && outError) *outError = STR("Failed to create OCBoolean");
+
+        } else if (cJSON_IsArray(elem)) {
+            // JSON array → OCArray (recursive)
+            ocValue = (OCTypeRef)OCArrayCreateFromJSON(elem, &elemError);
+            if (!ocValue && outError && !*outError) {
+                *outError = elemError ? elemError : STR("Failed to create OCArray from JSON array element");
+            }
+
+        } else if (cJSON_IsObject(elem)) {
+            // JSON object → OCDictionary
+            ocValue = (OCTypeRef)OCDictionaryCreateFromJSON(elem, &elemError);
+            if (!ocValue && outError && !*outError) {
+                *outError = elemError ? elemError : STR("Failed to create OCDictionary from JSON object element");
+            }
+
+        } else if (cJSON_IsNull(elem)) {
+            // JSON null → OCNull
+            ocValue = (OCTypeRef)kOCNull;
+            OCRetain(ocValue); // Need to retain since we'll release after append
+
+        } else {
+            // Unsupported JSON type
+            if (outError) *outError = STR("Unsupported JSON element type");
+        }
+
+        if (ocValue) {
+            OCArrayAppendValue(result, ocValue);
+            OCRelease(ocValue); // OCArrayAppendValue retains
+        } else {
+            // Clean up elemError if we couldn't transfer it to outError
+            if (elemError && (!outError || *outError != elemError)) {
+                OCRelease(elemError);
+            }
+            OCRelease(result);
+            return NULL;
+        }
+    }
+
+    return result;
+}
 OCArrayRef OCArrayOfNumbersCreateFromJSON(cJSON *json, OCNumberType numericType, OCStringRef *outError) {
     if (outError) *outError = NULL;
     if (!json) {
@@ -699,109 +802,6 @@ OCArrayRef OCArrayOfNumbersCreateFromJSON(cJSON *json, OCNumberType numericType,
     }
 }
 
-OCArrayRef OCArrayCreateFromJSON(cJSON *json, OCStringRef *outError) {
-    if (outError) *outError = NULL;
-    if (!json) {
-        if (outError) *outError = STR("JSON is NULL");
-        return NULL;
-    }
-
-    if (!cJSON_IsArray(json)) {
-        if (outError) *outError = STR("Expected JSON array for untyped deserialization");
-        return NULL;
-    }
-
-    int arraySize = cJSON_GetArraySize(json);
-    if (arraySize <= 0) {
-        // Empty arrays are fine
-        return OCArrayCreateMutable(0, &kOCTypeArrayCallBacks);
-    }
-
-    uint64_t count = (uint64_t)arraySize;
-
-    // For untyped deserialization, we handle natural JSON type → OCType mappings:
-    // - JSON numbers → OCNumber (using default double type)
-    // - JSON strings → OCString
-    // - JSON booleans → OCBoolean
-    // - JSON arrays → OCArray (recursive)
-    // - JSON objects → OCDictionary
-
-    OCMutableArrayRef result = OCArrayCreateMutable(count, &kOCTypeArrayCallBacks);
-    if (!result) {
-        if (outError) *outError = STR("Failed to create mutable array");
-        return NULL;
-    }
-
-    // Process each element according to its JSON type
-    for (int i = 0; i < arraySize; i++) {
-        cJSON *elem = cJSON_GetArrayItem(json, i);
-        if (!elem) {
-            if (outError) *outError = STR("Invalid array element");
-            OCRelease(result);
-            return NULL;
-        }
-
-        OCTypeRef ocValue = NULL;
-        OCStringRef elemError = NULL;
-
-        if (cJSON_IsNumber(elem)) {
-            // JSON number → OCNumber with default double type
-            double value = cJSON_GetNumberValue(elem);
-            ocValue = (OCTypeRef)OCNumberCreateWithDouble(value);
-            if (!ocValue && outError) *outError = STR("Failed to create OCNumber");
-
-        } else if (cJSON_IsString(elem)) {
-            // JSON string → OCString
-            const char *str = cJSON_GetStringValue(elem);
-            ocValue = (OCTypeRef)OCStringCreateWithCString(str);
-            if (!ocValue && outError) *outError = STR("Failed to create OCString");
-
-        } else if (cJSON_IsBool(elem)) {
-            // JSON boolean → OCBoolean
-            bool value = cJSON_IsTrue(elem);
-            ocValue = (OCTypeRef)OCBooleanGetWithBool(value);
-            if (!ocValue && outError) *outError = STR("Failed to create OCBoolean");
-
-        } else if (cJSON_IsArray(elem)) {
-            // JSON array → OCArray (recursive)
-            ocValue = (OCTypeRef)OCArrayCreateFromJSON(elem, &elemError);
-            if (!ocValue && outError && !*outError) {
-                *outError = elemError ? elemError : STR("Failed to create OCArray from JSON array element");
-            }
-
-        } else if (cJSON_IsObject(elem)) {
-            // JSON object → OCDictionary
-            ocValue = (OCTypeRef)OCDictionaryCreateFromJSON(elem, &elemError);
-            if (!ocValue && outError && !*outError) {
-                *outError = elemError ? elemError : STR("Failed to create OCDictionary from JSON object element");
-            }
-
-        } else if (cJSON_IsNull(elem)) {
-            // JSON null → OCNull
-            ocValue = (OCTypeRef)kOCNull;
-            OCRetain(ocValue); // Need to retain since we'll release after append
-
-        } else {
-            // Unsupported JSON type
-            if (outError) *outError = STR("Unsupported JSON element type");
-        }
-
-        if (ocValue) {
-            OCArrayAppendValue(result, ocValue);
-            OCRelease(ocValue); // OCArrayAppendValue retains
-        } else {
-            // Clean up elemError if we couldn't transfer it to outError
-            if (elemError && (!outError || *outError != elemError)) {
-                OCRelease(elemError);
-            }
-            OCRelease(result);
-            return NULL;
-        }
-    }
-
-    return result;
-}
-
 
 const void *OCArrayGetValueAtIndex(OCArrayRef theArray, uint64_t index) {
     if (NULL == theArray) return NULL;
@@ -809,7 +809,7 @@ const void *OCArrayGetValueAtIndex(OCArrayRef theArray, uint64_t index) {
     return theArray->data[index];
 }
 bool OCArraySetValueAtIndex(OCMutableArrayRef theArray, OCIndex index, const void *value) {
-    if (!theArray || index < 0 || index >= OCArrayGetCount(theArray)) {
+    if (!theArray || index < 0 || (uint64_t)index >= OCArrayGetCount(theArray)) {
         return false;
     }
     const void *oldValue = OCArrayGetValueAtIndex(theArray, index);
@@ -897,10 +897,11 @@ bool OCArrayAppendArray(OCMutableArrayRef theArray, OCArrayRef otherArray, OCRan
         return false;
     }
     uint64_t count = OCArrayGetCount(otherArray);
-    if (range.location + range.length > count) {
+    if (range.location < 0 || range.length < 0 ||
+        (uint64_t)range.location + (uint64_t)range.length > count) {
         return false;
     }
-    for (uint64_t index = range.location; index < range.location + range.length; index++) {
+    for (uint64_t index = (uint64_t)range.location; index < (uint64_t)range.location + (uint64_t)range.length; index++) {
         OCTypeRef theType = (OCTypeRef)OCArrayGetValueAtIndex(otherArray, index);
         OCArrayAppendValue(theArray, theType);  // Assume this always succeeds
     }
@@ -985,7 +986,9 @@ void OCArraySortValues(OCMutableArrayRef theArray, OCRange range, OCComparatorFu
         return;
     }
     // Ensure range is valid
-    if (range.location >= theArray->count || (range.location + range.length) > theArray->count) {
+    if (range.location < 0 || range.length < 0 ||
+        (uint64_t)range.location >= theArray->count ||
+        ((uint64_t)range.location + (uint64_t)range.length) > theArray->count) {
         return;
     }
     struct qsortContext myContext = {comparator, context};
@@ -1051,7 +1054,9 @@ int64_t OCBSearch(void *_Nullable element,
 }
 int64_t OCArrayBSearchValues(OCArrayRef array, OCRange range, const void *value, OCComparatorFunction comparator, void *context) {
     if (NULL == array || NULL == comparator || range.length == 0) return kOCNotFound;        // Return kOCNotFound for invalid inputs or empty range
-    if (range.location >= array->count || (range.location + range.length) > array->count) {  // Validate range
+    if (range.location < 0 || range.length < 0 ||
+        (uint64_t)range.location >= array->count ||
+        ((uint64_t)range.location + (uint64_t)range.length) > array->count) {  // Validate range
         return kOCNotFound;
     }
     const void **base = (const void **)(array->data + range.location);

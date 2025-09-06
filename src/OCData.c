@@ -161,7 +161,8 @@ uint8_t *OCDataGetMutableBytes(OCMutableDataRef data) {
 }
 bool OCDataGetBytes(OCDataRef data, OCRange range, uint8_t *buffer) {
     if (!data || !buffer || !data->bytes) return false;
-    if (range.location + range.length > data->length) return false;
+    if (range.location < 0 || range.length < 0 ||
+        (uint64_t)range.location + (uint64_t)range.length > data->length) return false;
     memcpy(buffer, data->bytes + range.location, range.length);
     return true;
 }

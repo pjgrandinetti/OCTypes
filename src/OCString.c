@@ -448,7 +448,7 @@ OCStringRef OCStringCreateWithSubstring(OCStringRef str, OCRange range) {
     ptrdiff_t off2 = oc_utf8_offset_for_index(str->string, range.location + range.length);
     if (off1 < 0 || off2 < 0 || off2 < off1) {
         // Special case: empty slice at end of string
-        if (range.location == str->length && range.length == 0) {
+        if ((uint64_t)range.location == str->length && range.length == 0) {
             off1 = off2 = strlen(str->string);
         } else {
             return NULL;
@@ -843,18 +843,18 @@ int64_t OCStringFindAndReplace(OCMutableStringRef s,
         return 0;
     }
     // Validate and clip rangeToSearch to be within the bounds of the current string 's'
-    if (rangeToSearch.location >= s->length) {
+    if (rangeToSearch.location < 0 || (uint64_t)rangeToSearch.location >= s->length) {
         return 0;  // Start of search range is already past the end of the string
     }
-    if (rangeToSearch.location + rangeToSearch.length > s->length) {
-        rangeToSearch.length = s->length - rangeToSearch.location;
+    if (rangeToSearch.length < 0 || (uint64_t)rangeToSearch.location + (uint64_t)rangeToSearch.length > s->length) {
+        rangeToSearch.length = s->length - (uint64_t)rangeToSearch.location;
     }
     // If the effective search range is empty, no match is possible.
     if (rangeToSearch.length == 0) {
         return 0;
     }
     // If search range is shorter than findStr, no match is possible.
-    if (rangeToSearch.length < findStr->length) {
+    if (rangeToSearch.length < 0 || (uint64_t)rangeToSearch.length < findStr->length) {
         return 0;
     }
     int64_t count = 0;
@@ -874,7 +874,7 @@ int64_t OCStringFindAndReplace(OCMutableStringRef s,
         current_look_in_range.location = scan_start_location_in_s;
         current_look_in_range.length = current_effective_search_area_end_in_s - scan_start_location_in_s;
         // If remaining search length is less than findStr's length, no more matches are possible
-        if (current_look_in_range.length < findStr->length) {
+        if (current_look_in_range.length < 0 || (uint64_t)current_look_in_range.length < findStr->length) {
             break;
         }
         OCRange found_at_range_in_s;  // Will store the range of the found substring in the current state of 's'
@@ -930,14 +930,14 @@ bool OCStringFindWithOptions(OCStringRef string,
     uint64_t needleLen = OCStringGetLength(stringToFind);
     // Sanity: empty needle or out-of-bounds or not enough space to find needle
     if (needleLen == 0 ||
-        rangeToSearch.location > strLen ||
-        rangeToSearch.location + rangeToSearch.length > strLen ||
-        needleLen > rangeToSearch.length) {
+        rangeToSearch.location < 0 || (uint64_t)rangeToSearch.location > strLen ||
+        rangeToSearch.length < 0 || (uint64_t)rangeToSearch.location + (uint64_t)rangeToSearch.length > strLen ||
+        needleLen > (uint64_t)rangeToSearch.length) {
         return false;
     }
     bool caseInsensitive = (compareOptions & kOCCompareCaseInsensitive) != 0;
-    uint64_t maxStart = rangeToSearch.location + rangeToSearch.length - needleLen;
-    for (uint64_t pos = rangeToSearch.location; pos <= maxStart; ++pos) {
+    uint64_t maxStart = (uint64_t)rangeToSearch.location + (uint64_t)rangeToSearch.length - needleLen;
+    for (uint64_t pos = (uint64_t)rangeToSearch.location; pos <= maxStart; ++pos) {
         bool match = true;
         for (uint64_t j = 0; j < needleLen; ++j) {
             uint32_t c1 = OCStringGetCharacterAtIndex(string, pos + j);
@@ -1242,9 +1242,9 @@ OCArrayRef OCStringCreateArrayWithFindResults(OCStringRef string,
                                               OCOptionFlags compareOptions) {
     if (!string || !stringToFind) return NULL;
     // Clip the search range to the string’s length
-    if (rangeToSearch.location > string->length) return NULL;
-    if (rangeToSearch.location + rangeToSearch.length > string->length) {
-        rangeToSearch.length = string->length - rangeToSearch.location;
+    if (rangeToSearch.location < 0 || (uint64_t)rangeToSearch.location > string->length) return NULL;
+    if (rangeToSearch.length < 0 || (uint64_t)rangeToSearch.location + (uint64_t)rangeToSearch.length > string->length) {
+        rangeToSearch.length = string->length - (uint64_t)rangeToSearch.location;
     }
     OCMutableArrayRef result = OCArrayCreateMutable(0, &kOCRangeArrayCallBacks);
     if (!result) return NULL;
@@ -1260,8 +1260,8 @@ OCArrayRef OCStringCreateArrayWithFindResults(OCStringRef string,
         OCArrayAppendValue(result, r);
         // Advance past this match
         search.location = found.location + found.length;
-        uint64_t end = rangeToSearch.location + rangeToSearch.length;
-        if (search.location >= end) break;
+        uint64_t end = (uint64_t)rangeToSearch.location + (uint64_t)rangeToSearch.length;
+        if ((uint64_t)search.location >= end) break;
         search.length = end - search.location;
     }
     if (OCArrayGetCount(result) == 0) {
@@ -1309,8 +1309,9 @@ OCStringCreateArrayBySeparatingStrings(OCStringRef string,
         prevEnd = r->location + r->length;
     }
     // Add final token after last separator
-    if (prevEnd <= fullRange.length) {
-        OCRange slice = OCRangeMake(prevEnd, fullRange.length - prevEnd);
+    if (prevEnd <= (uint64_t)fullRange.length) {
+        uint64_t sliceLength = fullRange.length - prevEnd;
+        OCRange slice = OCRangeMake((OCIndex)prevEnd, (OCIndex)sliceLength);
         OCStringRef piece = OCStringCreateWithSubstring(string, slice);
         if (piece) {
             OCArrayAppendValue(result, piece);

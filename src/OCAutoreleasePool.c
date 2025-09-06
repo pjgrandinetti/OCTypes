@@ -64,7 +64,6 @@ static bool OCAutoreleasePoolObjectDeallocate(OCAutoreleasePoolObjectRef thePool
     IF_NO_OBJECT_EXISTS_RETURN(thePoolObject, false);
     if (thePoolObject) {
         free(thePoolObject);
-        thePoolObject = NULL;
     }
     return true;
 }
@@ -153,7 +152,6 @@ static bool OCAutoreleasePoolsManagerDeallocate(OCAutoreleasePoolsManagerRef the
     }
     if (thePoolsManager) {
         free(thePoolsManager);
-        thePoolsManager = NULL;
     }
     return true;
 }
@@ -264,7 +262,6 @@ static bool OCAutoreleasePoolDeallocate(OCAutoreleasePoolRef thePool) {
     }
     if (thePool) {
         free(thePool);
-        thePool = NULL;
     }
     return true;
 }
