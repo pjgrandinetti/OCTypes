@@ -97,7 +97,7 @@ bool OCIndexArrayDeepCopy_test(void) {
         return false;
     }
     bool equalContent = true;
-    for (uint64_t i = 0; i < OCIndexArrayGetCount(orig); i++) {
+    for (OCIndex i = 0; i < OCIndexArrayGetCount(orig); i++) {
         if (OCIndexArrayGetValueAtIndex(orig, i) != OCIndexArrayGetValueAtIndex(copy, i)) {
             equalContent = false;
             break;
