@@ -205,7 +205,6 @@ cJSON *OCNumberCopyAsJSON(OCNumberRef number, bool typed, OCStringRef *outError)
  * @ingroup OCNumber
  */
 OCNumberRef OCNumberCreateFromJSON(cJSON *json, OCNumberType type, OCStringRef *outError);
-
 /**
  * @brief Create an OCNumberRef from a typed JSON object using unified format.
  *
@@ -286,7 +285,6 @@ bool OCNumberTryGetInt(OCNumberRef n, int *out);
 bool OCNumberTryGetLong(OCNumberRef n, long *out);
 /** @brief Try extract OCIndex native size. */
 bool OCNumberTryGetOCIndex(OCNumberRef n, OCIndex *out);
-
 /**
  * @brief Create an OCArray of OCNumbers from binary data.
  *
@@ -299,7 +297,6 @@ bool OCNumberTryGetOCIndex(OCNumberRef n, OCIndex *out);
  * @return New OCArrayRef containing OCNumbers, or NULL on error (caller must release)
  */
 OCArrayRef OCNumberCreateArrayFromData(OCDataRef data, OCNumberType type, OCStringRef *outError);
-
 /**
  * @brief Create binary data from an OCArray of OCNumbers.
  *
@@ -313,7 +310,6 @@ OCArrayRef OCNumberCreateArrayFromData(OCDataRef data, OCNumberType type, OCStri
  * @return New OCDataRef containing binary data, or NULL on error (caller must release)
  */
 OCDataRef OCNumberCreateDataFromArray(OCArrayRef array, OCNumberType type, OCStringRef *outError);
-
 /** @} */  // end Try-get Accessors
 /** @} */  // end OCNumber
 #endif     /* OCNumber_h */

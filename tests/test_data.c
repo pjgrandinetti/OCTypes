@@ -202,19 +202,14 @@ bool dataTest_base64_roundtrip(void) {
     fprintf(stderr, " passed\n");
     return true;
 }
-
 bool dataTest_json_encoding(void) {
     fprintf(stderr, "%s begin...", __func__);
-
     // Create test data
     uint8_t testBytes[] = {0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x00, 0x57, 0x6F, 0x72, 0x6C, 0x64, 0xFF, 0xFE};
     size_t dataLength = sizeof(testBytes);
-
     OCMutableDataRef originalData = OCDataCreateMutable(dataLength);
     if (!originalData) PRINTERROR;
-
     OCDataAppendBytes(originalData, testBytes, dataLength);
-
     // Test 1: Default encoding (should be OCJSONEncodingBase64 for OCData)
     OCJSONEncoding defaultEncoding = OCDataCopyEncoding(originalData);
     if (defaultEncoding != OCJSONEncodingBase64) {
@@ -222,7 +217,6 @@ bool dataTest_json_encoding(void) {
         OCRelease(originalData);
         return false;
     }
-
     // Test 2: Serialize with default encoding (base64)
     OCStringRef serializeError = NULL;
     cJSON *jsonDefault = OCDataCopyAsJSON(originalData, true, &serializeError);
@@ -235,33 +229,28 @@ bool dataTest_json_encoding(void) {
         OCRelease(originalData);
         return false;
     }
-
     // Verify JSON structure
     cJSON *type = cJSON_GetObjectItem(jsonDefault, "type");
     cJSON *encoding = cJSON_GetObjectItem(jsonDefault, "encoding");
     cJSON *value = cJSON_GetObjectItem(jsonDefault, "value");
-
     if (!type || !cJSON_IsString(type) || strcmp(cJSON_GetStringValue(type), "OCData") != 0) {
         fprintf(stderr, "FAIL: Invalid type field\n");
         cJSON_Delete(jsonDefault);
         OCRelease(originalData);
         return false;
     }
-
     if (!encoding || !cJSON_IsString(encoding) || strcmp(cJSON_GetStringValue(encoding), "base64") != 0) {
         fprintf(stderr, "FAIL: Invalid encoding field\n");
         cJSON_Delete(jsonDefault);
         OCRelease(originalData);
         return false;
     }
-
     if (!value || !cJSON_IsString(value)) {
         fprintf(stderr, "FAIL: Invalid value field\n");
         cJSON_Delete(jsonDefault);
         OCRelease(originalData);
         return false;
     }
-
     // Test 3: Roundtrip with base64 encoding
     OCStringRef error = NULL;
     OCDataRef deserializedData = OCDataCreateFromJSON(jsonDefault, &error);
@@ -273,7 +262,6 @@ bool dataTest_json_encoding(void) {
         OCRelease(originalData);
         return false;
     }
-
     // Verify data equality
     if (!OCTypeEqual(originalData, deserializedData)) {
         fprintf(stderr, "FAIL: Roundtrip data does not match original\n");
@@ -282,7 +270,6 @@ bool dataTest_json_encoding(void) {
         OCRelease(originalData);
         return false;
     }
-
     // Verify encoding is preserved
     OCJSONEncoding deserializedEncoding = OCDataCopyEncoding(deserializedData);
     if (deserializedEncoding != OCJSONEncodingBase64) {
@@ -292,7 +279,6 @@ bool dataTest_json_encoding(void) {
         OCRelease(originalData);
         return false;
     }
-
     // Test 4: Test encoding setter (though OCData can only use base64)
     OCDataSetEncoding(originalData, OCJSONEncodingNone);
     OCJSONEncoding newEncoding = OCDataCopyEncoding(originalData);
@@ -303,7 +289,6 @@ bool dataTest_json_encoding(void) {
         OCRelease(originalData);
         return false;
     }
-
     // Test 5: Serialize with OCJSONEncodingNone (should still use base64 for JSON compatibility)
     OCStringRef noneError = NULL;
     cJSON *jsonNone = OCDataCopyAsJSON(originalData, true, &noneError);
@@ -318,7 +303,6 @@ bool dataTest_json_encoding(void) {
         OCRelease(originalData);
         return false;
     }
-
     // Even with OCJSONEncodingNone, OCData should still use base64 for JSON
     cJSON *encodingNone = cJSON_GetObjectItem(jsonNone, "encoding");
     if (encodingNone && cJSON_IsString(encodingNone)) {
@@ -333,13 +317,11 @@ bool dataTest_json_encoding(void) {
             return false;
         }
     }
-
     // Cleanup
     cJSON_Delete(jsonNone);
     cJSON_Delete(jsonDefault);
     OCRelease(deserializedData);
     OCRelease(originalData);
-
     fprintf(stderr, " passed\n");
     return true;
 }

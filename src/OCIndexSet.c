@@ -263,12 +263,10 @@ OCIndexSetRef OCIndexSetCreateWithData(OCDataRef data) {
 }
 cJSON *OCIndexSetCopyAsJSON(OCIndexSetRef set, bool typed, OCStringRef *outError) {
     if (outError) *outError = NULL;
-
     if (!set) {
         if (outError) *outError = STR("OCIndexSet is NULL");
         return cJSON_CreateNull();
     }
-
     if (typed) {
         // For typed serialization, check encoding preference
         OCJSONEncoding encoding = set->encoding;
@@ -277,9 +275,7 @@ cJSON *OCIndexSetCopyAsJSON(OCIndexSetRef set, bool typed, OCStringRef *outError
             if (outError) *outError = STR("Failed to create JSON object");
             return cJSON_CreateNull();
         }
-
         cJSON_AddStringToObject(entry, "type", "OCIndexSet");
-
         if (encoding == OCJSONEncodingBase64) {
             // Use base64 encoding for compact binary representation
             cJSON_AddStringToObject(entry, "encoding", "base64");
@@ -297,17 +293,14 @@ cJSON *OCIndexSetCopyAsJSON(OCIndexSetRef set, bool typed, OCStringRef *outError
             if (encoding == OCJSONEncodingNone) {
                 cJSON_AddStringToObject(entry, "encoding", "none");
             }
-
             cJSON *arr = cJSON_CreateArray();
             if (!arr) {
                 if (outError) *outError = STR("Failed to create JSON array");
                 cJSON_Delete(entry);
                 return cJSON_CreateNull();
             }
-
             OCIndex count = OCIndexSetGetCount(set);
             OCIndex *buf = OCIndexSetGetBytesPtr(set);
-
             // Add indexes to array (if any exist)
             if (buf && count > 0) {
                 for (OCIndex i = 0; i < count; i++) {
@@ -331,10 +324,8 @@ cJSON *OCIndexSetCopyAsJSON(OCIndexSetRef set, bool typed, OCStringRef *outError
             if (outError) *outError = STR("Failed to create JSON array");
             return cJSON_CreateNull();
         }
-
         OCIndex count = OCIndexSetGetCount(set);
         OCIndex *buf = OCIndexSetGetBytesPtr(set);
-
         // Add indexes to array (if any exist)
         if (buf && count > 0) {
             for (OCIndex i = 0; i < count; i++) {
@@ -350,56 +341,45 @@ cJSON *OCIndexSetCopyAsJSON(OCIndexSetRef set, bool typed, OCStringRef *outError
         return arr;
     }
 }
-
 OCIndexSetRef OCIndexSetCreateFromJSON(cJSON *json, OCStringRef *outError) {
     if (!json) {
         if (outError) *outError = STR("JSON input is NULL");
         return NULL;
     }
-
     cJSON *arrayToProcess = NULL;
-
     // Check if typed format (object with type/value structure)
     if (cJSON_IsObject(json)) {
         cJSON *type = cJSON_GetObjectItem(json, "type");
         cJSON *encoding = cJSON_GetObjectItem(json, "encoding");
         cJSON *value = cJSON_GetObjectItem(json, "value");
-
         if (!cJSON_IsString(type)) {
             if (outError) *outError = STR("Invalid typed JSON format: missing or invalid type field");
             return NULL;
         }
-
         const char *typeName = cJSON_GetStringValue(type);
         if (!typeName || strcmp(typeName, "OCIndexSet") != 0) {
             if (outError) *outError = STR("Invalid type: expected OCIndexSet");
             return NULL;
         }
-
         // Handle base64 encoding
         if (encoding && cJSON_IsString(encoding) &&
             strcmp(cJSON_GetStringValue(encoding), "base64") == 0) {
-
             if (!cJSON_IsString(value)) {
                 if (outError) *outError = STR("Invalid base64 format: value must be string");
                 return NULL;
             }
-
             const char *b64Str = cJSON_GetStringValue(value);
             if (!b64Str) {
                 if (outError) *outError = STR("Invalid base64 string");
                 return NULL;
             }
-
             OCStringRef b64 = OCStringCreateWithCString(b64Str);
             OCDataRef decodedData = OCDataCreateFromBase64EncodedString(b64);
             OCRelease(b64);
-
             if (!decodedData) {
                 if (outError) *outError = STR("Failed to decode base64 data");
                 return NULL;
             }
-
             // Verify data length is multiple of OCIndex size
             uint64_t dataLen = OCDataGetLength(decodedData);
             if (dataLen % sizeof(OCIndex) != 0) {
@@ -407,16 +387,13 @@ OCIndexSetRef OCIndexSetCreateFromJSON(cJSON *json, OCStringRef *outError) {
                 OCRelease(decodedData);
                 return NULL;
             }
-
             OCIndexSetRef result = OCIndexSetCreateWithData(decodedData);
             OCRelease(decodedData);
-
             if (result) {
                 // Set encoding on the result
                 OCMutableIndexSetRef mutable = (OCMutableIndexSetRef)result;
                 mutable->encoding = OCJSONEncodingBase64;
             }
-
             if (!result && outError) {
                 *outError = STR("Failed to create OCIndexSet from base64 data");
             }
@@ -434,19 +411,16 @@ OCIndexSetRef OCIndexSetCreateFromJSON(cJSON *json, OCStringRef *outError) {
     // Handle untyped format (direct array)
     else if (cJSON_IsArray(json)) {
         arrayToProcess = json;
-    }
-    else {
+    } else {
         if (outError) *outError = STR("Invalid JSON: expected object or array");
         return NULL;
     }
-
     // Process the JSON array format
     OCMutableIndexSetRef set = OCIndexSetCreateMutable();
     if (!set) {
         if (outError) *outError = STR("Failed to create mutable index set");
         return NULL;
     }
-
     int count = cJSON_GetArraySize(arrayToProcess);
     for (int i = 0; i < count; i++) {
         cJSON *item = cJSON_GetArrayItem(arrayToProcess, i);
@@ -461,7 +435,6 @@ OCIndexSetRef OCIndexSetCreateFromJSON(cJSON *json, OCStringRef *outError) {
             return NULL;
         }
     }
-
     // If we parsed from typed format with explicit "none" encoding, set it
     if (cJSON_IsObject(json)) {
         cJSON *encoding = cJSON_GetObjectItem(json, "encoding");
@@ -470,10 +443,8 @@ OCIndexSetRef OCIndexSetCreateFromJSON(cJSON *json, OCStringRef *outError) {
             set->encoding = OCJSONEncodingNone;
         }
     }
-
     return set;
 }
-
 void OCIndexSetShow(OCIndexSetRef set) {
     fprintf(stderr, "(");
     OCIndex *buf = OCIndexSetGetBytesPtr(set);

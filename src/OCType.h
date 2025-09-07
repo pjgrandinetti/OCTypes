@@ -281,7 +281,6 @@ OCStringRef OCTypeCopyFormattingDesc(const void *ptr);
  * @ingroup OCType
  */
 cJSON *OCTypeCopyJSON(OCTypeRef obj, bool typed, OCStringRef *outError);
-
 /**
  * @brief Creates an OCType instance from a self-describing JSON object.
  *

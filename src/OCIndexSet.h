@@ -228,7 +228,6 @@ OCIndexSetRef OCIndexSetCreateFromJSON(cJSON *json, OCStringRef *outError);
  * @ingroup OCIndexSet
  */
 cJSON *OCIndexSetCopyAsJSON(OCIndexSetRef set, bool typed, OCStringRef *outError);
-
 /**
  * @brief Logs the contents of the set to stderr for debugging.
  *

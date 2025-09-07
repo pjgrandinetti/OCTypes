@@ -204,7 +204,6 @@ OCStringRef OCDictionaryCopyFormattingDesc(OCTypeRef cf);
  * @ingroup OCDictionary
  */
 cJSON *OCDictionaryCopyAsJSON(OCDictionaryRef dict, bool typed, OCStringRef *outError);
-
 /**
  * @brief Creates an OCDictionary from a typed cJSON object.
  *
@@ -215,7 +214,6 @@ cJSON *OCDictionaryCopyAsJSON(OCDictionaryRef dict, bool typed, OCStringRef *out
  *         The caller is responsible for releasing the returned dictionary.
  */
 OCDictionaryRef OCDictionaryCreateFromJSONTyped(cJSON *json, OCStringRef *outError);
-
 /**
  * @brief Creates an OCDictionary from an untyped cJSON object.
  *

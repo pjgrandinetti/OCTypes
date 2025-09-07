@@ -2,13 +2,13 @@
 #include <inttypes.h>  // Ensure this is included at the top
 #include <stdint.h>
 #include <string.h>
-#include <math.h>      // for fabs()
+#include <math.h>  // for fabs()
 #include "../src/OCNumber.h"
 #include "../src/OCString.h"
 #include "../src/OCType.h"
 #include "../src/OCData.h"
 #include "../src/OCArray.h"
-#include "../src/cJSON.h"   // for JSON tests
+#include "../src/cJSON.h"  // for JSON tests
 #include "test_utils.h"
 #define OCTypeEqual(a, b) OCTypeEqual((const void *)(a), (const void *)(b))
 bool numberTest0(void) {
@@ -306,15 +306,13 @@ bool numberTest0(void) {
             }
         }
     }
-
     // --- OCNumberCreateArrayFromData tests ---
     {
         // Test 1: Create array from uint32 data
         {
             uint32_t testData[] = {100, 200, 300, 400};
-            OCDataRef data = OCDataCreate((const uint8_t*)testData, sizeof(testData));
+            OCDataRef data = OCDataCreate((const uint8_t *)testData, sizeof(testData));
             if (!data) PRINTERROR;
-
             OCStringRef error = NULL;
             OCArrayRef array = OCNumberCreateArrayFromData(data, kOCNumberUInt32Type, &error);
             if (!array) {
@@ -325,7 +323,6 @@ bool numberTest0(void) {
                 OCRelease(data);
                 PRINTERROR;
             }
-
             // Verify array count
             OCIndex count = OCArrayGetCount(array);
             if (count != 4) {
@@ -334,7 +331,6 @@ bool numberTest0(void) {
                 OCRelease(data);
                 PRINTERROR;
             }
-
             // Verify array contents
             for (OCIndex i = 0; i < count; i++) {
                 OCNumberRef num = (OCNumberRef)OCArrayGetValueAtIndex(array, i);
@@ -344,7 +340,6 @@ bool numberTest0(void) {
                     OCRelease(data);
                     PRINTERROR;
                 }
-
                 uint32_t value;
                 if (!OCNumberTryGetUInt32(num, &value)) {
                     fprintf(stderr, "ERROR: Failed to get uint32 value at index %ld\n", (long)i);
@@ -352,7 +347,6 @@ bool numberTest0(void) {
                     OCRelease(data);
                     PRINTERROR;
                 }
-
                 if (value != testData[i]) {
                     fprintf(stderr, "ERROR: Expected %u, got %u at index %ld\n",
                             testData[i], value, (long)i);
@@ -361,17 +355,14 @@ bool numberTest0(void) {
                     PRINTERROR;
                 }
             }
-
             OCRelease(array);
             OCRelease(data);
         }
-
         // Test 2: Create array from float data
         {
             float testData[] = {1.5f, 2.5f, 3.5f};
-            OCDataRef data = OCDataCreate((const uint8_t*)testData, sizeof(testData));
+            OCDataRef data = OCDataCreate((const uint8_t *)testData, sizeof(testData));
             if (!data) PRINTERROR;
-
             OCStringRef error = NULL;
             OCArrayRef array = OCNumberCreateArrayFromData(data, kOCNumberFloat32Type, &error);
             if (!array) {
@@ -379,7 +370,6 @@ bool numberTest0(void) {
                 OCRelease(data);
                 PRINTERROR;
             }
-
             OCIndex count = OCArrayGetCount(array);
             if (count != 3) {
                 fprintf(stderr, "ERROR: Expected 3 elements, got %ld\n", (long)count);
@@ -387,7 +377,6 @@ bool numberTest0(void) {
                 OCRelease(data);
                 PRINTERROR;
             }
-
             for (OCIndex i = 0; i < count; i++) {
                 OCNumberRef num = (OCNumberRef)OCArrayGetValueAtIndex(array, i);
                 float value;
@@ -397,7 +386,6 @@ bool numberTest0(void) {
                     OCRelease(data);
                     PRINTERROR;
                 }
-
                 if (value != testData[i]) {
                     fprintf(stderr, "ERROR: Expected %f, got %f at index %ld\n",
                             testData[i], value, (long)i);
@@ -406,11 +394,9 @@ bool numberTest0(void) {
                     PRINTERROR;
                 }
             }
-
             OCRelease(array);
             OCRelease(data);
         }
-
         // Test 3: Error handling - NULL data
         {
             OCStringRef error = NULL;
@@ -425,13 +411,11 @@ bool numberTest0(void) {
                 PRINTERROR;
             }
         }
-
         // Test 4: Error handling - invalid type size
         {
             uint8_t testData[] = {1, 2, 3};  // 3 bytes
             OCDataRef data = OCDataCreate(testData, sizeof(testData));
             if (!data) PRINTERROR;
-
             OCStringRef error = NULL;
             // Try to create uint32 array from 3 bytes (not divisible by 4)
             OCArrayRef array = OCNumberCreateArrayFromData(data, kOCNumberUInt32Type, &error);
@@ -446,16 +430,13 @@ bool numberTest0(void) {
                 OCRelease(data);
                 PRINTERROR;
             }
-
             OCRelease(data);
         }
-
         // Test 5: Complex numbers
         {
-            double complex testData[] = {1.0 + 2.0*I, 3.0 + 4.0*I};
-            OCDataRef data = OCDataCreate((const uint8_t*)testData, sizeof(testData));
+            double complex testData[] = {1.0 + 2.0 * I, 3.0 + 4.0 * I};
+            OCDataRef data = OCDataCreate((const uint8_t *)testData, sizeof(testData));
             if (!data) PRINTERROR;
-
             OCStringRef error = NULL;
             OCArrayRef array = OCNumberCreateArrayFromData(data, kOCNumberComplex128Type, &error);
             if (!array) {
@@ -463,7 +444,6 @@ bool numberTest0(void) {
                 OCRelease(data);
                 PRINTERROR;
             }
-
             OCIndex count = OCArrayGetCount(array);
             if (count != 2) {
                 fprintf(stderr, "ERROR: Expected 2 elements, got %ld\n", (long)count);
@@ -471,7 +451,6 @@ bool numberTest0(void) {
                 OCRelease(data);
                 PRINTERROR;
             }
-
             for (OCIndex i = 0; i < count; i++) {
                 OCNumberRef num = (OCNumberRef)OCArrayGetValueAtIndex(array, i);
                 double complex value;
@@ -481,7 +460,6 @@ bool numberTest0(void) {
                     OCRelease(data);
                     PRINTERROR;
                 }
-
                 if (creal(value) != creal(testData[i]) || cimag(value) != cimag(testData[i])) {
                     fprintf(stderr, "ERROR: Complex mismatch at index %ld\n", (long)i);
                     OCRelease(array);
@@ -489,22 +467,17 @@ bool numberTest0(void) {
                     PRINTERROR;
                 }
             }
-
             OCRelease(array);
             OCRelease(data);
         }
-
     }
-
     // --- OCNumberCreateDataFromArray tests ---
     {
-
         // Test 1: Round-trip test with uint32 data
         {
             uint32_t originalData[] = {100, 200, 300, 400};
-            OCDataRef originalOCData = OCDataCreate((const uint8_t*)originalData, sizeof(originalData));
+            OCDataRef originalOCData = OCDataCreate((const uint8_t *)originalData, sizeof(originalData));
             if (!originalOCData) PRINTERROR;
-
             // Convert to array
             OCStringRef error = NULL;
             OCArrayRef array = OCNumberCreateArrayFromData(originalOCData, kOCNumberUInt32Type, &error);
@@ -513,7 +486,6 @@ bool numberTest0(void) {
                 OCRelease(originalOCData);
                 PRINTERROR;
             }
-
             // Convert back to data
             OCDataRef resultData = OCNumberCreateDataFromArray(array, kOCNumberUInt32Type, &error);
             if (!resultData) {
@@ -522,7 +494,6 @@ bool numberTest0(void) {
                 OCRelease(originalOCData);
                 PRINTERROR;
             }
-
             // Verify sizes match
             OCIndex originalLength = OCDataGetLength(originalOCData);
             OCIndex resultLength = OCDataGetLength(resultData);
@@ -534,7 +505,6 @@ bool numberTest0(void) {
                 OCRelease(originalOCData);
                 PRINTERROR;
             }
-
             // Verify data contents match
             const uint8_t *originalBytes = OCDataGetBytesPtr(originalOCData);
             const uint8_t *resultBytes = OCDataGetBytesPtr(resultData);
@@ -545,18 +515,15 @@ bool numberTest0(void) {
                 OCRelease(originalOCData);
                 PRINTERROR;
             }
-
             OCRelease(resultData);
             OCRelease(array);
             OCRelease(originalOCData);
         }
-
         // Test 2: Direct array to data conversion
         {
             // Create array manually
             OCMutableArrayRef array = OCArrayCreateMutable(3, &kOCTypeArrayCallBacks);
             if (!array) PRINTERROR;
-
             OCNumberRef num1 = OCNumberCreateWithFloat(1.5f);
             OCNumberRef num2 = OCNumberCreateWithFloat(2.5f);
             OCNumberRef num3 = OCNumberCreateWithFloat(3.5f);
@@ -567,11 +534,9 @@ bool numberTest0(void) {
                 OCRelease(array);
                 PRINTERROR;
             }
-
             OCArrayAppendValue(array, num1);
             OCArrayAppendValue(array, num2);
             OCArrayAppendValue(array, num3);
-
             // Convert to data
             OCStringRef error = NULL;
             OCDataRef data = OCNumberCreateDataFromArray(array, kOCNumberFloat32Type, &error);
@@ -583,7 +548,6 @@ bool numberTest0(void) {
                 OCRelease(array);
                 PRINTERROR;
             }
-
             // Verify data size
             OCIndex expectedSize = 3 * sizeof(float);
             OCIndex actualSize = OCDataGetLength(data);
@@ -597,9 +561,8 @@ bool numberTest0(void) {
                 OCRelease(array);
                 PRINTERROR;
             }
-
             // Verify data contents
-            const float *floatData = (const float*)OCDataGetBytesPtr(data);
+            const float *floatData = (const float *)OCDataGetBytesPtr(data);
             float expectedValues[] = {1.5f, 2.5f, 3.5f};
             for (int i = 0; i < 3; i++) {
                 if (floatData[i] != expectedValues[i]) {
@@ -613,14 +576,12 @@ bool numberTest0(void) {
                     PRINTERROR;
                 }
             }
-
             OCRelease(data);
             OCRelease(num3);
             OCRelease(num2);
             OCRelease(num1);
             OCRelease(array);
         }
-
         // Test 3: Error handling - NULL array
         {
             OCStringRef error = NULL;
@@ -635,12 +596,10 @@ bool numberTest0(void) {
                 PRINTERROR;
             }
         }
-
         // Test 4: Error handling - type mismatch in array
         {
             OCMutableArrayRef array = OCArrayCreateMutable(2, &kOCTypeArrayCallBacks);
             if (!array) PRINTERROR;
-
             OCNumberRef num1 = OCNumberCreateWithUInt32(100);  // uint32
             OCNumberRef num2 = OCNumberCreateWithFloat(2.5f);  // float32 - different type!
             if (!num1 || !num2) {
@@ -649,10 +608,8 @@ bool numberTest0(void) {
                 OCRelease(array);
                 PRINTERROR;
             }
-
             OCArrayAppendValue(array, num1);
             OCArrayAppendValue(array, num2);
-
             OCStringRef error = NULL;
             OCDataRef data = OCNumberCreateDataFromArray(array, kOCNumberUInt32Type, &error);
             if (data) {
@@ -670,17 +627,14 @@ bool numberTest0(void) {
                 OCRelease(array);
                 PRINTERROR;
             }
-
             OCRelease(num2);
             OCRelease(num1);
             OCRelease(array);
         }
-
         // Test 5: Empty array test
         {
             OCMutableArrayRef array = OCArrayCreateMutable(0, &kOCTypeArrayCallBacks);
             if (!array) PRINTERROR;
-
             OCStringRef error = NULL;
             OCDataRef data = OCNumberCreateDataFromArray(array, kOCNumberUInt32Type, &error);
             if (!data) {
@@ -688,7 +642,6 @@ bool numberTest0(void) {
                 OCRelease(array);
                 PRINTERROR;
             }
-
             OCIndex dataLength = OCDataGetLength(data);
             if (dataLength != 0) {
                 fprintf(stderr, "ERROR: Expected empty data, got length %ld\n", (long)dataLength);
@@ -696,25 +649,21 @@ bool numberTest0(void) {
                 OCRelease(array);
                 PRINTERROR;
             }
-
             OCRelease(data);
             OCRelease(array);
         }
-
     }
-
     fprintf(stderr, " passed\n");
     return true;
 }
-
 // ============================================================================
 // JSON Serialization Tests
 // ============================================================================
-
 // Helper macro for JSON test output
-#define JSON_TEST_LOG(test_name, ...) \
-    fprintf(stderr, "[%s] ", test_name); fprintf(stderr, __VA_ARGS__); fprintf(stderr, "\n")
-
+#define JSON_TEST_LOG(test_name, ...)    \
+    fprintf(stderr, "[%s] ", test_name); \
+    fprintf(stderr, __VA_ARGS__);        \
+    fprintf(stderr, "\n")
 // Helper to print JSON for debugging
 static void print_json_debug(const char *label, cJSON *json) {
     char *json_string = cJSON_Print(json);
@@ -723,19 +672,15 @@ static void print_json_debug(const char *label, cJSON *json) {
         free(json_string);
     }
 }
-
 bool test_ocnumber_json_untyped_complex(void) {
     const char *test_name = "test_ocnumber_json_untyped_complex";
-
     bool allPassed = true;
-
     // Test Complex64
     OCNumberRef complex64 = OCNumberCreateWithFloatComplex(1.5f + 2.5f * I);
     if (!complex64) {
         JSON_TEST_LOG(test_name, "FAIL: Could not create complex64");
         return false;
     }
-
     // Serialize untyped - should get [1.5, 2.5]
     OCStringRef error = NULL;
     cJSON *json64 = OCNumberCopyAsJSON(complex64, false, &error);
@@ -747,7 +692,6 @@ bool test_ocnumber_json_untyped_complex(void) {
         OCRelease(complex64);
         return false;
     }
-
     // Verify it's an array with 2 elements
     if (!cJSON_IsArray(json64) || cJSON_GetArraySize(json64) != 2) {
         JSON_TEST_LOG(test_name, "FAIL: Complex64 untyped should be array of 2 elements");
@@ -756,7 +700,6 @@ bool test_ocnumber_json_untyped_complex(void) {
         OCRelease(complex64);
         return false;
     }
-
     // Verify real and imaginary parts
     cJSON *real64 = cJSON_GetArrayItem(json64, 0);
     cJSON *imag64 = cJSON_GetArrayItem(json64, 1);
@@ -766,7 +709,6 @@ bool test_ocnumber_json_untyped_complex(void) {
         OCRelease(complex64);
         return false;
     }
-
     double real_val = cJSON_GetNumberValue(real64);
     double imag_val = cJSON_GetNumberValue(imag64);
     if (fabs(real_val - 1.5) > 1e-6 || fabs(imag_val - 2.5) > 1e-6) {
@@ -776,7 +718,6 @@ bool test_ocnumber_json_untyped_complex(void) {
         OCRelease(complex64);
         return false;
     }
-
     // Test roundtrip deserialization
     OCNumberRef deserialized64 = OCNumberCreateFromJSON(json64, kOCNumberComplex64Type, NULL);
     if (!deserialized64) {
@@ -785,7 +726,6 @@ bool test_ocnumber_json_untyped_complex(void) {
         OCRelease(complex64);
         return false;
     }
-
     if (!OCTypeEqual(complex64, deserialized64)) {
         JSON_TEST_LOG(test_name, "FAIL: Complex64 roundtrip failed");
         cJSON_Delete(json64);
@@ -793,18 +733,15 @@ bool test_ocnumber_json_untyped_complex(void) {
         OCRelease(deserialized64);
         return false;
     }
-
     cJSON_Delete(json64);
     OCRelease(complex64);
     OCRelease(deserialized64);
-
     // Test Complex128
     OCNumberRef complex128 = OCNumberCreateWithDoubleComplex(3.14159 - 2.71828 * I);
     if (!complex128) {
         JSON_TEST_LOG(test_name, "FAIL: Could not create complex128");
         return false;
     }
-
     OCStringRef error128 = NULL;
     cJSON *json128 = OCNumberCopyAsJSON(complex128, false, &error128);
     if (!json128 || !cJSON_IsArray(json128) || cJSON_GetArraySize(json128) != 2) {
@@ -816,7 +753,6 @@ bool test_ocnumber_json_untyped_complex(void) {
         OCRelease(complex128);
         return false;
     }
-
     OCNumberRef deserialized128 = OCNumberCreateFromJSON(json128, kOCNumberComplex128Type, NULL);
     if (!deserialized128 || !OCTypeEqual(complex128, deserialized128)) {
         JSON_TEST_LOG(test_name, "FAIL: Complex128 roundtrip failed");
@@ -825,26 +761,20 @@ bool test_ocnumber_json_untyped_complex(void) {
         if (deserialized128) OCRelease(deserialized128);
         return false;
     }
-
     cJSON_Delete(json128);
     OCRelease(complex128);
     OCRelease(deserialized128);
-
     return allPassed;
 }
-
 bool test_ocnumber_json_typed_complex(void) {
     const char *test_name = "test_ocnumber_json_typed_complex";
-
     bool allPassed = true;
-
     // Test Complex64 typed format
     OCNumberRef complex64 = OCNumberCreateWithFloatComplex(1.0f + 2.0f * I);
     if (!complex64) {
         JSON_TEST_LOG(test_name, "FAIL: Could not create complex64");
         return false;
     }
-
     OCStringRef typedError = NULL;
     cJSON *json64 = OCNumberCopyAsJSON(complex64, true, &typedError);
     if (!json64) {
@@ -855,7 +785,6 @@ bool test_ocnumber_json_typed_complex(void) {
         OCRelease(complex64);
         return false;
     }
-
     // Verify typed structure: {"type": "OCNumber", "numeric_type": "complex64", "value": [1.0, 2.0]}
     if (!cJSON_IsObject(json64)) {
         JSON_TEST_LOG(test_name, "FAIL: Typed complex64 should be object");
@@ -864,18 +793,15 @@ bool test_ocnumber_json_typed_complex(void) {
         OCRelease(complex64);
         return false;
     }
-
     cJSON *type = cJSON_GetObjectItem(json64, "type");
     cJSON *numeric_type = cJSON_GetObjectItem(json64, "numeric_type");
     cJSON *value = cJSON_GetObjectItem(json64, "value");
-
     if (!cJSON_IsString(type) || strcmp(cJSON_GetStringValue(type), "OCNumber") != 0) {
         JSON_TEST_LOG(test_name, "FAIL: Missing or invalid 'type' field");
         cJSON_Delete(json64);
         OCRelease(complex64);
         return false;
     }
-
     if (!cJSON_IsString(numeric_type) || strcmp(cJSON_GetStringValue(numeric_type), "complex64") != 0) {
         JSON_TEST_LOG(test_name, "FAIL: Missing or invalid 'numeric_type' field");
         fprintf(stderr, "  Expected: 'complex64', Got: '%s'\n",
@@ -884,7 +810,6 @@ bool test_ocnumber_json_typed_complex(void) {
         OCRelease(complex64);
         return false;
     }
-
     if (!cJSON_IsArray(value) || cJSON_GetArraySize(value) != 2) {
         JSON_TEST_LOG(test_name, "FAIL: 'value' field should be array of 2 elements");
         print_json_debug("Got value", value);
@@ -892,7 +817,6 @@ bool test_ocnumber_json_typed_complex(void) {
         OCRelease(complex64);
         return false;
     }
-
     // Test roundtrip
     OCNumberRef deserialized64 = OCNumberCreateFromJSONTyped(json64, NULL);
     if (!deserialized64 || !OCTypeEqual(complex64, deserialized64)) {
@@ -902,19 +826,14 @@ bool test_ocnumber_json_typed_complex(void) {
         if (deserialized64) OCRelease(deserialized64);
         return false;
     }
-
     cJSON_Delete(json64);
     OCRelease(complex64);
     OCRelease(deserialized64);
-
     return allPassed;
 }
-
 bool test_ocnumber_json_untyped_real(void) {
     const char *test_name = "test_ocnumber_json_untyped_real";
-
     bool allPassed = true;
-
     struct {
         const char *name;
         OCNumberRef number;
@@ -928,16 +847,13 @@ bool test_ocnumber_json_untyped_real(void) {
         {"SInt64", OCNumberCreateWithSInt64(-9007199254740993LL), kOCNumberSInt64Type, -9007199254740992.0},  // Beyond double precision
         {"UInt64", OCNumberCreateWithUInt64(9007199254740993ULL), kOCNumberUInt64Type, 9007199254740992.0}    // Beyond double precision
     };
-
     size_t numTests = sizeof(testCases) / sizeof(testCases[0]);
-
     for (size_t i = 0; i < numTests; i++) {
         if (!testCases[i].number) {
             fprintf(stderr, "[%s] FAIL: Could not create %s\n", test_name, testCases[i].name);
             allPassed = false;
             continue;
         }
-
         // Serialize untyped - should get JSON number
         OCStringRef loopError = NULL;
         cJSON *json = OCNumberCopyAsJSON(testCases[i].number, false, &loopError);
@@ -950,7 +866,6 @@ bool test_ocnumber_json_untyped_real(void) {
             allPassed = false;
             continue;
         }
-
         if (!cJSON_IsNumber(json)) {
             fprintf(stderr, "[%s] FAIL: %s untyped should be JSON number\n", test_name, testCases[i].name);
             print_json_debug("Got", json);
@@ -959,11 +874,9 @@ bool test_ocnumber_json_untyped_real(void) {
             allPassed = false;
             continue;
         }
-
         // Check value (allowing for precision loss in 64-bit cases)
         double json_value = cJSON_GetNumberValue(json);
         double tolerance = (testCases[i].type == kOCNumberSInt64Type || testCases[i].type == kOCNumberUInt64Type) ? 1.0 : 1e-6;
-
         if (fabs(json_value - testCases[i].expected_value) > tolerance) {
             fprintf(stderr, "[%s] FAIL: %s value mismatch. Expected: %f, Got: %f\n",
                     test_name, testCases[i].name, testCases[i].expected_value, json_value);
@@ -972,7 +885,6 @@ bool test_ocnumber_json_untyped_real(void) {
             allPassed = false;
             continue;
         }
-
         // Test roundtrip
         OCNumberRef deserialized = OCNumberCreateFromJSON(json, testCases[i].type, NULL);
         if (!deserialized) {
@@ -982,12 +894,10 @@ bool test_ocnumber_json_untyped_real(void) {
             allPassed = false;
             continue;
         }
-
         // For 64-bit integers, we expect precision loss in untyped mode
         // With the fixed OCTypeEqual function, this should now properly detect precision loss
         bool should_equal = (testCases[i].type != kOCNumberSInt64Type && testCases[i].type != kOCNumberUInt64Type);
         bool equal = OCTypeEqual(testCases[i].number, deserialized);
-
         if (should_equal && !equal) {
             fprintf(stderr, "[%s] FAIL: %s roundtrip failed\n", test_name, testCases[i].name);
             allPassed = false;
@@ -995,21 +905,15 @@ bool test_ocnumber_json_untyped_real(void) {
             // This would be unexpected - 64-bit should lose precision and not be equal
             fprintf(stderr, "[%s] WARNING: %s roundtrip unexpectedly preserved precision\n", test_name, testCases[i].name);
         }
-
-
         cJSON_Delete(json);
         OCRelease(testCases[i].number);
         OCRelease(deserialized);
     }
-
     return allPassed;
 }
-
 bool test_ocnumber_json_typed_real(void) {
     const char *test_name = "test_ocnumber_json_typed_real";
-
     bool allPassed = true;
-
     struct {
         const char *name;
         OCNumberRef number;
@@ -1020,19 +924,16 @@ bool test_ocnumber_json_typed_real(void) {
         {"Float64", OCNumberCreateWithDouble(2.718281828459045), "float64", false},
         {"SInt32", OCNumberCreateWithSInt32(-12345), "sint32", false},
         {"UInt32", OCNumberCreateWithUInt32(98765), "uint32", false},
-        {"SInt64", OCNumberCreateWithSInt64(-9876543210LL), "sint64", true},   // String for precision
+        {"SInt64", OCNumberCreateWithSInt64(-9876543210LL), "sint64", true},           // String for precision
         {"UInt64", OCNumberCreateWithUInt64(18446744073709551615ULL), "uint64", true}  // String for precision
     };
-
     size_t numTests = sizeof(testCases) / sizeof(testCases[0]);
-
     for (size_t i = 0; i < numTests; i++) {
         if (!testCases[i].number) {
             fprintf(stderr, "[%s] FAIL: Could not create %s\n", test_name, testCases[i].name);
             allPassed = false;
             continue;
         }
-
         // Serialize typed
         OCStringRef typedLoopError = NULL;
         cJSON *json = OCNumberCopyAsJSON(testCases[i].number, true, &typedLoopError);
@@ -1046,12 +947,10 @@ bool test_ocnumber_json_typed_real(void) {
             allPassed = false;
             continue;
         }
-
         // Verify structure
         cJSON *type = cJSON_GetObjectItem(json, "type");
         cJSON *numeric_type = cJSON_GetObjectItem(json, "numeric_type");
         cJSON *value = cJSON_GetObjectItem(json, "value");
-
         if (!type || !numeric_type || !value) {
             fprintf(stderr, "[%s] FAIL: %s missing required fields\n", test_name, testCases[i].name);
             cJSON_Delete(json);
@@ -1059,7 +958,6 @@ bool test_ocnumber_json_typed_real(void) {
             allPassed = false;
             continue;
         }
-
         if (strcmp(cJSON_GetStringValue(type), "OCNumber") != 0) {
             fprintf(stderr, "[%s] FAIL: %s wrong type field\n", test_name, testCases[i].name);
             cJSON_Delete(json);
@@ -1067,7 +965,6 @@ bool test_ocnumber_json_typed_real(void) {
             allPassed = false;
             continue;
         }
-
         if (strcmp(cJSON_GetStringValue(numeric_type), testCases[i].expected_numeric_type) != 0) {
             fprintf(stderr, "[%s] FAIL: %s wrong numeric_type. Expected: %s, Got: %s\n",
                     test_name, testCases[i].name, testCases[i].expected_numeric_type,
@@ -1077,7 +974,6 @@ bool test_ocnumber_json_typed_real(void) {
             allPassed = false;
             continue;
         }
-
         // Verify value type (string for 64-bit, number for others)
         if (testCases[i].value_should_be_string && !cJSON_IsString(value)) {
             fprintf(stderr, "[%s] FAIL: %s value should be string for precision\n", test_name, testCases[i].name);
@@ -1092,7 +988,6 @@ bool test_ocnumber_json_typed_real(void) {
             allPassed = false;
             continue;
         }
-
         // Test roundtrip
         OCNumberRef deserialized = OCNumberCreateFromJSONTyped(json, NULL);
         if (!deserialized || !OCTypeEqual(testCases[i].number, deserialized)) {
@@ -1103,21 +998,15 @@ bool test_ocnumber_json_typed_real(void) {
             allPassed = false;
             continue;
         }
-
-
         cJSON_Delete(json);
         OCRelease(testCases[i].number);
         OCRelease(deserialized);
     }
-
     return allPassed;
 }
-
 bool test_ocnumber_json_backward_compatibility(void) {
     const char *test_name = "test_ocnumber_json_backward_compatibility";
-
     bool allPassed = true;
-
     // Test old typed format with "subtype" field
     const char *old_typed_json = "{\"type\": \"OCNumber\", \"subtype\": \"complex64\", \"value\": \"1.5+I*2.5\"}";
     cJSON *old_json = cJSON_Parse(old_typed_json);
@@ -1125,14 +1014,12 @@ bool test_ocnumber_json_backward_compatibility(void) {
         JSON_TEST_LOG(test_name, "FAIL: Could not parse old JSON format");
         return false;
     }
-
     OCNumberRef from_old = OCNumberCreateFromJSONTyped(old_json, NULL);
     if (!from_old) {
         JSON_TEST_LOG(test_name, "FAIL: Could not deserialize old typed format");
         cJSON_Delete(old_json);
         return false;
     }
-
     // Verify the complex number was parsed correctly
     float complex value;
     if (!OCNumberTryGetFloatComplex(from_old, &value)) {
@@ -1141,7 +1028,6 @@ bool test_ocnumber_json_backward_compatibility(void) {
         OCRelease(from_old);
         return false;
     }
-
     float real_part = crealf(value);
     float imag_part = cimagf(value);
     if (fabs(real_part - 1.5f) > 1e-6 || fabs(imag_part - 2.5f) > 1e-6) {
@@ -1151,10 +1037,8 @@ bool test_ocnumber_json_backward_compatibility(void) {
         OCRelease(from_old);
         return false;
     }
-
     cJSON_Delete(old_json);
     OCRelease(from_old);
-
     // Test old untyped string format for complex numbers
     const char *old_untyped_complex = "\"2.0+I*3.0\"";
     cJSON *old_untyped_json = cJSON_Parse(old_untyped_complex);
@@ -1162,21 +1046,18 @@ bool test_ocnumber_json_backward_compatibility(void) {
         JSON_TEST_LOG(test_name, "FAIL: Could not parse old untyped complex string");
         return false;
     }
-
     OCNumberRef from_old_untyped = OCNumberCreateFromJSON(old_untyped_json, kOCNumberComplex64Type, NULL);
     if (!from_old_untyped) {
         JSON_TEST_LOG(test_name, "FAIL: Could not deserialize old untyped complex string");
         cJSON_Delete(old_untyped_json);
         return false;
     }
-
     if (!OCNumberTryGetFloatComplex(from_old_untyped, &value)) {
         JSON_TEST_LOG(test_name, "FAIL: Could not extract complex value from old untyped");
         cJSON_Delete(old_untyped_json);
         OCRelease(from_old_untyped);
         return false;
     }
-
     real_part = crealf(value);
     imag_part = cimagf(value);
     if (fabs(real_part - 2.0f) > 1e-6 || fabs(imag_part - 3.0f) > 1e-6) {
@@ -1186,32 +1067,24 @@ bool test_ocnumber_json_backward_compatibility(void) {
         OCRelease(from_old_untyped);
         return false;
     }
-
     cJSON_Delete(old_untyped_json);
     OCRelease(from_old_untyped);
-
     return allPassed;
 }
-
 bool test_number_comprehensive(void) {
     const char *test_name = "test_number_comprehensive";
-
     bool allPassed = true;
-
     // Run basic OCNumber tests
     allPassed &= numberTest0();
-
     // Run JSON serialization tests
     allPassed &= test_ocnumber_json_untyped_complex();
     allPassed &= test_ocnumber_json_typed_complex();
     allPassed &= test_ocnumber_json_untyped_real();
     allPassed &= test_ocnumber_json_typed_real();
     allPassed &= test_ocnumber_json_backward_compatibility();
-
     if (allPassed) {
     } else {
         fprintf(stderr, "[%s] SOME TESTS FAILED\n", test_name);
     }
-
     return allPassed;
 }

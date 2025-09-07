@@ -111,7 +111,6 @@ cJSON *OCStringCopyAsJSON(OCStringRef str, bool typed, OCStringRef *outError);
  * @return A newly allocated OCStringRef, or NULL on failure.
  */
 OCStringRef OCStringCreateFromJSON(cJSON *json, OCStringRef *outError);
-
 /**
  * @brief Creates an OCString by decoding raw data as UTF-8 text.
  *

@@ -81,7 +81,6 @@ OCStringRef OCBooleanCreateStringValue(OCBooleanRef boolean);
  * @ingroup OCBoolean
  */
 cJSON *OCBooleanCopyAsJSON(OCBooleanRef boolean, bool typed, OCStringRef *outError);
-
 /**
  * @brief Creates an OCBooleanRef from a JSON boolean node.
  *
@@ -95,6 +94,5 @@ cJSON *OCBooleanCopyAsJSON(OCBooleanRef boolean, bool typed, OCStringRef *outErr
  * @ingroup OCBoolean
  */
 OCBooleanRef OCBooleanCreateFromJSON(cJSON *json, OCStringRef *outError);
-
 /** @} */  // end of OCBoolean group
 #endif     /* OCBoolean_h */

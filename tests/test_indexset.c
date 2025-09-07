@@ -17,7 +17,7 @@ bool OCIndexSetCreateAndAccess_test(void) {
     OCRelease(s);
     OCRelease(single);
     OCRelease(range);
-        fprintf(stderr, " passed\n");
+    fprintf(stderr, " passed\n");
     return success;
 }
 bool OCIndexSetAddAndContains_test(void) {
@@ -32,7 +32,7 @@ bool OCIndexSetAddAndContains_test(void) {
     success &= OCIndexSetContainsIndex(set, 20);
     success &= !OCIndexSetContainsIndex(set, 99);
     OCRelease(set);
-        fprintf(stderr, " passed\n");
+    fprintf(stderr, " passed\n");
     return success;
 }
 bool OCIndexSetRangeAndBounds_test(void) {
@@ -48,7 +48,7 @@ bool OCIndexSetRangeAndBounds_test(void) {
     success &= (OCIndexSetIndexLessThanIndex(set, 25) == 20);
     success &= (OCIndexSetIndexGreaterThanIndex(set, 25) == 30);
     OCRelease(set);
-        fprintf(stderr, " passed\n");
+    fprintf(stderr, " passed\n");
     return success;
 }
 bool OCIndexSetSerialization_test(void) {
@@ -64,7 +64,7 @@ bool OCIndexSetSerialization_test(void) {
     OCRelease(set);
     OCRelease(dict);
     OCRelease(restored);
-        fprintf(stderr, " passed\n");
+    fprintf(stderr, " passed\n");
     return success;
 }
 bool OCIndexSetDeepCopy_test(void) {
@@ -83,84 +83,67 @@ bool OCIndexSetDeepCopy_test(void) {
     success &= (OCIndexSetGetCount(original) == 2);
     OCRelease(original);
     OCRelease(copy);
-        fprintf(stderr, " passed\n");
+    fprintf(stderr, " passed\n");
     return success;
 }
-
 bool OCIndexSetJSONEncoding_test(void) {
     fprintf(stderr, "%s begin...", __func__);
-
     // Create test set
     OCMutableIndexSetRef original = OCIndexSetCreateMutable();
     if (!original) {
         fprintf(stderr, "FAIL: Could not create mutable index set\n");
         return false;
     }
-
     OCIndexSetAddIndex(original, 5);
     OCIndexSetAddIndex(original, 15);
     OCIndexSetAddIndex(original, 25);
-
     bool success = true;
-
     // Test encoding functionality
     success &= (OCIndexSetCopyEncoding(original) == OCJSONEncodingNone);
-
     // Test base64 encoding
     OCIndexSetSetEncoding(original, OCJSONEncodingBase64);
     success &= (OCIndexSetCopyEncoding(original) == OCJSONEncodingBase64);
-
     OCStringRef base64Error = NULL;
     cJSON *jsonBase64 = OCIndexSetCopyAsJSON(original, true, &base64Error);
     success &= (jsonBase64 != NULL);
     if (!jsonBase64 && base64Error) {
         fprintf(stderr, "Base64 serialization failed: %s\n", OCStringGetCString(base64Error));
     }
-
     if (jsonBase64) {
         cJSON *encoding = cJSON_GetObjectItem(jsonBase64, "encoding");
         success &= (encoding && cJSON_IsString(encoding) && strcmp(cJSON_GetStringValue(encoding), "base64") == 0);
-
         // Roundtrip test
         OCIndexSetRef deserializedBase64 = OCIndexSetCreateFromJSON(jsonBase64, NULL);
         success &= (deserializedBase64 != NULL);
         success &= OCTypeEqual(original, deserializedBase64);
         success &= (OCIndexSetCopyEncoding(deserializedBase64) == OCJSONEncodingBase64);
-
         if (deserializedBase64) OCRelease(deserializedBase64);
         cJSON_Delete(jsonBase64);
     }
-
     // Test none encoding
     OCIndexSetSetEncoding(original, OCJSONEncodingNone);
     success &= (OCIndexSetCopyEncoding(original) == OCJSONEncodingNone);
-
     OCStringRef noneError = NULL;
     cJSON *jsonNone = OCIndexSetCopyAsJSON(original, true, &noneError);
     success &= (jsonNone != NULL);
     if (!jsonNone && noneError) {
         fprintf(stderr, "None encoding serialization failed: %s\n", OCStringGetCString(noneError));
     }
-
     if (jsonNone) {
         cJSON *encoding = cJSON_GetObjectItem(jsonNone, "encoding");
         success &= (encoding && cJSON_IsString(encoding) && strcmp(cJSON_GetStringValue(encoding), "none") == 0);
-
         cJSON *value = cJSON_GetObjectItem(jsonNone, "value");
         success &= (value && cJSON_IsArray(value));
         success &= (cJSON_GetArraySize(value) == 3);
-
         // Roundtrip test
         OCIndexSetRef deserializedNone = OCIndexSetCreateFromJSON(jsonNone, NULL);
         success &= (deserializedNone != NULL);
         success &= OCTypeEqual(original, deserializedNone);
         success &= (OCIndexSetCopyEncoding(deserializedNone) == OCJSONEncodingNone);
-
         if (deserializedNone) OCRelease(deserializedNone);
         cJSON_Delete(jsonNone);
     }
-
     OCRelease(original);
-        fprintf(stderr, " passed\n");
+    fprintf(stderr, " passed\n");
     return success;
 }

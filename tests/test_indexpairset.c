@@ -24,7 +24,7 @@ bool OCIndexPairSetCreation_test(void) {
     OCIndexPairSetRef nullSet = OCIndexPairSetCreateWithIndexPairArray(NULL, 0);
     success &= nullSet && OCIndexPairSetGetCount(nullSet) == 0;
     if (nullSet) OCRelease(nullSet);
-        fprintf(stderr, " passed\n");
+    fprintf(stderr, " passed\n");
     return success;
 }
 bool OCIndexPairSetAddAndContains_test(void) {
@@ -42,7 +42,7 @@ bool OCIndexPairSetAddAndContains_test(void) {
         success &= OCIndexPairSetValueForIndex(set, 20) == 200;
         OCRelease(set);
     }
-        fprintf(stderr, " passed\n");
+    fprintf(stderr, " passed\n");
     return success;
 }
 bool OCIndexPairSetValueLookup_test(void) {
@@ -57,7 +57,7 @@ bool OCIndexPairSetValueLookup_test(void) {
         success &= (OCIndexPairSetValueForIndex(set, 999) == kOCNotFound);
         OCRelease(set);
     }
-        fprintf(stderr, " passed\n");
+    fprintf(stderr, " passed\n");
     return success;
 }
 bool OCIndexPairSetEquality_test(void) {
@@ -71,7 +71,7 @@ bool OCIndexPairSetEquality_test(void) {
     if (a) OCRelease(a);
     if (b) OCRelease(b);
     if (c) OCRelease(c);
-        fprintf(stderr, " passed\n");
+    fprintf(stderr, " passed\n");
     return success;
 }
 bool OCIndexPairSetShow_test(void) {
@@ -85,7 +85,7 @@ bool OCIndexPairSetShow_test(void) {
         OCIndexPairSetShow(set);
         OCRelease(set);
     }
-        fprintf(stderr, " passed\n");
+    fprintf(stderr, " passed\n");
     return success;
 }
 bool OCIndexPairSetDeepCopy_test(void) {
@@ -105,74 +105,59 @@ bool OCIndexPairSetDeepCopy_test(void) {
     success &= (OCIndexPairSetGetCount(original) == 2);
     OCRelease(original);
     OCRelease(copy);
-        fprintf(stderr, " passed\n");
+    fprintf(stderr, " passed\n");
     return success;
 }
-
 bool OCIndexPairSetJSONEncoding_test(void) {
     fprintf(stderr, "%s begin...", __func__);
-
     // Create test pair set
     OCMutableIndexPairSetRef original = OCIndexPairSetCreateMutable();
     if (!original) {
         fprintf(stderr, "FAIL: Could not create mutable index pair set\n");
         return false;
     }
-
     OCIndexPairSetAddIndexPair(original, 1, 10);
     OCIndexPairSetAddIndexPair(original, 2, 20);
     OCIndexPairSetAddIndexPair(original, 3, 30);
-
     bool success = true;
-
     // Test encoding functionality
     success &= (OCIndexPairSetCopyEncoding(original) == OCJSONEncodingNone);
-
     // Test base64 encoding
     OCIndexPairSetSetEncoding(original, OCJSONEncodingBase64);
     success &= (OCIndexPairSetCopyEncoding(original) == OCJSONEncodingBase64);
-
     OCStringRef base64Error = NULL;
     cJSON *jsonBase64 = OCIndexPairSetCopyAsJSON(original, true, &base64Error);
     success &= (jsonBase64 != NULL);
     if (!jsonBase64 && base64Error) {
         fprintf(stderr, "Base64 serialization failed: %s\n", OCStringGetCString(base64Error));
     }
-
     if (jsonBase64) {
         cJSON *encoding = cJSON_GetObjectItem(jsonBase64, "encoding");
         success &= (encoding && cJSON_IsString(encoding) && strcmp(cJSON_GetStringValue(encoding), "base64") == 0);
-
         // Roundtrip test
         OCIndexPairSetRef deserializedBase64 = OCIndexPairSetCreateFromJSON(jsonBase64, NULL);
         success &= (deserializedBase64 != NULL);
         success &= OCTypeEqual(original, deserializedBase64);
         success &= (OCIndexPairSetCopyEncoding(deserializedBase64) == OCJSONEncodingBase64);
-
         if (deserializedBase64) OCRelease(deserializedBase64);
         cJSON_Delete(jsonBase64);
     }
-
     // Test none encoding (CSDM flat array)
     OCIndexPairSetSetEncoding(original, OCJSONEncodingNone);
     success &= (OCIndexPairSetCopyEncoding(original) == OCJSONEncodingNone);
-
     OCStringRef noneError = NULL;
     cJSON *jsonNone = OCIndexPairSetCopyAsJSON(original, true, &noneError);
     success &= (jsonNone != NULL);
     if (!jsonNone && noneError) {
         fprintf(stderr, "None encoding serialization failed: %s\n", OCStringGetCString(noneError));
     }
-
     if (jsonNone) {
         cJSON *encoding = cJSON_GetObjectItem(jsonNone, "encoding");
         success &= (encoding && cJSON_IsString(encoding) && strcmp(cJSON_GetStringValue(encoding), "none") == 0);
-
         cJSON *value = cJSON_GetObjectItem(jsonNone, "value");
         success &= (value && cJSON_IsArray(value));
         // CSDM flat format: [index1,value1,index2,value2,index3,value3] = 6 elements
         success &= (cJSON_GetArraySize(value) == 6);
-
         // Verify CSDM flat array structure [1,10,2,20,3,30]
         if (success && cJSON_GetArraySize(value) == 6) {
             cJSON *items[6];
@@ -185,50 +170,45 @@ bool OCIndexPairSetJSONEncoding_test(void) {
                 bool foundPair1 = false, foundPair2 = false, foundPair3 = false;
                 for (int i = 0; i < 6; i += 2) {
                     OCIndex index = (OCIndex)items[i]->valuedouble;
-                    OCIndex value = (OCIndex)items[i+1]->valuedouble;
-                    if (index == 1 && value == 10) foundPair1 = true;
-                    else if (index == 2 && value == 20) foundPair2 = true;
-                    else if (index == 3 && value == 30) foundPair3 = true;
+                    OCIndex value = (OCIndex)items[i + 1]->valuedouble;
+                    if (index == 1 && value == 10)
+                        foundPair1 = true;
+                    else if (index == 2 && value == 20)
+                        foundPair2 = true;
+                    else if (index == 3 && value == 30)
+                        foundPair3 = true;
                 }
                 success &= (foundPair1 && foundPair2 && foundPair3);
             }
         }
-
         // Roundtrip test
         OCIndexPairSetRef deserializedNone = OCIndexPairSetCreateFromJSON(jsonNone, NULL);
         success &= (deserializedNone != NULL);
         success &= OCTypeEqual(original, deserializedNone);
         success &= (OCIndexPairSetCopyEncoding(deserializedNone) == OCJSONEncodingNone);
-
         if (deserializedNone) OCRelease(deserializedNone);
         cJSON_Delete(jsonNone);
     }
-
     OCRelease(original);
-        fprintf(stderr, " passed\n");
+    fprintf(stderr, " passed\n");
     return success;
 }
-
 bool OCIndexPairSetDictionary_test(void) {
     fprintf(stderr, "%s begin...", __func__);
     bool success = true;
-
     // Create a test set with some data
     OCIndexPair pairs[3] = {{5, 50}, {10, 100}, {15, 150}};
     OCIndexPairSetRef original = OCIndexPairSetCreateWithIndexPairArray(pairs, 3);
     success &= (original != NULL);
     success &= (OCIndexPairSetGetCount(original) == 3);
-
     if (original) {
         // Test CopyAsDictionary with default encoding
         OCDictionaryRef dict = OCIndexPairSetCopyAsDictionary(original);
         success &= (dict != NULL);
-
         if (dict) {
             // Verify the dictionary contains the expected data
             OCDataRef indexPairs = OCDictionaryGetValue(dict, STR("indexPairs"));
             success &= (indexPairs != NULL);
-
             if (indexPairs) {
                 // Verify the data content
                 success &= (OCDataGetLength(indexPairs) == 3 * sizeof(OCIndexPair));
@@ -237,7 +217,6 @@ bool OCIndexPairSetDictionary_test(void) {
                 success &= (storedPairs[1].index == 10 && storedPairs[1].value == 100);
                 success &= (storedPairs[2].index == 15 && storedPairs[2].value == 150);
             }
-
             // Test CreateWithDictionary roundtrip
             OCIndexPairSetRef restored = OCIndexPairSetCreateWithDictionary(dict);
             success &= (restored != NULL);
@@ -246,16 +225,13 @@ bool OCIndexPairSetDictionary_test(void) {
             success &= (OCIndexPairSetValueForIndex(restored, 10) == 100);
             success &= (OCIndexPairSetValueForIndex(restored, 15) == 150);
             success &= (OCIndexPairSetValueForIndex(restored, 99) == kOCNotFound);
-
             if (restored) OCRelease(restored);
             OCRelease(dict);
         }
-
         // Test with base64 encoding
         OCIndexPairSetSetEncoding((OCMutableIndexPairSetRef)original, OCJSONEncodingBase64);
         OCDictionaryRef dictBase64 = OCIndexPairSetCopyAsDictionary(original);
         success &= (dictBase64 != NULL);
-
         if (dictBase64) {
             // Verify encoding is stored
             OCStringRef encoding = OCDictionaryGetValue(dictBase64, STR("encoding"));
@@ -264,7 +240,6 @@ bool OCIndexPairSetDictionary_test(void) {
                 const char *encodingStr = OCStringGetCString(encoding);
                 success &= (encodingStr && strcmp(encodingStr, "base64") == 0);
             }
-
             // Test CreateWithDictionary with base64
             OCIndexPairSetRef restoredBase64 = OCIndexPairSetCreateWithDictionary(dictBase64);
             success &= (restoredBase64 != NULL);
@@ -273,21 +248,16 @@ bool OCIndexPairSetDictionary_test(void) {
             success &= (OCIndexPairSetValueForIndex(restoredBase64, 5) == 50);
             success &= (OCIndexPairSetValueForIndex(restoredBase64, 10) == 100);
             success &= (OCIndexPairSetValueForIndex(restoredBase64, 15) == 150);
-
             if (restoredBase64) OCRelease(restoredBase64);
             OCRelease(dictBase64);
         }
-
         OCRelease(original);
     }
-
     // Test with NULL inputs
     OCDictionaryRef nullDict = OCIndexPairSetCopyAsDictionary(NULL);
     success &= (nullDict == NULL);
-
     OCIndexPairSetRef nullSet = OCIndexPairSetCreateWithDictionary(NULL);
     success &= (nullSet == NULL);
-
     // Test with empty dictionary
     OCMutableDictionaryRef emptyDict = OCDictionaryCreateMutable(0);
     if (emptyDict) {
@@ -297,7 +267,6 @@ bool OCIndexPairSetDictionary_test(void) {
         if (emptyRestore) OCRelease(emptyRestore);
         OCRelease(emptyDict);
     }
-
     fprintf(stderr, " passed\n");
     return success;
 }

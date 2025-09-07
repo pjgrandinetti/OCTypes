@@ -268,7 +268,6 @@ OCIndexPairSetRef OCIndexPairSetCreateWithDictionary(OCDictionaryRef dictionary)
  * @ingroup OCIndexPairSet
  */
 cJSON *OCIndexPairSetCopyAsJSON(OCIndexPairSetRef set, bool typed, OCStringRef *outError);
-
 /**
  * @brief Creates an OCIndexPairSet from a JSON array of index-value pairs.
  *

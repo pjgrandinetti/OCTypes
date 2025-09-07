@@ -146,18 +146,15 @@ OCTypeID OCRegisterType(const char *typeName, OCTypeRef (*factory)(cJSON *, OCSt
             exit(EXIT_FAILURE);  // Exit if memory allocation fails
         }
         strcpy(typeIDTable[typeIDTableCount], typeName);
-
         // Register the factory function if provided
         if (factory) {
             createFromJSONTypedTable[typeIDTableCount] = factory;
         }
-
         typeIDTableCount++;
         return typeIDTableCount;
     }
     return kOCNotATypeID;
 }
-
 void OCRelease(const void *ptr) {
     struct impl_OCType *theType = (struct impl_OCType *)ptr;
     if (NULL == theType) return;
@@ -226,11 +223,9 @@ cJSON *OCTypeCopyJSON(OCTypeRef obj, bool typed, OCStringRef *outError) {
     }
     return b->copyJSON(obj, typed, outError);
 }
-
 OCTypeRef OCTypeCreateFromJSONTyped(cJSON *json, OCStringRef *outError) {
     if (outError) *outError = NULL;
     if (!json) return NULL;
-
     // Handle native JSON types directly (no type wrapper needed)
     if (cJSON_IsString(json)) return (OCTypeRef)OCStringCreateFromJSON(json, outError);
     if (cJSON_IsBool(json)) return (OCTypeRef)OCBooleanCreateFromJSON(json, outError);
@@ -246,14 +241,11 @@ OCTypeRef OCTypeCreateFromJSONTyped(cJSON *json, OCStringRef *outError) {
             return (OCTypeRef)OCDictionaryCreateFromJSONTyped(json, outError);
         }
     }
-
     // Handle wrapped types with type information
     if (!cJSON_IsObject(json)) return NULL;
-
     cJSON *type = cJSON_GetObjectItem(json, "type");
     const char *typeName = cJSON_IsString(type) ? cJSON_GetStringValue(type) : NULL;
     if (!typeName) return NULL;
-
     // Look up the type in our registry and call the registered factory function
     for (OCTypeID i = 0; i < typeIDTableCount; i++) {
         if (typeIDTable[i] && strcmp(typeIDTable[i], typeName) == 0) {
@@ -263,7 +255,6 @@ OCTypeRef OCTypeCreateFromJSONTyped(cJSON *json, OCStringRef *outError) {
             return NULL;
         }
     }
-
     if (outError) *outError = STR("OCTypeCreateFromJSONTyped: Unknown type");
     return NULL;
 }
@@ -323,7 +314,6 @@ void *OCTypeAllocate(size_t size,
     object->base.flags.static_instance = false;
     object->base.flags.finalized = false;
     object->base.flags.tracked = true;
-
     impl_OCTrack(object);
     return object;
 }

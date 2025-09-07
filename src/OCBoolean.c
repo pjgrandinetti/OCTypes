@@ -2,14 +2,12 @@
 //  #include <stdio.h>
 #include "OCType.h"  // for OCRegisterType, OCTypeID, kOCNotATypeID
 #include "OCTypes.h"
-
 // Forward declarations for static functions used in initializers
 static bool impl_OCBooleanEqual(const void* v1, const void* v2);
 static void impl_OCBooleanFinalize(const void* unused);
 static OCStringRef impl_OCBooleanCopyFormattingDesc(OCTypeRef cf);
 static cJSON* impl_OCBooleanCopyJSON(const void* cf, bool typed, OCStringRef* outError);
 static void* impl_OCBooleanDeepCopy(const void* cf);
-
 // Static storage of the boolean type's OCTypeIDolean.c
 //  OCTypes
 //
@@ -39,10 +37,7 @@ static struct impl_OCBoolean impl_kOCBooleanTrue = {
             .static_instance = 1,
             .finalized = 0,
             .tracked = 0,
-            .reserved = 0
-        }
-    }
-};
+            .reserved = 0}}};
 static struct impl_OCBoolean impl_kOCBooleanFalse = {
     .base = {
         .typeID = kOCNotATypeID,
@@ -57,10 +52,7 @@ static struct impl_OCBoolean impl_kOCBooleanFalse = {
             .static_instance = 1,
             .finalized = 0,
             .tracked = 0,
-            .reserved = 0
-        }
-    }
-};
+            .reserved = 0}}};
 const OCBooleanRef kOCBooleanTrue = &impl_kOCBooleanTrue;
 const OCBooleanRef kOCBooleanFalse = &impl_kOCBooleanFalse;
 // Equality callback: same pointer

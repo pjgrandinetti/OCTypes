@@ -11,13 +11,11 @@
 #define OCNull_h
 #include "OCType.h"  // Foundation types and forward declarations
 #include "cJSON.h"   // For JSON functionality
-
 /**
  * @defgroup OCNull OCNull
  * @brief Immutable null type abstraction in OCTypes.
  * @{
  */
-
 /**
  * @brief Returns the unique type identifier for the OCNull class.
  *
@@ -27,7 +25,6 @@
  * @ingroup OCNull
  */
 OCTypeID OCNullGetTypeID(void);
-
 /**
  * @brief The immutable singleton OCNullRef representing an explicit null value.
  *
@@ -45,7 +42,6 @@ OCTypeID OCNullGetTypeID(void);
  * @ingroup OCNull
  */
 extern const OCNullRef kOCNull;
-
 /**
  * @brief Returns the singleton null value.
  *
@@ -56,7 +52,6 @@ extern const OCNullRef kOCNull;
  * @ingroup OCNull
  */
 OCNullRef OCNullGet(void);
-
 /**
  * @brief Checks if the given object is the null singleton.
  *
@@ -66,7 +61,6 @@ OCNullRef OCNullGet(void);
  * @ingroup OCNull
  */
 bool OCNullIsNull(OCTypeRef obj);
-
 /**
  * @brief Creates a JSON representation of the null value.
  *
@@ -78,7 +72,6 @@ bool OCNullIsNull(OCTypeRef obj);
  * @ingroup OCNull
  */
 cJSON *OCNullCopyAsJSON(OCNullRef null, bool typed, OCStringRef *outError);
-
 /**
  * @brief Creates an OCNull from a JSON null value.
  *
@@ -89,11 +82,8 @@ cJSON *OCNullCopyAsJSON(OCNullRef null, bool typed, OCStringRef *outError);
  * @ingroup OCNull
  */
 OCNullRef OCNullCreateFromJSON(cJSON *json, OCStringRef *outError);
-
 /** @} */  // end of OCNull group
-
 #ifdef __cplusplus
 }
 #endif
-
 #endif /* OCNull_h */

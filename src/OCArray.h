@@ -7,11 +7,9 @@
  */
 #ifndef OCArray_h
 #define OCArray_h
-
 #include "OCType.h"
 #include "OCNumber.h"
 #include "cJSON.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -288,7 +286,6 @@ OCStringRef OCArrayCopyHomogeneousElementTypeName(OCArrayRef array);
  * @ingroup OCArray
  */
 cJSON *OCArrayCopyAsJSON(OCArrayRef array, bool typed, OCStringRef *outError);
-
 /**
  * @brief Create an OCArrayRef from a JSON array with typed element deserialization.
  *
@@ -302,7 +299,6 @@ cJSON *OCArrayCopyAsJSON(OCArrayRef array, bool typed, OCStringRef *outError);
  * @ingroup OCArray
  */
 OCArrayRef OCArrayCreateFromJSONTyped(cJSON *json, OCStringRef *outError);
-
 /**
  * @brief Create an OCArrayRef from untyped JSON with auto-detection.
  *

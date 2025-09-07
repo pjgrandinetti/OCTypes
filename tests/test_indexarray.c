@@ -82,7 +82,7 @@ bool OCIndexArrayRemoveValuesAtIndexes_test(void) {
                    (OCIndexArrayGetValueAtIndex(array, 2) == 50);
     OCRelease(indexSet);
     OCRelease(array);
-        fprintf(stderr, " passed\n");
+    fprintf(stderr, " passed\n");
     return success;
 }
 bool OCIndexArrayDeepCopy_test(void) {
@@ -108,27 +108,22 @@ bool OCIndexArrayDeepCopy_test(void) {
     OCRelease(orig);
     OCRelease(copy);
     bool success = equalContent && distinct;
-        fprintf(stderr, " passed\n");
+    fprintf(stderr, " passed\n");
     return success;
 }
-
 bool OCIndexArrayJSONEncoding_test(void) {
     fprintf(stderr, "%s begin...", __func__);
-
     // Create test array
     OCIndex testIndexes[] = {10, 20, 30, 40, 50};
     size_t count = sizeof(testIndexes) / sizeof(testIndexes[0]);
-
     OCMutableIndexArrayRef original = OCIndexArrayCreateMutable(0);
     if (!original) {
         fprintf(stderr, "FAIL: Could not create mutable index array\n");
         return false;
     }
-
     for (size_t i = 0; i < count; i++) {
         OCIndexArrayAppendValue(original, testIndexes[i]);
     }
-
     // Test 1: Default encoding (should be OCJSONEncodingNone)
     OCJSONEncoding defaultEncoding = OCIndexArrayCopyEncoding(original);
     if (defaultEncoding != OCJSONEncodingNone) {
@@ -136,7 +131,6 @@ bool OCIndexArrayJSONEncoding_test(void) {
         OCRelease(original);
         return false;
     }
-
     // Test 2: Set encoding to base64 and test serialization
     OCIndexArraySetEncoding(original, OCJSONEncodingBase64);
     OCJSONEncoding newEncoding = OCIndexArrayCopyEncoding(original);
@@ -145,7 +139,6 @@ bool OCIndexArrayJSONEncoding_test(void) {
         OCRelease(original);
         return false;
     }
-
     // Test 3: Serialize with base64 encoding
     OCStringRef base64Error = NULL;
     cJSON *jsonBase64 = OCIndexArrayCopyAsJSON(original, true, &base64Error);
@@ -158,33 +151,28 @@ bool OCIndexArrayJSONEncoding_test(void) {
         OCRelease(original);
         return false;
     }
-
     // Verify JSON structure
     cJSON *type = cJSON_GetObjectItem(jsonBase64, "type");
     cJSON *encoding = cJSON_GetObjectItem(jsonBase64, "encoding");
     cJSON *value = cJSON_GetObjectItem(jsonBase64, "value");
-
     if (!type || !cJSON_IsString(type) || strcmp(cJSON_GetStringValue(type), "OCIndexArray") != 0) {
         fprintf(stderr, "FAIL: Invalid type field\n");
         cJSON_Delete(jsonBase64);
         OCRelease(original);
         return false;
     }
-
     if (!encoding || !cJSON_IsString(encoding) || strcmp(cJSON_GetStringValue(encoding), "base64") != 0) {
         fprintf(stderr, "FAIL: Invalid encoding field for base64\n");
         cJSON_Delete(jsonBase64);
         OCRelease(original);
         return false;
     }
-
     if (!value || !cJSON_IsString(value)) {
         fprintf(stderr, "FAIL: Invalid value field for base64 encoding\n");
         cJSON_Delete(jsonBase64);
         OCRelease(original);
         return false;
     }
-
     // Test 4: Roundtrip with base64 encoding
     OCStringRef error = NULL;
     OCIndexArrayRef deserializedBase64 = OCIndexArrayCreateFromJSON(jsonBase64, &error);
@@ -196,7 +184,6 @@ bool OCIndexArrayJSONEncoding_test(void) {
         OCRelease(original);
         return false;
     }
-
     // Verify array equality
     if (!OCTypeEqual(original, deserializedBase64)) {
         fprintf(stderr, "FAIL: Base64 roundtrip data does not match original\n");
@@ -205,7 +192,6 @@ bool OCIndexArrayJSONEncoding_test(void) {
         OCRelease(original);
         return false;
     }
-
     // Verify encoding is preserved
     OCJSONEncoding deserializedEncoding = OCIndexArrayCopyEncoding(deserializedBase64);
     if (deserializedEncoding != OCJSONEncodingBase64) {
@@ -215,7 +201,6 @@ bool OCIndexArrayJSONEncoding_test(void) {
         OCRelease(original);
         return false;
     }
-
     // Test 5: Set encoding to none and test serialization
     OCIndexArraySetEncoding(original, OCJSONEncodingNone);
     OCStringRef noneError = NULL;
@@ -231,11 +216,9 @@ bool OCIndexArrayJSONEncoding_test(void) {
         OCRelease(original);
         return false;
     }
-
     // Verify JSON structure for none encoding
     cJSON *encodingNone = cJSON_GetObjectItem(jsonNone, "encoding");
     cJSON *valueNone = cJSON_GetObjectItem(jsonNone, "value");
-
     if (!encodingNone || !cJSON_IsString(encodingNone) || strcmp(cJSON_GetStringValue(encodingNone), "none") != 0) {
         fprintf(stderr, "FAIL: Invalid encoding field for none\n");
         cJSON_Delete(jsonNone);
@@ -244,7 +227,6 @@ bool OCIndexArrayJSONEncoding_test(void) {
         OCRelease(original);
         return false;
     }
-
     if (!valueNone || !cJSON_IsArray(valueNone)) {
         fprintf(stderr, "FAIL: Invalid value field for none encoding (should be array)\n");
         cJSON_Delete(jsonNone);
@@ -253,7 +235,6 @@ bool OCIndexArrayJSONEncoding_test(void) {
         OCRelease(original);
         return false;
     }
-
     // Verify array content
     int arraySize = cJSON_GetArraySize(valueNone);
     if (arraySize != (int)count) {
@@ -264,7 +245,6 @@ bool OCIndexArrayJSONEncoding_test(void) {
         OCRelease(original);
         return false;
     }
-
     for (int i = 0; i < arraySize; i++) {
         cJSON *item = cJSON_GetArrayItem(valueNone, i);
         if (!item || !cJSON_IsNumber(item) || (OCIndex)item->valuedouble != testIndexes[i]) {
@@ -276,7 +256,6 @@ bool OCIndexArrayJSONEncoding_test(void) {
             return false;
         }
     }
-
     // Test 6: Roundtrip with none encoding
     OCIndexArrayRef deserializedNone = OCIndexArrayCreateFromJSON(jsonNone, &error);
     if (!deserializedNone) {
@@ -289,7 +268,6 @@ bool OCIndexArrayJSONEncoding_test(void) {
         OCRelease(original);
         return false;
     }
-
     // Verify array equality
     if (!OCTypeEqual(original, deserializedNone)) {
         fprintf(stderr, "FAIL: None roundtrip data does not match original\n");
@@ -300,7 +278,6 @@ bool OCIndexArrayJSONEncoding_test(void) {
         OCRelease(original);
         return false;
     }
-
     // Verify encoding is preserved
     OCJSONEncoding deserializedNoneEncoding = OCIndexArrayCopyEncoding(deserializedNone);
     if (deserializedNoneEncoding != OCJSONEncodingNone) {
@@ -312,14 +289,12 @@ bool OCIndexArrayJSONEncoding_test(void) {
         OCRelease(original);
         return false;
     }
-
     // Cleanup
     cJSON_Delete(jsonNone);
     cJSON_Delete(jsonBase64);
     OCRelease(deserializedNone);
     OCRelease(deserializedBase64);
     OCRelease(original);
-
     fprintf(stderr, " passed\n");
     return true;
 }

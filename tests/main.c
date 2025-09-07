@@ -108,17 +108,14 @@ int main(int argc, const char* argv[]) {
     if (!test_dictionary_write_simple()) failures++;
     if (!test_dictionary_write_empty()) failures++;
     if (!test_dictionary_write_error()) failures++;
-
     // OCNull tests
     if (!test_OCNull_singleton()) failures++;
     if (!test_OCNull_json_serialization()) failures++;
     if (!test_OCNull_in_arrays()) failures++;
     if (!test_OCNull_in_dictionaries()) failures++;
     if (!test_OCNull_roundtrip()) failures++;
-
     // JSONTyped roundtrip tests
     if (!runAllJSONTypedTests()) failures++;
-
     if (failures) {
         fprintf(stderr, "\n%d test(s) failed.\n", failures);
         OCAutoreleasePoolRelease(pool);

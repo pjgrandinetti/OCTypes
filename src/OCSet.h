@@ -146,7 +146,6 @@ bool OCSetEqual(OCSetRef set1, OCSetRef set2);
  * @ingroup OCSet
  */
 cJSON *OCSetCopyAsJSON(OCSetRef set, bool typed, OCStringRef *outError);
-
 /**
  * @brief Creates an OCSet from typed JSON representation.
  *

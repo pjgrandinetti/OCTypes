@@ -206,7 +206,6 @@ OCIndexArrayRef OCIndexArrayCreateFromJSON(cJSON *json, OCStringRef *outError);
  *         The caller is responsible for managing the returned cJSON object.
  */
 cJSON *OCIndexArrayCopyAsJSON(OCIndexArrayRef array, bool typed, OCStringRef *outError);
-
 /**
  * @brief Logs the contents of the array to stderr, for debugging.
  *
