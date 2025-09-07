@@ -301,7 +301,7 @@ OCListDirectory(const char *path,
 #endif
 bool OCRemoveItem(const char *path,
                   OCStringRef *err) {
-#ifdef _WIN32
+#if defined(_WIN32)
     struct stat st;
     if (stat(path, &st) != 0) {
         if (errno == ENOENT) {
@@ -327,8 +327,41 @@ bool OCRemoveItem(const char *path,
                 STR("remove \"%s\" failed: %s"),
                 path, strerror(errno));
         }
+        return false;
+    }
+    return true;
+#elif defined(__APPLE__)
+    // macOS: unlinkat with AT_REMOVEDIR doesn't work reliably, use traditional approach
+    struct stat st;
+    if (stat(path, &st) != 0) {
+        if (errno == ENOENT) {
+            // nothing to do
+            return true;
+        }
+        if (err) {
+            *err = OCStringCreateWithFormat(
+                STR("stat(\"%s\") failed: %s"),
+                path, strerror(errno));
+        }
+        return false;
+    }
+    int rc;
+    if (S_ISDIR(st.st_mode)) {
+        rc = rmdir(path);
+    } else {
+        rc = unlink(path);
+    }
+    if (rc != 0) {
+        if (err) {
+            *err = OCStringCreateWithFormat(
+                STR("remove \"%s\" failed: %s"),
+                path, strerror(errno));
+        }
+        return false;
+    }
+    return true;
 #else
-    // Use unlinkat to avoid TOCTOU bugs
+    // Linux: Use unlinkat to avoid TOCTOU bugs
     int rc = unlinkat(AT_FDCWD, path, 0);
     if (rc != 0 && errno == EISDIR) {
         rc = unlinkat(AT_FDCWD, path, AT_REMOVEDIR);
@@ -348,7 +381,6 @@ bool OCRemoveItem(const char *path,
     return true;
 #endif
 }
-
 bool OCRenameItem(const char *oldPath,
                   const char *newPath,
                   OCStringRef *err) {
