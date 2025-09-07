@@ -347,10 +347,8 @@ bool OCRemoveItem(const char *path,
     }
     return true;
 #endif
-        return false;
-    }
-    return true;
 }
+
 bool OCRenameItem(const char *oldPath,
                   const char *newPath,
                   OCStringRef *err) {
