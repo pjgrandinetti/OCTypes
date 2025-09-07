@@ -297,9 +297,11 @@ OCListDirectory(const char *path,
 #define rmdir _rmdir
 #else
 #include <unistd.h>
+#include <fcntl.h>
 #endif
 bool OCRemoveItem(const char *path,
                   OCStringRef *err) {
+#ifdef _WIN32
     struct stat st;
     if (stat(path, &st) != 0) {
         if (errno == ENOENT) {
@@ -325,6 +327,26 @@ bool OCRemoveItem(const char *path,
                 STR("remove \"%s\" failed: %s"),
                 path, strerror(errno));
         }
+#else
+    // Use unlinkat to avoid TOCTOU bugs
+    int rc = unlinkat(AT_FDCWD, path, 0);
+    if (rc != 0 && errno == EISDIR) {
+        rc = unlinkat(AT_FDCWD, path, AT_REMOVEDIR);
+    }
+    if (rc != 0) {
+        if (errno == ENOENT) {
+            // nothing to do
+            return true;
+        }
+        if (err) {
+            *err = OCStringCreateWithFormat(
+                STR("remove \"%s\" failed: %s"),
+                path, strerror(errno));
+        }
+        return false;
+    }
+    return true;
+#endif
         return false;
     }
     return true;
