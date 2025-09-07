@@ -86,6 +86,8 @@ jobs:
   build-macos:
     name: Build & Test (macos-latest)
     runs-on: macos-latest
+    permissions:
+      contents: read
     timeout-minutes: 25
     env:
       CCACHE_BASEDIR: ${{ github.workspace }}
