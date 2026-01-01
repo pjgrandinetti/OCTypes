@@ -42,7 +42,7 @@ jobs:
             libomp-dev libssl-dev
 
       - name: Cache ccache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.ccache
           key: ccache-linux-${{ hashFiles('Makefile', 'src/**/*.c', 'src/**/*.h', 'tests/**/*.c', 'tests/**/*.h') }}
@@ -109,7 +109,7 @@ jobs:
           echo "$(brew --prefix flex)/bin"  >> $GITHUB_PATH
 
       - name: Cache ccache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.ccache
           key: ccache-macos-${{ hashFiles('Makefile', 'src/**/*.c', 'src/**/*.h', 'tests/**/*.c', 'tests/**/*.h') }}
@@ -162,7 +162,7 @@ jobs:
             mingw-w64-x86_64-openmp
 
       - name: Cache ccache (MSYS2)
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: C:\msys64\home\runneradmin\.ccache
           key: ccache-windows-${{ hashFiles('Makefile', 'src/**/*.c', 'src/**/*.h', 'tests/**/*.c', 'tests/**/*.h') }}
