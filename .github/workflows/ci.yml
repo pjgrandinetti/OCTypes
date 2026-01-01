@@ -70,7 +70,7 @@ jobs:
 
       - name: Upload Ubuntu artifacts (tags only)
         if: startsWith(github.ref, 'refs/tags/')
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: libOCTypes-ubuntu-latest.x64
           path: install/lib/libOCTypes.*
@@ -79,7 +79,7 @@ jobs:
 
       - name: Upload headers (tags only)
         if: startsWith(github.ref, 'refs/tags/')
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: libOCTypes-headers
           path: header-pkg/libOCTypes-headers.zip
@@ -129,7 +129,7 @@ jobs:
 
       - name: Upload macOS artifacts (tags only)
         if: startsWith(github.ref, 'refs/tags/')
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: libOCTypes-macos-latest
           path: install/lib/libOCTypes.*
@@ -188,7 +188,7 @@ jobs:
 
       - name: Upload Windows artifacts (tags only)
         if: startsWith(github.ref, 'refs/tags/')
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: libOCTypes-windows-latest
           path: install/lib/libOCTypes.*
@@ -223,7 +223,7 @@ jobs:
               test -f install/lib/libOCTypes.a && test -f install/lib/libOCTypes.so"
 
       - name: Upload ARM64 artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: libOCTypes-ubuntu-latest.arm64
           path: install/lib/libOCTypes.*
